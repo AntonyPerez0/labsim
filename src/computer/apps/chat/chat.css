@@ -1,0 +1,449 @@
+/* LabChat — Slack-like team chat (Apps §11). Prefix: lc- */
+.lc-root {
+  --lc-side: #1a1d29;
+  --lc-active: #1164a3;
+  --lc-text: #1d1c1d;
+  --lc-muted: #616061;
+  --lc-link: #1264a3;
+  --lc-font: 'Lato', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --lc-mono: Monaco, Menlo, Consolas, 'Courier New', monospace;
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: #fff;
+  color: var(--lc-text);
+  font: 15px/1.46668 var(--lc-font);
+  user-select: text;
+  -webkit-user-select: text;
+}
+.lc-root *,
+.lc-root *::before,
+.lc-root *::after {
+  box-sizing: border-box;
+}
+.lc-side {
+  width: 240px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  background: var(--lc-side);
+  color: #d1d2d3;
+  user-select: none;
+}
+.lc-ws {
+  height: 50px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 1px solid #ffffff1a;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 900;
+  white-space: nowrap;
+  gap: 8px;
+}
+.lc-ws > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lc-compose-icon {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  color: var(--lc-side);
+}
+.lc-side-scroll {
+  flex: 1;
+  overflow: auto;
+  padding: 10px 0 16px;
+}
+.lc-section {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 16px;
+  margin-top: 12px;
+  color: #d1d2d3cc;
+  font-size: 15px;
+}
+.lc-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: calc(100% - 16px);
+  height: 28px;
+  margin: 0 8px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #d1d2d3cc;
+  font: 15px var(--lc-font);
+  text-align: left;
+  cursor: pointer;
+}
+.lc-item:hover {
+  background: #ffffff14;
+}
+.lc-item-on,
+.lc-item-on:hover {
+  background: var(--lc-active);
+  color: #fff;
+}
+.lc-item-unread {
+  color: #fff;
+  font-weight: 900;
+}
+.lc-item-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lc-badge {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 9px;
+  background: #cd2553;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+.lc-presence {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid #d1d2d3aa;
+}
+.lc-presence-on {
+  background: #2bac76;
+  border-color: #2bac76;
+}
+.lc-mini-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  flex: none;
+}
+
+.lc-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.lc-header {
+  height: 50px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  border-bottom: 1px solid #dddddd;
+}
+.lc-header-name {
+  font-size: 18px;
+  font-weight: 900;
+}
+.lc-header-topic {
+  color: var(--lc-muted);
+  font-size: 13px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.lc-messages {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 8px 0 12px;
+}
+.lc-intro {
+  padding: 24px 20px 8px;
+  color: var(--lc-muted);
+}
+.lc-intro h3 {
+  margin: 0 0 6px;
+  color: var(--lc-text);
+  font-size: 22px;
+  font-weight: 900;
+}
+.lc-day {
+  position: relative;
+  margin: 12px 0 6px;
+  text-align: center;
+}
+.lc-day::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top: 1px solid #dddddd;
+}
+.lc-day span {
+  position: relative;
+  display: inline-block;
+  padding: 2px 14px;
+  border: 1px solid #dddddd;
+  border-radius: 24px;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.lc-msg {
+  display: flex;
+  gap: 8px;
+  padding: 6px 20px 2px;
+}
+.lc-msg-cont {
+  padding-top: 0;
+}
+.lc-msg:hover {
+  background: #f8f8f8;
+}
+.lc-msg-mention {
+  background: #fff8e1;
+}
+.lc-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}
+.lc-gutter {
+  width: 36px;
+  flex: none;
+  color: transparent;
+  font-size: 11px;
+  text-align: right;
+  padding-top: 3px;
+}
+.lc-msg:hover .lc-gutter {
+  color: var(--lc-muted);
+}
+.lc-body {
+  flex: 1;
+  min-width: 0;
+}
+.lc-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.lc-author {
+  font-weight: 900;
+}
+.lc-app {
+  padding: 0 3px;
+  border-radius: 2px;
+  background: #1d1c1d14;
+  color: var(--lc-muted);
+  font-size: 10px;
+  font-weight: 700;
+}
+.lc-time {
+  color: var(--lc-muted);
+  font-size: 12px;
+}
+.lc-ticket {
+  padding: 0 6px;
+  border-radius: 4px;
+  border: 1px solid #e8912d;
+  color: #a35f00;
+  font-size: 11px;
+  font-weight: 700;
+}
+.lc-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.lc-text p {
+  margin: 0;
+}
+.lc-text a {
+  color: var(--lc-link);
+  text-decoration: none;
+  cursor: pointer;
+}
+.lc-text a:hover {
+  text-decoration: underline;
+}
+.lc-code {
+  padding: 2px 3px 1px;
+  border: 1px solid #1d1c1d21;
+  border-radius: 3px;
+  background: #f6f6f6;
+  color: #e01e5a;
+  font: 12px var(--lc-mono);
+}
+.lc-pre {
+  margin: 4px 0;
+  padding: 8px;
+  border: 1px solid #1d1c1d21;
+  border-radius: 4px;
+  background: #f8f8f8;
+  font: 12px/1.5 var(--lc-mono);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.lc-mention {
+  padding: 0 2px;
+  border-radius: 3px;
+  background: #fff3c4;
+  color: var(--lc-link);
+}
+.lc-replies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 20px 0;
+}
+.lc-chip {
+  max-width: 100%;
+  padding: 4px 12px;
+  border: 1px solid #1264a3;
+  border-radius: 16px;
+  background: #fff;
+  color: #1264a3;
+  font: 600 13px var(--lc-font);
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lc-chip:hover {
+  background: #e8f5fa;
+}
+.lc-composer {
+  margin: 8px 20px 20px;
+  border: 1px solid #1d1c1d4d;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.lc-composer:focus-within {
+  border-color: #1d1c1d99;
+  box-shadow: 0 0 0 1px #1d1c1d33;
+}
+.lc-toolbar {
+  display: flex;
+  gap: 2px;
+  padding: 4px 6px;
+  background: #f8f8f8;
+  color: #1d1c1db3;
+}
+.lc-tool {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: 700 13px var(--lc-font);
+}
+.lc-tool:hover {
+  background: #1d1c1d14;
+}
+.lc-input {
+  display: block;
+  width: 100%;
+  min-height: 42px;
+  max-height: 180px;
+  padding: 10px 12px;
+  border: 0;
+  outline: 0;
+  resize: none;
+  font: 15px/1.46668 var(--lc-font);
+  color: var(--lc-text);
+  background: #fff;
+}
+.lc-send-row {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 8px 6px;
+}
+.lc-send {
+  width: 32px;
+  height: 28px;
+  border: 0;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  background: #007a5a;
+  color: #fff;
+  cursor: pointer;
+}
+.lc-send:disabled {
+  background: transparent;
+  color: #1d1c1d55;
+  cursor: default;
+}
+.lc-switcher-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: #0006;
+  display: flex;
+  justify-content: center;
+  padding-top: 80px;
+}
+.lc-switcher {
+  width: min(520px, 90%);
+  align-self: flex-start;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 18px 48px #0006;
+  overflow: hidden;
+}
+.lc-switcher input {
+  width: 100%;
+  height: 52px;
+  padding: 0 18px;
+  border: 0;
+  border-bottom: 1px solid #ddd;
+  outline: 0;
+  font: 18px var(--lc-font);
+}
+.lc-switch-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 36px;
+  padding: 0 18px;
+  border: 0;
+  background: transparent;
+  font: 15px var(--lc-font);
+  text-align: left;
+  cursor: pointer;
+}
+.lc-switch-row-on {
+  background: var(--lc-active);
+  color: #fff;
+}

@@ -1,0 +1,385 @@
+/* IntelliJ editor, syntax tokens, consoles (Apps §4.1). Scoped under .ij-root. */
+.ij-root {
+  --ij-ed-bg: #2b2b2b;
+  --ij-ed-fg: #a9b7c6;
+  --ij-gutter-bg: #313335;
+  --ij-caretrow: #323232;
+  --ij-sel: #214283;
+  --ij-lnum: #606366;
+  --ij-lnum-cur: #a4a3a3;
+  --ij-margin: #323232;
+  --ij-brace: #3b514d;
+  --ij-find: #32593d;
+  --ij-find-cur: #155221;
+  --ij-t-kw: #cc7832;
+  --ij-t-str: #6a8759;
+  --ij-t-num: #6897bb;
+  --ij-t-com: #808080;
+  --ij-t-doc: #629755;
+  --ij-t-ann: #bbb529;
+  --ij-t-fn: #ffc66d;
+  --ij-t-field: #9876aa;
+  --ij-t-tag: #e8bf6a;
+  --ij-t-attr: #bababa;
+  --ij-mono: 'JetBrains Mono', 'Cascadia Mono', Consolas, 'DejaVu Sans Mono', Menlo, monospace;
+  --ij-ed-size: 13px;
+}
+.ij-root.ij-light {
+  --ij-ed-bg: #ffffff;
+  --ij-ed-fg: #080808;
+  --ij-gutter-bg: #f7f8fa;
+  --ij-caretrow: #fcfaed;
+  --ij-sel: #a6d2ff;
+  --ij-lnum: #adadad;
+  --ij-lnum-cur: #767676;
+  --ij-margin: #ebebeb;
+  --ij-brace: #93d9d9;
+  --ij-find: #f2e7ae;
+  --ij-find-cur: #e1c56b;
+  --ij-t-kw: #0033b3;
+  --ij-t-str: #067d17;
+  --ij-t-num: #1750eb;
+  --ij-t-com: #8c8c8c;
+  --ij-t-doc: #8c8c8c;
+  --ij-t-ann: #9e880d;
+  --ij-t-fn: #00627a;
+  --ij-t-field: #871094;
+  --ij-t-tag: #0033b3;
+  --ij-t-attr: #174ad4;
+}
+
+.ij-editor {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--ij-ed-bg);
+}
+.ij-editor-main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+.ij-gutter {
+  position: relative;
+  flex: none;
+  overflow: hidden;
+  background: var(--ij-gutter-bg);
+  border-right: 1px solid #555555;
+  font: var(--ij-ed-size) / 18px var(--ij-mono);
+  user-select: none;
+}
+.ij-light .ij-gutter {
+  border-right-color: #ebecf0;
+}
+.ij-gutter-inner {
+  position: absolute;
+  inset: 0 0 auto 0;
+  padding-top: 4px;
+}
+.ij-lnum {
+  position: absolute;
+  right: 22px;
+  height: 18px;
+  margin-top: 4px;
+  color: var(--ij-lnum);
+  text-align: right;
+}
+.ij-lnum-cur {
+  color: var(--ij-lnum-cur);
+}
+.ij-gutter-run,
+.ij-gutter-bulb {
+  position: absolute;
+  right: 3px;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  margin-top: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+}
+.ij-gutter-bulb {
+  right: auto;
+  left: 2px;
+}
+.ij-gutter-run:hover,
+.ij-gutter-bulb:hover {
+  background: #4c5052;
+}
+.ij-code-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+.ij-code-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  min-width: 100%;
+  padding-top: 4px;
+  will-change: transform;
+  font: var(--ij-ed-size) / 18px var(--ij-mono);
+  pointer-events: none;
+}
+.ij-code {
+  position: relative;
+  padding: 0 40px 300px 4px;
+  color: var(--ij-ed-fg);
+  white-space: pre;
+  tab-size: 4;
+}
+.ij-line {
+  height: 18px;
+}
+.ij-caretline {
+  position: absolute;
+  left: 0;
+  right: -2000px;
+  height: 18px;
+  margin-top: 4px;
+  background: var(--ij-caretrow);
+}
+.ij-margin {
+  position: absolute;
+  top: 0;
+  bottom: -2000px;
+  left: calc(120ch + 4px);
+  width: 1px;
+  background: var(--ij-margin);
+}
+.ij-deco {
+  position: absolute;
+  height: 18px;
+  margin-top: 4px;
+  color: transparent;
+  white-space: pre;
+}
+.ij-deco-brace {
+  background: var(--ij-brace);
+}
+.ij-deco-find {
+  background: var(--ij-find);
+}
+.ij-deco-cur {
+  background: var(--ij-find-cur);
+  outline: 1px solid #8cc28c55;
+}
+.ij-wave {
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  z-index: 2;
+}
+.ij-wave-err {
+  text-decoration-color: #bc3f3c;
+}
+.ij-wave-warn {
+  text-decoration-color: #be9117;
+}
+.ij-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  /* A modest scroll-past-end. In border-box the padding is the textarea's minimum height: 300px made it
+     taller than a short editor (Run/Commit panel open), so the caret line could sit under the panel and
+     Chrome scrolled the clipped .ij-code-wrap instead — code and gutter numbers then disagreed. */
+  padding: 4px 40px 60px 4px;
+  border: 0;
+  outline: none;
+  resize: none;
+  overflow: auto;
+  background: transparent;
+  color: transparent;
+  caret-color: #bbbbbb;
+  font: var(--ij-ed-size) / 18px var(--ij-mono);
+  white-space: pre;
+  tab-size: 4;
+  z-index: 3;
+  scrollbar-width: thin;
+  scrollbar-color: #5a5d5f transparent;
+}
+.ij-light .ij-input {
+  caret-color: #000;
+}
+.ij-input::selection {
+  background: var(--ij-sel);
+  color: transparent;
+}
+.ij-input::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+.ij-input::-webkit-scrollbar-thumb {
+  background: #5a5d5f99;
+  border-radius: 6px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+.ij-crumbs {
+  flex: none;
+  height: 24px;
+  padding: 0 10px;
+  border-top: 1px solid #323232;
+  background: var(--ij-ed-bg);
+  color: #a9b7c6;
+  font-size: 12px;
+  line-height: 23px;
+}
+.ij-light .ij-crumbs {
+  border-top-color: #ebecf0;
+  color: #444;
+}
+.ij-crumb-sep {
+  color: #6e6e6e;
+}
+
+/* tokens */
+.ij-t-kw,
+.ij-t-semi,
+.ij-t-pkey,
+.ij-t-ykey {
+  color: var(--ij-t-kw);
+}
+.ij-light .ij-t-semi {
+  color: #080808;
+}
+.ij-t-str,
+.ij-t-pval,
+.ij-t-attrv,
+.ij-t-code {
+  color: var(--ij-t-str);
+}
+.ij-t-num {
+  color: var(--ij-t-num);
+}
+.ij-t-com,
+.ij-t-prolog {
+  color: var(--ij-t-com);
+}
+.ij-t-com {
+  font-style: normal;
+}
+.ij-t-doc {
+  color: var(--ij-t-doc);
+  font-style: italic;
+}
+.ij-t-doctag {
+  color: var(--ij-t-doc);
+  font-weight: 700;
+  font-style: italic;
+}
+.ij-t-ann {
+  color: var(--ij-t-ann);
+}
+.ij-t-fn {
+  color: var(--ij-t-fn);
+}
+.ij-t-field,
+.ij-t-jkey {
+  color: var(--ij-t-field);
+}
+.ij-t-const {
+  color: var(--ij-t-field);
+  font-style: italic;
+}
+.ij-t-tag {
+  color: var(--ij-t-tag);
+}
+.ij-t-attr {
+  color: var(--ij-t-attr);
+}
+.ij-t-h {
+  color: var(--ij-t-kw);
+  font-weight: 700;
+}
+
+/* diff viewer */
+.ij-diff {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--ij-ed-bg);
+}
+.ij-diff-head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid #323232;
+  background: #3c3f41;
+  font-size: 12px;
+}
+.ij-diff-head > div {
+  padding: 4px 10px;
+}
+.ij-diff-body {
+  flex: 1;
+  overflow: auto;
+  font: var(--ij-ed-size) / 18px var(--ij-mono);
+}
+.ij-diff-row {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px 1fr;
+  min-height: 18px;
+  white-space: pre;
+  color: var(--ij-ed-fg);
+}
+.ij-diff-row > span:nth-child(odd) {
+  padding-right: 8px;
+  color: var(--ij-lnum);
+  text-align: right;
+  background: var(--ij-gutter-bg);
+  user-select: none;
+}
+.ij-diff-row > span:nth-child(even) {
+  padding-left: 6px;
+  overflow: hidden;
+}
+.ij-diff-add > span:nth-child(4) {
+  background: #294436;
+}
+.ij-diff-del > span:nth-child(2) {
+  background: #484a4a;
+}
+.ij-diff-mod > span:nth-child(2),
+.ij-diff-mod > span:nth-child(4) {
+  background: #385570;
+}
+
+/* run console */
+.ij-console {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  padding: 4px 8px;
+  background: var(--ij-ed-bg);
+  color: #bbbbbb;
+  font: 13px/17px var(--ij-mono);
+  white-space: pre-wrap;
+  word-break: break-all;
+  user-select: text;
+}
+.ij-con-grey {
+  color: #808080;
+}
+.ij-con-err {
+  color: #ff6b68;
+}
+.ij-con-ok {
+  color: #5fb15f;
+}
+.ij-con-link {
+  color: #589df6;
+  text-decoration: underline;
+  cursor: pointer;
+}

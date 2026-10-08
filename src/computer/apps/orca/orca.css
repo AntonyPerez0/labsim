@@ -1,0 +1,1169 @@
+/* Orchestrator — JHipster 7 + Bootstrap 5 look (Apps §2.1). Prefix: orca- */
+.orca-root {
+  --orca-primary: #0d6efd;
+  --orca-success: #198754;
+  --orca-info: #0dcaf0;
+  --orca-warning: #ffc107;
+  --orca-danger: #dc3545;
+  --orca-secondary: #6c757d;
+  --orca-light: #f8f9fa;
+  --orca-border: #dee2e6;
+  --orca-body: #212529;
+  --orca-font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', 'Liberation Sans', Arial, sans-serif;
+  --orca-mono: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: #fff;
+  color: var(--orca-body);
+  font: 400 14px/1.5 var(--orca-font);
+  text-align: left;
+  user-select: text;
+  -webkit-user-select: text;
+  container-type: inline-size;
+  container-name: orca;
+}
+/* JHipster hides row-button labels below the md breakpoint (d-none d-md-inline). */
+@container orca (max-width: 1440px) {
+  .orca-btn-label {
+    display: none;
+  }
+}
+.orca-root *,
+.orca-root *::before,
+.orca-root *::after {
+  box-sizing: border-box;
+}
+.orca-root a,
+.orca-link {
+  color: var(--orca-primary);
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+}
+.orca-link:hover {
+  color: #0a58ca;
+}
+.orca-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+.orca-main {
+  flex: 1;
+  padding: 16px;
+}
+.orca-footer {
+  height: 32px;
+  flex: none;
+  padding: 6px 16px;
+  background: var(--orca-light);
+  border-top: 1px solid var(--orca-border);
+  color: var(--orca-secondary);
+  font-size: 12px;
+}
+
+/* ── Navbar ── */
+.orca-navbar {
+  height: 56px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: #353d47;
+  color: #fff;
+  position: relative;
+  z-index: 20;
+}
+.orca-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  margin-right: auto;
+}
+.orca-brand-title {
+  font-size: 20px;
+  line-height: 1.1;
+  color: #fff;
+}
+.orca-brand-version {
+  display: block;
+  font-size: 10px;
+  color: #bbbbbb;
+  line-height: 1.2;
+}
+.orca-nav {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+.orca-nav-item {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.orca-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  padding: 0 12px;
+  color: rgba(255, 255, 255, 0.55);
+  background: transparent;
+  border: 0;
+  font: 14px var(--orca-font);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.orca-nav-link:hover,
+.orca-nav-link-active {
+  color: #fff;
+}
+.orca-caret::after {
+  content: '';
+  display: inline-block;
+  margin-left: 4px;
+  vertical-align: 2px;
+  border-top: 5px solid;
+  border-right: 4px solid transparent;
+  border-left: 4px solid transparent;
+}
+.orca-dropdown {
+  position: absolute;
+  top: calc(100% - 4px);
+  right: 0;
+  min-width: 220px;
+  padding: 8px 0;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  z-index: 30;
+  max-height: 70vh;
+  overflow: auto;
+}
+.orca-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 5px 16px;
+  border: 0;
+  background: transparent;
+  color: var(--orca-body);
+  font: 14px var(--orca-font);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.orca-dropdown-item:hover:not(:disabled) {
+  background: #e9ecef;
+}
+.orca-dropdown-item:disabled {
+  color: #adb5bd;
+  cursor: default;
+}
+.orca-dropdown-item svg {
+  width: 14px;
+  color: #6c757d;
+}
+.orca-dropdown-divider {
+  height: 0;
+  margin: 6px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+}
+.orca-tutorial-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 12px;
+  padding: 3px 10px;
+  border: 1px solid #f5b301;
+  border-radius: 14px;
+  background: rgba(245, 179, 1, 0.08);
+  color: #f5b301;
+  font: 600 12px var(--orca-font);
+  line-height: 1.2;
+  cursor: pointer;
+}
+.orca-tutorial-btn small {
+  font-size: 10px;
+  font-weight: 400;
+  opacity: 0.85;
+}
+.orca-tutorial-btn:hover {
+  background: rgba(245, 179, 1, 0.18);
+}
+.orca-pad {
+  margin-left: 4px;
+  color: #f5b301;
+}
+
+/* ── Typography ── */
+.orca-root h1,
+.orca-root h2,
+.orca-root h3,
+.orca-root h4,
+.orca-root h5 {
+  margin: 0 0 8px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.orca-root h1 {
+  font-size: 2.1rem;
+}
+.orca-root h2 {
+  font-size: 1.6rem;
+}
+.orca-root h4 {
+  font-size: 1.25rem;
+}
+.orca-root h5 {
+  font-size: 1.05rem;
+}
+.orca-root p {
+  margin: 0 0 12px;
+}
+.orca-root hr {
+  margin: 12px 0;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+}
+.orca-lead {
+  font-size: 1.15rem;
+  font-weight: 300;
+}
+.orca-muted {
+  color: var(--orca-secondary);
+}
+.orca-small {
+  font-size: 12px;
+}
+.orca-mono {
+  font-family: var(--orca-mono);
+  font-size: 12.5px;
+}
+.orca-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.orca-heading h2 {
+  margin: 0 auto 0 0;
+}
+
+/* ── Buttons ── */
+.orca-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font: 400 14px/1.5 var(--orca-font);
+  color: #fff;
+  background: var(--orca-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  user-select: none;
+}
+.orca-btn:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+.orca-btn:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.35);
+}
+.orca-btn-sm {
+  padding: 2px 8px;
+  font-size: 12.25px;
+  border-radius: 3px;
+}
+.orca-btn-primary {
+  background: #0d6efd;
+  border-color: #0d6efd;
+}
+.orca-btn-primary:hover:not(:disabled) {
+  background: #0b5ed7;
+}
+.orca-btn-secondary {
+  background: #6c757d;
+  border-color: #6c757d;
+}
+.orca-btn-secondary:hover:not(:disabled) {
+  background: #5c636a;
+}
+.orca-btn-info {
+  background: #0dcaf0;
+  border-color: #0dcaf0;
+  color: #000;
+}
+.orca-btn-info:hover:not(:disabled) {
+  background: #31d2f2;
+}
+.orca-btn-danger {
+  background: #dc3545;
+  border-color: #dc3545;
+}
+.orca-btn-danger:hover:not(:disabled) {
+  background: #bb2d3b;
+}
+.orca-btn-success {
+  background: #198754;
+  border-color: #198754;
+}
+.orca-btn-warning {
+  background: #ffc107;
+  border-color: #ffc107;
+  color: #000;
+}
+.orca-btn-outline-secondary {
+  background: transparent;
+  border-color: #6c757d;
+  color: #6c757d;
+}
+.orca-btn-outline-secondary:hover:not(:disabled) {
+  background: #6c757d;
+  color: #fff;
+}
+.orca-btn-outline {
+  background: #fff;
+  color: var(--orca-c, #6c757d);
+  border-color: var(--orca-c, #6c757d);
+}
+.orca-btn-outline.orca-on {
+  background: var(--orca-c);
+  color: #fff;
+}
+.orca-btn-link {
+  background: transparent;
+  color: var(--orca-primary);
+  border-color: transparent;
+  text-decoration: underline;
+}
+.orca-btn-group {
+  display: inline-flex;
+  position: relative;
+}
+.orca-btn-group > .orca-btn + .orca-btn {
+  margin-left: -1px;
+}
+.orca-btn-group > .orca-btn:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.orca-btn-group > .orca-btn:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.orca-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  white-space: nowrap;
+}
+.orca-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+/* ── Badges / chips ── */
+.orca-badge {
+  display: inline-block;
+  padding: 3px 7px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  background: #6c757d;
+  white-space: nowrap;
+  vertical-align: 1px;
+}
+.orca-pill {
+  border-radius: 50rem;
+  padding: 4px 9px;
+}
+.orca-bg-info {
+  background: #0dcaf0;
+  color: #000;
+}
+.orca-bg-success {
+  background: #198754;
+}
+.orca-bg-danger {
+  background: #dc3545;
+}
+.orca-bg-primary {
+  background: #0d6efd;
+}
+.orca-bg-warning {
+  background: #ffc107;
+  color: #000;
+}
+.orca-bg-dark {
+  background: #212529;
+}
+.orca-bg-secondary {
+  background: #6c757d;
+}
+.orca-bg-light {
+  background: #f8f9fa;
+  color: #212529;
+  border: 1px solid var(--orca-border);
+}
+
+/* ── Alerts ── */
+.orca-alerts {
+  margin-bottom: 4px;
+}
+.orca-alert {
+  position: relative;
+  padding: 12px 40px 12px 16px;
+  margin-bottom: 12px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  white-space: pre-wrap;
+}
+.orca-alert-success {
+  color: #0f5132;
+  background: #d1e7dd;
+  border-color: #badbcc;
+}
+.orca-alert-danger {
+  color: #842029;
+  background: #f8d7da;
+  border-color: #f5c2c7;
+}
+.orca-alert-warning {
+  color: #664d03;
+  background: #fff3cd;
+  border-color: #ffecb5;
+}
+.orca-alert-info {
+  color: #055160;
+  background: #cff4fc;
+  border-color: #b6effb;
+}
+.orca-alert-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  opacity: 0.55;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.orca-alert-close:hover {
+  opacity: 0.9;
+}
+.orca-alert pre {
+  margin: 6px 0 0;
+  white-space: pre-wrap;
+  font: 12.5px var(--orca-mono);
+}
+
+/* ── Cards ── */
+.orca-card {
+  background: #fff;
+  border: 1px solid var(--orca-border);
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.orca-card-title {
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.orca-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.orca-col {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* ── Tables ── */
+.orca-table-wrap {
+  overflow-x: auto;
+}
+.orca-table {
+  width: 100%;
+  margin-bottom: 12px;
+  border-collapse: collapse;
+  color: var(--orca-body);
+  vertical-align: top;
+}
+.orca-table th,
+.orca-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--orca-border);
+  text-align: left;
+  vertical-align: middle;
+}
+.orca-table thead th {
+  border-bottom: 2px solid #c6cbd1;
+  font-weight: 600;
+  vertical-align: bottom;
+}
+.orca-table td:last-child {
+  white-space: nowrap;
+}
+.orca-table-striped tbody tr:nth-of-type(odd) > * {
+  background: rgba(0, 0, 0, 0.05);
+}
+.orca-table tbody tr:hover > * {
+  background: rgba(0, 0, 0, 0.075);
+}
+.orca-table-fixed {
+  table-layout: fixed;
+}
+.orca-table-fixed td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.orca-sort {
+  cursor: pointer;
+  user-select: none;
+}
+.orca-sort-icon {
+  margin-left: 4px;
+  color: #adb5bd;
+  font-size: 11px;
+}
+.orca-sort-active .orca-sort-icon {
+  color: #000;
+}
+.orca-row-flash > * {
+  animation: orca-flash 0.6s ease-out;
+}
+@keyframes orca-flash {
+  0% {
+    background: #fff3cd;
+  }
+}
+.orca-sub {
+  display: block;
+  font-size: 12px;
+  color: #6c757d;
+}
+.orca-ok {
+  color: #198754;
+}
+.orca-fail {
+  color: #dc3545;
+}
+.orca-grey {
+  color: #6c757d;
+}
+.orca-pagination {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+}
+.orca-pagination button {
+  min-width: 36px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--orca-border);
+  margin-left: -1px;
+  background: #fff;
+  color: var(--orca-primary);
+  font: 14px var(--orca-font);
+  cursor: pointer;
+}
+.orca-pagination button:first-child {
+  border-radius: 4px 0 0 4px;
+}
+.orca-pagination button:last-child {
+  border-radius: 0 4px 4px 0;
+}
+.orca-pagination button.orca-page-active {
+  background: var(--orca-primary);
+  border-color: var(--orca-primary);
+  color: #fff;
+  position: relative;
+}
+.orca-pagination button:disabled {
+  color: #6c757d;
+  cursor: default;
+}
+.orca-count {
+  text-align: center;
+  color: var(--orca-body);
+}
+
+/* ── Forms ── */
+.orca-form-group {
+  margin-bottom: 12px;
+}
+.orca-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  font-weight: 400;
+}
+.orca-help {
+  display: inline-grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #6c757d;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: help;
+}
+.orca-control {
+  display: block;
+  width: 100%;
+  height: 31px;
+  padding: 4px 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background: #fff;
+  color: var(--orca-body);
+  font: 14px var(--orca-font);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+textarea.orca-control {
+  height: auto;
+  min-height: 56px;
+  resize: vertical;
+}
+select.orca-control {
+  padding-right: 24px;
+}
+.orca-control:focus {
+  outline: 0;
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+}
+.orca-control:disabled,
+.orca-control[readonly] {
+  background: #e9ecef;
+}
+.orca-control.orca-invalid {
+  border-color: #dc3545;
+}
+.orca-control.orca-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+}
+.orca-control.orca-mono {
+  font-family: var(--orca-mono);
+  font-size: 13px;
+}
+.orca-invalid-msg {
+  display: block;
+  margin-top: 2px;
+  color: #dc3545;
+  font-size: 12.25px;
+}
+.orca-form-text {
+  display: block;
+  margin-top: 2px;
+  color: #6c757d;
+  font-size: 12.25px;
+}
+.orca-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 14px;
+  cursor: pointer;
+}
+.orca-check input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+}
+.orca-inputgroup {
+  display: flex;
+}
+.orca-inputgroup .orca-control {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.orca-inputgroup .orca-btn {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  height: 31px;
+}
+.orca-grid2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0 16px;
+}
+.orca-filterbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px 14px;
+}
+.orca-filterbar .orca-form-group {
+  margin: 0;
+}
+.orca-filterbar select.orca-control {
+  width: auto;
+  min-width: 170px;
+}
+
+/* ── Entity details ── */
+.orca-dl {
+  display: grid;
+  grid-template-columns: minmax(160px, 28%) 1fr;
+  margin: 0 0 12px;
+}
+.orca-dl dt,
+.orca-dl dd {
+  margin: 0;
+  padding: 8px 0;
+  border-bottom: 1px solid #eeeeee;
+}
+.orca-dl dt {
+  font-weight: 700;
+  padding-right: 12px;
+}
+.orca-dl dd {
+  word-break: break-word;
+}
+
+/* ── Notes ── */
+.orca-notes {
+  margin-top: 20px;
+}
+.orca-note {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 8px 10px;
+  border: 1px solid var(--orca-border);
+  border-radius: 4px;
+  margin-bottom: 6px;
+  background: #fff;
+}
+.orca-note-resolved {
+  opacity: 0.55;
+}
+.orca-note-text {
+  flex: 1;
+  min-width: 0;
+  font: 12.5px/1.45 var(--orca-mono);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.orca-kind-HEALTH {
+  background: #dc3545;
+}
+.orca-kind-STATUS {
+  background: #6c757d;
+}
+.orca-kind-CONFIG {
+  background: #0d6efd;
+}
+.orca-kind-MANUAL {
+  background: #212529;
+}
+
+/* ── Modal ── */
+.orca-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 64px;
+}
+.orca-modal {
+  width: min(500px, 92%);
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  animation: orca-modal-in 0.2s ease-out;
+}
+@keyframes orca-modal-in {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+}
+.orca-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--orca-border);
+}
+.orca-modal-header h4 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+.orca-modal-body {
+  padding: 16px;
+}
+.orca-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--orca-border);
+}
+
+/* ── Status menu / popover ── */
+.orca-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 2px);
+  z-index: 25;
+  min-width: 200px;
+  padding: 6px 0;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+.orca-popover {
+  position: absolute;
+  z-index: 25;
+  right: 0;
+  top: calc(100% + 6px);
+  width: 360px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  white-space: normal;
+}
+.orca-popover-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* ── Tabs ── */
+.orca-tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--orca-border);
+  margin-bottom: 16px;
+}
+.orca-tab {
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: 6px 6px 0 0;
+  margin-bottom: -1px;
+  background: transparent;
+  color: var(--orca-primary);
+  font: 14px var(--orca-font);
+  cursor: pointer;
+}
+.orca-tab:hover {
+  border-color: #e9ecef #e9ecef var(--orca-border);
+}
+.orca-tab-active {
+  color: #495057;
+  background: #fff;
+  border-color: var(--orca-border) var(--orca-border) #fff;
+}
+
+/* ── Home ── */
+.orca-home {
+  display: flex;
+  gap: 24px;
+}
+.orca-home-left {
+  flex: 0 0 240px;
+}
+.orca-home-right {
+  flex: 1;
+  min-width: 0;
+}
+.orca-home-right td.orca-mono {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+/* Bootstrap stacks col-md-3 / col-md-9 below the md breakpoint; the whale gets out of the way. */
+@container orca (max-width: 900px) {
+  .orca-home-left {
+    display: none;
+  }
+}
+.orca-statcards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin: 12px 0 16px;
+}
+.orca-statcard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--orca-border);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+.orca-statcard:hover {
+  border-color: #adb5bd;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+.orca-statcard-n {
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* ── Error page / codebox ── */
+.orca-codebox {
+  position: relative;
+  padding: 10px 12px;
+  border: 1px solid var(--orca-border);
+  border-radius: 4px;
+  background: #f8f9fa;
+  font: 12.5px/1.5 var(--orca-mono);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.orca-logline {
+  font: 12.5px/1.55 var(--orca-mono);
+  white-space: pre-wrap;
+}
+.orca-log-fail {
+  color: #b02a37;
+}
+.orca-log-recovered {
+  color: #198754;
+}
+.orca-log-skipped {
+  color: #6c757d;
+}
+.orca-log-reserved {
+  color: #0b5ed7;
+}
+
+/* ── Screen outline ── */
+.orca-outline {
+  flex: none;
+}
+.orca-outline text {
+  font-family: var(--orca-font);
+}
+
+/* ── Swagger UI ── */
+.orca-sw {
+  font-family: sans-serif;
+  color: #3b4151;
+}
+.orca-sw-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.orca-sw-head h2 {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 600;
+  color: #3b4151;
+  font-family: sans-serif;
+}
+.orca-sw-ver {
+  padding: 2px 6px;
+  border-radius: 57px;
+  background: #7d8492;
+  color: #fff;
+  font-size: 10px;
+  font-family: sans-serif;
+  font-weight: 700;
+  vertical-align: super;
+}
+.orca-sw-oas {
+  background: #89bf04;
+}
+.orca-sw-servers {
+  margin: 16px 0 20px;
+  padding: 14px 0;
+  background: #fff;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
+  padding-left: 14px;
+}
+.orca-sw-tag {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 14px 0 6px;
+  padding: 10px 6px;
+  border: 0;
+  border-bottom: 1px solid rgba(59, 65, 81, 0.3);
+  background: transparent;
+  color: #3b4151;
+  font: 700 22px sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+.orca-sw-tag small {
+  margin-left: 10px;
+  font-size: 13px;
+  font-weight: 400;
+}
+.orca-sw-op {
+  margin: 0 0 10px;
+  border: 1px solid var(--sw-c);
+  border-radius: 4px;
+  background: var(--sw-bg);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.19);
+}
+.orca-sw-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 5px;
+  border: 0;
+  background: transparent;
+  font: 14px sans-serif;
+  color: #3b4151;
+  text-align: left;
+  cursor: pointer;
+}
+.orca-sw-method {
+  min-width: 80px;
+  padding: 6px 0;
+  border-radius: 3px;
+  background: var(--sw-c);
+  color: #fff;
+  font: 700 14px sans-serif;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+.orca-sw-path {
+  font: 600 16px monospace;
+  word-break: break-all;
+}
+.orca-sw-desc {
+  font-size: 13px;
+  color: #3b4151;
+}
+.orca-sw-body {
+  padding: 10px 20px 16px;
+  border-top: 1px solid var(--sw-c);
+}
+.orca-sw-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px -20px;
+  padding: 8px 20px;
+  background: hsla(0, 0%, 100%, 0.8);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font: 700 14px sans-serif;
+}
+.orca-sw-btn {
+  padding: 5px 23px;
+  border: 2px solid #888;
+  border-radius: 4px;
+  background: transparent;
+  font: 700 14px sans-serif;
+  color: #3b4151;
+  cursor: pointer;
+}
+.orca-sw-btn-cancel {
+  border-color: #ff6060;
+  color: #ff6060;
+}
+.orca-sw-execute {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px 40px;
+  border: 2px solid #4990e2;
+  border-radius: 4px;
+  background: #4990e2;
+  color: #fff;
+  font: 700 14px sans-serif;
+  cursor: pointer;
+}
+.orca-sw-pre {
+  margin: 4px 0 10px;
+  padding: 10px;
+  border-radius: 4px;
+  background: #333;
+  color: #fff;
+  font: 600 12px/1.5 monospace;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.orca-sw-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.orca-sw-table th {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(59, 65, 81, 0.2);
+  text-align: left;
+  font-size: 12px;
+}
+.orca-sw-table td {
+  padding: 8px 10px 8px 0;
+  vertical-align: top;
+}
+.orca-sw textarea {
+  width: 100%;
+  min-height: 110px;
+  padding: 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background: #fff;
+  font: 600 12px monospace;
+}
+.orca-sw input {
+  padding: 6px 8px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font: 13px monospace;
+}
+
+/* ── Login ── */
+.orca-login {
+  max-width: 420px;
+}

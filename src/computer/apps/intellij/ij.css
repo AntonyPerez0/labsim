@@ -1,0 +1,435 @@
+/* IntelliJ IDEA (classic UI, Darcula) — window chrome, tool windows, dialogs (Apps §4.1–§4.2). Scoped under .ij-root. */
+.ij-root {
+  --ij-bg: #3c3f41;
+  --ij-fg: #bbbbbb;
+  --ij-dim: #8c8c8c;
+  --ij-border: #323232;
+  --ij-border2: #515151;
+  --ij-hover: #4b6eaf;
+  --ij-sel-focus: #0d293e;
+  --ij-sel-blur: #45494a;
+  --ij-field: #45494a;
+  --ij-field-border: #646464;
+  --ij-focus: #3d6185;
+  --ij-link: #589df6;
+  --ij-vcs-mod: #6897bb;
+  --ij-vcs-add: #629755;
+  --ij-vcs-unv: #d1675a;
+  --ij-vcs-ign: #848504;
+  --ij-ui: 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--ij-bg);
+  color: var(--ij-fg);
+  font: 13px/1.35 var(--ij-ui);
+  user-select: none;
+}
+.ij-root.ij-light {
+  --ij-bg: #f2f2f2;
+  --ij-fg: #000000;
+  --ij-dim: #6c707e;
+  --ij-border: #d1d1d1;
+  --ij-border2: #c4c4c4;
+  --ij-hover: #2675bf;
+  --ij-sel-focus: #2675bf;
+  --ij-sel-blur: #d5d5d5;
+  --ij-field: #ffffff;
+  --ij-field-border: #c4c4c4;
+  --ij-focus: #3574f0;
+  --ij-vcs-mod: #0032a0;
+  --ij-vcs-add: #067d17;
+  --ij-vcs-unv: #b4442b;
+}
+.ij-root *,
+.ij-root *::before,
+.ij-root *::after {
+  box-sizing: border-box;
+}
+.ij-root button {
+  font: inherit;
+  color: inherit;
+}
+.ij-root :focus-visible {
+  outline: 1px solid var(--ij-focus);
+  outline-offset: -1px;
+}
+
+/* ── menu bar ── */
+.ij-menubar {
+  display: flex;
+  align-items: stretch;
+  height: 26px;
+  flex: none;
+  padding: 0 2px;
+  background: var(--ij-bg);
+  border-bottom: 1px solid var(--ij-border);
+}
+.ij-menubar-item {
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  line-height: 26px;
+  cursor: default;
+}
+.ij-menubar-item:hover,
+.ij-menubar-item.ij-open {
+  background: var(--ij-hover);
+  color: #fff;
+}
+.ij-menu {
+  position: absolute;
+  z-index: 60;
+  min-width: 230px;
+  padding: 3px 0;
+  border: 1px solid var(--ij-border2);
+  background: var(--ij-bg);
+  box-shadow: 0 6px 18px #0008;
+}
+.ij-menu-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 24px;
+  padding: 0 14px 0 28px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  white-space: nowrap;
+  cursor: default;
+}
+.ij-menu-item:not(:disabled):hover,
+.ij-menu-item.ij-active {
+  background: var(--ij-hover);
+  color: #fff;
+}
+.ij-menu-item:disabled {
+  color: #777;
+}
+.ij-menu-item .ij-kbd {
+  margin-left: auto;
+  padding-left: 24px;
+  color: var(--ij-dim);
+}
+.ij-menu-item:hover .ij-kbd {
+  color: #ddd;
+}
+.ij-menu-item .ij-menu-ico {
+  position: absolute;
+  left: 6px;
+  top: 4px;
+}
+.ij-menu-sep {
+  height: 1px;
+  margin: 3px 0;
+  background: var(--ij-border2);
+}
+
+/* ── nav bar + main toolbar ── */
+.ij-navbar {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  flex: none;
+  padding: 0 6px;
+  border-bottom: 1px solid var(--ij-border);
+  gap: 2px;
+}
+.ij-navpath {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.ij-navseg {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+.ij-navseg:hover {
+  background: #4c5052;
+}
+.ij-navsep {
+  color: #777;
+}
+.ij-tbtn {
+  display: grid;
+  place-items: center;
+  min-width: 26px;
+  height: 24px;
+  padding: 0 4px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  cursor: default;
+}
+.ij-tbtn:not(:disabled):hover {
+  background: #4c5052;
+  border-color: #5e6060;
+}
+.ij-tbtn:disabled {
+  opacity: 0.45;
+}
+.ij-tsep {
+  width: 1px;
+  height: 18px;
+  margin: 0 4px;
+  background: var(--ij-border2);
+}
+.ij-runcombo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 24px;
+  max-width: 260px;
+  padding: 0 6px;
+  border: 1px solid #5e6060;
+  border-radius: 3px;
+  background: #3c3f41;
+  white-space: nowrap;
+}
+.ij-runcombo:hover {
+  background: #4c5052;
+}
+.ij-runcombo span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ij-gitlabel {
+  padding: 0 2px 0 6px;
+  color: var(--ij-dim);
+}
+
+/* ── body ── */
+.ij-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+.ij-stripe {
+  flex: none;
+  display: flex;
+  background: var(--ij-bg);
+}
+.ij-stripe-left {
+  width: 22px;
+  flex-direction: column;
+  border-right: 1px solid var(--ij-border);
+}
+.ij-stripe-bottom {
+  height: 22px;
+  align-items: stretch;
+  border-top: 1px solid var(--ij-border);
+  padding-left: 22px;
+}
+.ij-stripe-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 7px;
+  border: 0;
+  background: transparent;
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: default;
+}
+.ij-stripe-left .ij-stripe-btn {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  padding: 8px 0;
+  width: 22px;
+}
+.ij-stripe-btn:hover {
+  background: #4c5052;
+}
+.ij-stripe-btn.ij-on {
+  background: #2d2f30;
+  color: #fff;
+}
+.ij-light .ij-stripe-btn.ij-on {
+  background: #d5d5d5;
+  color: #000;
+}
+.ij-stripe-btn .ij-un {
+  text-decoration: underline;
+}
+.ij-center {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.ij-hsplit {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+.ij-splitter-v {
+  width: 4px;
+  margin: 0 -2px;
+  z-index: 5;
+  cursor: col-resize;
+  flex: none;
+}
+.ij-splitter-h {
+  height: 4px;
+  margin: -2px 0;
+  z-index: 5;
+  cursor: row-resize;
+  flex: none;
+}
+.ij-toolwin {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--ij-bg);
+  border-right: 1px solid var(--ij-border);
+}
+.ij-bottomwin {
+  flex: none;
+  border-right: 0;
+  border-top: 1px solid var(--ij-border);
+}
+.ij-tw-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 25px;
+  flex: none;
+  padding: 0 4px 0 8px;
+  border-bottom: 1px solid var(--ij-border);
+  font-size: 12px;
+}
+.ij-tw-title {
+  font-weight: 700;
+}
+.ij-tw-tabs {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+}
+.ij-tw-tab {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 8px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  font-size: 12px;
+  cursor: default;
+}
+.ij-tw-tab.ij-on {
+  border-bottom-color: #4a88c7;
+  background: #4e5254;
+}
+.ij-light .ij-tw-tab.ij-on {
+  background: #ffffff;
+}
+.ij-tw-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 2px;
+}
+.ij-tw-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ── tree ── */
+.ij-tree {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  padding: 2px 0;
+  outline: none;
+}
+.ij-tree-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding-right: 8px;
+  white-space: nowrap;
+  cursor: default;
+}
+.ij-tree-row > svg,
+.ij-tree-row > .ij-twisty {
+  flex: none;
+}
+.ij-tree-row:hover {
+  background: #ffffff08;
+}
+.ij-tree-row.ij-selected {
+  background: var(--ij-sel-blur);
+}
+.ij-tree:focus .ij-tree-row.ij-selected,
+.ij-tree:focus-within .ij-tree-row.ij-selected {
+  background: var(--ij-sel-focus);
+}
+.ij-light .ij-tree:focus .ij-tree-row.ij-selected {
+  color: #fff;
+}
+.ij-tree-row.ij-dropping {
+  outline: 1px solid var(--ij-focus);
+  outline-offset: -1px;
+}
+.ij-twisty {
+  display: grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  color: #9a9a9a;
+  flex: none;
+}
+.ij-tree-path {
+  color: var(--ij-dim);
+  margin-left: 4px;
+}
+.ij-tree-bold {
+  font-weight: 700;
+}
+.ij-speed {
+  position: absolute;
+  z-index: 10;
+  padding: 1px 6px;
+  border: 1px solid var(--ij-border2);
+  background: #4c5052;
+  font-size: 12px;
+}
+.ij-hl {
+  background: #32593d;
+  color: #fff;
+}
+.ij-vcs-modified {
+  color: var(--ij-vcs-mod);
+}
+.ij-vcs-added {
+  color: var(--ij-vcs-add);
+}
+.ij-vcs-unversioned {
+  color: var(--ij-vcs-unv);
+}
+.ij-vcs-ignored {
+  color: var(--ij-vcs-ign);
+}
+.ij-vcs-deleted {
+  color: #6c6c6c;
+  text-decoration: line-through;
+}
+

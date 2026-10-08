@@ -1,0 +1,38 @@
+{
+  "name": "labsim",
+  "private": true,
+  "version": "0.1.0",
+  "description": "LabSim — a first-person 3D training simulator for the LabSim automation lab",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --pretty",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint:content": "vitest run src/content"
+  },
+  "dependencies": {
+    "immer": "^11.1.21",
+    "n8ao": "^2.0.1",
+    "postprocessing": "^6.39.5",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "three": "^0.186.1",
+    "use-sync-external-store": "^1.7.0",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/three": "^0.186.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "jsdom": "^29.1.1",
+    "typescript": "5.9",
+    "vite": "^7.3.6",
+    "vitest": "^3.2.7"
+  }
+}

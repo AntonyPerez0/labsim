@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LabSim — engine sandbox</title>
+    <link rel="icon" href="data:," />
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #111; font-family: system-ui, sans-serif; }
+      #scene { display: block; position: fixed; inset: 0; width: 100vw; height: 100vh; }
+      #hud { position: fixed; inset: 0; pointer-events: none; color: #e9f5ec; }
+      #crosshair { position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: rgba(255,255,255,0.85); box-shadow: 0 0 0 1px rgba(0,0,0,0.35); }
+      #prompt { position: absolute; left: 50%; top: calc(50% + 28px); transform: translateX(-50%); min-width: 220px; padding: 8px 12px; border-radius: 8px; background: rgba(12,16,14,0.78); font-size: 13px; line-height: 1.5; display: none; }
+      #prompt .label { font-weight: 600; margin-bottom: 4px; }
+      #prompt .key { display: inline-block; min-width: 18px; padding: 0 4px; margin-right: 6px; border-radius: 4px; background: #43b02a; color: #071; color: #04140a; font-weight: 700; text-align: center; }
+      #prompt .disabled { opacity: 0.5; }
+      #prompt .disabled .key { background: #777; }
+      #stats { position: absolute; left: 10px; top: 8px; font: 12px/1.4 ui-monospace, monospace; background: rgba(0,0,0,0.45); padding: 4px 8px; border-radius: 6px; white-space: pre; }
+      #help { position: absolute; right: 10px; top: 8px; font-size: 12px; background: rgba(0,0,0,0.45); padding: 6px 10px; border-radius: 6px; line-height: 1.5; }
+    </style>
+  </head>
+  <body>
+    <canvas id="scene"></canvas>
+    <div id="hud">
+      <div id="crosshair"></div>
+      <div id="prompt"></div>
+      <div id="stats"></div>
+      <div id="help">Click to look · WASD move · Shift fast · C crouch · Space hop<br />E / F / R interact · 1–4 quality · T tool · Esc release</div>
+    </div>
+    <script type="module" src="/src/engine/sandbox.ts"></script>
+  </body>
+</html>

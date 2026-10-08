@@ -1,0 +1,96 @@
+/* Lab Cameras — dark media-app style (Apps §8.1). Every selector is scoped under .cam-root. */
+.cam-root {
+  --cam-bg: #111214;
+  --cam-panel: #1b1d21;
+  --cam-panel-2: #23262b;
+  --cam-border: #2c2f35;
+  --cam-text: #e6e6e6;
+  --cam-muted: #9aa0a8;
+  --cam-accent: #3ea6ff;
+  --cam-live: #ff3b30;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  background: var(--cam-bg);
+  color: var(--cam-text);
+  font: 13px/1.4 "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+  overflow: hidden;
+  user-select: none;
+}
+.cam-root *, .cam-root *::before, .cam-root *::after { box-sizing: border-box; }
+.cam-root :focus-visible { outline: 2px solid var(--cam-accent); outline-offset: 1px; }
+.cam-side { flex: 0 0 280px; background: var(--cam-panel); border-right: 1px solid var(--cam-border); display: flex; flex-direction: column; min-height: 0; }
+.cam-side-scroll { flex: 1; overflow: auto; padding-bottom: 8px; }
+.cam-filter { margin: 12px; display: flex; align-items: center; gap: 6px; background: #0f1012; border: 1px solid var(--cam-border); border-radius: 6px; padding: 0 8px; color: var(--cam-muted); }
+.cam-filter input { flex: 1; min-width: 0; height: 30px; border: 0; outline: none; background: transparent; color: var(--cam-text); font: inherit; }
+.cam-sec { padding: 10px 14px 4px; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--cam-muted); display: flex; justify-content: space-between; }
+.cam-item { display: flex; align-items: flex-start; gap: 10px; width: 100%; text-align: left; border: 0; background: none; color: var(--cam-text); font: inherit; padding: 7px 14px; cursor: pointer; border-left: 3px solid transparent; }
+.cam-item:hover { background: #ffffff0a; }
+.cam-item[aria-current="true"] { background: #3ea6ff1a; border-left-color: var(--cam-accent); }
+.cam-item b { font-weight: 600; }
+.cam-item small { display: block; color: var(--cam-muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cam-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; background: #5f646c; }
+.cam-dot-ok { background: #34c759; box-shadow: 0 0 6px #34c75988; }
+.cam-dot-bad { background: var(--cam-live); }
+.cam-open-url { border-top: 1px solid var(--cam-border); padding: 10px 12px; display: flex; gap: 6px; }
+.cam-open-url input { flex: 1; min-width: 0; height: 28px; border-radius: 5px; border: 1px solid var(--cam-border); background: #0f1012; color: var(--cam-text); padding: 0 8px; font: 12px "Cascadia Mono", Consolas, monospace; }
+.cam-btn { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 1px solid var(--cam-border); border-radius: 5px; background: var(--cam-panel-2); color: var(--cam-text); font: inherit; cursor: pointer; white-space: nowrap; }
+.cam-btn:hover { background: #2d3137; }
+.cam-btn:disabled { opacity: .45; cursor: default; }
+.cam-btn-primary { background: #1f6fbf; border-color: #2a7fd4; }
+.cam-btn-primary:hover { background: #2a7fd4; }
+.cam-btn-icon { width: 30px; justify-content: center; padding: 0; }
+.cam-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.cam-toolbar { flex: 0 0 44px; display: flex; align-items: center; gap: 6px; padding: 0 10px; background: var(--cam-panel); border-bottom: 1px solid var(--cam-border); }
+.cam-live { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; font-size: 11px; letter-spacing: .06em; color: #fff; background: var(--cam-live); border-radius: 4px; padding: 2px 7px; }
+.cam-live-off { background: #5f646c; }
+.cam-url { flex: 1; min-width: 120px; display: flex; align-items: center; height: 28px; border: 1px solid var(--cam-border); border-radius: 5px; background: #0f1012; padding: 0 4px 0 8px; font: 12px "Cascadia Mono", Consolas, monospace; color: var(--cam-muted); }
+.cam-url span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; user-select: text; }
+.cam-stage { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 12px; position: relative; background: #0a0a0b; }
+.cam-stage-fill { padding: 0; }
+.cam-frame { position: relative; aspect-ratio: 16 / 9; max-width: 100%; max-height: 100%; width: 100%; background: #000; box-shadow: 0 6px 30px #0008; }
+.cam-frame canvas { display: block; width: 100%; height: 100%; }
+.cam-unavail { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: #000; text-align: center; padding: 24px; }
+.cam-unavail-title { color: #fff; font-size: 18px; }
+.cam-unavail-reason { color: #ff6b6b; font-size: 14px; }
+.cam-empty { color: var(--cam-muted); text-align: center; }
+.cam-empty h2 { color: var(--cam-text); font-size: 18px; font-weight: 600; margin: 12px 0 6px; }
+.cam-wall { flex: 1; min-height: 0; overflow: auto; padding: 12px; display: grid; gap: 10px; align-content: start; }
+.cam-tile { position: relative; border: 1px solid var(--cam-border); border-radius: 6px; overflow: hidden; background: #000; cursor: pointer; padding: 0; color: inherit; font: inherit; text-align: left; }
+.cam-tile:hover { border-color: var(--cam-accent); }
+.cam-tile canvas { display: block; width: 100%; aspect-ratio: 16 / 9; }
+.cam-tile-label { position: absolute; left: 0; right: 0; bottom: 0; padding: 4px 8px; background: linear-gradient(transparent, #000c); font-size: 12px; display: flex; align-items: center; gap: 6px; }
+.cam-tile-bad { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #ff6b6b; font-size: 12px; text-align: center; padding: 8px; }
+.cam-rec-list { flex: 1; overflow: auto; padding: 12px 16px; }
+.cam-rec-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--cam-border); border-radius: 6px; margin-bottom: 8px; background: var(--cam-panel); cursor: pointer; width: 100%; color: inherit; font: inherit; text-align: left; }
+.cam-rec-row:hover { border-color: var(--cam-accent); }
+.cam-rec-row img { width: 128px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 4px; background: #000; }
+.cam-chip { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: .03em; }
+.cam-chip-SUCCESS, .cam-chip-PASSED { background: #1f5f35; color: #8ff0b0; }
+.cam-chip-FAILURE, .cam-chip-FAILED { background: #6b1d1d; color: #ffb4b4; }
+.cam-chip-ABORTED, .cam-chip-UNSTABLE { background: #4d4d4d; color: #ddd; }
+.cam-chip-REC { background: var(--cam-live); color: #fff; }
+.cam-transport { flex: 0 0 auto; padding: 8px 12px 10px; background: var(--cam-panel); border-top: 1px solid var(--cam-border); }
+.cam-scrub { position: relative; height: 26px; margin: 2px 0 6px; cursor: pointer; }
+.cam-scrub-track { position: absolute; left: 0; right: 0; top: 11px; height: 4px; background: #3a3e45; border-radius: 2px; }
+.cam-scrub-fill { position: absolute; left: 0; top: 11px; height: 4px; background: var(--cam-accent); border-radius: 2px; }
+.cam-scrub-knob { position: absolute; top: 6px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transform: translateX(-7px); box-shadow: 0 1px 4px #0008; }
+.cam-marker { position: absolute; top: 2px; width: 4px; height: 22px; border-radius: 2px; transform: translateX(-2px); border: 0; padding: 0; cursor: pointer; }
+.cam-marker:hover { transform: translateX(-2px) scaleX(1.8); }
+.cam-mk-hit { background: #34c759; }
+.cam-mk-miss { background: var(--cam-live); }
+.cam-mk-screen { background: #3ea6ff; height: 10px; top: 14px; }
+.cam-transport-row { display: flex; align-items: center; gap: 8px; }
+.cam-time { font: 12px "Cascadia Mono", Consolas, monospace; color: var(--cam-muted); }
+.cam-speed button[aria-pressed="true"] { background: #1f6fbf; border-color: #2a7fd4; }
+.cam-tap { position: absolute; right: 16px; top: 16px; width: 360px; max-height: calc(100% - 32px); overflow: auto; background: #1b1d21f5; border: 1px solid var(--cam-border); border-radius: 8px; box-shadow: 0 10px 40px #000a; padding: 12px; z-index: 5; }
+.cam-tap h3 { margin: 0 0 8px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
+.cam-tap canvas { display: block; max-width: 100%; margin: 8px auto; border-radius: 4px; background: #000; }
+.cam-tap pre { white-space: pre-wrap; font: 12px "Cascadia Mono", Consolas, monospace; background: #0f1012; border-radius: 4px; padding: 8px; margin: 0; color: #d6d6d6; user-select: text; }
+.cam-dialog-back { position: absolute; inset: 0; background: #0008; display: flex; align-items: center; justify-content: center; z-index: 20; }
+.cam-dialog { width: 440px; background: #202226; border: 1px solid var(--cam-border); border-radius: 8px; box-shadow: 0 16px 48px #000c; padding: 16px; }
+.cam-dialog h3 { margin: 0 0 12px; font-size: 15px; }
+.cam-dialog input { width: 100%; height: 32px; border-radius: 5px; border: 1px solid #3a3e45; background: #0f1012; color: var(--cam-text); padding: 0 10px; font: 13px "Cascadia Mono", Consolas, monospace; }
+.cam-dialog-foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+.cam-error { color: #ff6b6b; margin-top: 8px; }
+.cam-toast { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); background: #2b2d31f2; border: 1px solid var(--cam-border); border-radius: 8px; padding: 10px 14px; display: flex; gap: 12px; align-items: center; z-index: 15; box-shadow: 0 8px 30px #000a; }

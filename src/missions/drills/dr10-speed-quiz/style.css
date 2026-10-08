@@ -1,0 +1,16 @@
+.dr10 { display: flex; flex-direction: column; gap: 14px; animation: dk-rise 180ms ease both; }
+.dr10 .dk-prompt__text { font-size: 22px; }
+.dr10-chip { display: inline-block; padding: 2px 6px; margin-right: 4px; border-radius: 5px; background: rgba(99, 212, 67, 0.16); color: #8ff06a; font-family: var(--dk-mono); letter-spacing: 0.02em; }
+.dr10-hot { color: #ffd76a; }
+.dr10.is-hot .dk-prompt { border-color: rgba(255, 215, 106, 0.35); }
+.dr10-scene { position: relative; display: flex; justify-content: center; padding: 12px; border-radius: 16px; background: radial-gradient(ellipse at center, rgba(255, 215, 106, 0.06), transparent 70%), #0b0f12; border: 1px solid var(--dk-line); }
+.dr10-svg { width: 100%; max-width: 760px; max-height: calc(100vh - 360px); min-height: 260px; display: block; }
+.dr10-svg text { font-family: var(--font-ui, Inter, system-ui, sans-serif); user-select: none; pointer-events: none; }
+.dr10-region { cursor: pointer; transition: filter 120ms ease, opacity 120ms ease; }
+.dr10-region:hover { filter: drop-shadow(0 0 6px rgba(255, 215, 106, 0.9)) brightness(1.08); }
+.dr10-region.is-right { filter: drop-shadow(0 0 8px #63d443) drop-shadow(0 0 3px #63d443); animation: dr10-pulse 600ms ease 2; }
+.dr10-region.is-wrong { filter: drop-shadow(0 0 8px #ef4b3f) drop-shadow(0 0 3px #ef4b3f); }
+@keyframes dr10-pulse { 50% { opacity: 0.6; } }
+.dr10-label { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); padding: 7px 14px; border-radius: 999px; font: 800 14px/1 var(--font-ui, inherit); animation: dk-rise 200ms ease both; }
+.dr10-label.is-right { background: #43b02a; color: #071205; }
+.dr10-label.is-wrong { background: #f5b301; color: #1c1400; }

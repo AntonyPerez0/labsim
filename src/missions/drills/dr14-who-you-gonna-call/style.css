@@ -1,0 +1,9 @@
+.dr14 { display: flex; flex-direction: column; gap: 16px; animation: dk-rise 200ms ease both; }
+.dr14 .dk-choice { flex-direction: column; align-items: center; justify-content: center; min-height: 150px; text-align: center; }
+.dr14 .dk-choice .dk-kbd { position: absolute; top: 10px; left: 10px; }
+.dr14-who { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.dr14-avatar { width: 58px; height: 58px; border-radius: 50%; display: grid; place-items: center; color: #fff; font: 900 22px/1 var(--font-display, inherit); box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12), 0 10px 24px rgba(0, 0, 0, 0.4); }
+.dr14-avatar:only-child { font-size: 14px; }
+.dr14-who__text { display: flex; flex-direction: column; gap: 3px; }
+.dr14-who__text b { font-size: 16px; }
+.dr14-who__text small { font-size: 11px; color: var(--dk-ink-2); font-weight: 500; }

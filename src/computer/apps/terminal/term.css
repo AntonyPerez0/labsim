@@ -1,0 +1,426 @@
+/* Terminal (Windows-Terminal-like, Campbell scheme) — Apps §5.1. Every selector is scoped under .term-root. */
+.term-root {
+  --term-bg: #0c0c0c;
+  --term-fg: #cccccc;
+  --term-chrome: #202020;
+  --term-tab-active: #2d2d2d;
+  --term-red: #c50f1f;
+  --term-green: #13a10e;
+  --term-yellow: #c19c00;
+  --term-blue: #0037da;
+  --term-purple: #881798;
+  --term-cyan: #3a96dd;
+  --term-bblack: #767676;
+  --term-bred: #e74856;
+  --term-bgreen: #16c60c;
+  --term-byellow: #f9f1a5;
+  --term-bblue: #3b78ff;
+  --term-bcyan: #61d6d6;
+  --term-bwhite: #f2f2f2;
+  --term-font: 'Cascadia Mono', Consolas, 'DejaVu Sans Mono', Menlo, monospace;
+  --term-size: 14px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: var(--term-bg);
+  color: var(--term-fg);
+  font-family: 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.term-root *,
+.term-root *::before,
+.term-root *::after {
+  box-sizing: border-box;
+}
+.term-root.term-embedded {
+  --term-bg: #2b2b2b;
+  --term-fg: #a9b7c6;
+  --term-size: 13px;
+}
+
+/* ── tab row ── */
+.term-tabrow {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 40px;
+  padding: 0 6px;
+  background: var(--term-chrome);
+  flex: none;
+  user-select: none;
+}
+.term-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  min-width: 120px;
+  max-width: 240px;
+  padding: 0 6px 0 10px;
+  border: 0;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
+  color: #cfcfcf;
+  font: 12px 'Segoe UI', system-ui, sans-serif;
+  cursor: default;
+  position: relative;
+}
+.term-tab:hover {
+  background: #ffffff12;
+}
+.term-tab.term-tab-active {
+  background: var(--term-tab-active);
+  color: #fff;
+}
+.term-tab:focus-visible,
+.term-iconbtn:focus-visible {
+  outline: 1px solid #fff;
+  outline-offset: -2px;
+}
+.term-tab-glyph {
+  font: 700 11px var(--term-font);
+  color: #e6e6e6;
+  letter-spacing: -1px;
+  flex: none;
+}
+.term-tab-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+.term-tab-close {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  color: #bdbdbd;
+  flex: none;
+}
+.term-tab-close:hover {
+  background: #ffffff1f;
+  color: #fff;
+}
+.term-iconbtn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin-bottom: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #d0d0d0;
+  cursor: default;
+}
+.term-iconbtn:hover {
+  background: #ffffff14;
+}
+.term-menu {
+  position: absolute;
+  top: 38px;
+  z-index: 20;
+  min-width: 220px;
+  padding: 4px;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  background: #2b2b2b;
+  box-shadow: 0 8px 24px #0009;
+  font: 13px 'Segoe UI', system-ui, sans-serif;
+  color: #e8e8e8;
+}
+.term-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+.term-menu-item:hover,
+.term-menu-item:focus-visible {
+  background: #ffffff14;
+  outline: none;
+}
+.term-menu-sep {
+  height: 1px;
+  margin: 4px 6px;
+  background: #3d3d3d;
+}
+.term-menu-kbd {
+  margin-left: auto;
+  color: #9a9a9a;
+  font-size: 12px;
+}
+.term-settings {
+  padding: 8px 10px 10px;
+}
+.term-settings label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.term-settings input[type='range'] {
+  width: 100%;
+}
+.term-about {
+  padding: 10px 12px;
+  line-height: 1.5;
+}
+.term-about b {
+  font-weight: 600;
+}
+
+/* ── content ── */
+.term-pane {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  outline: none;
+}
+.term-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 8px 10px;
+  font-family: var(--term-font);
+  font-size: var(--term-size);
+  line-height: 1.25;
+  color: var(--term-fg);
+  white-space: pre-wrap;
+  word-break: break-all;
+  cursor: text;
+  scrollbar-width: thin;
+  scrollbar-color: #ffffff40 transparent;
+}
+.term-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+.term-scroll::-webkit-scrollbar-thumb {
+  background: #ffffff40;
+  border-radius: 5px;
+}
+.term-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.term-scroll ::selection {
+  background: #ffffff55;
+}
+.term-line {
+  min-height: calc(var(--term-size) * 1.25);
+}
+.term-k-err {
+  color: var(--term-bred);
+}
+.term-k-info {
+  color: var(--term-cyan);
+}
+.term-k-success {
+  color: var(--term-bgreen);
+}
+.term-k-muted {
+  color: var(--term-bblack);
+}
+.term-p-userhost {
+  color: var(--term-bgreen);
+  font-weight: 700;
+}
+.term-p-path {
+  color: var(--term-bblue);
+  font-weight: 700;
+}
+.term-embedded .term-p-userhost {
+  color: #5fb15f;
+}
+.term-embedded .term-p-path {
+  color: #6897bb;
+}
+.term-cursor {
+  background: #fff;
+  color: #0c0c0c;
+  animation: term-blink 1.06s step-end infinite;
+}
+.term-cursor.term-cursor-solid {
+  animation: none;
+}
+.term-unfocused .term-cursor {
+  background: transparent;
+  color: inherit;
+  outline: 1px solid #fff;
+  outline-offset: -1px;
+  animation: none;
+}
+.term-embedded .term-cursor {
+  background: #bbbbbb;
+  color: #2b2b2b;
+}
+@keyframes term-blink {
+  50% {
+    background: transparent;
+    color: inherit;
+  }
+}
+.term-newout {
+  position: absolute;
+  right: 18px;
+  bottom: 12px;
+  padding: 4px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: #3b78ffdd;
+  color: #fff;
+  font: 12px 'Segoe UI', system-ui, sans-serif;
+  box-shadow: 0 2px 8px #0008;
+}
+.term-hiddeninput {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+/* ── paste warning (Windows Terminal) ── */
+.term-dialog-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  background: #0008;
+}
+.term-dialog {
+  width: min(460px, 90%);
+  padding: 20px 22px 16px;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  background: #2b2b2b;
+  color: #eee;
+  font: 13px/1.45 'Segoe UI', system-ui, sans-serif;
+  box-shadow: 0 16px 48px #000a;
+}
+.term-dialog h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 600;
+}
+.term-dialog pre {
+  max-height: 120px;
+  overflow: auto;
+  margin: 10px 0;
+  padding: 8px;
+  border-radius: 4px;
+  background: #1c1c1c;
+  font: 12px var(--term-font);
+  white-space: pre-wrap;
+}
+.term-dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+.term-btn {
+  min-width: 110px;
+  padding: 6px 14px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background: #3a3a3a;
+  color: #fff;
+  font: inherit;
+}
+.term-btn:hover {
+  background: #454545;
+}
+.term-btn.term-btn-primary {
+  border-color: #4cc2ff;
+  background: #4cc2ff;
+  color: #000;
+}
+.term-btn.term-btn-primary:hover {
+  background: #62cdff;
+}
+
+/* ── nano ── */
+.term-nano {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 2px;
+  font-family: var(--term-font);
+  font-size: var(--term-size);
+  line-height: 1.25;
+  white-space: pre;
+  color: var(--term-fg);
+  outline: none;
+}
+.term-nano-row {
+  height: calc(var(--term-size) * 1.25);
+  overflow: hidden;
+}
+.term-nano-inv {
+  background: var(--term-fg);
+  color: var(--term-bg);
+}
+.term-nano-title {
+  display: flex;
+  justify-content: space-between;
+}
+.term-nano-buf {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.term-nano-status {
+  text-align: center;
+}
+.term-nano-status > span {
+  background: var(--term-fg);
+  color: var(--term-bg);
+}
+.term-nano-keys {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+}
+.term-nano-keys > span {
+  overflow: hidden;
+}
+.term-nano-keys b {
+  font-weight: 400;
+  background: var(--term-fg);
+  color: var(--term-bg);
+}
+.term-nano-prompt {
+  background: var(--term-fg);
+  color: var(--term-bg);
+}
+.term-nano-cursor {
+  background: var(--term-fg);
+  color: var(--term-bg);
+}
+.term-nano-prompt .term-nano-cursor {
+  background: var(--term-bg);
+  color: var(--term-fg);
+}
+/* Ctrl+click links in output (Windows Terminal style): underline on hover only. */
+.term-root .term-link:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}

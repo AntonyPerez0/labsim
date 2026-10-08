@@ -1,0 +1,193 @@
+/*
+ * LabSim UI — "lab ops" dark theme. Design tokens, base styles and the shared UI kit (`src/ui/kit`).
+ * Feature styles live next to this file (hud.css, menu.css, overlays.css, manual.css).
+ * No external fonts are downloaded at runtime (canon): system stacks only.
+ */
+@import './kit.css';
+@import './hud.css';
+@import './menu.css';
+@import './overlays.css';
+@import './manual.css';
+@import './minigames.css';
+
+:root {
+  color-scheme: dark;
+
+  /* surfaces */
+  --bg-0: #060809;
+  --bg-1: #0b0f10;
+  --bg-2: #121819;
+  --bg-3: #192122;
+  --bg-4: #212b2c;
+  --glass: rgba(10, 14, 14, 0.74);
+  --glass-strong: rgba(9, 12, 12, 0.9);
+  --glass-light: rgba(22, 30, 30, 0.62);
+  --line: rgba(220, 255, 235, 0.075);
+  --line-2: rgba(220, 255, 235, 0.13);
+  --line-3: rgba(220, 255, 235, 0.22);
+
+  /* text */
+  --tx-0: #f1f6f2;
+  --tx-1: #c3cec8;
+  --tx-2: #8a9891;
+  --tx-3: #5d6a64;
+
+  /* brand + semantic */
+  --lab: #43b02a;
+  --lab-hi: #63d443;
+  --lab-lo: #2b7d19;
+  --lab-10: rgba(67, 176, 42, 0.1);
+  --lab-18: rgba(67, 176, 42, 0.18);
+  --lab-35: rgba(67, 176, 42, 0.35);
+  --amber: #f5b301;
+  --amber-a15: rgba(245, 179, 1, 0.15);
+  --red: #ef4b3f;
+  --red-a15: rgba(239, 75, 63, 0.15);
+  --blue: #4aa8ff;
+  --blue-a15: rgba(74, 168, 255, 0.15);
+  --violet: #a48bfa;
+  --violet-a15: rgba(164, 139, 250, 0.15);
+  --cyan: #34d6c0;
+  --gold: #f2c94c;
+  --silver: #c9d2d6;
+  --bronze: #cd8a4f;
+
+  /* Orca statuses (Ref §3) */
+  --st-available: #43b02a;
+  --st-unavailable: #7b8cff;
+  --st-offline: #7d8784;
+  --st-connfailed: #ef4b3f;
+  --st-reserved: #f5b301;
+
+  /* type */
+  --font-ui: 'Inter', 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', 'Liberation Sans', Arial, sans-serif;
+  --font-display: 'Inter Display', 'Inter', 'Segoe UI Variable Display', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', 'Liberation Sans', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Cascadia Code', 'SF Mono', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace;
+
+  /* shape + motion */
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 9px;
+  --r-lg: 14px;
+  --r-xl: 20px;
+  --shadow-1: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-2: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 18px 48px rgba(0, 0, 0, 0.55);
+  --ease-out: cubic-bezier(0.2, 0.9, 0.25, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.5, 1);
+  --t-fast: 120ms;
+  --t-med: 220ms;
+  --t-slow: 420ms;
+
+  --sub-size: 17px;
+  --hud-gutter: 20px;
+}
+
+:root[data-subtitles='small'] { --sub-size: 15px; }
+:root[data-subtitles='large'] { --sub-size: 21px; }
+
+/* Reduced motion: kill transitions/animations app-wide. */
+:root[data-reduced-motion='true'] *,
+:root[data-reduced-motion='true'] *::before,
+:root[data-reduced-motion='true'] *::after {
+  animation-duration: 1ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 1ms !important;
+}
+
+/* ───────────────────────── base ───────────────────────── */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-0);
+  color: var(--tx-0);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'cv11', 'ss01', 'tnum' 0;
+}
+
+#app { position: fixed; inset: 0; }
+#scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; outline: none; }
+#ui-root { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+
+.ui-layer { position: absolute; inset: 0; pointer-events: none; }
+.ui-layer > * { pointer-events: auto; }
+.pe-none { pointer-events: none !important; }
+.pe-auto { pointer-events: auto !important; }
+
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: var(--lab-hi); }
+
+::selection { background: var(--lab-35); color: #fff; }
+
+/* Thin, dark scrollbars everywhere in the UI. */
+#ui-root *, .scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+#ui-root *::-webkit-scrollbar { width: 10px; height: 10px; }
+#ui-root *::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.14); border-radius: 10px; border: 3px solid transparent; background-clip: padding-box; }
+#ui-root *::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.24); background-clip: padding-box; border: 3px solid transparent; }
+#ui-root *::-webkit-scrollbar-track { background: transparent; }
+
+.mono { font-family: var(--font-mono); font-feature-settings: normal; }
+.tnum { font-variant-numeric: tabular-nums; }
+.muted { color: var(--tx-2); }
+.dim { color: var(--tx-3); }
+.ok { color: var(--lab-hi); }
+.warn { color: var(--amber); }
+.bad { color: var(--red); }
+.caps {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--tx-2);
+}
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.row { display: flex; align-items: center; gap: 8px; }
+.col { display: flex; flex-direction: column; gap: 8px; }
+.grow { flex: 1 1 auto; min-width: 0; }
+.wrap { flex-wrap: wrap; }
+.spacer { flex: 1; }
+
+/* Boot error (rendered by React or by main.tsx before React mounts). */
+.boot-error {
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  padding: 48px;
+  background: #0a0c0c;
+  color: #ffb4ab;
+  font: 13px/1.5 var(--font-mono);
+  white-space: pre-wrap;
+  overflow: auto;
+  z-index: 100;
+}
+
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rise-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+/* for elements centred with translateX(-50%) */
+@keyframes rise-in-x { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes drop-in { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+@keyframes slide-in-right { from { opacity: 0; transform: translateX(28px); } 70% { transform: translateX(-3px); } to { opacity: 1; transform: none; } }
+@keyframes slide-in-left { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+@keyframes pop-in { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: none; } }
+@keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 var(--lab-35); } 100% { box-shadow: 0 0 0 10px rgba(67, 176, 42, 0); } }
+@keyframes pulse-ring-red { 0% { box-shadow: 0 0 0 0 rgba(239, 75, 63, 0.5); } 100% { box-shadow: 0 0 0 10px rgba(239, 75, 63, 0); } }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes shimmer { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+@keyframes float-up { 0% { opacity: 0; transform: translateY(6px); } 15% { opacity: 1; } 100% { opacity: 0; transform: translateY(-34px); } }
+@keyframes nudge { 0%, 100% { transform: none; } 20% { transform: translateX(-4px); } 40% { transform: translateX(4px); } 60% { transform: translateX(-2px); } }

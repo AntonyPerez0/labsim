@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LabSim — world-rigs sandbox</title>
+    <link rel="icon" href="data:," />
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #111; font-family: system-ui, sans-serif; }
+      #scene { display: block; position: fixed; inset: 0; width: 100vw; height: 100vh; }
+      #hud { position: fixed; inset: 0; pointer-events: none; color: #e9f5ec; }
+      #crosshair { position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: rgba(255,255,255,0.85); box-shadow: 0 0 0 1px rgba(0,0,0,0.35); }
+      #prompt { position: absolute; left: 50%; top: calc(50% + 28px); transform: translateX(-50%); min-width: 220px; padding: 8px 12px; border-radius: 8px; background: rgba(12,16,14,0.78); font-size: 13px; line-height: 1.5; display: none; }
+      #prompt .label { font-weight: 600; margin-bottom: 4px; }
+      #prompt .key { display: inline-block; min-width: 18px; padding: 0 4px; margin-right: 6px; border-radius: 4px; background: #43b02a; color: #04140a; font-weight: 700; text-align: center; }
+      #prompt .disabled { opacity: 0.5; }
+      #prompt .disabled .key { background: #777; }
+      #stats { position: absolute; left: 10px; top: 8px; font: 12px/1.4 ui-monospace, monospace; background: rgba(0,0,0,0.45); padding: 4px 8px; border-radius: 6px; white-space: pre; }
+      #toasts { position: absolute; right: 10px; bottom: 10px; display: flex; flex-direction: column; gap: 6px; font-size: 12px; max-width: 420px; }
+      .toast { background: rgba(0,0,0,0.65); padding: 6px 10px; border-radius: 6px; border-left: 4px solid #43b02a; }
+      .toast.warning { border-color: #f2b233; } .toast.error { border-color: #e5484d; }
+      #help { position: absolute; right: 10px; top: 8px; font-size: 12px; background: rgba(0,0,0,0.45); padding: 6px 10px; border-radius: 6px; line-height: 1.5; }
+    </style>
+  </head>
+  <body>
+    <canvas id="scene"></canvas>
+    <canvas id="flat" style="position:fixed;left:0;top:0;display:none;background:#222;z-index:5"></canvas>
+    <div id="hud">
+      <div id="crosshair"></div>
+      <div id="prompt"></div>
+      <div id="stats">Loading…</div>
+      <div id="toasts"></div>
+      <div id="help">Click to look · WASD · E/R/G interact · 1–6 tools · Esc release focus<br />?view=img-t|img-g|img-r|vid|rack-a|… · ?q=low · ?lab=0 · __rigs.*</div>
+    </div>
+    <script type="module" src="/src/world/rigs/sandbox.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,116 @@
+/* GIMP 2.10 "Dark" theme, Symbolic icons (Apps §6.1). Every selector is scoped under .gimp-root. */
+.gimp-root {
+  --gimp-panel: #454545;
+  --gimp-dock: #3c3c3c;
+  --gimp-surround: #2f2f2f;
+  --gimp-text: #dcdcdc;
+  --gimp-field: #2b2b2b;
+  --gimp-field-border: #5a5a5a;
+  --gimp-selected: #5c5c5c;
+  --gimp-accent: #77a5d8;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--gimp-dock);
+  color: var(--gimp-text);
+  font: 12px/1.35 "Segoe UI", system-ui, -apple-system, Roboto, Cantarell, sans-serif;
+  overflow: hidden;
+  user-select: none;
+}
+.gimp-root *, .gimp-root *::before, .gimp-root *::after { box-sizing: border-box; }
+.gimp-root :focus-visible { outline: 1px solid var(--gimp-accent); outline-offset: 0; }
+.gimp-menubar { flex: 0 0 26px; display: flex; align-items: stretch; background: var(--gimp-dock); border-bottom: 1px solid #2a2a2a; padding: 0 4px; position: relative; z-index: 30; }
+.gimp-menubar-entry { position: relative; }
+.gimp-menubar-item { height: 100%; padding: 0 9px; border: 0; background: none; color: var(--gimp-text); font: inherit; cursor: default; }
+.gimp-menubar-item u { text-decoration: none; }
+.gimp-menubar-item:hover, .gimp-menubar-item[aria-expanded="true"] { background: var(--gimp-selected); }
+.gimp-menu { position: absolute; top: 100%; left: 0; min-width: 260px; background: #3c3c3c; border: 1px solid #262626; box-shadow: 0 4px 14px #000a; padding: 3px 0; z-index: 40; }
+.gimp-menu-entry { position: relative; }
+.gimp-menu-item { display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: 4px; width: 100%; text-align: left; padding: 4px 12px 4px 6px; border: 0; background: none; color: var(--gimp-text); font: inherit; cursor: default; white-space: nowrap; }
+.gimp-menu-item:hover:not(:disabled) { background: var(--gimp-selected); }
+.gimp-menu-item:disabled { color: #8a8a8a; }
+.gimp-menu-key { color: #a8a8a8; padding-left: 24px; font-size: 11px; }
+.gimp-menu-check { color: var(--gimp-accent); }
+.gimp-menu-sep { height: 1px; background: #2a2a2a; margin: 3px 0; }
+.gimp-submenu { position: absolute; left: 100%; top: -4px; }
+.gimp-submenu > .gimp-menu { position: static; }
+.gimp-body { flex: 1; min-height: 0; display: flex; }
+.gimp-left, .gimp-right { flex: 0 0 236px; display: flex; flex-direction: column; background: var(--gimp-dock); min-height: 0; overflow: auto; }
+.gimp-left { border-right: 1px solid #2a2a2a; }
+.gimp-right { border-left: 1px solid #2a2a2a; flex-basis: 250px; }
+.gimp-toolbox { padding: 6px; border-bottom: 1px solid #2a2a2a; }
+.gimp-wilber { display: flex; justify-content: center; padding: 2px 0 6px; opacity: .9; }
+.gimp-tools { display: grid; grid-template-columns: repeat(5, 30px); gap: 2px; justify-content: center; }
+.gimp-tool { width: 30px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: 3px; background: none; color: var(--gimp-text); cursor: default; padding: 0; }
+.gimp-tool:hover { background: #505050; }
+.gimp-tool[aria-pressed="true"] { background: var(--gimp-selected); border-color: #6c6c6c; }
+.gimp-colors { position: relative; width: 44px; height: 34px; margin: 8px 0 2px 10px; }
+.gimp-fg, .gimp-bg { position: absolute; width: 24px; height: 20px; border: 1px solid #999; }
+.gimp-fg { left: 0; top: 0; background: #000; z-index: 1; }
+.gimp-bg { left: 14px; top: 12px; background: #fff; }
+.gimp-dock-panel { border-bottom: 1px solid #2a2a2a; }
+.gimp-dock-tab { display: flex; gap: 12px; padding: 5px 8px; background: #353535; border-bottom: 1px solid #2a2a2a; font-weight: 600; }
+.gimp-dock-tab-dim { color: #8f8f8f; font-weight: 400; }
+.gimp-opts { padding: 8px 10px; display: flex; flex-direction: column; gap: 5px; }
+.gimp-opts-title { font-weight: 600; margin-bottom: 2px; }
+.gimp-row { display: flex; align-items: center; gap: 8px; }
+.gimp-check { display: flex; align-items: center; gap: 6px; }
+.gimp-check input { accent-color: var(--gimp-accent); margin: 0; }
+.gimp-modes { display: inline-flex; gap: 2px; }
+.gimp-mode { width: 22px; height: 20px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #555; background: #3a3a3a; color: var(--gimp-text); padding: 0; border-radius: 2px; }
+.gimp-mode[aria-pressed="true"] { background: var(--gimp-selected); border-color: #777; }
+.gimp-mode:disabled { opacity: .5; }
+.gimp-field-label { margin-top: 4px; }
+.gimp-pair { display: grid; grid-template-columns: 1fr 1fr 22px; gap: 4px; align-items: center; }
+.gimp-num, .gimp-select { height: 22px; background: var(--gimp-field); border: 1px solid var(--gimp-field-border); border-radius: 2px; color: var(--gimp-text); font: inherit; font-variant-numeric: tabular-nums; padding: 0 5px; min-width: 0; width: 100%; user-select: text; }
+.gimp-num:focus, .gimp-select:focus { border-color: var(--gimp-accent); outline: none; }
+.gimp-num:disabled, .gimp-select:disabled { color: #8a8a8a; }
+.gimp-select { width: auto; padding: 0 2px; }
+.gimp-wide { width: 100%; }
+.gimp-unit { color: #bbb; text-align: center; }
+.gimp-muted { color: #9a9a9a; }
+.gimp-readout { background: var(--gimp-field); border: 1px solid var(--gimp-field-border); padding: 6px; font-variant-numeric: tabular-nums; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.gimp-swatch { width: 18px; height: 18px; border: 1px solid #888; display: inline-block; }
+.gimp-center { flex: 1; min-width: 0; display: flex; flex-direction: column; background: var(--gimp-surround); }
+.gimp-tabs { flex: 0 0 auto; display: flex; gap: 2px; padding: 3px 4px 0; background: var(--gimp-dock); border-bottom: 1px solid #2a2a2a; }
+.gimp-tab { position: relative; width: 58px; height: 46px; display: flex; align-items: center; justify-content: center; border: 1px solid transparent; border-bottom: 0; border-radius: 3px 3px 0 0; cursor: default; }
+.gimp-tab[aria-selected="true"] { background: var(--gimp-surround); border-color: #555; }
+.gimp-tab img { max-width: 48px; max-height: 38px; box-shadow: 0 0 0 1px #000; }
+.gimp-tab-x { position: absolute; top: 0; right: 1px; width: 14px; height: 14px; border: 0; padding: 0; background: #555; color: #eee; border-radius: 2px; font-size: 11px; line-height: 14px; display: none; cursor: default; }
+.gimp-tab:hover .gimp-tab-x { display: block; }
+.gimp-thumb { width: 40px; height: 30px; background: #222; display: inline-block; }
+.gimp-view { flex: 1; min-height: 0; position: relative; }
+.gimp-canvas-wrap { position: absolute; inset: 0; display: grid; grid-template-columns: 18px 1fr; grid-template-rows: 18px 1fr; overflow: hidden; }
+.gimp-ruler-corner { background: #454545; border-right: 1px solid #000; border-bottom: 1px solid #000; }
+.gimp-ruler-h, .gimp-ruler-v { display: block; }
+.gimp-canvas { display: block; outline: none; }
+.gimp-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #6a6a6a; }
+.gimp-progress { width: 200px; height: 6px; background: #222; border: 1px solid #555; overflow: hidden; }
+.gimp-progress i { display: block; height: 100%; width: 40%; background: var(--gimp-accent); animation: gimp-load 1s linear infinite; }
+@keyframes gimp-load { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+.gimp-status { flex: 0 0 26px; display: flex; align-items: center; gap: 6px; padding: 0 6px; background: var(--gimp-dock); border-top: 1px solid #2a2a2a; white-space: nowrap; }
+.gimp-status-ptr { min-width: 110px; text-align: right; font-variant-numeric: tabular-nums; padding-right: 6px; }
+.gimp-status-sel { height: 20px; }
+.gimp-status-msg { flex: 1; overflow: hidden; text-overflow: ellipsis; padding-left: 8px; }
+.gimp-layers-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 8px; }
+.gimp-bar { position: relative; flex: 1; height: 18px; background: var(--gimp-field); border: 1px solid var(--gimp-field-border); }
+.gimp-bar i { position: absolute; inset: 0 auto 0 0; background: #5d6d7e; }
+.gimp-bar b { position: absolute; right: 4px; top: 0; font-weight: 400; line-height: 16px; }
+.gimp-layer { display: flex; align-items: center; gap: 6px; padding: 4px 6px; margin: 4px; background: var(--gimp-selected); }
+.gimp-layer img { width: 40px; height: 28px; object-fit: contain; background: #000; }
+.gimp-eye { font-size: 11px; filter: grayscale(1); }
+.gimp-ptr { width: 100%; border-collapse: collapse; margin: 4px 0; font-variant-numeric: tabular-nums; }
+.gimp-ptr th { text-align: left; font-weight: 600; padding: 3px 8px; width: 70px; }
+.gimp-ptr td { padding: 3px 6px; }
+.gimp-devmm { margin: 4px 8px 8px; padding: 6px 8px; background: #33383e; border: 1px solid #4b5560; border-radius: 3px; display: flex; flex-direction: column; gap: 3px; font-variant-numeric: tabular-nums; }
+.gimp-devmm small { color: #a8a8a8; font-size: 11px; }
+.gimp-dialog-back { position: absolute; inset: 0; background: #0006; display: flex; align-items: center; justify-content: center; z-index: 60; }
+.gimp-dialog { min-width: 380px; max-width: 560px; background: #3c3c3c; border: 1px solid #262626; box-shadow: 0 10px 40px #000c; }
+.gimp-dialog-title { padding: 6px 10px; background: #2f2f2f; font-weight: 600; }
+.gimp-dialog-body { display: flex; gap: 12px; padding: 16px; align-items: flex-start; }
+.gimp-dialog-body pre { margin: 0; white-space: pre-wrap; font: inherit; font-size: 13px; user-select: text; }
+.gimp-dialog-icon { flex: none; width: 32px; height: 32px; border-radius: 50%; background: var(--gimp-accent); color: #1c1c1c; font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.gimp-dialog-foot { display: flex; justify-content: flex-end; padding: 0 12px 12px; }
+.gimp-btn { min-width: 80px; height: 26px; background: #505050; border: 1px solid #666; color: var(--gimp-text); font: inherit; border-radius: 3px; }
+.gimp-btn:hover { background: #5a5a5a; }

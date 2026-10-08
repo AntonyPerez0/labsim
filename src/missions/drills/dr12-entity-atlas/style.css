@@ -1,0 +1,6 @@
+.dr12 { display: flex; flex-direction: column; gap: 16px; animation: dk-rise 200ms ease both; }
+.dr12-chip { display: flex; align-items: center; gap: 16px; }
+.dr12-chip__icon { width: 54px; height: 54px; flex: 0 0 54px; display: grid; place-items: center; border-radius: 14px; background: linear-gradient(160deg, rgba(123, 140, 255, 0.35), rgba(123, 140, 255, 0.08)); border: 1px solid rgba(123, 140, 255, 0.45); font: 800 15px/1 var(--dk-mono); color: #c9d0ff; }
+.dr12-chip__text { font-size: 23px; }
+.dr12 .dk-choice { font-size: 15px; }
+.dr12 .dk-choice__label { font-family: var(--font-ui, inherit); }
