@@ -396,10 +396,9 @@ export function LabWordmark({ size = 28, className }: { size?: number; className
   return (
     <svg className={className} width={size} height={size} viewBox="0 0 32 32" aria-hidden>
       <g fill="currentColor">
-        <rect x="5" y="5" width="10" height="10" rx="3.4" />
-        <rect x="17" y="5" width="10" height="10" rx="3.4" />
-        <rect x="5" y="17" width="10" height="10" rx="3.4" />
-        <rect x="17" y="17" width="10" height="10" rx="3.4" />
+        <rect x="5" y="6" width="22" height="5" rx="2.5" />
+        <rect x="5" y="13.5" width="15" height="5" rx="2.5" />
+        <rect x="5" y="21" width="18.5" height="5" rx="2.5" />
       </g>
     </svg>
   );
