@@ -1,0 +1,179 @@
+/* ───────────────────────── Touch controls (phones / tablets; coarse pointer only) ─────────────
+   Rendered by `src/ui/hud/TouchControls.tsx` inside `.hud`; the look pad is its first child so
+   every interactive HUD element (buttons, dialogue) stays above it and keeps working. Desktop
+   never mounts the layer, so nothing here applies there. */
+
+:root[data-touch='on'] {
+  overscroll-behavior: none;
+}
+
+/* Drag-to-look: the whole view behind the HUD widgets. */
+.tc-look {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* ── move joystick (bottom left, floating: the knob recentres on the touch point) ── */
+.tc-joy {
+  position: absolute;
+  left: calc(18px + env(safe-area-inset-left, 0px));
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  width: 124px;
+  height: 124px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line-2);
+  background: rgba(8, 12, 12, 0.38);
+  box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.tc-joy::before {
+  content: '';
+  position: absolute;
+  inset: 15px;
+  border-radius: 50%;
+  border: 1px dashed rgba(220, 255, 235, 0.16);
+}
+.tc-joy.is-active {
+  border-color: var(--lab-35);
+  background: rgba(8, 12, 12, 0.5);
+}
+.tc-joy__knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 54px;
+  height: 54px;
+  margin: -27px 0 0 -27px;
+  border-radius: 50%;
+  background: rgba(241, 246, 242, 0.16);
+  border: 1.5px solid rgba(220, 255, 235, 0.35);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  will-change: transform;
+}
+.tc-joy.is-active .tc-joy__knob {
+  background: rgba(67, 176, 42, 0.28);
+  border-color: var(--lab-hi);
+}
+/* outer ring = walk fast */
+.tc-joy__knob.is-fast {
+  background: rgba(67, 176, 42, 0.45);
+}
+
+/* ── action buttons (bottom right) ── */
+.tc-cluster {
+  position: absolute;
+  right: calc(16px + env(safe-area-inset-right, 0px));
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  z-index: 1;
+}
+.tc-cluster__row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.tc-btn {
+  display: grid;
+  place-items: center;
+  gap: 1px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line-2);
+  background: rgba(8, 12, 12, 0.44);
+  color: var(--tx-0);
+  box-shadow: var(--shadow-1);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.tc-btn:active {
+  background: rgba(67, 176, 42, 0.25);
+  border-color: var(--lab-hi);
+}
+.tc-btn.is-on {
+  border-color: var(--lab-hi);
+  background: rgba(67, 176, 42, 0.2);
+  color: var(--lab-hi);
+}
+.tc-btn--sm {
+  width: 40px;
+  height: 40px;
+  font: 750 13px/1 var(--font-mono);
+}
+.tc-btn--md {
+  width: 58px;
+  height: 58px;
+}
+.tc-btn--lg {
+  width: 84px;
+  height: 84px;
+}
+.tc-btn__text {
+  pointer-events: none;
+}
+.tc-btn__label {
+  max-width: 72px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--tx-1);
+  pointer-events: none;
+}
+
+/* ── portrait: ask for landscape (the lab is built for a wide view) ── */
+.tc-rotate {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: none;
+  align-content: center;
+  justify-items: center;
+  gap: 12px;
+  background: rgba(4, 6, 6, 0.88);
+  color: var(--tx-0);
+  font-size: 14.5px;
+  font-weight: 650;
+  text-align: center;
+}
+.tc-rotate svg {
+  color: var(--lab-hi);
+}
+.tc-rotate small {
+  color: var(--tx-2);
+  font-weight: 500;
+}
+@media (orientation: portrait) {
+  .tc-rotate {
+    display: grid;
+  }
+}
+
+/* ── HUD layout: keep the bottom-centre column clear of the joystick and button clusters ── */
+:root[data-touch='on'] .hud-bc {
+  width: min(620px, calc(100vw - 320px));
+  min-width: 0;
+}
+:root[data-touch='on'] .hud-bl {
+  bottom: calc(154px + env(safe-area-inset-bottom, 0px));
+}
+:root[data-touch='on'] .hud-toasts {
+  bottom: calc(220px + env(safe-area-inset-bottom, 0px));
+}

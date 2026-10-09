@@ -30,6 +30,15 @@ import { ColliderSet } from './collision';
 import { LocationTracker } from './locations';
 import { PlayerController, type MoveIntent, type FootSurface } from './player';
 import { InputManager } from './input';
+import {
+  touch,
+  touchClear,
+  touchConsumeCrouch,
+  touchConsumeJump,
+  touchConsumeLook,
+  touchNextPress,
+  TOUCH_LOOK_RADIANS_PER_PIXEL,
+} from './touch';
 import { InteractionSystem } from './interaction';
 import { CameraFocus } from './focus';
 import { ViewCapture } from './capture';
@@ -96,7 +105,7 @@ export class LabEngine implements Engine {
   private readonly tmpDir = new Vector3();
   private readonly listenerPos: Vec3 = [0, 0, 0];
   private readonly listenerFwd: Vec3 = [0, 0, -1];
-  private readonly nextPress = () => this.input?.nextPress() ?? null;
+  private readonly nextPress = () => this.input?.nextPress() ?? touchNextPress() ?? null;
   private readonly playerOpts = { reducedMotion: false, onFootstep: (i: number, s: FootSurface) => this.footstep(i, s) };
   private readonly footstep = (intensity: number, surface: FootSurface) => {
     this.audio.playVariant('footstep', surface, { volume: 0.3 + 0.35 * intensity, rate: 0.96 + Math.random() * 0.08 });
@@ -196,6 +205,7 @@ export class LabEngine implements Engine {
     store.subscribe((s, prev) => {
       if (s.ui.overlay !== prev.ui.overlay && s.ui.overlay.kind !== 'none') {
         this.input?.clear();
+        touchClear();
         this.exitPointerLock();
       }
       if (s.progress.settings !== prev.progress.settings) {
@@ -258,6 +268,13 @@ export class LabEngine implements Engine {
         const k = LOOK_RADIANS_PER_PIXEL * (settings.mouseSensitivity || 1);
         this.player.look(-this.mouse.dx * k, -this.mouse.dy * k * (settings.invertY ? -1 : 1));
       }
+      // Touch HUD (mobile: no pointer lock) — drag deltas, same mapping as the mouse. Consumed
+      // unconditionally so deltas are dropped while an overlay owns the screen.
+      touchConsumeLook(this.mouse);
+      if (controls && touch.enabled && (this.mouse.dx || this.mouse.dy)) {
+        const k = TOUCH_LOOK_RADIANS_PER_PIXEL * (settings.mouseSensitivity || 1);
+        this.player.look(-this.mouse.dx * k, -this.mouse.dy * k * (settings.invertY ? -1 : 1));
+      }
 
       // Move.
       const it = this.intent;
@@ -267,6 +284,14 @@ export class LabEngine implements Engine {
         it.fast = input.isDown('ShiftLeft') || input.isDown('ShiftRight');
         it.jump = input.consumeJump();
         it.toggleCrouch = input.consumeCrouch();
+        // Analog touch joystick overrides the digital keys while touched; the outer ring runs.
+        if (touch.enabled && (touch.jx || touch.jy)) {
+          it.forward = touch.jy;
+          it.right = touch.jx;
+          if (touch.fast) it.fast = true;
+        }
+        if (touchConsumeJump()) it.jump = true;
+        if (touchConsumeCrouch()) it.toggleCrouch = true;
       } else {
         it.forward = it.right = 0;
         it.fast = it.jump = it.toggleCrouch = false;
@@ -451,6 +476,7 @@ export class LabEngine implements Engine {
   focus(pose: CameraPose, durationMs = DEFAULT_FOCUS_MS): Promise<void> {
     this.exitPointerLock();
     this.input?.clear();
+    touchClear();
     return this.focusCtl.focus(this.camera, pose, durationMs);
   }
 
@@ -474,7 +500,10 @@ export class LabEngine implements Engine {
 
   setControlsEnabled(enabled: boolean): void {
     this.controlsEnabled = enabled;
-    if (!enabled) this.input?.clear();
+    if (!enabled) {
+      this.input?.clear();
+      touchClear();
+    }
   }
 
   requestPointerLock(): void {

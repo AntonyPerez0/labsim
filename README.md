@@ -58,6 +58,10 @@ Click the 3D view to capture the mouse. Press **F1** at any time for the full li
 | **F10** / hold **]** | Sandbox panel / fast-forward ×30 (Free Play only) |
 | **`** | Debug overlay |
 
+**On a phone or tablet** the view gets on-screen controls instead: a floating joystick (push to the
+rim to walk fast), drag anywhere to look, and buttons for interact / jump / crouch / tool mode /
+holster / torch / pause. The hotbar and dialogue choices are tappable as usual.
+
 ### Modes
 
 - **Academy** — 18 guided modules (M01–M18) with a mentor, objectives, hints and checkpoint quizzes. Finishing
