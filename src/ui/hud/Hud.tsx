@@ -17,6 +17,7 @@ import { TicketQueue } from './TicketQueue';
 import { TeachCardPanel } from './TeachCard';
 import { Subtitles } from './Subtitles';
 import { Waypoint } from './Waypoint';
+import { TOUCH_DEVICE, TouchControls } from './TouchControls';
 
 /** Overlays under which the HUD stays visible (non-pausing panels; the world keeps running). */
 const HUD_OVERLAYS = new Set(['none', 'tickets', 'notebook', 'sandbox']);
@@ -33,7 +34,7 @@ export function Hud({ engineFocused }: { engineFocused: boolean }) {
 
   if (!HUD_OVERLAYS.has(overlay)) return null;
   const free = overlay === 'none';
-  const showResume = free && !pointerLocked && !engineFocused && !dialogue;
+  const showResume = free && !pointerLocked && !engineFocused && !dialogue && !TOUCH_DEVICE;
   const sidePanel = overlay === 'tickets' || overlay === 'sandbox';
 
   return (
@@ -63,6 +64,8 @@ export function Hud({ engineFocused }: { engineFocused: boolean }) {
       ) : null}
       {free ? (
         <>
+          {/* First: the touch layer sits under every other HUD element (touch devices only). */}
+          {TOUCH_DEVICE ? <TouchControls /> : null}
           <Waypoint />
           <Crosshair />
           <InteractionPrompt />

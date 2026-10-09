@@ -65,7 +65,8 @@
 
 ## Overlays and input
 `ui.overlay` decides what owns input:
-* `none` — 3D first-person (pointer lock, WASD, E/F/R interact, 1-9 tools, Tab Field Manual, Esc pause).
+* `none` — 3D first-person (pointer lock + WASD + E/F/R/G/Q on desktop; on coarse-pointer devices the
+  touch HUD writes the same engine input signals through `src/engine/touch.ts`, no pointer lock).
 * `computer` — camera focused on the workstation monitor; the desktop (`src/computer/Desktop.tsx`) covers the
   screen. Esc or "Stand up" returns.
 * `tablet` — camera focused on a rig's status tablet; the dashboard UI is rendered by React over it.

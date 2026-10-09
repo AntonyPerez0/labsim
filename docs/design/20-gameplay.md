@@ -2283,6 +2283,13 @@ key glyph); hints follow Cur §2.0.
 | Sandbox panel | `F10` | Free Play only |
 | Workstation | normal mouse + keyboard | Pointer unlocked; apps are React UI; `Ctrl+Tab` cycles apps |
 
+**Touch (mobile):** on coarse-pointer devices the 3D view gets an on-screen layer instead of pointer
+lock: a floating joystick bottom-left (push into the outer ring to walk fast), drag anywhere on the
+view to look, and right-hand buttons — interact (also continues dialogue), jump, crouch, tool mode
+`R`, holster `Q`, head torch `F` and pause — driven by the same verb prompts as the keys above, so
+what is pressable matches exactly what the crosshair offers. The hotbar and dialogue choices are
+normal buttons. Nothing about the desktop flow changes.
+
 ### 6.4 Physical tools and parts
 
 **Hotbar tools** (carried once unlocked):
