@@ -133,6 +133,8 @@ public class HomeScreen extends BaseTest {
 | Flaky \`UiObjectNotFoundException\`, the tap lands before the screen finishes drawing | Missing \`waitForScreen()\` |
 | \`open("Register")\` can't find the app on a Flux | Scroll branches swapped (Flux must scroll vertically) |
 | Tests start on random screens | Missing \`isScreenPresent()\` checks / teardown ([[tax-test]]) |
+
+> **In the sim:** IntelliJ's **UIA Practice** tool window† (right edge, uia-relay project) drills this page by page: mandatory screen methods, wait-before-click, scroll direction per family (Flux and Compass scroll vertically†), tethered handle order, teardown, \`config.properties\` for the Compass rig, UIA 2.3 \`displayId\` locators and the Compass PIN pad (physical \`xy_touch\` taps, because ADB can't reach the secure PIN pad). Exercises live in the git-ignored \`practice/\` folder†.
 `,
   },
   {

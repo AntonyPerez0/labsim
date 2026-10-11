@@ -820,6 +820,9 @@ export const APP_ACTIONS = {
     gitCommitted: 'intellij.git.committed',
     gitPushed: 'intellij.git.pushed',
     gitPulled: 'intellij.git.pulled',
+    practiceStarted: 'intellij.practice.started',
+    practiceChecked: 'intellij.practice.checked',
+    practiceSolved: 'intellij.practice.solved',
   },
   terminal: {
     commandSubmitted: 'terminal.command.submitted',
@@ -1019,6 +1022,9 @@ export type AppActionPayloads = {
   'intellij.git.committed': { repo: string; message: string; files: string[]; sha: string | null } & Ok;
   'intellij.git.pushed': { repo: string; branch: string } & Ok;
   'intellij.git.pulled': { repo: string } & Ok;
+  'intellij.practice.started': { exerciseId: string; path: string };
+  'intellij.practice.checked': { exerciseId: string; passed: boolean; failures: string[] };
+  'intellij.practice.solved': { exerciseId: string; seconds: number; checks: number; hints: number };
 
   /* terminal */
   'terminal.command.submitted': { tab: number; line: string; host: string | null; cwd: string };
@@ -1174,6 +1180,9 @@ export const APP_HINT_TARGETS = [
   'intellij.commitButton',
   'intellij.pushButton',
   'intellij.configValidator',
+  'intellij.uiaPractice', // right stripe button
+  'intellij.uiaPractice.exercise:', // + exercise id
+  'intellij.uiaPractice.check',
   // vscode
   'vscode.activity:', // + explorer | search | scm | run | practice
   'vscode.treeNode:', // + repo-relative path

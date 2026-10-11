@@ -436,6 +436,7 @@ export function createDefaultProgress(): ProgressState {
     penalties: {},
     freeplay: { fixesTotal: 0, xpToday: 0, xpTodayDay: 0 },
     parrotPractice: {},
+    uiaPractice: {},
     certs: {},
     fieldManual: { unlocked: [], bookmarks: [], read: [] },
     notebook: { notes: '', pinnedEvidence: [] },

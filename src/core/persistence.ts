@@ -34,6 +34,10 @@ export function migrateProgress(parsed: unknown): ProgressState {
   if (!isPlainObject(parsed)) return base;
   const merged = mergeDefaults(base, parsed);
   merged.settings = mergeDefaults({ ...DEFAULT_SETTINGS, bindings: { ...DEFAULT_SETTINGS.bindings } }, parsed.settings);
+  // Renamed field (Pigeon → Parrot): keep practice records saved under the old key.
+  const legacy = (parsed as Record<string, unknown>)['pigeonPractice'];
+  if (isPlainObject(legacy) && !Object.keys(merged.parrotPractice ?? {}).length) merged.parrotPractice = legacy as ProgressState['parrotPractice'];
+  delete (merged as unknown as Record<string, unknown>)['pigeonPractice'];
   merged.version = PROGRESS_VERSION;
   return merged;
 }

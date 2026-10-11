@@ -23,6 +23,7 @@ import { ancestorsOf, buildTree, runConfigsFor, type RunConfig } from './project
 import { ProjectView } from './ProjectView';
 import { rootPoint, useIdeRoot } from './rootContext';
 import { RunPanel, RunTabsHeader } from './RunPanel';
+import { UiaPracticePanel } from './UiaPracticePanel';
 import { NavToolbar } from './NavToolbar';
 import { Balloons, CaretStatus, TodoPanel } from './StatusParts';
 import { treeAt } from './vcs';
@@ -498,6 +499,43 @@ export function ProjectWindow(props: ProjectWindowProps) {
               </div>
             </>
           ) : null}
+        </div>
+        {model.rightTool === 'uiaPractice' ? (
+          <div className="ij-toolwin ij-toolwin-right" style={{ width: 350, flex: 'none' }}>
+            <div className="ij-tw-head">
+              <span className="ij-tw-title">UIA Practice</span>
+              <div className="ij-tw-actions">
+                <button
+                  type="button"
+                  className="ij-tbtn"
+                  title="Hide"
+                  aria-label="Hide"
+                  onClick={() => {
+                    model.rightTool = null;
+                    model.changed();
+                  }}
+                >
+                  –
+                </button>
+              </div>
+            </div>
+            <div className="ij-tw-body">
+              <UiaPracticePanel model={model} repo={repo} />
+            </div>
+          </div>
+        ) : null}
+        <div className="ij-stripe ij-stripe-right" role="toolbar" aria-label="Right tool windows">
+          <button
+            type="button"
+            data-hint="intellij.uiaPractice"
+            className={`ij-stripe-btn${model.rightTool === 'uiaPractice' ? ' ij-on' : ''}`}
+            onClick={() => {
+              model.rightTool = model.rightTool === 'uiaPractice' ? null : 'uiaPractice';
+              model.changed();
+            }}
+          >
+            <IcCheck size={13} /> UIA Practice
+          </button>
         </div>
       </div>
       <div className="ij-stripe ij-stripe-bottom" role="toolbar" aria-label="Bottom tool windows">

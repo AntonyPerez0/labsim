@@ -368,6 +368,8 @@ export interface ProgressState {
   };
   /** VS Code → Parrot Practice: per exercise id, how often it was solved and the best time (real seconds). */
   parrotPractice: Record<string, { solved: number; bestS: number; lastDay: number }>;
+  /** IntelliJ → UIA Practice: same shape as `parrotPractice`. */
+  uiaPractice: Record<string, { solved: number; bestS: number; lastDay: number }>;
 
   /* ── Certification ── */
   certs: Partial<Record<CertExamId, CertRecord>>;

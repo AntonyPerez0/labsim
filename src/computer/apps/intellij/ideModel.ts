@@ -106,6 +106,20 @@ export class IdeModel {
   expanded = new Set<string>();
   selectedNode: string | null = null;
   leftTool: LeftTool = 'project';
+  /** Right tool window (UIA Practice). */
+  rightTool: 'uiaPractice' | null = null;
+  /** Current UIA Practice exercise (see practice/uiaExercises.ts). */
+  uiaPractice: {
+    exerciseId: string;
+    path: string;
+    ctx: Record<string, unknown>;
+    brief: string[];
+    startedReal: number;
+    checks: number;
+    hintsShown: number;
+    last: { passed: boolean; items: { label: string; ok: boolean; detail?: string }[] } | null;
+    solved: boolean;
+  } | null = null;
   bottomTool: BottomTool = null;
   leftWidth = 300;
   bottomHeight = 260;

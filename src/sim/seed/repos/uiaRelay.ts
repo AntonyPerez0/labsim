@@ -153,6 +153,9 @@ build/
 local.properties
 *.apk
 
+# IntelliJ → UIA Practice exercises (local only)
+practice/
+
 # IDE
 .idea/workspace.xml
 .idea/caches/
