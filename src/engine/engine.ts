@@ -96,6 +96,8 @@ export class LabEngine implements Engine {
   private lastErrorAt = 0;
 
   // scratch (no per-frame allocations)
+  /** A mentor line was on screen last frame — Space then means "continue", never "jump". */
+  private dialogueShownLastFrame = false;
   private readonly intent: MoveIntent = { forward: 0, right: 0, fast: false, jump: false, toggleCrouch: false };
   private readonly mouse = { dx: 0, dy: 0 };
   private readonly headPos = new Vector3();
@@ -177,6 +179,7 @@ export class LabEngine implements Engine {
         // Allowed while a release tween is still running (controls come back when it ends).
         if (s.ui.overlay.kind === 'none' && this.controlsEnabled && !this.focusCtl.holding) this.requestPointerLock();
       },
+      allowJump: () => !this.dialogueShownLastFrame && !store.getState().session.dialogue,
       onPointerLockChange: (locked) => {
         // Lock requests resolve asynchronously: if an overlay opened (or a focus started) in the
         // meantime, the mouse must stay free for the UI.
@@ -257,6 +260,7 @@ export class LabEngine implements Engine {
 
     try {
       const s = store.getState();
+      this.dialogueShownLastFrame = !!s.session.dialogue;
       const settings = s.progress.settings;
       const controls = this.controlsEnabled && s.ui.overlay.kind === 'none' && !this.focusCtl.active;
       const input = this.input;

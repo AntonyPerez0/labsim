@@ -20,6 +20,11 @@ export interface InputCallbacks {
   /** Mouse down on the 3D view while not locked — engine decides whether to lock. */
   onViewClick(): void;
   onPointerLockChange(locked: boolean): void;
+  /**
+   * Whether Space may jump right now. False while a mentor line is on screen, so the key that
+   * advances the dialogue ("Space to continue") never also makes the player hop.
+   */
+  allowJump(): boolean;
 }
 
 const MAX_QUEUED_PRESSES = 3;
@@ -104,7 +109,7 @@ export class InputManager {
     if (MOVE_CODES.has(e.code)) {
       this.keys.add(e.code);
       if (this.active) {
-        if (e.code === 'Space' && !e.repeat) this.jumpQueued = true;
+        if (e.code === 'Space' && !e.repeat && this.cb.allowJump()) this.jumpQueued = true;
         if (e.code === 'KeyC' && !e.repeat) this.crouchQueued = true;
         // stop page scrolling with Space / arrows while walking
         if (e.code === 'Space' || e.code.startsWith('Arrow')) e.preventDefault();
