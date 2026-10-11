@@ -71,6 +71,7 @@ export function SettingsPanel({ initialTab = 'graphics' }: { initialTab?: Tab })
             <FieldRow label="Field of view" hint="60–90°, default 75°.">
               <Slider value={st.fov} min={60} max={90} step={1} onChange={(v) => setSetting('fov', v)} format={(v) => `${v}°`} />
             </FieldRow>
+            <Toggle label="Dynamic resolution" hint="Lowers render resolution briefly when frames run long, so motion stays smooth." checked={st.dynamicResolution} onChange={(v) => setSetting('dynamicResolution', v)} />
             <Toggle label="Show FPS counter" checked={st.showFps} onChange={(v) => setSetting('showFps', v)} />
           </>
         ) : null}

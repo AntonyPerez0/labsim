@@ -14,6 +14,9 @@ import { hasMission, maQuiet } from '@/ui/services/missions';
 
 interface Stats {
   fps: number;
+  frameMsAvg: number;
+  frameMsMax: number;
+  renderScale: number;
   drawCalls: number;
   triangles: number;
   textures: number;
@@ -80,6 +83,12 @@ export function DebugOverlay() {
       <div className="dbg__stats mono">
         <span>
           <b>{stats ? Math.round(stats.fps) : '—'}</b> fps
+        </span>
+        <span>
+          <b>{stats ? `${stats.frameMsAvg.toFixed(1)}/${stats.frameMsMax.toFixed(0)}` : '—'}</b> ms avg/worst
+        </span>
+        <span>
+          <b>{stats ? `${Math.round(stats.renderScale * 100)}%` : '—'}</b> res
         </span>
         <span>
           <b>{stats?.drawCalls ?? '—'}</b> draws

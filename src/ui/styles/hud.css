@@ -17,8 +17,6 @@
   border: 1px solid var(--line-2);
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-1);
-  backdrop-filter: blur(10px) saturate(1.2);
-  -webkit-backdrop-filter: blur(10px) saturate(1.2);
 }
 
 /* edge glow when the combo is hot (GP §5.2) */
@@ -75,7 +73,6 @@
   background: rgba(8, 11, 11, 0.8);
   border: 1px solid var(--line-2);
   box-shadow: var(--shadow-1);
-  backdrop-filter: blur(8px);
   animation: rise-in-x 160ms var(--ease-out);
 }
 .hud-prompt__label { font-weight: 650; font-size: 13.5px; letter-spacing: 0.005em; margin-bottom: 6px; color: var(--tx-0); }
@@ -106,7 +103,6 @@
   background: var(--glass);
   border: 1px solid var(--line-2);
   box-shadow: var(--shadow-1);
-  backdrop-filter: blur(10px);
 }
 .hud-clock__time { font: 650 24px/1 var(--font-mono); letter-spacing: -0.02em; color: var(--tx-0); }
 .hud-clock__meta { display: flex; gap: 8px; align-items: center; margin-top: 4px; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--tx-2); }
@@ -141,7 +137,6 @@
   background: var(--glass-strong);
   border: 1px solid var(--line-2);
   box-shadow: var(--shadow-2);
-  backdrop-filter: blur(12px);
   overflow: visible;
   transition: border-color var(--t-slow), box-shadow var(--t-slow);
 }
@@ -198,7 +193,6 @@
   background: var(--glass);
   border: 1px solid var(--line-2);
   box-shadow: var(--shadow-1);
-  backdrop-filter: blur(10px);
   animation: slide-in-right 300ms var(--ease-out);
 }
 .hud-objectives__head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
@@ -329,7 +323,7 @@
 
 /* ── bottom-left: pipelines ── */
 .hud-bl { position: absolute; left: var(--hud-gutter); bottom: var(--hud-gutter); display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
-.hud-pipes { width: 300px; padding: 9px 11px 10px; border-radius: var(--r-lg); background: var(--glass); border: 1px solid var(--line-2); box-shadow: var(--shadow-1); backdrop-filter: blur(10px); }
+.hud-pipes { width: 300px; padding: 9px 11px 10px; border-radius: var(--r-lg); background: var(--glass); border: 1px solid var(--line-2); box-shadow: var(--shadow-1); }
 .hud-pipes__head { display: flex; align-items: center; gap: 6px; margin-bottom: 7px; font-size: 10px; font-weight: 750; letter-spacing: 0.13em; text-transform: uppercase; color: var(--tx-1); }
 .hud-pipes__uptime { letter-spacing: 0.02em; font: 600 11px/1 var(--font-mono); color: var(--tx-1); }
 .hud-pipes__list { display: flex; flex-direction: column; gap: 4px; }
@@ -349,7 +343,7 @@
 .hud-bc { position: absolute; left: 50%; bottom: var(--hud-gutter); transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 12px; width: min(820px, calc(100vw - 2 * var(--hud-gutter) - 640px)); min-width: min(680px, 100vw - 40px); }
 .hud-hotbar { display: flex; flex-direction: column; align-items: center; gap: 6px; transition: opacity var(--t-med); }
 .hud-hotbar.is-disabled .hud-hotbar__slots { opacity: 0.45; }
-.hud-hotbar__slots { display: flex; gap: 6px; padding: 6px; border-radius: var(--r-lg); background: var(--glass); border: 1px solid var(--line-2); box-shadow: var(--shadow-1); backdrop-filter: blur(10px); }
+.hud-hotbar__slots { display: flex; gap: 6px; padding: 6px; border-radius: var(--r-lg); background: var(--glass); border: 1px solid var(--line-2); box-shadow: var(--shadow-1); }
 .hud-slot {
   position: relative;
   width: 56px;
@@ -387,7 +381,6 @@
   border: 1px solid var(--line-2);
   border-top: 2px solid var(--speaker);
   box-shadow: var(--shadow-2), 0 -1px 28px -12px var(--speaker);
-  backdrop-filter: blur(12px);
   cursor: pointer;
   pointer-events: auto;
   animation: rise-in 260ms var(--ease-out);
@@ -456,7 +449,6 @@
   border: 1px solid var(--line-2);
   border-left: 3px solid var(--toast, var(--tx-3));
   box-shadow: var(--shadow-2);
-  backdrop-filter: blur(10px);
   cursor: pointer;
   animation: slide-in-right 300ms var(--ease-out);
   transition: opacity 200ms, transform 200ms;

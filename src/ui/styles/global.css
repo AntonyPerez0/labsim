@@ -20,7 +20,7 @@
   --bg-2: #121819;
   --bg-3: #192122;
   --bg-4: #212b2c;
-  --glass: rgba(10, 14, 14, 0.74);
+  --glass: rgba(10, 14, 14, 0.86); /* opaque enough to read without a backdrop blur (blur over the live 3D view costs a full-screen re-composite every frame) */
   --glass-strong: rgba(9, 12, 12, 0.9);
   --glass-light: rgba(22, 30, 30, 0.62);
   --line: rgba(220, 255, 235, 0.075);

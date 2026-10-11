@@ -234,12 +234,16 @@ export class RigKit {
   }
 
   /** Update every dynamic pool from its anchors (call after moving groups changed). */
-  updateDynamic(): void {
-    this.wheels.update();
-    this.nemaBody.update();
-    this.nemaMetal.update();
-    this.limitSwitches.update();
-    this.toggleBats.update();
-    for (const p of [this.clampBodies, this.magnets, this.coils, this.fingers, this.plugs]) p.update();
+  /** Sync dynamic instances; returns 1 if anything moved this frame (shadow refresh), else 0. */
+  updateDynamic(): number {
+    let moved = 0;
+    for (const p of this.dynamicPools) if (p.update()) moved = 1;
+    return moved;
   }
+
+  private get dynamicPools(): DynamicInstances[] {
+    return (this._pools ??= [this.wheels, this.nemaBody, this.nemaMetal, this.limitSwitches, this.toggleBats, this.clampBodies, this.magnets, this.coils, this.fingers, this.plugs]);
+  }
+
+  private _pools: DynamicInstances[] | null = null;
 }

@@ -184,7 +184,24 @@ export interface Engine {
    */
   frame(dtSeconds: number): void;
   /** Smoothed FPS and renderer info for the debug overlay. */
-  stats(): { fps: number; drawCalls: number; triangles: number; textures: number; geometries: number };
+  stats(): {
+    /** Frames actually rendered in the last full second (not an average of instantaneous rates). */
+    fps: number;
+    /** Mean and worst frame interval (ms) over the last full second — hitches show up in `frameMsMax`. */
+    frameMsAvg: number;
+    frameMsMax: number;
+    /** Current dynamic-resolution factor (1 = full preset resolution). */
+    renderScale: number;
+    drawCalls: number;
+    triangles: number;
+    textures: number;
+    geometries: number;
+  };
+  /**
+   * Request a shadow-map refresh. Shadow maps are static (rendered on demand); call this from
+   * animations that move shadow-casting geometry. Refreshes are throttled to ~10 Hz.
+   */
+  markShadowsDirty(): void;
   setQuality(q: QualityPreset, resolutionScale?: number): void;
   setFov(fov: number): void;
 

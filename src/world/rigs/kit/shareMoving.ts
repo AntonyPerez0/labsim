@@ -84,8 +84,12 @@ export class MovingInstancer {
     }
   }
 
-  /** Copy world matrices of the sources into the instances (call after `updateMatrixWorld`). */
-  update(force = false): void {
+  /**
+   * Copy world matrices of the sources into the instances (call after `updateMatrixWorld`).
+   * Returns true when any instance moved this frame (used to refresh the static shadow maps).
+   */
+  update(force = false): boolean {
+    let anyDirty = false;
     for (const s of this.slots) {
       let dirty = false;
       for (let i = 0; i < s.sources.length; i++) {
@@ -107,8 +111,12 @@ export class MovingInstancer {
         s.im.setMatrixAt(i, m);
         dirty = true;
       }
-      if (dirty) s.im.instanceMatrix.needsUpdate = true;
+      if (dirty) {
+        s.im.instanceMatrix.needsUpdate = true;
+        anyDirty = true;
+      }
     }
+    return anyDirty;
   }
 
   get instancedMeshes(): number {

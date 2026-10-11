@@ -92,19 +92,37 @@ export class DynamicInstances {
     return im;
   }
 
-  /** Recompute instance matrices from the anchors (world matrices must be current). */
-  update(force = false): void {
+  /**
+   * Recompute instance matrices from the anchors (world matrices must be current). Only uploads the
+   * instance buffer when something actually moved; returns whether it did.
+   */
+  update(force = false): boolean {
     const im = this.mesh;
-    if (!im) return;
+    if (!im) return false;
     im.updateMatrixWorld(force);
     this.inv.copy(im.matrixWorld).invert();
+    const arr = im.instanceMatrix.array as Float32Array;
+    let dirty = force;
     for (let i = 0; i < this.entries.length; i++) {
       const e = this.entries[i]!;
       if (force) e.anchor.updateWorldMatrix(true, false);
       this.tmp.multiplyMatrices(e.anchor.matrixWorld, e.local).premultiply(this.inv);
+      const el = this.tmp.elements;
+      const o = i * 16;
+      let same = true;
+      for (let k = 0; k < 16; k++) {
+        // Float32 storage: compare at the precision we store.
+        if (Math.fround(el[k]!) !== arr[o + k]) {
+          same = false;
+          break;
+        }
+      }
+      if (same) continue;
       im.setMatrixAt(i, this.tmp);
+      dirty = true;
     }
-    im.instanceMatrix.needsUpdate = true;
+    if (dirty) im.instanceMatrix.needsUpdate = true;
+    return dirty;
   }
 }
 

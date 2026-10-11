@@ -5,8 +5,9 @@
  * Budget targets
  *  - low:    integrated GPUs at ≥ 30 fps. No AO, no shadows, no bloom, no outline, DPR 0.75–1.
  *  - medium: mainstream laptops. Half-res AO, 2 shadow casters @1024, bloom, emissive highlight.
- *  - high:   discrete GPUs (default). Full-res AO, 4 casters @2048, bloom, outline highlight.
- *  - ultra:  fast desktop GPUs. 64-sample AO, 6 casters @2048, wider bloom, HRTF audio.
+ *  - high:   discrete GPUs (default). Half-res AO, 4 casters @2048, bloom, outline highlight.
+ *  - ultra:  fast desktop GPUs. High AO (half-res, depth-aware upsample), 6 casters @2048 (static,
+ *            refreshed on demand), wider bloom, DPR ≤ 1.5, HRTF audio.
  */
 import type { QualityPreset } from '@/core/state';
 
@@ -80,7 +81,7 @@ export const QUALITY_PRESETS: Readonly<Record<QualityPreset, QualitySettings>> =
     shadowMapSize: 2048,
     shadowRadius: 4,
     maxShadowLights: 4,
-    ao: { quality: 'Medium', halfRes: false, radius: 1.1, intensity: 3.8, distanceFalloff: 1 },
+    ao: { quality: 'Medium', halfRes: true, radius: 1.1, intensity: 3.8, distanceFalloff: 1 },
     bloom: { intensity: 0.85, levels: 6, radius: 0.6, threshold: 1.25, smoothing: 0.35 },
     smaa: 'high',
     outline: true,
@@ -92,12 +93,12 @@ export const QUALITY_PRESETS: Readonly<Record<QualityPreset, QualitySettings>> =
     preset: 'ultra',
     pixelRatioScale: 1,
     pixelRatioMin: 1,
-    pixelRatioMax: 2,
+    pixelRatioMax: 1.5,
     shadows: true,
     shadowMapSize: 2048,
     shadowRadius: 5,
     maxShadowLights: 6,
-    ao: { quality: 'High', halfRes: false, radius: 1.2, intensity: 4, distanceFalloff: 1 },
+    ao: { quality: 'High', halfRes: true, radius: 1.2, intensity: 4, distanceFalloff: 1 },
     bloom: { intensity: 0.9, levels: 7, radius: 0.65, threshold: 1.25, smoothing: 0.35 },
     smaa: 'ultra',
     outline: true,

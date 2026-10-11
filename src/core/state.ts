@@ -87,6 +87,11 @@ export interface Settings {
   quality: QualityPreset;
   /** Render resolution multiplier on top of devicePixelRatio clamp (0.5–1.5). */
   resolutionScale: number;
+  /**
+   * Dynamic resolution: when frames run long, the engine lowers the render scale (down to 60 %)
+   * and raises it again when there is headroom, so motion stays smooth on any GPU.
+   */
+  dynamicResolution: boolean;
   /** Field of view in degrees (60–90, default 75 — GP §6.3). */
   fov: number;
   mouseSensitivity: number;
@@ -129,6 +134,7 @@ export interface Settings {
 export const DEFAULT_SETTINGS: Settings = {
   quality: 'high',
   resolutionScale: 1,
+  dynamicResolution: true,
   fov: 75,
   mouseSensitivity: 1,
   invertY: false,

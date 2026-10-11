@@ -105,6 +105,8 @@ export class PostFx {
       const c = this.ao.configuration;
       this.ao.setQualityMode(q.ao.quality);
       c.halfRes = q.ao.halfRes;
+      // Half-res AO upsampled with depth awareness keeps edges crisp at ~¼ of the cost.
+      (c as { depthAwareUpsampling?: boolean }).depthAwareUpsampling = true;
       c.aoRadius = q.ao.radius;
       c.distanceFalloff = q.ao.distanceFalloff;
       c.intensity = q.ao.intensity;

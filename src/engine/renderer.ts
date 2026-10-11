@@ -67,6 +67,10 @@ export function createRenderer(canvas: HTMLCanvasElement): WebGLRenderer {
   renderer.toneMappingExposure = TONE_MAPPING_EXPOSURE;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = PCFShadowMap; // r186 PCF = soft Vogel-disk filter scaled by shadow.radius
+  // The lab is almost entirely static: shadow maps are rendered on demand (engine.markShadowsDirty,
+  // throttled) instead of re-rendering every caster's map every frame.
+  renderer.shadowMap.autoUpdate = false;
+  renderer.shadowMap.needsUpdate = true;
   renderer.info.autoReset = false; // engine resets once per frame so stats include every pass
   renderer.setClearColor(new Color('#d9d9d6'), 1);
   return renderer;
@@ -169,6 +173,7 @@ export class ShadowPolicy {
     const signature = candidates.map((c) => c.light.uuid).join(',');
     if (!force && signature === this.lastSignature) return;
     this.lastSignature = signature;
+    this.renderer.shadowMap.needsUpdate = true; // caster set changed → maps must be redrawn
     const max = q.shadows ? q.maxShadowLights : 0;
     candidates.forEach((c, i) => {
       const on = i < max;

@@ -53,6 +53,43 @@ const PLAYER_STEP = 1 / 45;
 const MAX_PLAYER_DT = 0.25;
 const POSE_SYNC_SECONDS = 0.1;
 const SHADOW_SCAN_SECONDS = 1;
+/** Shadow maps refresh at most this often while something moves (markShadowsDirty). */
+const POSE_COMMIT_MS = 66;
+const SHADOW_MIN_INTERVAL_MS = 100;
+/** …and at least this often regardless, to catch any movement nobody reported. */
+const SHADOW_SAFETY_MS = 2000;
+/** Dynamic resolution thresholds (mean frame time over 1 s). */
+const DRS_SLOW_MS = 20; // < 50 fps → lower the render scale
+const DRS_FAST_MS = 12; // > 83 fps for 3 s → raise it again
+const DRS_MIN = 0.6;
+
+/**
+ * How often to draw the 3D scene under an overlay (ms; 0 = every frame). Opaque full-screen UIs
+ * hide the lab entirely; dimmed/blurred menus show it but nothing there needs 100+ fps.
+ */
+function overlayRenderInterval(kind: string): number {
+  switch (kind) {
+    case 'computer':
+    case 'manual':
+    case 'flashcards':
+    case 'drill':
+    case 'certification':
+      return 500;
+    case 'main-menu':
+    case 'pause':
+    case 'settings':
+    case 'quiz':
+    case 'debrief':
+    case 'briefing':
+    case 'rank-up':
+    case 'controls':
+    case 'teach-card':
+    case 'info':
+      return 33;
+    default:
+      return 0; // none, tablet, inspect, tickets, notebook, sandbox: the lab is the view
+  }
+}
 const DEFAULT_FOCUS_MS = 650;
 const DEFAULT_RELEASE_MS = 450;
 
@@ -86,6 +123,24 @@ export class LabEngine implements Engine {
   private controlsEnabled = true;
   private elapsed = 0;
   private fps = 60;
+  /** Honest frame statistics over the last full second (see stats()). */
+  private winStart = 0;
+  private winFrames = 0;
+  private winSumMs = 0;
+  private winMaxMs = 0;
+  private frameMsAvg = 16.7;
+  private frameMsMax = 16.7;
+  /** Dynamic resolution (DRS) factor applied on top of the preset/user resolution scale. */
+  private drsScale = 1;
+  private drsCalmWindows = 0;
+  private drsHoldUntil = 0;
+  /** On-demand shadow maps: refresh requested + last refresh time (ms). */
+  private shadowDirty = true;
+  private lastShadowAt = 0;
+  private shadowSafetyAt = 0;
+  /** Last time the 3D scene was actually drawn (ms) — used to throttle behind full-screen overlays. */
+  private lastRenderAt = 0;
+  private renderIntervalMs = 0;
   private poseTimer = 0;
   /** Starts "due" so the first frame applies the shadow policy before anything is rendered. */
   private shadowTimer = SHADOW_SCAN_SECONDS;
@@ -236,7 +291,7 @@ export class LabEngine implements Engine {
     if (!canvas || !renderer) return;
     const w = Math.max(1, canvas.clientWidth || window.innerWidth);
     const h = Math.max(1, canvas.clientHeight || window.innerHeight);
-    const dpr = resolvePixelRatio(this.quality, window.devicePixelRatio || 1, this.resolutionScale);
+    const dpr = resolvePixelRatio(this.quality, window.devicePixelRatio || 1, this.resolutionScale) * this.drsScale;
     if (!force && w === this.width && h === this.height && dpr === this.dpr) return;
     this.width = w;
     this.height = h;
@@ -256,11 +311,14 @@ export class LabEngine implements Engine {
     const realDt = Math.min(1, Math.max(0, Number.isFinite(dtSeconds) ? dtSeconds : 0));
     const dt = Math.min(0.1, realDt); // physics/tween step (stable after hitches)
     this.elapsed += dt;
-    if (realDt > 0) this.fps = this.fps * 0.92 + Math.min(240, 1 / realDt) * 0.08;
+    this.trackFrameTime(realDt);
 
     try {
       const s = store.getState();
       this.dialogueShownLastFrame = !!s.session.dialogue;
+      this.renderIntervalMs = overlayRenderInterval(s.ui.overlay.kind);
+      if (this.renderIntervalMs === 0) this.updateDynamicResolution(s.progress.settings.dynamicResolution !== false);
+      else this.drsWindowReady = false; // throttled behind an overlay: keep the current scale
       const settings = s.progress.settings;
       const controls = this.controlsEnabled && s.ui.overlay.kind === 'none' && !this.focusCtl.active;
       const input = this.input;
@@ -375,9 +433,97 @@ export class LabEngine implements Engine {
       }
     }
 
+    // Behind full-screen / dimmed overlays the scene is not worth full-rate GPU time: draw it at a
+    // low rate (the browser keeps showing the last frame in between).
+    const now = performance.now();
+    if (this.renderIntervalMs > 0 && now - this.lastRenderAt < this.renderIntervalMs) return;
+    this.lastRenderAt = now;
+
+    // Static shadow maps: refresh on request (throttled to 10 Hz) plus a slow safety refresh.
+    if (renderer.shadowMap.enabled) {
+      if (now - this.shadowSafetyAt > SHADOW_SAFETY_MS) {
+        this.shadowSafetyAt = now;
+        this.shadowDirty = true;
+      }
+      if (this.shadowDirty && now - this.lastShadowAt >= SHADOW_MIN_INTERVAL_MS) {
+        this.shadowDirty = false;
+        this.lastShadowAt = now;
+        renderer.shadowMap.needsUpdate = true;
+      }
+    }
+
     renderer.info.reset();
     if (this.postfx) this.postfx.render(dt);
     else renderer.render(this.scene, this.camera);
+  }
+
+  markShadowsDirty(): void {
+    this.shadowDirty = true;
+  }
+
+  /** Windowed frame statistics: frames really presented per second, mean and worst interval. */
+  private trackFrameTime(realDt: number): void {
+    const now = performance.now();
+    if (this.winStart === 0) this.winStart = now;
+    if (realDt > 0) {
+      const ms = realDt * 1000;
+      this.winFrames++;
+      this.winSumMs += ms;
+      if (ms > this.winMaxMs) this.winMaxMs = ms;
+    }
+    if (now - this.winStart >= 1000) {
+      const secs = (now - this.winStart) / 1000;
+      this.fps = this.winFrames / secs;
+      this.frameMsAvg = this.winFrames ? this.winSumMs / this.winFrames : 0;
+      this.frameMsMax = this.winMaxMs;
+      this.winStart = now;
+      this.winFrames = 0;
+      this.winSumMs = 0;
+      this.winMaxMs = 0;
+      this.drsWindowReady = true;
+    }
+  }
+
+  private drsWindowReady = false;
+  private lastPoseCommitAt = 0;
+
+  /**
+   * Dynamic resolution: once per second, if the mean frame took longer than ~50 fps or a single
+   * frame hitched badly, lower the render scale; after 3 calm seconds, raise it back. Changes are
+   * held for 2 s so shader compiles / window resizes don't cause oscillation.
+   */
+  private updateDynamicResolution(enabled: boolean): void {
+    if (!this.drsWindowReady) return;
+    this.drsWindowReady = false;
+    const now = performance.now();
+    if (!enabled) {
+      if (this.drsScale !== 1) {
+        this.drsScale = 1;
+        this.resize(true);
+      }
+      return;
+    }
+    if (now < this.drsHoldUntil) return;
+    const slow = this.frameMsAvg > DRS_SLOW_MS;
+    const fast = this.frameMsAvg < DRS_FAST_MS && this.frameMsMax < DRS_SLOW_MS * 2;
+    let next = this.drsScale;
+    if (slow) {
+      this.drsCalmWindows = 0;
+      next = Math.max(DRS_MIN, this.drsScale * 0.85);
+    } else if (fast) {
+      this.drsCalmWindows++;
+      if (this.drsCalmWindows >= 3) {
+        this.drsCalmWindows = 0;
+        next = Math.min(1, this.drsScale * 1.1);
+      }
+    } else {
+      this.drsCalmWindows = 0;
+    }
+    if (Math.abs(next - this.drsScale) > 0.01) {
+      this.drsScale = next;
+      this.drsHoldUntil = now + 2000;
+      this.resize(true);
+    }
   }
 
   private syncPose(): void {
@@ -390,16 +536,14 @@ export class LabEngine implements Engine {
     const z = round(pl.z, 100);
     const yaw = round(pl.yaw, 1000);
     const pitch = round(pl.pitch, 1000);
-    const changed =
-      cur.position[0] !== x ||
-      cur.position[1] !== y ||
-      cur.position[2] !== z ||
-      cur.yaw !== yaw ||
-      cur.pitch !== pitch ||
-      cur.locationId !== loc.current ||
-      cur.lookingAt !== lookingAt ||
-      cur.crouched !== pl.crouched;
-    if (changed) {
+    // Discrete changes commit at once; the continuous pose is committed at most ~15×/s. Every
+    // commit runs immer plus every store subscriber and React selector, which at 144 Hz while
+    // walking/looking is a steady main-thread tax that shows up as stutter.
+    const discrete = cur.locationId !== loc.current || cur.lookingAt !== lookingAt || cur.crouched !== pl.crouched;
+    const moved = cur.position[0] !== x || cur.position[1] !== y || cur.position[2] !== z || cur.yaw !== yaw || cur.pitch !== pitch;
+    const now = performance.now();
+    if (discrete || (moved && now - this.lastPoseCommitAt >= POSE_COMMIT_MS)) {
+      this.lastPoseCommitAt = now;
       mutate((s) => {
         s.session.player = { position: [x, y, z], yaw, pitch, locationId: loc.current, lookingAt, crouched: pl.crouched };
       });
@@ -407,10 +551,13 @@ export class LabEngine implements Engine {
     if (loc.entered) emit('player.enteredLocation', { locationId: loc.entered });
   }
 
-  stats(): { fps: number; drawCalls: number; triangles: number; textures: number; geometries: number } {
+  stats(): ReturnType<Engine['stats']> {
     const info = this._renderer?.info;
     return {
       fps: Math.round(this.fps * 10) / 10,
+      frameMsAvg: Math.round(this.frameMsAvg * 10) / 10,
+      frameMsMax: Math.round(this.frameMsMax * 10) / 10,
+      renderScale: Math.round(this.drsScale * 100) / 100,
       drawCalls: info?.render.calls ?? 0,
       triangles: info?.render.triangles ?? 0,
       textures: info?.memory.textures ?? 0,
@@ -429,6 +576,9 @@ export class LabEngine implements Engine {
     const renderer = this._renderer;
     if (!renderer) return; // applied in init()
     this.qualityApplied = true;
+    this.drsScale = 1;
+    this.drsHoldUntil = performance.now() + 3000; // let new shaders compile before judging speed
+    this.shadowDirty = true;
     this.shadowPolicy?.setQuality(preset);
     this.postfx?.configure(preset);
     this.textures.setAnisotropy(preset.anisotropy);

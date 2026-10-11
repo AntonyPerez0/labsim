@@ -93,7 +93,7 @@
 
 /* ── panels & cards ── */
 .k-panel { position: relative; border-radius: var(--r-lg); border: 1px solid var(--line-2); color: var(--tx-0); }
-.k-panel--glass { background: var(--glass); backdrop-filter: blur(16px) saturate(150%); -webkit-backdrop-filter: blur(16px) saturate(150%); box-shadow: var(--shadow-1); }
+.k-panel--glass { background: var(--glass); box-shadow: var(--shadow-1); }
 .k-panel--solid { background: var(--bg-2); box-shadow: var(--shadow-1); }
 .k-panel--flat { background: rgba(255, 255, 255, 0.025); border-color: var(--line); }
 .k-panel__head { display: flex; align-items: center; gap: 10px; padding: 14px 16px 0; }
@@ -134,7 +134,7 @@
 /* ── modal & drawer ── */
 .k-modal-backdrop { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; animation: fade-in var(--t-med) var(--ease-out); pointer-events: auto; }
 .k-modal-backdrop--dim { background: radial-gradient(ellipse at center, rgba(4, 6, 6, 0.55), rgba(2, 3, 3, 0.82)); }
-.k-modal-backdrop--blur { background: rgba(3, 5, 5, 0.6); backdrop-filter: blur(10px) saturate(120%); -webkit-backdrop-filter: blur(10px) saturate(120%); }
+.k-modal-backdrop--blur { background: rgba(3, 5, 5, 0.6); }
 .k-modal-backdrop--none { background: transparent; }
 .k-modal {
   position: relative;
@@ -158,8 +158,6 @@
   display: flex;
   flex-direction: column;
   background: linear-gradient(180deg, rgba(16, 21, 21, 0.95), rgba(10, 13, 13, 0.97));
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
   box-shadow: var(--shadow-2);
   pointer-events: auto;
 }

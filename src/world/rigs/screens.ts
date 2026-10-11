@@ -5,7 +5,25 @@
  * round-robin with ≤ 3 device and ≤ 2 tablet redraws per frame. Missing sim objects render a
  * healthy default (lock screen / dark CFD / green tablet).
  */
-import { CanvasTexture, LinearFilter, LinearMipmapLinearFilter, MeshBasicMaterial, SRGBColorSpace, type Mesh } from 'three';
+import { CanvasTexture, LinearFilter, LinearMipmapLinearFilter, MeshBasicMaterial, SRGBColorSpace, Vector3, type Mesh } from 'three';
+
+/**
+ * Texture uploads are the expensive part of a live screen (a 512×320 canvas is ~650 KB per upload).
+ * Animation-only redraws (spinners, pulses, periodic tablet refresh) run only for screens near the
+ * camera; content changes always redraw, but far ones are rate-limited.
+ */
+const NEAR_SQ = 4.5 * 4.5;
+const FAR_CHANGE_MIN_MS = 250;
+const _wp = new Vector3();
+function distSq(mesh: Mesh, cam: { x: number; y: number; z: number } | null, cache: { p?: Vector3 }): number {
+  if (!cam) return 0;
+  if (!cache.p) {
+    mesh.updateWorldMatrix(true, false);
+    cache.p = mesh.getWorldPosition(new Vector3());
+  }
+  _wp.copy(cache.p);
+  return (_wp.x - cam.x) ** 2 + (_wp.y - cam.y) ** 2 + (_wp.z - cam.z) ** 2;
+}
 import { store } from '@/core/store';
 import { bus } from '@/core/bus';
 import type { QualityPreset } from '@/core/state';
@@ -181,7 +199,18 @@ export class ScreenManager {
     if (cur) this.size(cur);
   }
 
-  update(lab: LabState, nowMs: number): void {
+  private cam: { x: number; y: number; z: number } | null = null;
+  private lastFarDraw = 0;
+  private readonly posCache = new WeakMap<object, { p?: Vector3 }>();
+
+  private near(mesh: Mesh): boolean {
+    let c = this.posCache.get(mesh);
+    if (!c) this.posCache.set(mesh, (c = {}));
+    return distSq(mesh, this.cam, c) < NEAR_SQ;
+  }
+
+  update(lab: LabState, nowMs: number, camera?: { x: number; y: number; z: number }): void {
+    this.cam = camera ?? null;
     const q = store.getState().progress?.settings?.quality ?? 'high';
     if (q !== this.quality) {
       this.quality = q;
@@ -219,11 +248,17 @@ export class ScreenManager {
       const ripAge = rip ? nowMs - rip.at : 1e9;
       const anim = ANIMATED.has(ds.screen) || ripAge < 1000 || !!ds.toast;
       const sig = `${dev.id}|${which}|${ds.rev}|${ds.screen}|${dev.power}|${dev.theme}|${CLOCK.has(ds.screen) ? minute : 0}|${lab.flags?.showTouchTargets ? 1 : 0}|${s.pxPerMm}`;
+      const near = this.near(s.b.mesh);
       if (sig !== s.sig) {
         s.sig = sig;
         s.dirty = true;
-      } else if (anim && nowMs - s.lastAnim > (ripAge < 1000 || ds.toast ? 100 : ANIM_INTERVAL_MS[ds.screen] ?? 100)) s.dirty = true;
-      if (s.dirty) queue.push(s);
+      } else if (anim && near && nowMs - s.lastAnim > (ripAge < 1000 || ds.toast ? 100 : ANIM_INTERVAL_MS[ds.screen] ?? 100)) s.dirty = true;
+      if (!s.dirty) continue;
+      if (!near && !this.focusedKey) {
+        if (nowMs - this.lastFarDraw < FAR_CHANGE_MIN_MS) continue; // stays dirty; drawn on a later frame
+        this.lastFarDraw = nowMs;
+      }
+      queue.push(s);
     }
     if (queue.length === 0) return;
     const n = Math.min(3, queue.length);
@@ -289,7 +324,7 @@ export class ScreenManager {
       const pressed = t.pressed && nowMs - t.pressed.at < 160 ? t.pressed.id : null;
       const robot = this.robotFor(lab, t.b.rigId, t.b.hrn);
       const sig = `${rig === t.fallbackRig ? 'fb' : 'live'}|${rig.tablet?.tab}|${rig.tablet?.statusText}|${rig.banner}|${rig.dashboardLocked}|${rig.steppersEnabled}|${rig.dipArm}|${rig.tapArm}|${rig.phonePusher}|${rig.solenoid?.down}|${rig.magneticLock?.engaged}|${Math.round(rig.gantry.xMm * 10)}|${Math.round(rig.gantry.yMm * 10)}|${robot.humanReadableName}|${robot.status}|${boot}|${pressed}|${t.canvas.width}`;
-      const periodic = nowMs - t.lastDraw > (wiping ? 33 : rig.banner === 'yellow' ? 100 : 500);
+      const periodic = this.near(t.b.mesh) && nowMs - t.lastDraw > (wiping ? 33 : rig.banner === 'yellow' ? 100 : 500);
       if ((sig !== t.sig || periodic) && budget > 0) {
         budget--;
         t.sig = sig;

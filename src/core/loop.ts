@@ -24,8 +24,10 @@ export class GameLoop {
   private last = 0;
   private acc = 0;
   private running = false;
-  /** Smoothed frames-per-second, for the HUD/debug overlay and auto quality. */
+  /** Frames per second over the last full one-second window (an honest count, not a 1/dt average). */
   fps = 60;
+  private winStart = 0;
+  private winFrames = 0;
 
   constructor(private readonly cb: LoopCallbacks) {}
 
@@ -39,7 +41,12 @@ export class GameLoop {
       let dt = now - this.last;
       this.last = now;
       if (dt > 250) dt = 250; // tab was hidden; don't spiral
-      if (dt > 0) this.fps = this.fps * 0.95 + (1000 / dt) * 0.05;
+      this.winFrames++;
+      if (now - this.winStart >= 1000) {
+        if (this.winStart > 0) this.fps = (this.winFrames * 1000) / (now - this.winStart);
+        this.winStart = now;
+        this.winFrames = 0;
+      }
 
       if (!this.cb.paused()) {
         this.acc += dt;

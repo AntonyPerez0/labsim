@@ -51,7 +51,7 @@
 .focus-crash__title { font-size: 18px; font-weight: 700; color: #ffb2ab; }
 
 /* ── pause ── */
-.pause { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(3, 5, 5, 0.55); backdrop-filter: blur(8px) saturate(0.8); -webkit-backdrop-filter: blur(8px) saturate(0.8); animation: fade-in 180ms; }
+.pause { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(3, 5, 5, 0.55); animation: fade-in 180ms; }
 .pause__panel { width: 380px; padding: 22px; border-radius: var(--r-xl); background: var(--glass-strong); border: 1px solid var(--line-2); box-shadow: var(--shadow-2); animation: pop-in 220ms var(--ease-out); }
 .pause__brand { display: flex; align-items: center; gap: 12px; color: var(--lab); margin-bottom: 18px; }
 .pause__title { font: 800 22px/1.1 var(--font-display); color: var(--tx-0); letter-spacing: -0.02em; }
@@ -186,7 +186,7 @@
 .qz-res__actions { margin-top: 12px; }
 
 /* ── briefing ── */
-.briefing { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(3, 5, 5, 0.6); backdrop-filter: blur(10px); animation: fade-in 220ms; }
+.briefing { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(3, 5, 5, 0.6); animation: fade-in 220ms; }
 .briefing__panel { width: min(640px, 90vw); padding: 28px 30px; border-radius: var(--r-xl); background: var(--glass-strong); border: 1px solid var(--line-2); box-shadow: var(--shadow-2); display: flex; flex-direction: column; gap: 14px; animation: pop-in 260ms var(--ease-out); }
 .briefing__eyebrow { font-size: 11px; font-weight: 750; letter-spacing: 0.16em; text-transform: uppercase; color: var(--lab-hi); }
 .briefing__title { margin: 0; font: 800 28px/1.15 var(--font-display); letter-spacing: -0.02em; }
@@ -200,7 +200,7 @@
 .briefing__actions { display: flex; justify-content: flex-end; }
 
 /* ── debrief ── */
-.debrief { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; background: radial-gradient(ellipse at 50% 0%, rgba(67, 176, 42, 0.12), rgba(3, 5, 5, 0.82) 60%); backdrop-filter: blur(12px); animation: fade-in 260ms; overflow: auto; }
+.debrief { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; background: radial-gradient(ellipse at 50% 0%, rgba(67, 176, 42, 0.12), rgba(3, 5, 5, 0.82) 60%); animation: fade-in 260ms; overflow: auto; }
 .debrief__panel { width: min(1100px, 96vw); max-height: calc(100vh - 48px); display: flex; flex-direction: column; border-radius: var(--r-xl); background: var(--glass-strong); border: 1px solid var(--line-2); box-shadow: var(--shadow-2); overflow: hidden; animation: pop-in 320ms var(--ease-out); }
 .debrief__head { padding: 26px 30px 10px; }
 .debrief__eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: var(--lab-hi); }
@@ -259,7 +259,7 @@
 .inspect__term p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--tx-1); }
 
 /* ── notebook ── */
-.notebook { position: absolute; right: 0; top: 0; bottom: 0; width: 440px; display: flex; flex-direction: column; background: rgba(8, 11, 11, 0.94); border-left: 1px solid var(--line-2); box-shadow: -20px 0 60px rgba(0, 0, 0, 0.45); backdrop-filter: blur(14px); pointer-events: auto; animation: slide-in-right 260ms var(--ease-out); }
+.notebook { position: absolute; right: 0; top: 0; bottom: 0; width: 440px; display: flex; flex-direction: column; background: rgba(8, 11, 11, 0.94); border-left: 1px solid var(--line-2); box-shadow: -20px 0 60px rgba(0, 0, 0, 0.45); pointer-events: auto; animation: slide-in-right 260ms var(--ease-out); }
 .notebook__head { display: flex; align-items: center; gap: 10px; padding: 16px 16px 10px; color: var(--lab-hi); }
 .notebook__title { font-weight: 750; font-size: 16px; color: var(--tx-0); }
 .notebook__sub { font-size: 11.5px; color: var(--tx-3); }
@@ -357,7 +357,7 @@
 .gdrill__options { display: flex; flex-direction: column; gap: 8px; }
 
 /* ── ticket board ── */
-.tix { position: absolute; right: 0; top: 0; bottom: 0; width: min(980px, 74vw); display: grid; grid-template-columns: 310px 1fr; background: rgba(7, 10, 10, 0.95); border-left: 1px solid var(--line-2); box-shadow: -24px 0 60px rgba(0, 0, 0, 0.5); backdrop-filter: blur(14px); pointer-events: auto; animation: slide-in-right 260ms var(--ease-out); }
+.tix { position: absolute; right: 0; top: 0; bottom: 0; width: min(980px, 74vw); display: grid; grid-template-columns: 310px 1fr; background: rgba(7, 10, 10, 0.95); border-left: 1px solid var(--line-2); box-shadow: -24px 0 60px rgba(0, 0, 0, 0.5); pointer-events: auto; animation: slide-in-right 260ms var(--ease-out); }
 .tix__list { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--line); }
 .tix__list-head { display: flex; align-items: center; gap: 8px; padding: 16px 14px 10px; font-weight: 700; }
 .tix__count { font-size: 11.5px; color: var(--tx-2); font-weight: 500; }
@@ -419,7 +419,7 @@
 .tixd__actions { display: flex; align-items: center; gap: 8px; padding: 12px 22px 16px; border-top: 1px solid var(--line); background: rgba(0, 0, 0, 0.2); }
 
 /* ── sandbox panel ── */
-.sbx { position: absolute; right: 0; top: 0; bottom: 0; width: 420px; display: flex; flex-direction: column; background: rgba(7, 10, 10, 0.95); border-left: 1px solid var(--line-2); box-shadow: -24px 0 60px rgba(0, 0, 0, 0.5); backdrop-filter: blur(14px); pointer-events: auto; animation: slide-in-right 260ms var(--ease-out); }
+.sbx { position: absolute; right: 0; top: 0; bottom: 0; width: 420px; display: flex; flex-direction: column; background: rgba(7, 10, 10, 0.95); border-left: 1px solid var(--line-2); box-shadow: -24px 0 60px rgba(0, 0, 0, 0.5); pointer-events: auto; animation: slide-in-right 260ms var(--ease-out); }
 .sbx__head { display: flex; align-items: center; gap: 10px; padding: 16px 14px 10px 16px; color: var(--amber); }
 .sbx__title { font-weight: 750; font-size: 16px; color: var(--tx-0); }
 .sbx__sub { font-size: 11.5px; color: var(--tx-3); }
@@ -468,6 +468,6 @@
 .fps.is-low { color: var(--amber); }
 
 /* ── field manual overlay wrapper ── */
-.manual-ov { position: absolute; inset: 0; padding: 22px; background: rgba(3, 5, 5, 0.66); backdrop-filter: blur(12px); animation: fade-in 200ms; display: flex; }
+.manual-ov { position: absolute; inset: 0; padding: 22px; background: rgba(3, 5, 5, 0.66); animation: fade-in 200ms; display: flex; }
 .manual-ov > .fm { flex: 1; border-radius: var(--r-xl); border: 1px solid var(--line-2); box-shadow: var(--shadow-2); }
 .pause__brand svg, .briefing svg.k-icon, .fm__brand svg { flex: none; }

@@ -147,10 +147,11 @@ export async function buildRigs(engine: Engine, onProgress: (p: number, label: s
     for (const b of binders) b.update(l, dt, now);
     shelfBinder(l, now);
     kit.root.updateMatrixWorld();
-    kit.updateDynamic();
-    movingInst.update();
+    // Shadow maps are static; anything mechanical moving (gantry, plunger, arms, switches) asks for
+    // a (throttled) refresh so its shadow follows it.
+    if (kit.updateDynamic() | (movingInst.update() ? 1 : 0)) engine.markShadowsDirty();
     kit.leds.tick(dt * 1000);
-    screens.update(l, now);
+    screens.update(l, now, engine.camera.position);
     receipts.update(l);
   });
   current = {
