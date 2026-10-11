@@ -658,4 +658,21 @@ export const QUIZ_M06: QuizQuestion[] = resolvePeople([
     factIds: ["F113", "F112"],
     tags: ["orca.status", "orca.status.reserved"],
   },
+  {
+    id: "Q391",
+    type: "mc",
+    moduleId: "M06",
+    difficulty: 1,
+    prompt: "What is a test pipeline's first action?",
+    options: [
+      "Call Orca to request a robot, uploading the test cases and parameters",
+      "Ping every Robot Pi's health endpoint",
+      "Run Laz OOBE on every device in the lab",
+      "Reboot the Windows box running Callus",
+    ],
+    answer: 0,
+    explanation: "The pipeline first calls Orca to request a robot, uploading the test cases and parameters; Orca matches environment, device profile and capabilities (touch, dip, tap, swipe) (F256).",
+    factIds: ["F256"],
+    tags: ["orca.status", "arch.flow", "jenkins.checkout"],
+  },
 ]);

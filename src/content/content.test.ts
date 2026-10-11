@@ -82,15 +82,15 @@ const ALL_DATA = {
 
 describe('counts (Cur totals)', () => {
   it('has every fact, item, card and module', () => {
-    expect(FACTS).toHaveLength(245);
+    expect(FACTS).toHaveLength(266);
     expect(ILLUSTRATIVE_FACTS).toHaveLength(20);
-    expect(FACTS.filter((f) => f.tier === 'core')).toHaveLength(169);
-    expect(FACTS.filter((f) => f.tier === 'supporting')).toHaveLength(64);
-    expect(FACTS.filter((f) => f.tier === 'trivia')).toHaveLength(12);
-    expect(QUIZ_BANK).toHaveLength(382);
+    expect(FACTS.filter((f) => f.tier === 'core')).toHaveLength(176);
+    expect(FACTS.filter((f) => f.tier === 'supporting')).toHaveLength(77);
+    expect(FACTS.filter((f) => f.tier === 'trivia')).toHaveLength(13);
+    expect(QUIZ_BANK).toHaveLength(410);
     const byType = (t: string) => QUIZ_BANK.filter((q) => q.type === t).length;
-    expect([byType('mc'), byType('tf'), byType('fill'), byType('order'), byType('match')]).toEqual([251, 73, 31, 14, 13]);
-    expect(FLASHCARDS).toHaveLength(159);
+    expect([byType('mc'), byType('tf'), byType('fill'), byType('order'), byType('match')]).toEqual([268, 81, 32, 15, 14]);
+    expect(FLASHCARDS).toHaveLength(177);
     expect(MODULES).toHaveLength(18);
     expect(ACHIEVEMENTS).toHaveLength(46);
     expect(RANKS).toHaveLength(6);
@@ -101,9 +101,9 @@ describe('counts (Cur totals)', () => {
   });
 
   it('ids follow the curriculum schemes and are contiguous', () => {
-    expect(FACTS.map((f) => f.id)).toEqual(Array.from({ length: 245 }, (_, i) => `F${String(i + 1).padStart(3, '0')}`));
-    expect(QUIZ_BANK.map((q) => q.id)).toEqual(Array.from({ length: 382 }, (_, i) => `Q${String(i + 1).padStart(3, '0')}`));
-    expect(FLASHCARDS.map((c) => c.id)).toEqual(Array.from({ length: 159 }, (_, i) => `FC${String(i + 1).padStart(3, '0')}`));
+    expect(FACTS.map((f) => f.id)).toEqual(Array.from({ length: 266 }, (_, i) => `F${String(i + 1).padStart(3, '0')}`));
+    expect(QUIZ_BANK.map((q) => q.id)).toEqual(Array.from({ length: 410 }, (_, i) => `Q${String(i + 1).padStart(3, '0')}`));
+    expect(FLASHCARDS.map((c) => c.id)).toEqual(Array.from({ length: 177 }, (_, i) => `FC${String(i + 1).padStart(3, '0')}`));
     expect(MODULES.map((m) => m.id)).toEqual(Array.from({ length: 18 }, (_, i) => `M${String(i + 1).padStart(2, '0')}`));
   });
 });

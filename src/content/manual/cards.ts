@@ -19,7 +19,7 @@ export const CARDS_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
     image: "touch-robot-side-gantry.jpg",
     body: `## What they are
 
-**Collis probes** (UL Transaction Security) are **high-cost proprietary card emulators** {F069}. One probe can simulate {F071}:
+**Collis probes** (UL Transaction Security) are **high-cost proprietary card emulators**: because of licensing fees they are the **most expensive components on the shelves** {F069}. One probe can simulate {F071}:
 
 - a **magnetic-stripe swipe**,
 - an **EMV chip dip**,
@@ -120,7 +120,7 @@ Gort is the core monorepo housing the testing ecosystem and its configuration mo
     title: "Card Testing Philosophy, Canada & PIN Entry",
     category: "Cards & Payments",
     summary: "Your team proves pipelines with one reliable Visa profile plus Interac for Canada; PayCore runs exhaustive Visa/Discover/AmEx matrices. Canadian flows need physical PIN entry — and Gen 2 aims to bypass that in software.",
-    factIds: ["F224", "F225", "F226", "F103", "F220", "F222", "F223", "F061", "F218"],
+    factIds: ["F224", "F225", "F226", "F103", "F220", "F222", "F223", "F061", "F218", "F261"],
     tags: ["cards", "cards.philosophy", "bots.pin", "bots.types"],
     related: ["adb-vs-physical-bots", "card-profiles", "orca-statuses", "teams-and-history"],
     keywords: ["Visa", "Interac", "Discover", "AmEx", "card matrix", "PayCore", "Canada", "PIN", "Westers", "Compact", "Gen 2", "Secure Touch", "Core OS"],
@@ -134,7 +134,7 @@ Gort is the core monorepo housing the testing ecosystem and its configuration mo
 
 Different jobs, different needs: your team tests that the *pipeline and app flows* work; PayCore validates *card coverage*. "Should we add Discover and AmEx to our regression?" — no; that is PayCore's matrix, not your pipeline check.
 
-PayCore's standalone rigs are kept **Unavailable** so general tests don't overwrite their merchant profiles {F103}.
+PayCore's standalone rigs are kept **Unavailable** so general tests don't overwrite their merchant profiles {F103}. PayCore is only now building its **third automated shelf** and sometimes runs tests on **this lab's robots remotely** {F261}.
 
 ## Canada
 
@@ -149,7 +149,7 @@ PayCore's standalone rigs are kept **Unavailable** so general tests don't overwr
 
 ## Gen 2 Software PIN Bypass
 
-The team is partnering with the **Core OS Team** on a software framework that bypasses physical robotics for **Secure Touch PIN entry** {F222}; physical robotics would then be reserved for non-negotiable hardware interactions such as **card dipping** {F223}.
+For a **simpler, lower-cost Gen 2 lab**, the team is partnering with the **Core OS Team** on a software framework that bypasses physical robotics for **Secure Touch PIN entry** {F222}; physical robotics would then be reserved for non-negotiable hardware interactions such as **card dipping** {F223}.
 `,
   },
 ]);

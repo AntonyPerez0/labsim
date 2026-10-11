@@ -41,15 +41,15 @@ export const INFRA_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
     title: "Infrastructure: GPU Blade, VMs, MySQL & the Roadmap",
     category: "Infrastructure",
     summary: "The shelf-mounted 4-GPU server blade that replaced a legacy tower and hosts the VMs, Orca, Jenkins and Ollama; Orca's on-prem VM and MySQL; the Docker/GCP plan; GitHub and IntelliJ — and the sim's illustrative host map.",
-    factIds: ["F075", "F076", "F077", "F078", "F013", "F022", "F023", "F018", "F027", "F031", "F032", "F066", "F068", "F222", "F156"],
+    factIds: ["F075", "F076", "F077", "F078", "F013", "F022", "F023", "F018", "F027", "F031", "F032", "F066", "F068", "F222", "F156", "F255", "F262", "F263", "F264"],
     tags: ["infra.ai", "arch.infra", "arch.stack"],
     related: ["tech-stack", "orca-overview", "ollama-and-claude", "illustrative-details", "teams-and-history"],
-    keywords: ["GPU", "NVIDIA", "server blade", "tower", "VM", "virtual machine", "MySQL", "Docker", "GCP", "Google Cloud", "on-prem", "roadmap", "host map", "IP"],
+    keywords: ["GPU", "NVIDIA", "server blade", "tower", "VM", "virtual machine", "MySQL", "Docker", "GCP", "Google Cloud", "on-prem", "roadmap", "host map", "IP", "noise", "13,000"],
     practice: ["INC10", "INC60", "INC62"],
     body: `## The GPU server blade
 
 - **Four NVIDIA GPUs** in a **shelf-mounted server blade** {F075} — **two exposed, two underneath** {F076} (crouch to see them).
-- It **replaced a legacy tower unit** {F077}.
+- It **replaced an old, noisy legacy tower** that used to run the VMs, Orca and Jenkins {F077}.
 - It **hosts the VMs, Orca, Jenkins and Ollama** {F078}.
 
 > **Warning:** Orca, Jenkins and Ollama share the blade. Restarting the whole blade (or a VM you don't own) kills every running job — restart only the failed service.
@@ -58,13 +58,20 @@ export const INFRA_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
 
 - Today Orca runs on a **local, on-premise lab virtual machine** {F023}, backed by **MySQL** {F013}.
 - The plan: containerise it with **Docker** and move it to **Google Cloud Platform (GCP)** {F022}.
+- Why not yet? **It works**, and the team prioritises **feature automation** over the migration {F255}.
+
+## AI on the blade: the reality check
+
+- Bigger ambitions (optimising repos, auto-generating about **13,000** test scripts) **exceeded the blade's compute and the lab's electrical capacity**, so the AI proof of concept is limited to visual inspection of receipt layouts and tip math {F262}.
+- The hope: a local **vision LLM replaces brittle OCR**, but its **token-usage limits are uncertain** {F264}.
+- The real AI server has been **powered down for now because of its noise** {F263}. In the sim it stays on† ([[ollama-and-claude]]).
 
 ## The roadmap at a glance
 
 | Item | State |
 |---|---|
 | Orca on an on-prem lab VM | Today {F023} |
-| Orca containerised in Docker on GCP | Planned {F022} |
+| Orca containerised in Docker on GCP | Planned; not urgent while the VM works {F022} {F255} |
 | Hardware control on Linux Raspberry Pis | Today {F068} |
 | Hardware control on Windows Intel NUCs | Retired {F068} |
 | Ollama vision checks on webcam streams | Proof of concept {F032} |
@@ -96,10 +103,10 @@ GitHub hosts the repos {F018}; IntelliJ IDEA is the primary IDE {F027}; Intel NU
     title: "Teams & History",
     category: "Teams & History",
     summary: "From the Semi Team's SDKs and pay-display apps and the Sedi QA Team's Lester framework, to {{morgan}}'s uia-remote, its adoption by IPX and PayCore, and the Core OS partnership.",
-    factIds: ["F157", "F158", "F159", "F160", "F161", "F162", "F052", "F053", "F043", "F042", "F222", "F226", "F135"],
+    factIds: ["F157", "F158", "F159", "F160", "F161", "F162", "F052", "F053", "F043", "F042", "F222", "F226", "F135", "F253", "F254", "F261"],
     tags: ["teams.history", "uia.history", "semi.paydisplay"],
     related: ["uia-remote-structure", "pigeon-lstr", "card-testing-philosophy", "who-is-who"],
-    keywords: ["Semi", "Sedi", "QA", "Lester", "IPX", "Integrated Payment Experience", "PayCore", "LabSim Dining", "Core OS", "history", "USB Pay Display", "Secure Network Pay Display", "Contact Canada"],
+    keywords: ["Semi", "Sedi", "QA", "Lester", "IPX", "Integrated Payment Experience", "PayCore", "LabSim Dining", "Core OS", "history", "USB Pay Display", "Secure Network Pay Display", "Contact Canada", "first assignment", "Compact", "UI Automator", "native apps"],
     practice: ["INC47", "INC58", "INC61"],
     body: `## The timeline
 
@@ -107,7 +114,7 @@ GitHub hosts the repos {F018}; IntelliJ IDEA is the primary IDE {F027}; Intel NU
 2. **Sedi (QA) Team** — tested the Semi Team's apps using the legacy **Lester** framework {F158}. Lester evolved into **Pigeon** {F043} (the name is a pun on "pidgin language" {F042}).
 3. **uia-remote** — {{morgan}} created it because no prior framework could automate native tethered setups: Station-to-Mini, Mini-to-Mini and Station Duo {F159}.
 4. **IPX (Integrated Payment Experience) Team** — uia-remote is now integrated with IPX {F160}, testing standalone and tethered devices across the native apps **Register, Orders, Authorizations, Sale, Transactions and Setup** {F161}.
-5. **PayCore Team** — adopted uia-remote for apps like **LabSim Dining** {F162}, and runs exhaustive Visa/Discover/AmEx card matrices {F226}.
+5. **PayCore Team** — adopted uia-remote for apps like **LabSim Dining** {F162}, and runs exhaustive Visa/Discover/AmEx card matrices {F226}. PayCore is only now building its third automated shelf and sometimes uses this lab's robots remotely {F261}.
 6. **Core OS Team** — partnering on the Gen 2 Software PIN Bypass {F222}.
 
 ## Who does what
@@ -121,6 +128,11 @@ GitHub hosts the repos {F018}; IntelliJ IDEA is the primary IDE {F027}; Intel NU
 | Core OS | Gen 2 Software PIN Bypass partner |
 
 Contact Canada automation scripts run on the Westers test beds and use both capability lookup styles {F135}.
+
+## Where the team is heading
+
+- The team is **moving away from Pigeon toward UI Automator** (uia-remote), driven by a mandate to **test payments inside the native apps** {F253}.
+- A new engineer's **first assignment** is the **Compact (Canadian-market) test workflow in UI Automator** {F254}.
 
 > **Illustrative (sim only):** The reference calls the uia-remote author "the presenter"; the game's name for that person is {{morgan}}†.
 `,

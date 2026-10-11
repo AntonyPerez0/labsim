@@ -11,10 +11,10 @@ export const BASICS_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
     title: "Lab Tour & Safety Rules",
     category: "Lab Basics",
     summary: "Where everything is in the LabSim automation lab, what each zone is for, and the five rules that keep you (and a lot of expensive hardware) out of trouble.",
-    factIds: ["F089", "F115", "F230", "F233", "F236", "F244", "F245", "F072", "F073", "F228", "F229", "F231", "F232", "F111"],
-    tags: ["lab.orientation", "people.roles", "hw.tablet", "hw.lockout"],
+    factIds: ["F089", "F115", "F230", "F233", "F236", "F244", "F245", "F072", "F073", "F228", "F229", "F231", "F232", "F111", "F257", "F258", "F259", "F252"],
+    tags: ["lab.orientation", "people.roles", "hw.tablet", "hw.lockout", "hw.print3d"],
     related: ["who-is-who", "status-tablet", "power-18v-exception", "maglock-and-park-all", "how-the-sim-differs"],
-    keywords: ["safety card", "rules", "map", "zones", "rack", "workstation", "first day"],
+    keywords: ["safety card", "rules", "map", "zones", "rack", "workstation", "first day", "15-minute rule", "ask for help", "modular shelves", "redesign", "particle board", "ownership"],
     practice: ["INC11", "INC12", "INC17", "DR16"],
     image: "walle-status-tablet-front.jpg",
     body: `## What this lab is for
@@ -31,7 +31,7 @@ Everything in the room exists to press buttons on LabSim point-of-sale devices s
 | Callus shelf | Windows/Minix boxes running Callus, an Intel NUC (no longer used for hardware control), Collis probes on ribbon cables | Card emulation problems |
 | Power wall | Mean Well transformer, 24V DC rail, 12V and 5V 10A regulators, inline fuses, AC power strips | Power faults |
 | Server shelf | The 4-GPU server blade (two GPUs exposed, two underneath) and the retired tower | Infrastructure |
-| 3D print corner | Prusa and Bambu Lab printers | Printing fixtures |
+| 3D print corner | Prusa printer (plus a Bambu Lab printer† in the sim) | Printing fixtures |
 | Your workstation | Orca, Jenkins, IntelliJ IDEA, terminal, GIMP, GitHub, camera streams, Ollama | Most of your day |
 
 ## Reading a robot at a glance
@@ -40,7 +40,15 @@ Every touch robot has a **front-mounted status tablet** {F089}. Its header shows
 
 > **Tip:** Identify a rig by its tablet header (which comes from Orca), never by a side panel — panels get reused between rigs†.
 
-All the matte-black plastic you see — cradles, panels, docks — was printed on the lab's **Prusa and Bambu Lab** printers {F072}, drafted in CAD from simple geometric shapes {F073}.
+All the matte-black plastic you see — cradles, panels, docks — is 3D-printed in-house: on **Prusa** printers in this lab, on **Bambu Lab** printers at the team's other lab {F072}, drafted in CAD from simple geometric shapes {F073}.
+
+> **In the sim:** The print corner also has a Bambu Lab printer† so you can try both; the real lab here prints on Prusa.
+
+## How the lab got this way
+
+- About **three years ago** the lab was redesigned around **standardised modular shelves**. Before that, fixtures were **raw CNC-cut particle board on open racks**, so every rig was configured differently {F257}.
+- Modular shelves are why recovery is fast: a failed **Duo 2 can be swapped for a Flex 3 in minutes rather than days** {F258}.
+- The lab has **one clear owner** ({{jared}}). A lab that "belongs to everyone" does not work: **everyone's responsibility is no one's responsibility** {F259}. Tell the owner before you rebuild, re-cable or repurpose anything.
 
 ## The five safety rules
 
@@ -51,6 +59,10 @@ All the matte-black plastic you see — cradles, panels, docks — was printed o
 5. **Lab devices speak ADB on port 5444.** Port 5555 is the ADB default and reaches coworkers' desk devices. See [[adb-port-5444]].
 
 > **Illustrative (sim only):** The Lab Safety Card's exact wording is invented for the game†; the rules on it restate reference facts.
+
+## The 15-minute rule
+
+Spend **at most 15 minutes stuck** troubleshooting on your own, then **ask the team** {F252}. Even veterans don't remember where every config lives; asking early is the expected habit, not a weakness. Bring what you have already checked (see [[who-is-who]]).
 
 ## Your first day checklist
 

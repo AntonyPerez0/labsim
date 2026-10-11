@@ -11,19 +11,23 @@ import type { LessonDef } from '../../types';
 import { JOB, consoleOpened, finished, jobRoute, say } from './helpers';
 
 const FILE = 'tests/sale/swipe_sale_print.json';
-const tokenClicked = (token: string) =>
-  c.appAction('intellij', 'intellij.editor.clicked', (d) => String(d.path ?? '').endsWith('swipe_sale_print.json') && (d.token === token || String(d.lineText ?? '').includes(`"${token}"`)));
+/** Pigeon JSON is edited in VS Code (IntelliJ clicks still count for players who prefer it). */
+const tokenClicked = (token: string) => {
+  const hit = (d: { path?: unknown; token?: unknown; lineText?: unknown }) => String(d.path ?? '').endsWith('swipe_sale_print.json') && (d.token === token || String(d.lineText ?? '').includes(`"${token}"`));
+  return c.any(c.appAction('vscode', 'vscode.editor.clicked', hit), c.appAction('intellij', 'intellij.editor.clicked', hit));
+};
 
 export const M15: LessonDef = {
   moduleId: 'M15',
   mentor: 'morgan',
-  setup: { preset: 'academy:M15', spawn: 'loc.workstation', apps: { unlock: ['intellij', 'jenkins', 'camera', 'github', 'terminal', 'chat'] } },
+  setup: { preset: 'academy:M15', spawn: 'loc.workstation', apps: { unlock: ['vscode', 'intellij', 'jenkins', 'camera', 'github', 'terminal', 'chat'] } },
   deck: 'deck.M15',
   manualChapters: ['Test Frameworks'],
   realLabChecklist: [
     'Pigeon (LSTR, the Language Specific Test Runner) evolved from Lester; its runners speak REST, Android, Windows and iOS. The iOS runner is rarely touched, but iOS Go testing is active.',
     'A Pigeon test is raw JSON: name, connection type, supported platforms (often 4–5 at once) and an array of actions that create requests, pass parameters and store outputs.',
-    'There is no JSON linter: hunt missing commas and brackets by hand, or paste a known-good block instead of writing syntax from scratch.',
+    'Pigeon tests are edited in VS Code. It flags raw JSON syntax (one token late: look at the end of the previous line) but knows nothing about LSTR, so wrong action names, ${variables} and screens only fail at run time. Paste known-good blocks instead of writing syntax from scratch.',
+    'To test a change: commit on a branch, push, then point the Jenkins Pigeon job at your branch.',
     'A failure "at select print" usually means the arm missed the Print button (stale coordinates), so no printer payload arrived before the timeout. Check the camera, then the coordinates.',
   ],
   steps: [
@@ -37,15 +41,18 @@ export const M15: LessonDef = {
     {
       id: 'M15.02',
       kind: 'computer-task',
-      hud: "Open the pigeon repo and click the runner that's rarely touched",
-      app: 'intellij',
-      route: '/project/pigeon',
+      hud: "Open the pigeon folder in VS Code and click the runner that's rarely touched",
+      app: 'vscode',
+      route: '/folder/pigeon',
       onEnter: [{ do: 'setup', setup: { scenario: [{ op: 'repo.clone', params: { repo: 'pigeon' } }] } }],
-      success: c.appAction('intellij', 'intellij.tree.nodeClicked', (d) => d.repo === 'pigeon' && d.path === 'runners/ios'),
+      success: c.any(
+        c.appAction('vscode', 'vscode.tree.nodeClicked', (d) => d.repo === 'pigeon' && d.path === 'runners/ios'),
+        c.appAction('intellij', 'intellij.tree.nodeClicked', (d) => d.repo === 'pigeon' && d.path === 'runners/ios'),
+      ),
       wrongActions: [
         {
           id: 'busy-runner',
-          on: on('app.action', { app: 'intellij', action: 'intellij.tree.nodeClicked' }, (pl) => /^runners\/(rest|android|windows)$/.test(String((pl.data as { path?: string } | undefined)?.path ?? ''))),
+          on: on('app.action', { app: 'vscode', action: 'vscode.tree.nodeClicked' }, (pl) => /^runners\/(rest|android|windows)$/.test(String((pl.data as { path?: string } | undefined)?.path ?? ''))),
           say: 'That one runs every night. Look for the one we rarely open.',
         },
       ],
@@ -56,8 +63,8 @@ export const M15: LessonDef = {
       id: 'M15.03',
       kind: 'computer-task',
       hud: 'Open swipe_sale_print.json and click the four parts of a Pigeon test',
-      app: 'intellij',
-      route: `/project/pigeon/file/${FILE}`,
+      app: 'vscode',
+      route: `/folder/pigeon/file/${FILE}`,
       success: c.all(tokenClicked('name'), tokenClicked('connectionType'), tokenClicked('platforms'), tokenClicked('actions')),
       objectives: [
         { id: 'M15.03.name', text: 'name', done: tokenClicked('name') },
@@ -88,28 +95,32 @@ export const M15: LessonDef = {
     {
       id: 'M15.06',
       kind: 'computer-task',
-      hud: 'Pigeon has no JSON linter. Find the problem by hand (or paste a known-good block)',
-      app: 'intellij',
-      route: `/project/pigeon/file/${FILE}`,
+      hud: 'Fix the JSON in VS Code, then commit and push from Source Control',
+      app: 'vscode',
+      route: `/folder/pigeon/file/${FILE}`,
       success: c.eq(p.gitFile('pigeon', FILE, 'main').parsesJson, true),
       objectives: [
         { id: 'M15.06.fix', text: 'Fix the JSON (missing comma after line 22, or paste from tests/_templates/known_good_actions.json)', done: c.eq(p.gitFile('pigeon', FILE, 'local').parsesJson, true) },
         { id: 'M15.06.push', text: 'Commit and push to pigeon main', done: c.eq(p.gitFile('pigeon', FILE, 'main').parsesJson, true) },
       ],
       hints: [
-        { afterS: 60, idle: true, effect: 'text', text: 'Go to line 22 (Ctrl+G). Every property in an object needs a comma before the next one.' },
-        { afterS: 120, idle: true, effect: 'text', text: '"robot": "${ROBOT_NAME}" is missing its trailing comma. Then commit and push (Ctrl+K, Ctrl+Shift+K).' },
+        { afterS: 45, idle: true, effect: 'text', text: 'Open Problems (Ctrl+Shift+M). VS Code puts the squiggle on line 23, the token AFTER the gap, so look at the end of line 22.' },
+        { afterS: 120, idle: true, effect: 'text', text: '"robot": "${ROBOT_NAME}" is missing its trailing comma. Save (Ctrl+S), then Source Control (Ctrl+Shift+G): message, ✓ Commit, Sync Changes.' },
         { afterS: 180, idle: true, effect: 'show-me-button' },
       ],
-      showMe: [{ app: 'intellij', route: `/project/pigeon/file/${FILE}`, target: 'intellij.commitButton', action: 'click' }],
+      showMe: [
+        { app: 'vscode', route: `/folder/pigeon/file/${FILE}`, target: 'vscode.problemsWidget', action: 'click' },
+        { app: 'vscode', route: `/folder/pigeon/file/${FILE}`, target: 'vscode.activity:scm', action: 'click' },
+        { app: 'vscode', route: `/folder/pigeon/file/${FILE}`, target: 'vscode.commitButton', action: 'click' },
+      ],
       factIds: ['F208', 'F209'],
     },
     {
       id: 'M15.07',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: 'No linter, so the survival skill is copy-pasting JSON blocks that already work instead of writing syntax from scratch.',
-      factIds: ['F209'],
+      text: "VS Code only checks raw JSON syntax. It knows nothing about LSTR, so a misspelled action or ${variable} looks fine until the run fails. That's why we say Pigeon has no real linter, and why the survival skill is pasting JSON blocks that already work. Drill it any time in VS Code's Pigeon Practice panel.",
+      factIds: ['F209', 'F246', 'F247', 'F248'],
     },
     {
       id: 'M15.08',

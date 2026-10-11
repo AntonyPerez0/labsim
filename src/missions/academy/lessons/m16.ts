@@ -52,7 +52,7 @@ const cfdLocatorsOnCfd: Condition = c.custom('m16-cfd-display-id', 'CfdTotalsScr
 export const M16: LessonDef = {
   moduleId: 'M16',
   mentor: 'morgan',
-  setup: { preset: 'academy:M16', spawn: 'loc.workstation', apps: { unlock: ['terminal', 'camera', 'gimp', 'orca', 'intellij', 'github', 'chat'] } },
+  setup: { preset: 'academy:M16', spawn: 'loc.workstation', apps: { unlock: ['terminal', 'camera', 'gimp', 'orca', 'vscode', 'intellij', 'github', 'chat'] } },
   deck: 'deck.M16',
   realLabChecklist: [
     'On a Station Duo one terminal drives two displays, but only the primary MFD is exposed to ADB: legacy UI Automator is blind to the CFD.',
@@ -164,9 +164,9 @@ export const M16: LessonDef = {
     {
       id: 'M16.10',
       kind: 'computer-task',
-      hud: "Paste your GIMP coordinates into Pigeon's screenCompare block",
-      app: 'intellij',
-      route: `/project/pigeon/file/${PIGEON_FILE}`,
+      hud: "Paste your GIMP coordinates into Pigeon's screenCompare block (VS Code)",
+      app: 'vscode',
+      route: `/folder/pigeon/file/${PIGEON_FILE}`,
       onEnter: [inject({ op: 'repo.clone', params: { repo: 'pigeon' } })],
       success: pigeonBlockOk,
       hints: [

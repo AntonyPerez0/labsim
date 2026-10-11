@@ -11,7 +11,7 @@ export const ORCA_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
     title: "Orca (Orchestrator): Architecture & Execution Flow",
     category: "Orchestrator",
     summary: "Orca is the on-premise Spring Boot monolith that sits between Jenkins pipelines and the physical robots. Orca is the Controller; Jenkins is the Executor. Here is the whole flow from a build to a tap.",
-    factIds: ["F036", "F037", "F038", "F098", "F002", "F003", "F004", "F001", "F013", "F014", "F023", "F094", "F095", "F096", "F097", "F099", "F114"],
+    factIds: ["F036", "F037", "F038", "F098", "F002", "F003", "F004", "F001", "F013", "F014", "F023", "F094", "F095", "F096", "F097", "F099", "F114", "F256", "F255"],
     tags: ["orca.status", "arch.flow", "arch.roles", "arch.stack"],
     related: ["orca-statuses", "orca-health-check", "jenkins-executor", "tech-stack", "infrastructure-overview", "orca-robot-device"],
     keywords: ["Orca", "Orchestrator", "Controller", "Executor", "Spring Boot", "JHipster", "MySQL", "monolith", "VM", "architecture", "flow", "REST", "checkout"],
@@ -25,7 +25,7 @@ export const ORCA_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
 | Backend & REST API | Spring Boot {F002} |
 | Scaffolding | JHipster — an interactive setup questionnaire that generated Orca's frontend UI, Spring Boot REST endpoints and MySQL schemas {F003} {F004} |
 | Database | MySQL {F013}: hardware states, merchant profiles, screen-coordinate tables (robots, devices, screens, card profiles, merchants) {F014}; 7 core schemas as JHipster entities {F114} |
-| Where it runs | A local, on-premise lab virtual machine {F023} (on the GPU server blade) |
+| Where it runs | A local, on-premise lab virtual machine {F023} (on the GPU server blade). It stays there for now because it works and feature automation comes first {F255} |
 
 ## The execution flow
 
@@ -45,11 +45,13 @@ Jenkins (Executor) ──triggers pipeline, injects env vars──▶ Test runne
 \`\`\`
 
 1. **Jenkins** triggers the pipeline and injects runtime environment variables into the test runner (uia-remote or Pigeon) {F094}.
-2. Jenkins **checks out a robot** from Orca {F095}.
+2. Jenkins **checks out a robot** from Orca {F095}. This is the pipeline's **first action**: it calls Orca to request a robot, uploading the test cases and parameters, and Orca matches the **environment, device profile and capabilities (touch, dip, tap, swipe)** {F256}.
 3. The test runner calls Orca over **REST** for \`xy_touch\` and for card swipe / dip / tap {F096}.
 4. Orca instructs the robot's **Raspberry Pi** (ADB touch, physical tap, dip, tap).
 5. For cards, the **Windows/Minix box running Callus** drives the **Collis probe** over a ribbon cable, and the probe feeds the LabSim device's card reader {F097}.
 6. In the background, every 5 minutes Orca pings every Pi's Robot Controller {F099} ([[orca-health-check]]).
+
+> **Tip:** To learn how to extend Orca, watch a short JHipster tutorial (the classic one builds a blog app in about ten minutes): Orca's entities, UI and REST endpoints were generated the same way {F003}.
 
 ## Orca's main screens
 

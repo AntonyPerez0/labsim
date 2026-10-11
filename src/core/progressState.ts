@@ -366,6 +366,8 @@ export interface ProgressState {
     xpToday: number;
     xpTodayDay: number;
   };
+  /** VS Code → Pigeon Practice: per exercise id, how often it was solved and the best time (real seconds). */
+  pigeonPractice: Record<string, { solved: number; bestS: number; lastDay: number }>;
 
   /* ── Certification ── */
   certs: Partial<Record<CertExamId, CertRecord>>;

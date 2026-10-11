@@ -221,6 +221,9 @@ export function routeFromParams(app: AppId, p: AppParams): string | null {
     case 'intellij':
       if (!p.repo) return null;
       return p.file ? `/project/${p.repo}/file/${p.file}` : buildRoute(APP_ROUTES.intellij.project, { repo: p.repo });
+    case 'vscode':
+      if (!p.repo && !p.file) return null;
+      return p.file ? `/folder/${p.repo ?? 'pigeon'}/file/${p.file}` : `/folder/${p.repo}`;
     case 'browser':
       return p.url ?? null;
     case 'camera': {

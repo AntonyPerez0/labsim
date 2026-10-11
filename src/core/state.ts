@@ -435,6 +435,7 @@ export function createDefaultProgress(): ProgressState {
     daily: { lastRankedDateKey: null, rankedCount: 0, history: [] },
     penalties: {},
     freeplay: { fixesTotal: 0, xpToday: 0, xpTodayDay: 0 },
+    pigeonPractice: {},
     certs: {},
     fieldManual: { unlocked: [], bookmarks: [], read: [] },
     notebook: { notes: '', pinnedEvidence: [] },

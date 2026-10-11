@@ -148,10 +148,10 @@ Never paste GIMP pixel values into Screen Locations, or millimetres into a scree
     title: "IntelliJ IDEA & GitHub Workflow",
     category: "Tools",
     summary: "The team's primary IDE and code host: clone repos from GitHub into IntelliJ IDEA, configure local properties, run suites, and land changes through branches and pull requests.",
-    factIds: ["F027", "F028", "F018", "F214"],
-    tags: ["uia.pom", "tools.intellij", "tools.github", "arch.repos"],
-    related: ["uia-remote-structure", "config-properties", "receipt-qr-regression", "ollama-and-claude"],
-    keywords: ["IntelliJ IDEA", "IDE", "GitHub", "clone", "Get from VCS", "run configuration", "pull request", "PR", "review", "branch", "Gort", "uia-remote", "pigeon"],
+    factIds: ["F027", "F028", "F018", "F214", "F246"],
+    tags: ["uia.pom", "tools.intellij", "tools.github", "arch.repos", "tools.vscode"],
+    related: ["uia-remote-structure", "config-properties", "receipt-qr-regression", "ollama-and-claude", "pigeon-bottlenecks"],
+    keywords: ["IntelliJ IDEA", "IDE", "VS Code", "GitHub", "clone", "Get from VCS", "run configuration", "pull request", "PR", "review", "branch", "Gort", "uia-remote", "pigeon"],
     practice: ["INC20", "INC34"],
     body: `## IntelliJ IDEA
 
@@ -161,7 +161,7 @@ Never paste GIMP pixel values into Screen Locations, or millimetres into a scree
 - Edit \`config.properties\` for local runs ([[config-properties]]).
 - Run test classes (\`TaxTest\`, \`HomeScreenTest\`…) with the green ▶ and read the run log.
 
-> **Tip:** The Pigeon project has no JSON inspections — IntelliJ won't flag a missing comma there ([[pigeon-bottlenecks]]).
+> **Tip:** Pigeon's JSON tests are edited in **VS Code**, not IntelliJ {F246}. VS Code flags raw JSON syntax but nothing Pigeon-specific ([[pigeon-bottlenecks]]).
 
 ## GitHub
 
@@ -244,10 +244,10 @@ When reviewing a page-object PR, check the mandatory \`waitForScreen()\` and \`i
     title: "AI in the Lab: Ollama & Claude",
     category: "Tools",
     summary: "Ollama is a local LLM runner on the 4-GPU blade running a proof-of-concept vision check of receipts and tip math from webcam streams; Claude was evaluated for repository optimisation and automated test generation. Both are aids, not gates.",
-    factIds: ["F031", "F032", "F033", "F078", "F075"],
-    tags: ["infra.ai", "vision.ollama", "tools.claude"],
+    factIds: ["F031", "F032", "F033", "F078", "F075", "F262", "F263", "F264"],
+    tags: ["infra.ai", "vision.ollama", "tools.claude", "vision.tesseract"],
     related: ["infrastructure-overview", "intellij-and-github", "uia-remote-pom"],
-    keywords: ["Ollama", "LLM", "vision", "llava", "proof of concept", "PoC", "receipt", "tip math", "Claude", "AI", "test generation", "repository optimisation"],
+    keywords: ["Ollama", "LLM", "vision", "llava", "proof of concept", "PoC", "receipt", "tip math", "Claude", "AI", "test generation", "repository optimisation", "13,000", "token", "OCR", "noise", "powered down"],
     practice: ["INC10", "INC57", "INC61"],
     body: `## Ollama
 
@@ -262,6 +262,14 @@ Answer: FAIL — tip of 18% on $42.00 should be $7.56; the receipt shows $7.65.
 \`\`\`
 
 > **Warning:** It is a **proof of concept**, not a production gate. Verify its verdicts against the printed receipt and the test's own assertions — a vision model can misread a 5 as a 6.
+
+### Why only a proof of concept
+
+- Bigger ambitions (**optimising repos**, **auto-generating about 13,000 test scripts**) **exceeded the blade's compute and the lab's electrical capacity**, so the PoC is limited to **visual inspection**: is the app on the right receipt layout, and is the tip math right {F262}.
+- The hope is that a local **vision LLM** (asked e.g. "Is this a payment screen?") will one day **replace brittle OCR**, but its **token-usage limits are still uncertain** {F264}.
+- In the real lab the AI server has been **powered down for now because of its excessive noise** {F263}.
+
+> **In the sim:** Ollama stays up† so you can practise the vision check.
 
 ## Claude
 

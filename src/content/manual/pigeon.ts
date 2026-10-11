@@ -11,10 +11,10 @@ export const PIGEON_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
     title: "Pigeon (LSTR): The Legacy JSON Framework",
     category: "Test Frameworks",
     summary: "Pigeon, also called LSTR, is the team's legacy test repo — Lester's descendant, named as a pun on \"pidgin language\" — whose Language Specific Test Runner parses raw JSON tests across REST, Android, Windows and iOS.",
-    factIds: ["F041", "F042", "F043", "F044", "F045", "F012", "F202", "F203", "F204", "F205", "F206", "F207", "F009", "F158"],
-    tags: ["pigeon", "pigeon.lstr", "pigeon.json", "pigeon.abstraction", "go.sdk"],
-    related: ["pigeon-bottlenecks", "receipt-qr-regression", "teams-and-history", "jenkins-executor"],
-    keywords: ["Pigeon", "LSTR", "Language Specific Test Runner", "Lester", "pidgin", "JSON", "REST", "Android", "Windows", "iOS", "runner", "card swipe", "platforms", "actions", "connection type"],
+    factIds: ["F041", "F042", "F043", "F044", "F045", "F012", "F202", "F203", "F204", "F205", "F206", "F207", "F009", "F158", "F251", "F217", "F220", "F253", "F246"],
+    tags: ["pigeon", "pigeon.lstr", "pigeon.json", "pigeon.abstraction", "go.sdk", "orca.capabilities", "bots.pin"],
+    related: ["pigeon-bottlenecks", "receipt-qr-regression", "teams-and-history", "jenkins-executor", "adb-vs-physical-bots"],
+    keywords: ["Pigeon", "LSTR", "Language Specific Test Runner", "Lester", "pidgin", "JSON", "REST", "Android", "Windows", "iOS", "runner", "card swipe", "platforms", "actions", "connection type", "capabilities", "dip", "chip", "PIN", "UI Automator"],
     practice: ["INC25", "INC26", "DR06"],
     body: `## Name and lineage
 
@@ -53,22 +53,31 @@ Tests are written as **declarative, platform-agnostic JSON payloads** {F012}. A 
 
 High-level commands such as **"card swipe"** are abstracted by the runner into **platform-specific SDK payment requests** or **physical robot actions** under the hood {F204}. On the REST runner a card swipe becomes an SDK payment request; on a rig it becomes a robot action through Orca.
 
+## Capabilities and PIN
+
+- Every Pigeon test **states the robot capabilities it needs** — for example **swipe** — and **chip (EMV) suites require dip** {F251}. Orca uses them to pick a suitable robot ([[orca-capabilities]]).
+- **ADB bots** are purely programmatic: they cannot touch the glass or enter a PIN {F217}, so they only get merchant profiles without PIN. **Canadian flows mandate physical PIN entry**, so they need **physical robots** {F220}.
+
+## Where Pigeon is heading
+
+Pigeon is legacy: the team is **moving away from Pigeon toward UI Automator** (uia-remote), driven by a mandate to **test payments inside the native apps** {F253}. You will still read and fix Pigeon tests — in **VS Code** {F246} — so learn its quirks in [[pigeon-bottlenecks]].
+
 > **Illustrative (sim only):** Field spellings (\`connectionType\`, \`platforms\`, \`actions\`, \`store\`) and the example file are the sim's†.
 `,
   },
   {
     id: "pigeon-bottlenecks",
-    title: "Pigeon's Bottlenecks: No Linter, \"select print\" & GIMP",
+    title: "Pigeon's Bottlenecks: No Linter, VS Code, \"select print\" & GIMP",
     category: "Test Frameworks",
-    summary: "Living with Pigeon — hunting missing commas without a JSON linter, decoding the misleading \"select print\" failure as a printer-payload timeout caused by stale coordinates, and extracting screen-compare coordinates in GIMP.",
-    factIds: ["F208", "F209", "F210", "F211", "F212", "F030"],
-    tags: ["pigeon", "pigeon.nolint", "jenkins.logs", "pigeon.gimp"],
-    related: ["pigeon-lstr", "receipt-qr-regression", "gimp-coordinates", "ts-pipeline-failures"],
-    keywords: ["no linter", "missing comma", "bracket", "ParseError", "copy-paste", "known-good", "select print", "timeout", "printer payload", "misleading log", "GIMP", "bounding box", "coordinates"],
+    summary: "Living with Pigeon — editing its JSON in VS Code (which checks raw syntax but knows nothing about Pigeon), testing your branch through Jenkins, decoding the misleading \"select print\" failure as a printer-payload timeout caused by stale coordinates, and extracting screen-compare coordinates in GIMP.",
+    factIds: ["F208", "F209", "F246", "F247", "F248", "F249", "F017", "F250", "F210", "F211", "F212", "F030"],
+    tags: ["pigeon", "pigeon.nolint", "tools.vscode", "tools.github", "jenkins.logs", "pigeon.gimp"],
+    related: ["pigeon-lstr", "receipt-qr-regression", "gimp-coordinates", "ts-pipeline-failures", "intellij-and-github", "jenkins-executor"],
+    keywords: ["no linter", "missing comma", "bracket", "ParseError", "copy-paste", "known-good", "VS Code", "Visual Studio Code", "Problems panel", "Expected comma", "squiggle", "Source Control", "branch", "BRANCH", "push", "Run LSTR test", "Pigeon Practice", "Shift+Alt+Down", "select print", "timeout", "printer payload", "misleading log", "GIMP", "bounding box", "coordinates"],
     practice: ["INC22", "INC24", "INC25", "DR06", "DR08"],
-    body: `## No JSON linter
+    body: `## No Pigeon-aware linter
 
-Pigeon has **no JSON linter**: missing commas or brackets have to be **hunted down manually** {F208}. Engineers survive by **copy-pasting working JSON blocks** rather than writing syntax from scratch {F209}.
+Pigeon has **no high-quality, Pigeon-aware linter**: VS Code only checks raw JSON syntax, so engineers still lose time **hunting missing commas or brackets by hand** {F208}. Engineers survive by **copy-pasting working JSON blocks** rather than writing syntax from scratch {F209}.
 
 \`\`\`log
 LSTR ParseError: Unexpected string in JSON at line 23 column 7†
@@ -77,6 +86,40 @@ LSTR ParseError: Unexpected string in JSON at line 23 column 7†
 The reported line is where the parser gave up — the missing comma is usually at the **end of the line before**.
 
 > **Tip:** Keep a file of known-good action blocks and paste from it; check the line above the reported error first.
+
+## Editing Pigeon tests in VS Code
+
+Pigeon's JSON tests are edited in **VS Code (Visual Studio Code)** {F246}. IntelliJ IDEA stays the IDE for uia-remote ([[intellij-and-github]]).
+
+### The workflow
+
+1. **Open the \`pigeon\` folder** in VS Code and find the test under \`tests/\`†.
+2. **Edit by copy-paste.** Start from a known-good action block {F209}. **Shift+Alt+Down** duplicates the current line, which is handy for cloning an action and changing its params.
+3. **Clear the Problems panel.** VS Code's built-in JSON support marks raw *syntax* errors with a red squiggle and a **Problems** entry such as "Expected comma". It reports them at the **token after the gap**, so look at the **end of the previous line** {F247}.
+4. **Run it locally** with **Run LSTR test**†, which runs the test against the robot named in your local \`config.properties\`†.
+5. **Commit on a branch** in the **Source Control** view and **push** it to GitHub. In Jenkins, point the Pigeon job's \`BRANCH\`† parameter at your branch and pick the suite (e.g. US Go Dip) {F249}. Legacy jobs are filed by platform, Java vs iOS {F017}.
+
+### What VS Code catches, and what it doesn't
+
+VS Code knows JSON, not Pigeon. It knows nothing about Pigeon/LSTR semantics, so these mistakes are **valid JSON** and only fail **at run time** {F248}:
+
+| Mistake | VS Code flags it? | Where it surfaces |
+|---|---|---|
+| Missing comma or bracket | Yes: squiggle + Problems entry, one token late {F247} | Before you run |
+| Unknown action name | No {F248} | Run time (LSTR / Jenkins log) |
+| Misspelled \`\${variable}\` | No {F248} | Run time |
+| Wrong screen name (\`RECEIPT_OPTIONS_4\`† vs \`RECEIPT_OPTIONS_5\`†) | No {F248} | Run time, often as a "select print" timeout |
+| Platform mismatch | No {F248} | Run time |
+
+That is why the team still says Pigeon has **no high-quality linter** {F208}, even with VS Code open.
+
+> **In the sim:** The VS Code app's **Pigeon Practice** panel† has graded exercises, each checked by an LSTR dry-run† that catches syntax *and* Pigeon-semantic mistakes. Use it to drill the comma hunt and the run-time-only errors.
+
+> **Illustrative (sim only):** The \`BRANCH\` parameter name, the **Run LSTR test** command, the Pigeon Practice panel and its dry-run check are the sim's†.
+
+## Reading a Pigeon failure log
+
+A Jenkins Pigeon failure log shows the **test name**, its **description variables** and the **failure message**, which names the **last action attempted** {F250}. That last action is not always the culprit, as the next section shows.
 
 ## The misleading "select print" failure
 

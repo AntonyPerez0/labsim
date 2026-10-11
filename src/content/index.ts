@@ -1,7 +1,7 @@
 /**
  * Content public API — the game's knowledge base. Import from `@/content`.
  *
- * Data: FACTS (F001–F245) + ILLUSTRATIVE_FACTS (S01–S20), QUIZ_BANK (Q001–Q382), FLASHCARDS (FC001–FC159),
+ * Data: FACTS (F001–F266) + ILLUSTRATIVE_FACTS (S01–S20), QUIZ_BANK (Q001–Q410), FLASHCARDS (FC001–FC177),
  * MODULES (M01–M18), TOPIC_TAGS, TEAM_MEMBERS, RANKS, ACHIEVEMENTS, GLOSSARY, MANUAL_ARTICLES, EXAMS,
  * QUIPS, BARKS. Everything is plain serialisable data, already resolved for people names (see people.ts).
  */

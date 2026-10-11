@@ -143,6 +143,47 @@ test('sitting at the workstation opens Orca with the robot list', async () => {
   await expect.poll(() => state<string>('(s) => s.ui.overlay.kind'), { timeout: 30_000 }).not.toBe('computer');
 });
 
+test('VS Code edits a Pigeon test: syntax problem shows, Pigeon Practice checks an exercise', async () => {
+  const mark = errors.length;
+  // Set-up only: the pigeon clone (normally done in Academy M15 or with Git: Clone).
+  await page.evaluate(() => (window as unknown as { __labsim: { sim: { git: { clone(r: string, a: string): unknown } } } }).__labsim.sim.git.clone('pigeon', 'player'));
+  await page.evaluate(() => (window as unknown as LabsimWindow).__labsim.engine.teleportPlayer([1.1, 0, 3.3], Math.PI, -1.0));
+  await expect.poll(() => state<string | null>('(s) => s.ui.prompt?.label ?? null'), { timeout: 30_000 }).toBe('Your workstation');
+  await page.keyboard.press('e');
+  await expect.poll(() => state<string>('(s) => s.ui.overlay.kind'), { timeout: 30_000 }).toBe('computer');
+
+  await page.locator('[data-hint="desktop.taskbar:vscode"]').click();
+  await page.locator('[data-hint="vscode.treeNode:tests"]').click({ timeout: 60_000 });
+  await page.locator('[data-hint="vscode.treeNode:tests/sale"]').click();
+  await page.locator('[data-hint="vscode.treeNode:tests/sale/swipe_sale_print.json"]').click();
+  const editor = page.locator('.vsc-ed__ta');
+  await expect(editor).toBeVisible();
+  await expect(page.locator('[data-hint="vscode.problemsWidget"]')).toHaveText(/⊗ 0/);
+
+  // Delete the comma at the end of line 7: VS Code reports "Expected comma" on line 8 (the next token).
+  await editor.click({ position: { x: 40, y: 30 } });
+  await page.keyboard.press('Control+g');
+  await page.keyboard.type('7');
+  await page.keyboard.press('Enter');
+  await page.keyboard.press('End');
+  await page.keyboard.press('Backspace');
+  await expect(page.locator('[data-hint="vscode.problemsWidget"]')).toHaveText(/⊗ 1/);
+  await page.keyboard.press('Control+Shift+m');
+  await expect(page.locator('.vsc-problems__row').first()).toContainText('Expected comma');
+  await expect(page.locator('.vsc-problems__row').first()).toContainText('Ln 8');
+
+  // Pigeon Practice: start Comma Hunt, Check without fixing → failing goals.
+  await page.locator('[data-hint="vscode.activity:practice"]').click();
+  await page.locator('[data-hint="vscode.practice.exercise:comma-hunt"]').click();
+  await page.locator('[data-hint="vscode.practice.check"]').click();
+  await expect(page.locator('.vsc-goal').first()).toContainText('LSTR dry run passes');
+  await expect(page.locator('.vsc-goal.is-ok')).toHaveCount(0);
+  expect(freshErrors(mark)).toEqual([]);
+
+  await page.keyboard.press('Escape');
+  await expect.poll(() => state<string>('(s) => s.ui.overlay.kind'), { timeout: 30_000 }).not.toBe('computer');
+});
+
 test('the Field Manual finds the lab ADB port 5444', async () => {
   const mark = errors.length;
   // In an activity Tab opens the Notebook, which links to the Field Manual.

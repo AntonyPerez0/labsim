@@ -11,8 +11,8 @@ export const PIPELINES_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]
     title: "Jenkins: The Executor",
     category: "Pipelines",
     summary: "Jenkins triggers test pipelines, injects runtime environment variables into the test runner and checks robots out of Orca. Legacy jobs are split by platform into Java and iOS.",
-    factIds: ["F015", "F016", "F017", "F094", "F095", "F098", "F102", "F189", "F203"],
-    tags: ["jenkins", "jenkins.envvars", "jenkins.folders", "jenkins.checkout", "arch.roles"],
+    factIds: ["F015", "F016", "F017", "F094", "F095", "F098", "F102", "F189", "F203", "F256", "F249"],
+    tags: ["jenkins", "jenkins.envvars", "jenkins.folders", "jenkins.checkout", "arch.roles", "tools.github"],
     related: ["jenkins-env-vars", "orca-statuses", "orca-overview", "ts-pipeline-failures", "pigeon-lstr"],
     keywords: ["Jenkins", "Executor", "pipeline", "build with parameters", "checkout", "Java view", "iOS view", "ROBOT_NAME", "console", "legacy jobs"],
     practice: ["INC26", "INC39", "INC41", "DR11"],
@@ -23,7 +23,7 @@ export const PIPELINES_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]
 For every test pipeline Jenkins:
 
 1. **Triggers** the pipeline and **injects runtime environment variables** {F016} into the test runner (uia-remote or Pigeon) {F094}.
-2. **Checks out a robot** from Orca before the test runs {F095}.
+2. **Checks out a robot** from Orca before the test runs {F095}. Requesting a robot is the pipeline's first action: it uploads the test cases and parameters, and Orca matches environment, device profile and capabilities (touch, dip, tap, swipe) {F256}.
 3. Releases it when the build ends.
 
 In CI nobody hand-edits \`config.properties\`: Jenkins injects the values dynamically {F189}.
@@ -38,6 +38,10 @@ Legacy jobs are organised **by platform**, separating **Java jobs** from **iOS j
 | \`iOS\` | \`pigeon-ios-go-sdk-smoke\` |
 
 A Java job filed under the iOS view is still a Java job — "the job that disappeared" is usually in the other view.
+
+### Running your own branch
+
+To test a change before it is merged, push your branch to GitHub, open the job, point it at **your branch** (the \`BRANCH\`† parameter) and pick the suite, e.g. US Go Dip {F249}. See [[pigeon-bottlenecks]].
 
 ## How checkout picks a robot
 

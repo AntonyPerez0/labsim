@@ -11,7 +11,7 @@ export const HARDWARE_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>
     title: "LabSim Device Families",
     category: "Hardware",
     summary: "Every LabSim target device the lab tests — Station, Mini, Flex and Compact — plus the shortcuts that matter day to day: the shared Flex 3/4/Pocket profile, the printerless Pocket and Duo 2, and the Mini 3 hot-swap.",
-    factIds: ["F055", "F056", "F057", "F058", "F059", "F060", "F061", "F062", "F054"],
+    factIds: ["F055", "F056", "F057", "F058", "F059", "F060", "F061", "F062", "F054", "F258", "F254"],
     tags: ["devices", "hw.devices"],
     related: ["mfd-cfd-tethered", "orca-robot-device", "adb-vs-physical-bots", "station-duo-dual-screen"],
     keywords: ["Station 2018", "Station 2", "Station Duo", "Duo 2", "Duo 3", "Mini 2", "Mini 3", "Mini 4", "Flex 1", "Flex 2", "Flex 3", "Flex 4", "Flex Pocket", "Compact", "printer", "profile", "hot-swap"],
@@ -25,14 +25,15 @@ export const HARDWARE_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>
 | **Flex** | Flex 1, Flex 2, Flex 3, Flex 4, Flex Pocket {F058} | Handhelds. Flex 3, Flex 4 and Flex Pocket share exactly the same testing profile {F059}; the Pocket omits the physical printer block {F060} |
 | **Compact** | LabSim Compact | The target terminal for the Canadian market, used on the Westers test beds {F061} |
 
-The **Station Duo 3** and **Mini 4** are upcoming devices {F062} — you will see them as sealed boxes in the device library.
+The **Station Duo 3** and **Mini 4** are upcoming devices on the roadmap, and their release timing is uncertain {F062}. You will see them as sealed boxes in the device library.
 
 ## Shortcuts that save hours
 
 - **One profile for three Flexes.** A test that passes on the Flex 3 profile covers the Flex 4 and Flex Pocket too, because they share the same testing profile {F059}. In the sim that shared profile is called \`FLEX_GEN3\`†.
 - **…but the Pocket has no printer.** Anything that prints (receipt tests, "select print") must not land on a Flex Pocket {F060}. That is what the \`printer\` capability is for ([[orca-capabilities]]).
-- **Mini 3 for a dead Duo 2.** When a printerless Station Duo 2 is down, a Mini 3 is hot-swapped in its place {F057}.
-- **Canada means Compact.** Canadian payment flows need physical PIN entry, so they run on Compact touch robots on the Westers beds {F061} ([[adb-vs-physical-bots]]).
+- **Mini 3 for a dead Duo 2.** The Duo 2 has no receipt printer, and printer mechanics are outside these testing profiles, so a functionally equivalent Mini 3 sits ready as its hot-swap {F057}.
+- **Modular shelves make swaps quick.** A failed Duo 2 can be swapped for a Flex 3 in minutes rather than days {F258}.
+- **Canada means Compact.** Canadian payment flows need physical PIN entry, so they run on Compact touch robots on the Westers beds {F061} ([[adb-vs-physical-bots]]). A new engineer's first assignment is the Compact test workflow in UI Automator {F254}.
 
 ## MFD and CFD
 
@@ -54,10 +55,10 @@ The **Station Duo 3** and **Mini 4** are upcoming devices {F062} — you will se
     title: "MFD, CFD & the Tethered Test Beds",
     category: "Hardware",
     summary: "Merchant Facing vs Customer Facing devices, how tethered pairs are wired and labelled (MEGATRON DEV1, OPTIMUS STG), and the Semi Team apps that link the two screens.",
-    factIds: ["F054", "F237", "F238", "F239", "F052", "F053", "F126", "F127", "F128"],
+    factIds: ["F054", "F237", "F238", "F239", "F052", "F053", "F126", "F127", "F128", "F265", "F266"],
     tags: ["devices", "hw.devices", "orca.tethered", "semi.paydisplay"],
     related: ["device-families", "orca-urls-tethering-offsets", "tax-test", "config-properties"],
-    keywords: ["MEGATRON", "OPTIMUS", "DEV1", "STG", "SmartStripe Probe", "connectivity hub", "USB Pay Display", "Secure Network Pay Display", "tethered", "nested"],
+    keywords: ["MEGATRON", "OPTIMUS", "DEV1", "STG", "staging mirror", "code name", "webcam", "SmartStripe Probe", "connectivity hub", "USB Pay Display", "Secure Network Pay Display", "tethered", "nested"],
     practice: ["INC45", "INC46", "INC47"],
     image: "tethered-megatron-optimus-rack.jpg",
     body: `## Two faces of a sale
@@ -73,6 +74,11 @@ A **tethered** setup pairs two devices, for example a Station 2 tethered to a Mi
 - Black USB **"SmartStripe Probe"** dongles with green LEDs sit between the screens {F238}.
 - Below the screens, black 3D-printed docks hold white **LabSim connectivity hubs** (Ethernet, USB, power), labelled per device, e.g. \`MEGATRON MFD\` {F239}.
 - A Raspberry Pi in a black case sits between the docks — one controller per shelf.
+
+## DEV1, staging mirrors and remote operation
+
+- Rigs carry **famous-robot code names**. A **staging (STG) mirror** sits **directly beneath its DEV1 sibling**, and the team runs tests **heavily in DEV1** to catch bugs **before application cuts** {F266}.
+- **Webcams** stream both the merchant-facing and customer-facing devices, and the **stacked MFD units need no physical touch**: engineers operate them remotely over ADB {F265}.
 
 ## How the two screens talk
 
@@ -212,15 +218,19 @@ ps aux | grep -i wine
     title: "Fabrication, 3D Printing & the Rig Bill of Materials",
     category: "Hardware",
     summary: "How a touch robot is built — printed fixtures, cut rails, wiring, solder points, bolts and the custom motor boards — with the numbers you will be asked about.",
-    factIds: ["F072", "F073", "F083", "F084", "F090", "F091", "F092", "F093", "F079", "F080", "F081", "F082", "F088", "F089", "F240", "F242"],
-    tags: ["robots.mechanics", "hw.print3d", "hw.rigbom"],
+    factIds: ["F072", "F073", "F083", "F084", "F090", "F091", "F092", "F093", "F079", "F080", "F081", "F082", "F088", "F089", "F240", "F242", "F257", "F258"],
+    tags: ["robots.mechanics", "hw.print3d", "hw.rigbom", "hw.devices"],
     related: ["touch-robot-anatomy", "lab-tour", "status-tablet"],
-    keywords: ["Prusa", "Bambu Lab", "CAD", "PLA", "fixtures", "cradle", "bolts", "2.5mm", "5mm", "solder", "wiring", "rails", "10 ft", "130 ft", "300", "200", "PCB", "Hong Kong", "BOM"],
+    keywords: ["Prusa", "Bambu Lab", "CAD", "PLA", "fixtures", "cradle", "bolts", "2.5mm", "5mm", "solder", "wiring", "rails", "10 ft", "130 ft", "300", "200", "PCB", "Hong Kong", "BOM", "modular shelves", "particle board", "CNC", "redesign", "two dozen"],
     practice: ["INC59"],
     image: "touch-robot-side-gantry.jpg",
     body: `## Printed fixtures
 
-All the black plastic modular shelf fixtures — cradles, panels, docks — are printed on the lab's **Prusa and Bambu Lab** 3D printers {F072}, drafted in CAD using simple geometric shapes {F073}. A Flex sits in an angled black 3D-printed cradle {F242}; a cracked cradle tilts the device and makes taps drift.
+All the black plastic modular shelf fixtures — cradles, panels, docks — are 3D-printed in-house: on **Prusa** printers in this lab, while the team's other lab uses **Bambu Lab** printers {F072}. They are drafted in CAD using simple geometric shapes (rectangles and circles) {F073}. A Flex sits in an angled black 3D-printed cradle {F242}; a cracked cradle tilts the device and makes taps drift.
+
+## Modular shelves
+
+About three years ago the lab was redesigned around **standardised modular shelves**; before that, fixtures were raw CNC-cut particle board on open racks and every rig was different {F257}. Now a failed **Duo 2 can be swapped for a Flex 3 in minutes rather than days** {F258}.
 
 ## The numbers per touch robot
 
@@ -230,7 +240,7 @@ All the black plastic modular shelf fixtures — cradles, panels, docks — are 
 | Wiring | about 130 ft {F091} |
 | Manual solder points | about 300 {F092} |
 | Nuts and bolts | 200+, in 2.5 mm and 5 mm diameters {F093} |
-| Motor-controller boards | custom **25-pin** PCBs {F083}, printed in **Hong Kong** {F084} |
+| Motor-controller boards | custom **25-pin** PCBs {F083}, printed in **Hong Kong**; the first run of two dozen boards is used up and a new batch is planned {F084} |
 
 ## The component list
 
@@ -245,7 +255,7 @@ All the black plastic modular shelf fixtures — cradles, panels, docks — are 
 ## Where you'll see it
 
 - {{jared}}'s bench: bolt bins (2.5 mm and 5 mm) and the soldering station.
-- The 3D print corner: Prusa and Bambu Lab printers and a CAD screen.
+- The 3D print corner: the Prusa printer, a CAD screen and (sim only) a Bambu Lab printer†.
 - Inside any touch-robot bay: the gantry, the motor board and the wiring loom ([[touch-robot-anatomy]]).
 `,
   },

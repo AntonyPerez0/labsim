@@ -1,6 +1,6 @@
 /**
- * Quiz bank index (Cur §3): 382 items Q001–Q382 across modules M01–M18.
- * Item counts: mc 251 · tf 73 · fill 31 · order 14 · match 13. † items (Q128, Q137, Q220) carry
+ * Quiz bank index (Cur §3): 410 items Q001–Q410 across modules M01–M18 (Q383–Q410 added from later meeting notes).
+ * Item counts: mc 268 · tf 81 · fill 32 · order 15 · match 14. † items (Q128, Q137, Q220) carry
  * `illustrative: true` and are excluded from certification written exams (Cur §0.2 rule 3).
  */
 import type { QuizQuestion } from '../schema';
@@ -45,7 +45,7 @@ export const QUIZ_BY_MODULE: Record<string, QuizQuestion[]> = {
   M18: QUIZ_M18,
 };
 
-/** Every quiz item, Q001 … Q382 in id order. */
+/** Every quiz item, Q001 … Q410 in id order. */
 export const QUIZ_BANK: QuizQuestion[] = Object.values(QUIZ_BY_MODULE)
   .flat()
   .sort((a, b) => a.id.localeCompare(b.id));

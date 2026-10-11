@@ -66,7 +66,7 @@ The solenoid is remote-firing: its **plunger drops** onto the screen to tap {F08
     title: "The Status Tablet",
     category: "Robots",
     summary: "The front-mounted tablet is the robot's face: header from Orca, three tabs, and the Motion Control button groups you will use to drive and recover the rig.",
-    factIds: ["F089", "F118", "F233", "F234", "F235", "F230", "F236", "F245"],
+    factIds: ["F089", "F118", "F233", "F234", "F235", "F230", "F236", "F245", "F260"],
     tags: ["robots.mechanics", "hw.tablet", "hw.lockout", "orca.names"],
     related: ["maglock-and-park-all", "touch-robot-anatomy", "orca-robot-device", "lab-tour"],
     keywords: ["tablet", "Brainbox v6", "Status OK", "Robot", "Robot Control", "Motion Control", "Steppers", "Park", "Dip", "Tap", "Phone", "Solenoid", "lockout", "Human Readable Name"],
@@ -110,6 +110,10 @@ While a test is active, the global LabSim control dashboard **locks out external
 
 - Left: the **POWER** panel with two green LEDs and toggles \`MAIN\` and \`MOTOR\` {F236}.
 - Right (on WALL-E): a panel lettered **SETI** with USB ports for the Minix box / Raspberry Pi {F245}.
+
+## Placeholders
+
+The tablets display the rig's **active connection properties and network addresses**, but **many physical buttons on the fixture panels are legacy placeholders that remain unwired** {F260}. If a panel button does nothing, that is expected; use the tablet or Orca.
 `,
   },
   {

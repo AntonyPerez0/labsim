@@ -33,6 +33,7 @@ export type AppId =
   | 'ollama'
   | 'browser'
   | 'intellij'
+  | 'vscode'
   | 'terminal'
   | 'gimp'
   | 'camera'

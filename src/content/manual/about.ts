@@ -11,7 +11,7 @@ export const ABOUT_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
     title: "Who's Who & Who to Ask",
     category: "Lab Basics",
     summary: "The people you will work with, what each one owns, and the escalation path — especially which problems go to {{jared}} and which are yours to fix.",
-    factIds: ["F111", "F116", "F130", "F133", "F138", "F159", "F214"],
+    factIds: ["F111", "F116", "F130", "F133", "F138", "F159", "F214", "F252"],
     tags: ["people.roles", "lab.orientation"],
     related: ["lab-tour", "ts-connection-failed", "teams-and-history"],
     keywords: ["mentor", "escalation", "{{jared}}", "{{tate}}", "{{david}}", "{{morgan}}", "{{riley}}", "{{sam}}", "{{alex}}", "contact"],
@@ -36,7 +36,7 @@ export const ABOUT_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
 
 ## The escalation path
 
-1. **Read the evidence first.** Orca's Notes (endpoint + error), the Jenkins console, the camera stream, the tablet banner.
+1. **Read the evidence first.** Orca's Notes (endpoint + error), the Jenkins console, the camera stream, the tablet banner. If you are still stuck after **15 minutes**, ask the team: that is the 15-minute rule {F252}.
 2. **Hardware Connection Failed → {{jared}}.** A crashed Pi board or a Minix box running Callus going offline is a hardware problem; escalate it with the endpoint and error text ([[ts-connection-failed]]).
 3. **Config problems are yours.** A wrong Merchant Config field, a lower-case \`DEVICE_TYPE\`, a 5555 in \`config.properties\`, a missing capability — fix them yourself. Bouncing config problems to {{jared}} wastes the lab's hardware time.
 4. **Never paper over a failed ping.** Manually setting a Connection Failed robot back to Available hides a real fault.

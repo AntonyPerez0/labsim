@@ -29,6 +29,7 @@ export type AppId =
   | 'ollama'
   | 'browser'
   | 'intellij'
+  | 'vscode'
   | 'terminal'
   | 'gimp'
   | 'camera'
@@ -44,6 +45,7 @@ export const APP_IDS: readonly AppId[] = [
   'ollama',
   'browser',
   'intellij',
+  'vscode',
   'terminal',
   'gimp',
   'camera',
@@ -68,9 +70,9 @@ export interface AppParams {
   route?: string;
   /** browser: full URL. camera: stream URL. */
   url?: string;
-  /** intellij: project to open. */
+  /** intellij: project to open. vscode: folder to open (default pigeon). */
   repo?: RepoId;
-  /** intellij: repo-relative file to open. files: not used. */
+  /** intellij / vscode: repo-relative file to open. files: not used. */
   file?: string;
   /** intellij: 1-based line to reveal. */
   line?: number;
@@ -562,6 +564,12 @@ export const APP_ROUTES = {
     project: r('/project/:repo', 'Project open, no editor tab'),
     file: r('/project/:repo/file/*path', 'Project with this repo-relative file in the active editor tab'),
   },
+  vscode: {
+    welcome: r('/', 'VS Code with the last folder (or the Welcome page when nothing is cloned)'),
+    folder: r('/folder/:repo', 'Folder (local clone) open in the Explorer'),
+    file: r('/folder/:repo/file/*path', 'Folder open with this repo-relative file in the active editor'),
+    practice: r('/practice', 'Pigeon Practice view (exercise list)'),
+  },
   terminal: {
     tab: r('/tab/:n', 'Terminal tab n (1-based) is active'),
   },
@@ -855,6 +863,26 @@ export const APP_ACTIONS = {
   files: {
     opened: 'files.opened',
   },
+  vscode: {
+    repoCloned: 'vscode.repo.cloned',
+    folderOpened: 'vscode.folder.opened',
+    viewOpened: 'vscode.view.opened',
+    treeNodeClicked: 'vscode.tree.nodeClicked',
+    fileOpened: 'vscode.file.opened',
+    editorClicked: 'vscode.editor.clicked',
+    fileSaved: 'vscode.file.saved',
+    formatRan: 'vscode.format.ran',
+    problemsOpened: 'vscode.problems.opened',
+    runStarted: 'vscode.run.started',
+    runFinished: 'vscode.run.finished',
+    gitBranchCheckedOut: 'vscode.git.branchCheckedOut',
+    gitCommitted: 'vscode.git.committed',
+    gitPushed: 'vscode.git.pushed',
+    gitPulled: 'vscode.git.pulled',
+    practiceStarted: 'vscode.practice.started',
+    practiceChecked: 'vscode.practice.checked',
+    practiceSolved: 'vscode.practice.solved',
+  },
 } as const satisfies Record<AppEventSource, Record<string, string>>;
 
 type ValueOf<T> = T[keyof T];
@@ -1031,6 +1059,26 @@ export type AppActionPayloads = {
 
   /* files */
   'files.opened': { path: string; with: AppId };
+
+  /* vscode (repo = a RepoId, or "pigeon-practice" for the practice folder) */
+  'vscode.repo.cloned': { repo: string; url: string } & Ok;
+  'vscode.folder.opened': { repo: string };
+  'vscode.view.opened': { view: 'explorer' | 'search' | 'scm' | 'run' | 'practice' };
+  'vscode.tree.nodeClicked': { repo: string; path: string; kind: 'dir' | 'file' };
+  'vscode.file.opened': { repo: string; path: string };
+  'vscode.editor.clicked': { repo: string; path: string; line: number; column: number; lineText: string; token: string | null };
+  'vscode.file.saved': { repo: string; path: string; problems: number } & Ok;
+  'vscode.format.ran': { repo: string; path: string } & Ok;
+  'vscode.problems.opened': { count: number };
+  'vscode.run.started': { repo: string; testPath: string; runId: string | null } & Ok;
+  'vscode.run.finished': { runId: string; testPath: string; passed: boolean | null };
+  'vscode.git.branchCheckedOut': { repo: string; branch: string; created: boolean } & Ok;
+  'vscode.git.committed': { repo: string; message: string; files: string[]; sha: string | null } & Ok;
+  'vscode.git.pushed': { repo: string; branch: string } & Ok;
+  'vscode.git.pulled': { repo: string } & Ok;
+  'vscode.practice.started': { exerciseId: string; file: string };
+  'vscode.practice.checked': { exerciseId: string; passed: boolean; failures: string[] };
+  'vscode.practice.solved': { exerciseId: string; seconds: number; checks: number; hints: number };
 };
 
 /** Compile-time guard: APP_ACTIONS and AppActionPayloads list exactly the same names. */
@@ -1126,6 +1174,18 @@ export const APP_HINT_TARGETS = [
   'intellij.commitButton',
   'intellij.pushButton',
   'intellij.configValidator',
+  // vscode
+  'vscode.activity:', // + explorer | search | scm | run | practice
+  'vscode.treeNode:', // + repo-relative path
+  'vscode.editor:', // + file path (the editor text area)
+  'vscode.cloneButton',
+  'vscode.branchWidget',
+  'vscode.problemsWidget',
+  'vscode.commitButton',
+  'vscode.syncButton',
+  'vscode.runButton',
+  'vscode.practice.exercise:', // + exercise id
+  'vscode.practice.check',
   // terminal
   'terminal.input',
   // gimp
@@ -1340,6 +1400,12 @@ export const APP_ICONS: Record<AppId, AppIconSvg> = {
       '<rect x="3" y="6.5" width="18" height="11.5" rx="1.6" fill="#2563eb"/><rect x="3" y="9" width="18" height="2.6" fill="#111"/>' +
       '<rect x="5" y="14" width="6" height="1.4" rx=".4" fill="#dbe7ff"/>',
   ),
+  vscode: svg(
+    '<path d="M17.2 2.2 9.4 9.6 4.7 6 2.6 7v10l2.1 1 4.7-3.6 7.8 7.4L21.4 20V4z" fill="#0065a9"/>' +
+      '<path d="M17.2 2.2 21.4 4v16l-4.2 1.8z" fill="#007acc"/>' +
+      '<path d="M4.7 6 17.2 17.5V21.8L2.6 17z" fill="#1f9cf0" opacity=".9"/>' +
+      '<path d="M17.2 6.5v11L10.6 12z" fill="#fff" opacity=".85"/>',
+  ),
   files: svg(
     '<path d="M2 6.5A1.5 1.5 0 013.5 5H9l2 2h9.5A1.5 1.5 0 0122 8.5v10a1.5 1.5 0 01-1.5 1.5h-17A1.5 1.5 0 012 18.5z" fill="#e8b23a"/>' +
       '<path d="M2 9.2h20v9.3a1.5 1.5 0 01-1.5 1.5h-17A1.5 1.5 0 012 18.5z" fill="#fbd96b"/>',
@@ -1443,6 +1509,22 @@ export const APP_META: Record<AppId, AppMeta> = {
     pinned: true,
     aliases: ['intellij', 'idea', 'ide', 'java', 'editor'],
     exportName: 'IntelliJApp',
+  },
+  vscode: {
+    id: 'vscode',
+    title: 'Visual Studio Code',
+    iconLabel: 'VS Code',
+    icon: APP_ICONS.vscode,
+    chrome: 'native',
+    origin: null,
+    homeRoute: APP_ROUTES.vscode.welcome.path,
+    defaultSize: { w: 1320, h: 840 },
+    minSize: { w: 820, h: 520 },
+    singleInstance: true,
+    desktopIcon: true,
+    pinned: true,
+    aliases: ['vscode', 'vs code', 'code', 'visual studio code', 'json', 'pigeon', 'editor', 'practice'],
+    exportName: 'VSCodeApp',
   },
   terminal: {
     id: 'terminal',

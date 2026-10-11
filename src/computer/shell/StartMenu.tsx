@@ -8,7 +8,7 @@ import { AppIcon, Glyph } from './icons';
 import { LOCKED_TEXT } from './gating';
 import { setPopup, useShell, wmApi } from './wmStore';
 
-const PINNED_ORDER: AppId[] = ['files', 'browser', 'orca', 'jenkins', 'github', 'intellij', 'terminal', 'chat', 'camera', 'dashboard', 'gimp', 'ollama', 'cardreader'];
+const PINNED_ORDER: AppId[] = ['files', 'browser', 'orca', 'jenkins', 'github', 'intellij', 'vscode', 'terminal', 'chat', 'camera', 'dashboard', 'gimp', 'ollama', 'cardreader'];
 
 export function initialsOf(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);

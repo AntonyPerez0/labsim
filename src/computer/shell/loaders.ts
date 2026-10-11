@@ -12,6 +12,7 @@ const LOADERS: Record<AppId, () => Promise<ComponentType<AppProps>>> = {
   ollama: () => import('../apps/ollama').then((m) => m.OllamaApp),
   browser: () => import('../apps/browser').then((m) => m.BrowserApp),
   intellij: () => import('../apps/intellij').then((m) => m.IntelliJApp),
+  vscode: () => import('../apps/vscode').then((m) => m.VSCodeApp),
   terminal: () => import('../apps/terminal').then((m) => m.TerminalApp),
   gimp: () => import('../apps/gimp').then((m) => m.GimpApp),
   camera: () => import('../apps/camera').then((m) => m.CameraApp),

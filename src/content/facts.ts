@@ -1,5 +1,5 @@
 /**
- * Fact inventory — every teachable fact in the reference (Cur §1, F001–F245) plus the curriculum's
+ * Fact inventory — every teachable fact in the reference (Cur §1, F001–F245; F246–F266 added from later meeting notes) plus the curriculum's
  * sim-only illustrative details (Cur §0.3, S01–S20).
  *
  * Generated from docs/design/10-curriculum.md (§1 table, text verbatim; people as `{{key}}` tokens, see people.ts). `tags` = the default topic tag of
@@ -44,7 +44,7 @@ function simFact(id: string, tags: string[], text: string): Fact {
   return { id, ref: 'Cur §0.3', section: 'Sim-only illustrative detail', tier: 'trivia', taughtIn: [], tags, text, illustrative: true };
 }
 
-/** F001–F245, in id order. */
+/** F001–F266, in id order. */
 export const FACTS: Fact[] = resolvePeople([
   fact("F001", "§1.1", "core", ["M06", "M13"], ["orca.status", "arch.stack"], "Java (Oracle Java) is the primary programming language powering both the Orchestrator backend and the uia-remote test automation suites."),
   fact("F002", "§1.1", "core", ["M06"], ["orca.status", "arch.stack"], "Spring Boot is the backend web framework used to build the Orchestrator monolith and its REST API endpoints."),
@@ -107,29 +107,29 @@ export const FACTS: Fact[] = resolvePeople([
   fact("F059", "§1.5", "core", ["M02"], ["devices", "hw.devices"], "Flex 3, Flex 4 and Flex Pocket share exactly the same testing profile."),
   fact("F060", "§1.5", "supporting", ["M02"], ["devices", "hw.devices"], "The Flex Pocket omits the physical printer block."),
   fact("F061", "§1.5", "supporting", ["M02"], ["devices", "hw.devices"], "The LabSim Compact is the target terminal for the Canadian market and is used on the Westers test beds."),
-  fact("F062", "§1.5", "trivia", ["M02"], ["devices", "hw.devices"], "The Station Duo 3 and the Mini 4 are upcoming devices."),
+  fact("F062", "§1.5", "trivia", ["M02"], ["devices", "hw.devices"], "The Station Duo 3 and the Mini 4 are upcoming devices on the roadmap; their release timing is uncertain."),
   fact("F063", "§1.5", "supporting", ["M05"], ["pi.controller", "hw.pi"], "The lab's Raspberry Pis are cheap units of about $50 each."),
   fact("F064", "§1.5", "core", ["M05"], ["pi.controller", "hw.pi"], "A Raspberry Pi operates as the Robot Pi / Robot Controller on each shelf."),
   fact("F065", "§1.5", "core", ["M05"], ["pi.controller", "hw.pi"], "The Robot Pi handles ADB routing, camera streams, stepper motors, solenoids and Wine card-programming emulation."),
   fact("F066", "§1.5", "core", ["M05", "M17"], ["pi.controller", "hw.nuc"], "Intel NUC and Minix boxes are the local Windows execution machines in the lab (the NUCs are listed as ASUS NUC)."),
   fact("F067", "§1.5", "core", ["M05"], ["pi.controller", "hw.nuc"], "Aggressive corporate security-monitoring packages exhausted the disk space on the NUCs."),
   fact("F068", "§1.5", "core", ["M05", "M17"], ["pi.controller", "hw.nuc"], "Because of the corporate disk exhaustion, physical hardware control was migrated off the NUCs onto Raspberry Pis."),
-  fact("F069", "§1.5", "core", ["M10"], ["cards", "hw.collis"], "Collis probes (UL Transaction Security) are high-cost proprietary card emulators."),
+  fact("F069", "§1.5", "core", ["M10"], ["cards", "hw.collis"], "Collis probes (UL Transaction Security) are high-cost proprietary card emulators: because of licensing fees they are the most expensive components on the shelves."),
   fact("F070", "§1.5", "supporting", ["M10"], ["cards", "hw.collis"], "Collis probes connect to the rig via rear ribbon cables."),
   fact("F071", "§1.5", "core", ["M10"], ["cards", "hw.collis"], "Collis probes simulate magnetic-stripe swipes, EMV chip dips and contactless NFC taps."),
-  fact("F072", "§1.5", "supporting", ["M01"], ["lab.orientation", "hw.print3d"], "Prusa and Bambu Lab 3D printers print all of the black plastic modular shelf fixtures."),
+  fact("F072", "§1.5", "supporting", ["M01"], ["lab.orientation", "hw.print3d"], "The black plastic modular shelf fixtures are 3D-printed in-house: this lab prints them on Prusa printers, while the team's other lab uses Bambu Lab printers."),
   fact("F073", "§1.5", "trivia", ["M01"], ["lab.orientation", "hw.print3d"], "The shelf fixtures are drafted in CAD using simple geometric shapes."),
   fact("F074", "§1.5", "core", ["M03"], ["power.rails"], "Mean Well transformers are the industrial power supplies that convert 120V AC wall power to a central 24V DC rail."),
   fact("F075", "§1.5", "core", ["M17"], ["infra.ai", "arch.infra"], "Four NVIDIA GPUs are installed in a shelf-mounted server blade."),
   fact("F076", "§1.5", "trivia", ["M17"], ["infra.ai", "arch.infra"], "Of the four GPUs in the blade, two are exposed and two are underneath."),
-  fact("F077", "§1.5", "supporting", ["M17"], ["infra.ai", "arch.infra"], "The GPU server blade replaced a legacy tower unit."),
+  fact("F077", "§1.5", "supporting", ["M17"], ["infra.ai", "arch.infra"], "The GPU server blade replaced an old, noisy legacy tower unit that used to run the VMs, Orca and Jenkins."),
   fact("F078", "§1.5", "core", ["M17"], ["infra.ai", "arch.infra"], "The GPU server blade hosts the VMs, Orca, Jenkins and Ollama."),
   fact("F079", "§1.5", "supporting", ["M04"], ["robots.mechanics", "hw.rigbom"], "The rigs use sub-millimetre stepper motors."),
   fact("F080", "§1.5", "core", ["M04"], ["robots.mechanics", "hw.rigbom"], "The rigs use remote-firing solenoids whose plunger drops onto the screen to tap."),
   fact("F081", "§1.5", "supporting", ["M04"], ["robots.mechanics", "hw.rigbom", "hw.motion"], "Each rig arm is held by a magnetic lock."),
   fact("F082", "§1.5", "core", ["M04", "M09"], ["robots.mechanics", "hw.rigbom", "hw.motion"], "Physical limit switches are calibrated to the (0,0) origin."),
   fact("F083", "§1.5", "supporting", ["M04"], ["robots.mechanics", "hw.rigbom"], "The rigs use custom 25-pin motor-controller PCBs."),
-  fact("F084", "§1.5", "trivia", ["M04"], ["robots.mechanics", "hw.rigbom"], "The custom motor-controller PCBs were printed in Hong Kong."),
+  fact("F084", "§1.5", "trivia", ["M04"], ["robots.mechanics", "hw.rigbom"], "The custom motor-controller PCBs were printed in Hong Kong; the first run of two dozen boards is used up and a new batch is planned."),
   fact("F085", "§1.5", "core", ["M03"], ["power.rails"], "A DC step-down regulator provides a 12V DC line for the Intel NUCs."),
   fact("F086", "§1.5", "core", ["M03"], ["power.rails"], "A DC step-down regulator provides a 5V DC, 10-Amp line for the Raspberry Pis."),
   fact("F087", "§1.5", "supporting", ["M03"], ["power.rails", "power.fuses"], "Inline fuses protect the DC lines."),
@@ -253,7 +253,7 @@ export const FACTS: Fact[] = resolvePeople([
   fact("F205", "§5", "core", ["M15"], ["pigeon", "pigeon.json"], "A Pigeon JSON test specifies the test name, connection type, supported platforms and an array of test actions."),
   fact("F206", "§5", "supporting", ["M15"], ["pigeon", "pigeon.json"], "Versatile Pigeon tests can target 4 to 5 platforms at once."),
   fact("F207", "§5", "supporting", ["M15"], ["pigeon", "pigeon.json"], "Pigeon test actions create requests, pass parameters and store output variables."),
-  fact("F208", "§5", "core", ["M15"], ["pigeon", "pigeon.nolint"], "Pigeon has no JSON linter, so missing commas or brackets must be hunted down manually."),
+  fact("F208", "§5", "core", ["M15"], ["pigeon", "pigeon.nolint"], "Pigeon has no high-quality, Pigeon-aware linter: VS Code only checks raw JSON syntax, so engineers still lose time hunting missing commas or brackets by hand."),
   fact("F209", "§5", "supporting", ["M15"], ["pigeon", "pigeon.nolint"], "Engineers survive the missing linter by copy-pasting working JSON blocks rather than writing syntax from scratch."),
   fact("F210", "§5", "core", ["M15"], ["pigeon", "jenkins.logs"], "A Jenkins log failure at \"select print\" means that action was the last step attempted before the runner timed out waiting for a printer payload."),
   fact("F211", "§5", "core", ["M15"], ["pigeon", "jenkins.logs"], "The usual root cause of a \"select print\" failure is outdated screen coordinates that made the robot arm miss the print button."),
@@ -267,7 +267,7 @@ export const FACTS: Fact[] = resolvePeople([
   fact("F219", "§6.1", "core", ["M09"], ["orca.screens", "bots.types"], "Physical/interactive bots are equipped with mechanical touch probes."),
   fact("F220", "§6.1", "core", ["M09"], ["orca.screens", "bots.types", "bots.pin"], "Physical bots are required for Canadian payment workflows, which mandate physical PIN entry."),
   fact("F221", "§6.1", "core", ["M09", "M16"], ["orca.screens", "bots.types"], "Physical bots are required for ADB-blind displays."),
-  fact("F222", "§6.1", "supporting", ["M17"], ["infra.ai", "bots.pin"], "Gen 2 Software PIN Bypass: the team is partnering with the Core OS Team on a software framework that bypasses physical robotics for Secure Touch PIN entry."),
+  fact("F222", "§6.1", "supporting", ["M17"], ["infra.ai", "bots.pin"], "Gen 2 Software PIN Bypass: for a simpler, lower-cost Gen 2 lab, the team is partnering with the Core OS Team on a software framework that bypasses physical robotics for Secure Touch PIN entry."),
   fact("F223", "§6.1", "supporting", ["M17"], ["infra.ai", "bots.pin"], "Under Gen 2, physical robotics are reserved exclusively for non-negotiable hardware interactions such as card dipping."),
   fact("F224", "§6.2", "core", ["M10", "M18"], ["cards", "cards.philosophy"], "Your team standardises on a single reliable Visa profile to verify transaction pipelines."),
   fact("F225", "§6.2", "core", ["M10", "M18"], ["cards", "cards.philosophy"], "Your team adds Canadian Interac for regional flows."),
@@ -291,6 +291,27 @@ export const FACTS: Fact[] = resolvePeople([
   fact("F243", "IMG-V", "supporting", ["M04"], ["robots.mechanics", "hw.rigbom"], "Solenoid tap cycle: the gantry moves the head over the target button, the plunger drops to tap, lifts, moves and taps again."),
   fact("F244", "IMG-T", "trivia", ["M01"], ["lab.orientation", "hw.rigbom"], "Touch-robot enclosures sit in racks whose rails are marked with numbered rack units (e.g. 29 to 40)."),
   fact("F245", "IMG-T", "trivia", ["M01"], ["lab.orientation", "hw.tablet"], "A side panel lettered SETI beside WALL-E's tablet carries USB ports for the Minix box / Raspberry Pi."),
+  fact("F246", "§5", "core", ["M15"], ["pigeon", "tools.vscode"], "Pigeon's JSON test files are edited in VS Code (Visual Studio Code), not in IntelliJ IDEA."),
+  fact("F247", "§5", "core", ["M15"], ["pigeon", "tools.vscode", "pigeon.nolint"], "VS Code's built-in JSON support flags raw syntax errors (a red squiggle plus a Problems-panel entry such as \"Expected comma\") at the token after the gap, so a missing comma is usually at the end of the previous line."),
+  fact("F248", "§5", "core", ["M15"], ["pigeon", "tools.vscode", "pigeon.nolint"], "VS Code knows nothing about Pigeon/LSTR semantics: an unknown action name, a misspelled ${variable}, a wrong screen name or a platform mismatch is still valid JSON and only fails at run time."),
+  fact("F249", "§5", "core", ["M15"], ["pigeon", "tools.github", "jenkins.folders"], "To test a Pigeon change on a rig, commit it on a branch, push the branch to GitHub, then point the Jenkins Pigeon job at your branch and pick the suite (e.g. US Go Dip)."),
+  fact("F250", "§5", "supporting", ["M15"], ["pigeon", "jenkins.logs"], "A Jenkins Pigeon failure log shows the test name, its description variables and the failure message, which names the last action attempted."),
+  fact("F251", "§5", "supporting", ["M15"], ["pigeon", "orca.capabilities"], "Every Pigeon test states the robot capabilities it needs (e.g. swipe); chip (EMV) suites require dip."),
+  fact("F252", "§2", "core", ["M01"], ["lab.orientation", "people.roles"], "The 15-minute rule: spend at most 15 minutes stuck troubleshooting alone, then ask the team for help, because even veterans don't remember where every config lives."),
+  fact("F253", "§4.1", "core", ["M18"], ["teams.history", "uia.history"], "The team is moving away from Pigeon toward UI Automator (uia-remote), driven by a mandate to test payments inside the native apps."),
+  fact("F254", "§4.1", "supporting", ["M18"], ["teams.history", "hw.devices"], "A new engineer's first assignment is the Compact (Canadian-market) test workflow in UI Automator."),
+  fact("F255", "§1.2", "supporting", ["M17"], ["infra.ai", "arch.infra"], "Orca stays on its on-prem VM for now because it works and the team prioritises feature automation over the Docker/GCP migration."),
+  fact("F256", "§2", "supporting", ["M06", "M11"], ["orca.status", "arch.flow", "jenkins.checkout"], "A pipeline's first action is to call Orca to request a robot, uploading the test cases and parameters; Orca matches the environment, device profile and capabilities (touch, dip, tap, swipe)."),
+  fact("F257", "§1.5", "supporting", ["M01"], ["lab.orientation", "hw.print3d"], "The lab was redesigned around standardised modular shelves about three years ago; before that, fixtures were raw CNC-cut particle board on open racks, so every rig was configured differently."),
+  fact("F258", "§1.5", "core", ["M01"], ["lab.orientation", "hw.devices"], "Thanks to the modular shelves, a failed Duo 2 can be swapped for a Flex 3 in minutes rather than days."),
+  fact("F259", "§1.5", "supporting", ["M01"], ["lab.orientation", "people.roles"], "Lab ownership principle: a lab that \"belongs to everyone\" does not work, because everyone's responsibility is no one's responsibility; the lab has a clear owner ({{jared}})."),
+  fact("F260", "IMG-T", "supporting", ["M04"], ["robots.mechanics", "hw.tablet"], "The front tablets display the rig's active connection properties and network addresses, while many physical buttons on the fixture panels are legacy placeholders that remain unwired."),
+  fact("F261", "§6.2", "supporting", ["M18"], ["teams.history", "cards.philosophy"], "PayCore is only now building its third automated shelf and sometimes runs tests on this lab's robots remotely."),
+  fact("F262", "§1.3", "supporting", ["M17"], ["infra.ai", "tools.claude", "vision.ollama"], "Bigger AI ambitions (optimising repos, auto-generating about 13,000 test scripts) exceeded the blade's compute and the lab's electrical capacity, so the proof of concept is limited to visual inspection of receipt layouts and tip math."),
+  fact("F263", "§1.3", "trivia", ["M17"], ["infra.ai", "arch.infra"], "The local AI server has been powered down for now because of its excessive noise."),
+  fact("F264", "§1.3", "supporting", ["M17"], ["infra.ai", "vision.ollama", "vision.tesseract"], "The hope is that a local vision LLM (asked e.g. \"Is this a payment screen?\") will replace brittle OCR, but its token-usage limits are still uncertain."),
+  fact("F265", "§6.1", "supporting", ["M02"], ["devices", "vision.camera", "hw.devices"], "Webcams stream both merchant-facing and customer-facing devices, and stacked MFD units need no physical touch: engineers operate them remotely over ADB."),
+  fact("F266", "§6.1", "supporting", ["M02"], ["devices", "hw.devices"], "Rigs carry famous-robot code names; a staging (STG) mirror sits directly beneath its DEV1 sibling, and tests run heavily in DEV1 to catch bugs before application cuts."),
 ]);
 
 /** S01–S20 — sim-only illustrative details. Never tested as real-world truth. */

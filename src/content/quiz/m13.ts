@@ -87,7 +87,7 @@ export const QUIZ_M13: QuizQuestion[] = resolvePeople([
       "IntelliJ IDEA",
     ],
     answer: 3,
-    explanation: "IntelliJ IDEA (F027).",
+    explanation: "IntelliJ IDEA (F027). VS Code is used too, but only for editing Pigeon's JSON tests.",
     factIds: ["F027"],
     tags: ["uia.pom", "tools.intellij"],
   },
