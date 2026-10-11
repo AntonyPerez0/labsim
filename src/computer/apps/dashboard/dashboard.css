@@ -471,6 +471,10 @@
   background: #000a;
   font-family: system-ui, sans-serif;
 }
+.rdash-embed {
+  position: absolute;
+  inset: 0;
+}
 .rdash-close {
   align-self: center;
   padding: 6px 14px;

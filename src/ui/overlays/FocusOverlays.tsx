@@ -48,7 +48,7 @@ export function TabletOverlay({ robotId }: { robotId: string }) {
         <span className="tabletov__cam" />
         <div className="tabletov__screen">
           <ErrorBoundary label="tablet" fallback={(e) => <CrashCard what="tablet dashboard" err={e} />}>
-            <TabletDashboard robotId={robotId} onExit={exitFocusOverlay} />
+            <TabletDashboard robotId={robotId} onExit={exitFocusOverlay} embedded />
           </ErrorBoundary>
         </div>
       </div>

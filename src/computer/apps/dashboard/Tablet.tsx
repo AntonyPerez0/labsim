@@ -1,11 +1,12 @@
 /**
  * `TabletDashboard` — the zoomed status-tablet overlay (Apps §10.7): the room stays visible (dimmed),
- * a dark bezel holds the 1280 × 800 surface at ~80 % of the viewport height. `Esc` / `✕ Close (Esc)` →
+ * a dark bezel holds the 1280 × 800 surface at ~80 % of the viewport height (standalone), or the surface
+ * fits the host frame (`embedded`, used in game). `Esc` / `✕ Close (Esc)` →
  * `onExit`, else overlay `none` + `engine.releaseFocus()`. USB reachability (`host='tablet'`).
  */
 import { useEffect, useState } from 'react';
 import { exitOverlay } from '../../shell/boot';
-import { DashboardSurface } from './Surface';
+import { DashboardSurface, FitSurface } from './Surface';
 import './dashboard.css';
 
 function useViewportScale(): number {
@@ -24,8 +25,13 @@ function useViewportScale(): number {
   return k;
 }
 
-export function TabletDashboard(props: { robotId: string; onExit?: () => void }) {
-  const { robotId, onExit } = props;
+/**
+ * `embedded`: the host already draws the tablet frame (the game's `TabletOverlay`), so the surface just
+ * fits that frame's screen. Without it the component draws its own dimmed backdrop and bezel sized to
+ * the window (computer sandbox) — inside a smaller frame that version overflowed and was cropped.
+ */
+export function TabletDashboard(props: { robotId: string; onExit?: () => void; embedded?: boolean }) {
+  const { robotId, onExit, embedded } = props;
   const k = useViewportScale();
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -37,6 +43,15 @@ export function TabletDashboard(props: { robotId: string; onExit?: () => void })
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [onExit]);
+  if (embedded) {
+    return (
+      <div className="rdash-embed" data-app="tablet" role="dialog" aria-label={`${robotId.toUpperCase()} status tablet`}>
+        <FitSurface>
+          <DashboardSurface robotId={robotId} host="tablet" keyboard />
+        </FitSurface>
+      </div>
+    );
+  }
   return (
     <div className="rdash-overlay" data-app="tablet" role="dialog" aria-label={`${robotId.toUpperCase()} status tablet`}>
       <button type="button" className="rdash-close" onClick={() => exitOverlay(onExit, false)}>
