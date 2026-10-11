@@ -14,8 +14,8 @@ import { chain, firstLine, login, mergeBase, pullRoute, repoOwner, repoRoute, re
 
 export function prIcon(pr: PullRequest, size = 16) {
   if (pr.state === 'merged') return <Oct name="merge" color="#8250df" size={size} />;
-  if (pr.state === 'closed') return <Oct name="prClosed" color="#d1242f" size={size} />;
-  return <Oct name="pr" color="#1a7f37" size={size} />;
+  if (pr.state === 'closed') return <Oct name="prClosed" color="var(--cb-bad, #d1242f)" size={size} />;
+  return <Oct name="pr" color="var(--cb-ok, #1a7f37)" size={size} />;
 }
 
 export function PullsPage(props: { repo: GitRepo; q: string }) {
@@ -91,7 +91,7 @@ export function PullsPage(props: { repo: GitRepo; q: string }) {
                   <a className="gh-pr-row-title" href={`#${pullRoute(repo.id, p.number)}`} onClick={(e) => (e.preventDefault(), navigate(pullRoute(repo.id, p.number)))}>
                     {p.title}
                   </a>
-                  {p.checks === 'success' ? <Oct name="check" color="#1a7f37" className="gh-ml" /> : p.checks === 'failure' ? <Oct name="x" color="#d1242f" /> : <Oct name="dot" color="#9a6700" />}
+                  {p.checks === 'success' ? <Oct name="check" color="var(--cb-ok, #1a7f37)" className="gh-ml" /> : p.checks === 'failure' ? <Oct name="x" color="var(--cb-bad, #d1242f)" /> : <Oct name="dot" color="#9a6700" />}
                   <div className="gh-pr-row-meta">
                     #{p.number} {p.state === 'merged' ? 'by' : 'opened'} {p.state === 'merged' ? <b>{login(p.author)}</b> : <Rel ms={p.createdMs} />} {p.state === 'merged' ? <>was merged <Rel ms={p.mergedMs ?? p.createdMs} /></> : <>by {login(p.author)}</>}
                     {rs && p.state === 'open' ? <> • {rs}</> : null}

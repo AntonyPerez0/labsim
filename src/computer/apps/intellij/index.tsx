@@ -101,6 +101,11 @@ export function IntelliJApp(props: AppProps) {
       model.changed();
     }
     if (target.file && (routeChanged || line) && (model.active !== target.file || line)) openFile(model, target.file, { line, revealInTree: true });
+    // Practice hub ("Practise UIA"): open the UIA Practice tool window once per open request.
+    if (fresh && params?.practice === 'uia' && model.rightTool !== 'uiaPractice') {
+      model.rightTool = 'uiaPractice';
+      model.changed();
+    }
   }, [route, openRepo, target.file, params, model]);
 
   // Active editor → route (the shell emits app.navigated).

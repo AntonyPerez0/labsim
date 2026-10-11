@@ -2,8 +2,9 @@
  * Hover card / tooltip: shows `content` in a floating card near the trigger after a short delay.
  * Rendered in a portal on `document.body` with fixed positioning, flipped to stay on screen.
  */
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { cssZoom } from './a11y';
 
 export function HoverCard({ content, children, delay = 220, width = 320, className, inline = true }: {
   content: ReactNode | (() => ReactNode);
@@ -18,6 +19,7 @@ export function HoverCard({ content, children, delay = 220, width = 320, classNa
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<CSSProperties>({ left: -9999, top: -9999 });
+  const cardId = useId();
 
   const show = useCallback(() => {
     if (timer.current) clearTimeout(timer.current);
@@ -45,7 +47,9 @@ export function HoverCard({ content, children, delay = 220, width = 320, classNa
     left = Math.max(8, Math.min(vw - cr.width - 8, left));
     let top = r.bottom + 8;
     if (top + cr.height > vh - 8) top = r.top - cr.height - 8;
-    setPos({ left, top: Math.max(8, top) });
+    // The card is scaled with the UI (CSS zoom): its own left/top are multiplied by the zoom.
+    const z = cssZoom(c);
+    setPos({ left: left / z, top: Math.max(8, top) / z });
   }, [open]);
 
   const Tag = inline ? 'span' : 'div';
@@ -56,16 +60,23 @@ export function HoverCard({ content, children, delay = 220, width = 320, classNa
           triggerRef.current = el;
         }}
         className={`k-hover-trigger${className ? ` ${className}` : ''}`}
+        aria-describedby={open ? cardId : undefined}
         onMouseEnter={show}
         onMouseLeave={hide}
         onFocus={show}
         onBlur={hide}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape' && open) {
+            e.stopPropagation();
+            setOpen(false);
+          }
+        }}
       >
         {children}
       </Tag>
       {open
         ? createPortal(
-            <div ref={cardRef} className="k-hovercard" style={{ ...pos, width }} onMouseEnter={show} onMouseLeave={hide} role="tooltip">
+            <div ref={cardRef} id={cardId} className="k-hovercard" style={{ ...pos, width }} onMouseEnter={show} onMouseLeave={hide} role="tooltip">
               {typeof content === 'function' ? (content as () => ReactNode)() : content}
             </div>,
             document.body,

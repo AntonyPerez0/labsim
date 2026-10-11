@@ -10,6 +10,7 @@
 @import './overlays.css';
 @import './manual.css';
 @import './minigames.css';
+@import './a11y.css';
 
 :root {
   color-scheme: dark;
@@ -146,9 +147,9 @@ a { color: var(--lab-hi); }
 .tnum { font-variant-numeric: tabular-nums; }
 .muted { color: var(--tx-2); }
 .dim { color: var(--tx-3); }
-.ok { color: var(--lab-hi); }
-.warn { color: var(--amber); }
-.bad { color: var(--red); }
+.ok { color: var(--ok-hi); }
+.warn { color: var(--warn); }
+.bad { color: var(--bad); }
 .caps {
   text-transform: uppercase;
   letter-spacing: 0.12em;

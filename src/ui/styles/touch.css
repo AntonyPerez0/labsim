@@ -134,32 +134,59 @@
   pointer-events: none;
 }
 
-/* ── portrait: ask for landscape (the lab is built for a wide view) ── */
+/* ── portrait: suggest landscape (the lab is built for a wide view) — a hint that fades out, never a
+   blocker: portrait play stays possible on phones and tablets ── */
 .tc-rotate {
   position: absolute;
-  inset: 0;
+  left: 50%;
+  top: calc(84px + env(safe-area-inset-top, 0px));
   z-index: 40;
   display: none;
-  align-content: center;
-  justify-items: center;
-  gap: 12px;
-  background: rgba(4, 6, 6, 0.88);
+  grid-auto-flow: column;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100vw - 32px);
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: rgba(4, 6, 6, 0.8);
   color: var(--tx-0);
-  font-size: 14.5px;
+  font-size: 12.5px;
   font-weight: 650;
-  text-align: center;
+  text-align: left;
+  pointer-events: none !important;
+  transform: translateX(-50%);
+  animation: tc-rotate-hint 7s ease forwards;
 }
 .tc-rotate svg {
+  flex: none;
+  width: 22px;
+  height: 22px;
   color: var(--lab-hi);
 }
 .tc-rotate small {
-  color: var(--tx-2);
-  font-weight: 500;
+  display: none;
 }
-@media (orientation: portrait) {
+@keyframes tc-rotate-hint {
+  0%, 80% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
+@media (orientation: portrait) and (max-width: 600px) {
   .tc-rotate {
     display: grid;
   }
+}
+
+/* Every HUD widget (objective tracker + Hint / Show me, clock, banners, hotbar, dialogue) above the
+   drag-to-look layer, which is rendered after them; their empty areas stay click-through
+   (`.hud > *` is pointer-events: none), so drags there still look around. */
+:root[data-touch='on'] .hud > .hud-tl,
+:root[data-touch='on'] .hud > .hud-tc,
+:root[data-touch='on'] .hud > .hud-tr,
+:root[data-touch='on'] .hud > .hud-subwrap,
+:root[data-touch='on'] .hud > .hud-bl,
+:root[data-touch='on'] .hud > .hud-bc {
+  z-index: 1;
 }
 
 /* ── HUD layout: keep the bottom-centre column clear of the joystick and button clusters ── */

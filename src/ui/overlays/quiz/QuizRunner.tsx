@@ -6,7 +6,7 @@
  *
  * `feedback: false` (exam papers) records answers without revealing correctness.
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useGame } from '@/core/store';
 import type { QuizAnswerValue, QuizContext } from '@/core/state';
 import type { QuizAnswerResult, QuizFinishResult } from '@/missions';
@@ -141,9 +141,18 @@ export function QuizRunner({ questionIds, context, title, subtitle, feedback = t
     };
   }, [submitted, next]);
 
+  // Keyboard users: when a question replaces the previous one (its Next button had focus and is gone),
+  // put focus back inside the dialog so Tab continues from the top of the new question.
+  const rootRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const modal = rootRef.current?.closest<HTMLElement>('.k-modal');
+    const a = document.activeElement;
+    if (modal && (!a || a === document.body || !a.isConnected)) modal.focus({ preventScroll: true });
+  }, [qid]);
+
   if (!q) {
     return (
-      <div className="qz">
+      <div className="qz" ref={rootRef}>
         <div className="qz__missing">Question {qid} is not in the bank.</div>
         <Button onClick={() => onDone({ checkpointId: null, correct: 0, total: 0, passed: true, attempt: 1, missedIds: [], retryQuestionIds: null, checkpoint: null })}>Close</Button>
       </div>
@@ -155,10 +164,10 @@ export function QuizRunner({ questionIds, context, title, subtitle, feedback = t
   const timeLeft = live ? run.timeLeftS : null;
 
   return (
-    <div className="qz">
+    <div className="qz" ref={rootRef}>
       <header className="qz__head">
         <div className="grow">
-          <div className="qz__eyebrow">
+          <div className="qz__eyebrow" id="quiz-title">
             {title}
             {run && run.attempt > 1 && live ? <Chip size="sm" tone="amber">Attempt {run.attempt}</Chip> : null}
             {!live && context !== 'cert' ? <Chip size="sm" tone="grey">Practice — not recorded</Chip> : null}
@@ -188,10 +197,12 @@ export function QuizRunner({ questionIds, context, title, subtitle, feedback = t
             ))}
           </span>
         </div>
-        <h2 className="qz__prompt">{q.prompt}</h2>
+        <h2 className="qz__prompt" id="quiz-prompt">
+          {q.prompt}
+        </h2>
         <QuestionInput q={q} perm={perm} locked={submitted !== null} submitted={submitted} correct={showFeedback ? result!.correct : null} onSubmit={submit} />
         {showFeedback ? (
-          <div className={`qz-fb ${result!.correct ? 'is-right' : 'is-wrong'}`}>
+          <div className={`qz-fb ${result!.correct ? 'is-right' : 'is-wrong'}`} role="status" aria-live="polite">
             <div className="qz-fb__verdict">
               <Icon name={result!.correct ? 'check' : 'x'} size={18} stroke={2.6} />
               {result!.correct ? 'Correct' : 'Not quite'}
@@ -217,7 +228,9 @@ export function QuizRunner({ questionIds, context, title, subtitle, feedback = t
             ) : null}
           </div>
         ) : submitted !== null && !feedback ? (
-          <div className="qz-fb qz-fb--neutral">Answer recorded.</div>
+          <div className="qz-fb qz-fb--neutral" role="status" aria-live="polite">
+            Answer recorded.
+          </div>
         ) : null}
       </div>
       <footer className="qz__foot">

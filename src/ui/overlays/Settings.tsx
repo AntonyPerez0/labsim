@@ -13,6 +13,7 @@ import { closeOverlay } from '@/ui/services/nav';
 import { pushToast } from '@/ui/services/toasts';
 import { uiSound } from '@/ui/services/sound';
 import { CONTROL_GROUPS } from './ControlsOverlay';
+import { ProgressTransfer } from '@/ui/guide/ProgressTransfer';
 
 type Tab = 'graphics' | 'controls' | 'audio' | 'gameplay' | 'freeplay' | 'profile';
 
@@ -34,6 +35,7 @@ function setVolume(key: 'masterVolume' | 'sfxVolume' | 'uiVolume' | 'voiceVolume
 }
 
 const QUALITY: { value: QualityPreset; label: string; title: string }[] = [
+  { value: 'potato', label: 'Potato', title: 'Very old laptops, Chromebooks and phones: no shadows or post-fx, half resolution, 30 fps' },
   { value: 'low', label: 'Low', title: 'Integrated GPUs: no shadows/AO, reduced resolution' },
   { value: 'medium', label: 'Medium', title: 'Shadows on key lights, light post-fx' },
   { value: 'high', label: 'High', title: 'Shadows, ambient occlusion, bloom' },
@@ -70,6 +72,19 @@ export function SettingsPanel({ initialTab = 'graphics' }: { initialTab?: Tab })
             </FieldRow>
             <FieldRow label="Field of view" hint="60–90°, default 75°.">
               <Slider value={st.fov} min={60} max={90} step={1} onChange={(v) => setSetting('fov', v)} format={(v) => `${v}°`} />
+            </FieldRow>
+            <Toggle label="Auto-detect quality" hint="On first launch, lower the preset automatically if this device is slow (never raises it)." checked={st.autoQuality} onChange={(v) => setSetting('autoQuality', v)} />
+            <FieldRow label="Frame-rate cap" hint="Capping at 30 fps saves battery and keeps weak devices cool and steady.">
+              <Segmented
+                value={String(st.frameRateCap)}
+                options={[
+                  { value: '0', label: 'Display' },
+                  { value: '60', label: '60' },
+                  { value: '30', label: '30' },
+                ]}
+                onChange={(v) => setSetting('frameRateCap', Number(v) as 0 | 30 | 60)}
+                ariaLabel="Frame-rate cap"
+              />
             </FieldRow>
             <Toggle label="Dynamic resolution" hint="Lowers render resolution briefly when frames run long, so motion stays smooth." checked={st.dynamicResolution} onChange={(v) => setSetting('dynamicResolution', v)} />
             <Toggle label="Show FPS counter" checked={st.showFps} onChange={(v) => setSetting('showFps', v)} />
@@ -232,6 +247,7 @@ function GameplaySettings() {
           onChange={setRealism}
         />
       </FieldRow>
+      <Toggle label="Coach tips (hand-holding)" hint="Short tips that point at what to do next the first time you see each screen and app. Turns itself down after the first modules." checked={st.coachTips} onChange={(v) => setSetting('coachTips', v)} />
       <FieldRow label="Academy guidance" hint="Floor markers, arrows and highlights during lessons.">
         <Segmented
           value={st.guidance}
@@ -267,6 +283,10 @@ function GameplaySettings() {
           ]}
         />
       </FieldRow>
+      <FieldRow label="Text and interface size" hint="Scales menus, HUD, Field Manual and the workstation apps.">
+        <Slider value={st.uiScale} min={0.85} max={1.5} step={0.05} onChange={(v) => setSetting('uiScale', v)} format={(v) => `${Math.round(v * 100)}%`} />
+      </FieldRow>
+      <Toggle label="High contrast" hint="Solid panels, stronger borders and text, always-visible focus rings." checked={st.highContrast} onChange={(v) => setSetting('highContrast', v)} />
       <Toggle label="Reduce motion" hint="No camera shake, nudges or confetti; instant transitions." checked={st.reducedMotion} onChange={(v) => setSetting('reducedMotion', v)} />
       <Toggle label="Robot personality quips" hint="Always off in Strict realism." checked={st.quipsEnabled} onChange={(v) => setSetting('quipsEnabled', v)} disabled={realism === 'strict'} />
     </>
@@ -296,6 +316,9 @@ function ProfileSettings() {
             Save
           </Button>
         </div>
+      </FieldRow>
+      <FieldRow label="Back up or move your progress" hint="Progress is saved only in this browser. Export a .json file to keep a backup or carry it to another device, then import it there.">
+        <ProgressTransfer />
       </FieldRow>
       <FieldRow label="Restore default settings" hint="Graphics, audio, controls and accessibility.">
         <Button

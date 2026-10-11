@@ -4,6 +4,7 @@
  * margin, breadcrumbs. Editing keys live here; window-level shortcuts bubble to the IDE root.
  */
 import { memo, useEffect, useLayoutEffect, useMemo, useReducer, useRef } from 'react';
+import { cssZoom } from '@/ui/kit/a11y';
 import { emitAppAction, getWindowManager } from '@/computer/apps';
 import {
   backspacePair,
@@ -222,7 +223,8 @@ export function Editor(props: EditorProps) {
     const lc = posToLineCol(b.text, b.end);
     const r = ta.getBoundingClientRect();
     const rr = root.getBoundingClientRect();
-    return { x: r.left - rr.left + 4 + (lc.col - 1) * cw - ta.scrollLeft, y: r.top - rr.top + 4 + lc.line * LINE_H - ta.scrollTop + 2 };
+    const z = cssZoom(root); // rects are visual px; the popup is placed in the root's own (zoomed) px
+    return { x: (r.left - rr.left) / z + 4 + (lc.col - 1) * (cw / z) - ta.scrollLeft, y: (r.top - rr.top) / z + 4 + lc.line * LINE_H - ta.scrollTop + 2 };
   }
 
   const readSel = () => {

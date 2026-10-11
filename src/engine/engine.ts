@@ -16,8 +16,10 @@ import {
   Quaternion,
   Scene,
   Vector3,
+  NoToneMapping,
   type Camera,
   type Object3D,
+  type Texture,
   type WebGLRenderer,
 } from 'three';
 import { emit, mutate, store } from '@/core/store';
@@ -42,8 +44,9 @@ import {
 import { InteractionSystem } from './interaction';
 import { CameraFocus } from './focus';
 import { ViewCapture } from './capture';
-import { PostFx } from './postfx';
+import type { PostFx } from './postfx';
 import { createRenderer, setupEnvironment, ShadowPolicy, threeToneMapping } from './renderer';
+import { CheapMaterialSwapper } from './cheapMaterials';
 import { getQuality, resolvePixelRatio, type QualitySettings } from './quality';
 import type { Prompt } from './prompt';
 
@@ -107,12 +110,23 @@ export class LabEngine implements Engine {
 
   private _renderer: WebGLRenderer | null = null;
   private canvas: HTMLCanvasElement | null = null;
+  /** Post-fx chain; loaded on demand (`postprocessing` + `n8ao` are a separate chunk) and null on potato. */
   private postfx: PostFx | null = null;
+  private postfxLoading: Promise<void> | null = null;
+  private postfxFailed = false;
+  /** PMREM of the lab room (built on first use; potato never builds it). */
+  private envTexture: Texture | null = null;
+  private envWanted = false;
+  /** Set once boot (or the first frame) asked for the real pipeline; see applyPipeline(). */
+  private started = false;
+  private readonly cheap = new CheapMaterialSwapper();
   private shadowPolicy: ShadowPolicy | null = null;
   private input: InputManager | null = null;
   private readonly interaction: InteractionSystem;
   private readonly focusCtl = new CameraFocus();
   private readonly capturer = new ViewCapture();
+  private readonly captureAt = new WeakMap<CanvasRenderingContext2D, number>();
+  private captureScratch: CanvasRenderingContext2D | null = null;
   private readonly frameCallbacks = new Set<(dt: number, t: number) => void>();
   private failedCallbacks = new WeakSet<(dt: number, t: number) => void>();
 
@@ -211,15 +225,10 @@ export class LabEngine implements Engine {
     const renderer = createRenderer(canvas);
     this._renderer = renderer;
     this.textures.setMaxAnisotropy(renderer.capabilities.getMaxAnisotropy());
-    this.materials.setEnvironment(setupEnvironment(renderer, this.scene));
     this.shadowPolicy = new ShadowPolicy(renderer, this.scene);
-    try {
-      this.postfx = new PostFx(renderer, this.scene, this.camera);
-    } catch (err) {
-      console.warn('[engine] post-processing unavailable, rendering directly', err);
-      this.postfx = null;
-      renderer.toneMapping = threeToneMapping();
-    }
+    renderer.toneMapping = threeToneMapping(); // until (unless) the post-fx chain takes over
+    // Only presets with post-fx download/parse the post-processing chunk (started by setQuality
+    // below); boot awaits `pipelineReady()` before the first frame so shaders compile only once.
 
     this.input = new InputManager(canvas, {
       onGesture: () => {
@@ -273,9 +282,14 @@ export class LabEngine implements Engine {
       }
     });
 
-    // Resize tracking.
+    // Background tab: the loop stops requesting frames; silence the audio graph too.
+    document.addEventListener('visibilitychange', () => this.audio.setBackground(document.visibilityState === 'hidden'));
+
+    // Resize tracking (orientation changes and the mobile URL bar fire resize / visualViewport resize).
     const onResize = () => this.resize();
     window.addEventListener('resize', onResize);
+    window.addEventListener('orientationchange', onResize);
+    window.visualViewport?.addEventListener('resize', onResize);
     if (typeof ResizeObserver !== 'undefined') new ResizeObserver(onResize).observe(canvas);
     this.resize(true);
   }
@@ -283,6 +297,108 @@ export class LabEngine implements Engine {
   private applyVolumes(): void {
     const s = store.getState().progress.settings;
     this.audio.setVolumes({ master: s.masterVolume, sfx: s.sfxVolume, ambience: s.ambienceVolume, ui: s.sfxVolume });
+  }
+
+  /** Start downloading the post-fx chunk early (boot calls this before the renderer exists). */
+  preload(q: QualityPreset): void {
+    if (getQuality(q).postFx) void import('./postfx').catch(() => undefined);
+  }
+
+  /**
+   * Compile every material's shader program before the first frame (KHR_parallel_shader_compile
+   * where available), after the potato material swap, so the first seconds in the lab don't hitch.
+   */
+  async warmup(): Promise<void> {
+    const renderer = this._renderer;
+    if (!renderer) return;
+    if (this.envWanted && !this.envTexture) this.applyEnvironment(true);
+    this.shadowPolicy?.scan(true);
+    this.cheap.scan(this.scene);
+    this.cheap.sync();
+    this.camera.updateMatrixWorld();
+    try {
+      await renderer.compileAsync(this.scene, this.camera);
+      // One real (hidden) frame: program linking and texture uploads happen on first use, which
+      // would otherwise be a multi-second hitch on the first visible frame on weak devices.
+      if (renderer.shadowMap.enabled) renderer.shadowMap.needsUpdate = true;
+      if (this.postfx) this.postfx.render(0);
+      else renderer.render(this.scene, this.camera);
+    } catch (err) {
+      console.warn('[engine] shader warm-up failed (shaders compile on first use)', err);
+    }
+  }
+
+  /** Resolves when the render pipeline of the active preset is in place (post-fx chunk loaded). */
+  pipelineReady(): Promise<void> {
+    this.started = true;
+    if (this.quality.postFx && !this.postfx) return this.loadPostFx();
+    return this.postfxLoading ?? Promise.resolve();
+  }
+
+  private loadPostFx(): Promise<void> {
+    if (this.postfx || this.postfxFailed) return Promise.resolve();
+    if (!this.postfxLoading) {
+      this.postfxLoading = import('./postfx').then(
+        (mod) => {
+          this.postfxLoading = null;
+          const renderer = this._renderer;
+          if (!renderer || this.postfx || !this.quality.postFx) return;
+          try {
+            this.postfx = new mod.PostFx(renderer, this.scene, this.camera);
+          } catch (err) {
+            console.warn('[engine] post-processing unavailable, rendering directly', err);
+            this.postfxFailed = true;
+            this.postfx = null;
+          }
+          if (this.qualityApplied) this.applyPipeline();
+        },
+        (err) => {
+          this.postfxLoading = null;
+          this.postfxFailed = true;
+          console.warn('[engine] post-processing failed to load, rendering directly', err);
+        },
+      );
+    }
+    return this.postfxLoading;
+  }
+
+  /**
+   * Post-fx chain on/off for the active preset. Without it the scene renders straight to the canvas
+   * with renderer tone mapping (same ACES curve, so LEDs/screens keep their look minus the bloom).
+   */
+  private applyPipeline(): void {
+    const renderer = this._renderer;
+    if (!renderer) return;
+    // (Not during init: boot may still lower the preset — auto-detect — before anything is drawn.)
+    if (this.quality.postFx && !this.postfx && this.started) void this.loadPostFx();
+    if (!this.quality.postFx && this.postfx) {
+      // Free the full-screen HDR targets (phones are short on memory).
+      this.postfx.dispose();
+      this.postfx = null;
+    }
+    if (this.postfx) {
+      this.postfx.configure(this.quality);
+      renderer.toneMapping = NoToneMapping; // tone mapping lives in the post-fx chain
+      renderer.autoClear = false;
+    } else {
+      renderer.toneMapping = threeToneMapping();
+      renderer.autoClear = true; // EffectComposer turns it off
+    }
+    this.resize(true);
+    this.interaction.refreshHighlight();
+  }
+
+  private applyEnvironment(on: boolean): void {
+    const renderer = this._renderer;
+    if (!renderer) return;
+    if (on) {
+      if (!this.envTexture) this.envTexture = setupEnvironment(renderer, this.scene);
+      else this.scene.environment = this.envTexture;
+      this.materials.setEnvironment(this.envTexture);
+    } else if (this.scene.environment) {
+      this.scene.environment = null;
+      this.materials.setEnvironment(null);
+    }
   }
 
   private resize(force = false): void {
@@ -299,8 +415,8 @@ export class LabEngine implements Engine {
     renderer.setPixelRatio(dpr);
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
     if (this.postfx) this.postfx.setSize(w, h);
-    else renderer.setSize(w, h, false);
   }
 
   // --- per frame ---------------------------------------------------------------------------------
@@ -308,6 +424,10 @@ export class LabEngine implements Engine {
   frame(dtSeconds: number): void {
     const renderer = this._renderer;
     if (!renderer || !this.input) return;
+    if (!this.started) {
+      this.started = true;
+      if (this.quality.postFx && !this.postfx) void this.loadPostFx();
+    }
     const realDt = Math.min(1, Math.max(0, Number.isFinite(dtSeconds) ? dtSeconds : 0));
     const dt = Math.min(0.1, realDt); // physics/tween step (stable after hitches)
     this.elapsed += dt;
@@ -424,6 +544,7 @@ export class LabEngine implements Engine {
       if (this.shadowTimer >= SHADOW_SCAN_SECONDS) {
         this.shadowTimer = 0;
         this.shadowPolicy?.scan();
+        this.cheap.scan(this.scene); // potato: Lambert copies for meshes added since the last scan
       }
     } catch (err) {
       const now = performance.now();
@@ -452,6 +573,8 @@ export class LabEngine implements Engine {
       }
     }
 
+    if (this.envWanted && !this.envTexture) this.applyEnvironment(true);
+    this.cheap.sync();
     renderer.info.reset();
     if (this.postfx) this.postfx.render(dt);
     else renderer.render(this.scene, this.camera);
@@ -580,11 +703,16 @@ export class LabEngine implements Engine {
     this.drsHoldUntil = performance.now() + 3000; // let new shaders compile before judging speed
     this.shadowDirty = true;
     this.shadowPolicy?.setQuality(preset);
-    this.postfx?.configure(preset);
+    // The PMREM is built lazily (warm-up / first frame), so a preset that is lowered right after
+    // init (auto-detect) never pays for it.
+    this.envWanted = preset.environment;
+    if (!preset.environment || this.envTexture) this.applyEnvironment(preset.environment);
+    // Highlight variants are clones of whatever material a mesh shows: drop them before swapping.
+    this.interaction.clearHighlight();
+    this.cheap.setEnabled(preset.cheapMaterials, this.scene);
     this.textures.setAnisotropy(preset.anisotropy);
     this.audio.setHrtf(preset.hrtf);
-    this.resize(true);
-    this.interaction.refreshHighlight();
+    this.applyPipeline(); // resizes and re-applies the highlight
   }
 
   /** Active quality settings (debug overlay). */
@@ -673,6 +801,27 @@ export class LabEngine implements Engine {
     const renderer = this._renderer;
     if (!renderer) return;
     try {
+      if (this.quality.reducedDetail) {
+        // Potato: webcam streams are the priciest extra renders (a 1280×720 HDR pass + readback).
+        // At most ~4 captures/s per target, rendered at ≤ 480 px wide and scaled up.
+        const now = performance.now();
+        if (now - (this.captureAt.get(target) ?? -1e9) < 250) return;
+        this.captureAt.set(target, now);
+        const k = Math.min(1, 480 / Math.max(1, width));
+        if (k < 1) {
+          const sw = Math.max(1, Math.round(width * k));
+          const sh = Math.max(1, Math.round(height * k));
+          const sc = (this.captureScratch ??= document.createElement('canvas').getContext('2d')!);
+          if (sc.canvas.width !== sw || sc.canvas.height !== sh) {
+            sc.canvas.width = sw;
+            sc.canvas.height = sh;
+          }
+          this.capturer.capture(renderer, this.scene, camera, sc, sw, sh);
+          target.imageSmoothingEnabled = true;
+          target.drawImage(sc.canvas, 0, 0, sw, sh, 0, 0, width, height);
+          return;
+        }
+      }
       this.capturer.capture(renderer, this.scene, camera, target, width, height);
     } catch (err) {
       console.error('[engine] captureView failed', err);

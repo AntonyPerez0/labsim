@@ -2,7 +2,8 @@
  * UI bridge: wires the game's event bus and settings into the 2D layer.
  *
  *  - Kit control sounds → engine synth (`ui` bus); audio unlock on the first gesture.
- *  - Settings → `<html data-*>` (reduced motion, subtitle size, colour-blind mode).
+ *  - Settings → `<html data-*>` (reduced motion, subtitle size, colour-blind mode, high contrast) and the
+ *    `--ui-scale` custom property (2D UI scale; see `src/ui/styles/a11y.css`).
  *  - Sim events worth a toast (fuse blown, damaged load, robot status changes that matter now).
  *  - Gameplay toasts (XP, achievements, ranks, tickets, manual entries) ONLY while the mission runtime
  *    is not live — the runtime writes its own toasts (`src/missions/runtime/feedback.ts`).
@@ -17,6 +18,7 @@ import { currentOverlay, openOverlay, openPause } from '@/ui/services/nav';
 import { installKitSounds, uiSound, unlockAudio } from '@/ui/services/sound';
 import { pushToast } from '@/ui/services/toasts';
 import { boardById, propForBoard, type MinigameId } from '@/ui/minigames/boards';
+import { clampUiScale } from '@/ui/kit/a11y';
 
 const STATUS_LABEL: Record<string, string> = {
   AVAILABLE: 'Available',
@@ -30,12 +32,33 @@ function runtimeLive(): boolean {
   return hasMission('careerRank');
 }
 
+/** UI scale (CSS zoom on the UI layers; `src/ui/styles/a11y.css`). */
+function applyUiScale(scale: number): void {
+  const root = document.documentElement;
+  root.dataset.uiScale = String(scale);
+  // Large UI: some layouts (HUD toasts vs hotbar) rearrange when the effective viewport gets small.
+  root.dataset.uiLarge = String(scale >= 1.25);
+  root.style.setProperty('--ui-scale', String(scale));
+}
+
+// While a pointer is held (dragging the "Text and interface size" slider) the new scale waits for the
+// release: re-zooming the slider under the pointer mid-drag would feed back into its value.
+let pointerHeld = false;
+let pendingScale: number | null = null;
+
 function applyRootAttributes(): void {
   const st = store.getState().progress.settings;
   const root = document.documentElement;
   root.dataset.reducedMotion = String(!!st.reducedMotion);
   root.dataset.subtitles = st.subtitleSize;
   root.dataset.colourBlind = st.colourBlind;
+  root.dataset.highContrast = String(!!st.highContrast);
+  const scale = clampUiScale(st.uiScale);
+  if (pointerHeld && root.dataset.uiScale !== undefined && root.dataset.uiScale !== String(scale)) pendingScale = scale;
+  else {
+    pendingScale = null;
+    applyUiScale(scale);
+  }
 }
 
 /** Robot status changes are noise unless the player is dealing with that rig right now. */
@@ -56,6 +79,26 @@ export function installBridge(): () => void {
       if (s.progress.settings !== prev.progress.settings) applyRootAttributes();
     }),
   );
+  const down = () => {
+    pointerHeld = true;
+  };
+  const up = () => {
+    pointerHeld = false;
+    if (pendingScale !== null) {
+      applyUiScale(pendingScale);
+      pendingScale = null;
+    }
+  };
+  window.addEventListener('pointerdown', down, true);
+  window.addEventListener('pointerup', up, true);
+  window.addEventListener('pointercancel', up, true);
+  window.addEventListener('blur', up);
+  offs.push(() => {
+    window.removeEventListener('blur', up);
+    window.removeEventListener('pointerdown', down, true);
+    window.removeEventListener('pointerup', up, true);
+    window.removeEventListener('pointercancel', up, true);
+  });
 
   // Audio unlock on the first gesture anywhere (menus included).
   const gesture = () => {

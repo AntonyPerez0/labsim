@@ -24,6 +24,7 @@ import { emitAppAction, fmtMm, fmtTime24, type DashboardTab } from '../../apps';
 import { playSound } from '../../shell/engineBridge';
 import { reach } from '../../shell/reach';
 import { screenMm } from '../../shell/deviceTypes';
+import { ROBOT_STATUS_META, type RobotStatusKey } from '@/ui/kit/a11y';
 import './dashboard.css';
 
 export type SurfaceHost = 'tablet' | 'dashboard';
@@ -41,6 +42,14 @@ export interface DashboardSurfaceProps {
 }
 
 const GLYPH: Record<BannerColor, string> = { green: '●', yellow: '▲', grey: '■', red: '✖' };
+/** Colour-blind-safe status fills (`--cb-st-*`, set only in colour-blind modes; src/ui/styles/a11y.css). */
+const CB_FILL: Record<RobotStatusKey, string> = {
+  AVAILABLE: '--cb-st-available',
+  UNAVAILABLE: '--cb-st-unavailable',
+  OFFLINE: '--cb-st-offline',
+  CONNECTION_FAILED: '--cb-st-connfailed',
+  RESERVED: '--cb-st-reserved',
+};
 const TABS: DashboardTab[] = ['robot', 'robot-control', 'motion-control'];
 const top = (baseline: number, size: number) => baseline - size * 0.8;
 
@@ -406,8 +415,11 @@ function RobotTab(props: { rig: RigState; devices: Record<number, { name: string
     robot?.name ?? rig.id,
     robot?.humanReadableName ?? '',
     robot ? (
-      <span className="rdash-chip" style={{ background: T.statusChips[robot.status] }}>
-        {{ AVAILABLE: 'Available', UNAVAILABLE: 'Unavailable', OFFLINE: 'Offline', CONNECTION_FAILED: 'Connection Failed', RESERVED: 'Reserved' }[robot.status]}
+      <span className="rdash-chip" style={{ background: `var(${CB_FILL[robot.status]}, ${T.statusChips[robot.status]})` }}>
+        <span className="rdash-chip__glyph" aria-hidden="true">
+          {ROBOT_STATUS_META[robot.status].glyph}
+        </span>
+        {ROBOT_STATUS_META[robot.status].label}
       </span>
     ) : (
       '—'

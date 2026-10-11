@@ -1,5 +1,6 @@
 /** Image lightbox (Apps §9.2): wheel zooms at the cursor, drag pans, double-click resets, Esc/click outside closes. */
 import { useEffect, useRef, useState, type PointerEvent, type WheelEvent } from 'react';
+import { cssZoom } from '@/ui/kit/a11y';
 import { OI } from './icons';
 
 export function Lightbox(props: { src: string; onClose(): void }) {
@@ -11,8 +12,9 @@ export function Lightbox(props: { src: string; onClose(): void }) {
 
   const onWheel = (e: WheelEvent<HTMLDivElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
-    const cx = e.clientX - r.left - r.width / 2;
-    const cy = e.clientY - r.top - r.height / 2;
+    const zz = cssZoom(e.currentTarget); // visual px → the (UI-scale zoomed) element's px
+    const cx = (e.clientX - r.left - r.width / 2) / zz;
+    const cy = (e.clientY - r.top - r.height / 2) / zz;
     const nz = Math.min(12, Math.max(0.25, z * (e.deltaY < 0 ? 1.2 : 1 / 1.2)));
     const k = nz / z;
     setPan({ x: cx - (cx - pan.x) * k, y: cy - (cy - pan.y) * k });
@@ -25,8 +27,9 @@ export function Lightbox(props: { src: string; onClose(): void }) {
   const move = (e: PointerEvent<HTMLDivElement>) => {
     const d = drag.current;
     if (!d) return;
-    const dx = e.clientX - d.x;
-    const dy = e.clientY - d.y;
+    const zz = cssZoom(e.currentTarget);
+    const dx = (e.clientX - d.x) / zz;
+    const dy = (e.clientY - d.y) / zz;
     if (Math.abs(dx) + Math.abs(dy) > 3) d.moved = true;
     setPan({ x: d.px + dx, y: d.py + dy });
   };

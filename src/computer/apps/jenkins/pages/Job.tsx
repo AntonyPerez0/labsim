@@ -142,6 +142,8 @@ export function StageView(props: { job: JenkinsJob; max: number }) {
           className={`jk-stage-cell jk-st-${s.status}`}
           onMouseEnter={() => setTip(key)}
           onMouseLeave={() => setTip((t) => (t === key ? null : t))}
+          onFocus={() => setTip(key)}
+          onBlur={() => setTip((t) => (t === key ? null : t))}
           onClick={() => navigate(`${buildUrl(b, 'console')}?stage=${encodeURIComponent(name)}`)}
           aria-label={`${name}: ${s.status} ${fmtStage(dur)}`}
         >

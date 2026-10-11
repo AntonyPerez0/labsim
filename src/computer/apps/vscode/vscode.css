@@ -12,7 +12,7 @@
   --vsc-sel: #04395e;
   --vsc-hover: #2a2d2e;
   --vsc-input: #313131;
-  --vsc-err: #f14c4c;
+  --vsc-err: var(--cb-bad-d, #f14c4c);
   --vsc-warn: #cca700;
   --vsc-mono: 'Cascadia Code', Consolas, 'DejaVu Sans Mono', 'Courier New', monospace;
   position: relative;
@@ -293,7 +293,7 @@
 .vsc-git-U .vsc-tree__letter,
 .vsc-git-A .vsc-scm__letter,
 .vsc-git-U .vsc-scm__letter {
-  color: #73c991;
+  color: var(--cb-ok-d, #73c991);
 }
 .vsc-git-D .vsc-scm__name {
   color: #c74e39;
@@ -496,11 +496,11 @@
   display: flex;
   gap: 6px;
   margin: 3px 0;
-  color: #f48771;
+  color: var(--cb-bad-d, #f48771);
   font-size: 12.5px;
 }
 .vsc-goal.is-ok {
-  color: #89d185;
+  color: var(--cb-ok-d, #89d185);
 }
 .vsc-goal--warn {
   color: #cca700;
@@ -529,7 +529,7 @@
   color: #6f6f6f;
 }
 .vsc-practice__done.is-done {
-  color: #89d185;
+  color: var(--cb-ok-d, #89d185);
 }
 .vsc-practice__best {
   margin-left: auto;
@@ -874,10 +874,10 @@
   background: #ffffff08;
 }
 .vsc-diff__add {
-  background: #9bb95533;
+  background: var(--cb-diff-add-bg-d, #9bb95533);
 }
 .vsc-diff__del {
-  background: #ff000033;
+  background: var(--cb-diff-del-bg-d, #ff000033);
 }
 .vsc-diff__sign {
   display: inline-block;
@@ -988,10 +988,10 @@
   user-select: text;
 }
 .vsc-out--err {
-  color: #f48771;
+  color: var(--cb-bad-d, #f48771);
 }
 .vsc-out--ok {
-  color: #89d185;
+  color: var(--cb-ok-d, #89d185);
 }
 .vsc-out--warn {
   color: #cca700;
@@ -1130,4 +1130,10 @@
   background: none;
   cursor: pointer;
   align-self: flex-start;
+}
+
+/* High contrast (settings): brighter secondary text and stronger borders. */
+:root[data-high-contrast='true'] .vsc-root {
+  --vsc-dim: #d0d0d0;
+  --vsc-border: #6b6b6b;
 }

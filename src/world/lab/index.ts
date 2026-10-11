@@ -14,6 +14,7 @@ import { store } from '@/core/store';
 import { STATIC_COLLIDERS } from '../layout';
 import { HARDWARE_LEAD, personName } from '@/content/team';
 import { createLabCtx, type LabCtx } from './kit/context';
+import { yieldToPaint } from '../yieldFrame';
 import { buildRoom } from './room';
 import { buildLights } from './lights';
 import { buildOverhead } from './overhead';
@@ -47,7 +48,7 @@ export async function buildLab(engine: Engine, onProgress: (p: number, label: st
   engine.scene.add(root);
   const ctx = createLabCtx(engine, root);
 
-  const pause = () => new Promise<void>((r) => setTimeout(r, 0));
+  const pause = yieldToPaint;
   const steps: [string, () => void][] = [];
   let room: ReturnType<typeof buildRoom> | null = null;
   let lights: ReturnType<typeof buildLights> | null = null;
@@ -78,6 +79,8 @@ export async function buildLab(engine: Engine, onProgress: (p: number, label: st
     }
     await pause();
   }
+  onProgress(steps.length / (steps.length + 1), 'Merging geometry…');
+  await pause();
 
   ctx.labels.commit();
   ctx.prints.commit();

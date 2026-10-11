@@ -1,5 +1,6 @@
 /** GIMP menu bar with nested submenus (Apps §6.1 `File Edit Select View Image Layer Colors Tools Filters Windows Help`). */
 import { useEffect, useRef, useState } from 'react';
+import { cssZoom } from '@/ui/kit/a11y';
 
 export interface MenuItem {
   label: string;
@@ -125,8 +126,9 @@ export function ContextMenu(props: { x: number; y: number; items: MenuItem[]; cl
   }, [props]);
   const ox = props.origin?.left ?? 0;
   const oy = props.origin?.top ?? 0;
+  const z = cssZoom(ref.current?.parentElement); // client px are visual; left/top are in the zoomed root's px
   return (
-    <div ref={ref} style={{ position: 'absolute', left: props.x - ox, top: props.y - oy, zIndex: 50 }}>
+    <div ref={ref} style={{ position: 'absolute', left: (props.x - ox) / z, top: (props.y - oy) / z, zIndex: 50 }}>
       <Items items={props.items} close={props.close} />
     </div>
   );

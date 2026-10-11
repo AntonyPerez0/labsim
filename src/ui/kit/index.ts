@@ -12,8 +12,26 @@ export { Kbd, keyLabel } from './Kbd';
 export { Panel, Card, SectionTitle, EmptyState } from './Panel';
 export { Modal, Drawer } from './Modal';
 export { Toggle, Slider, Segmented, Select, TextField, FieldRow } from './controls';
-export { ProgressBar, Meter, Stars, Chip, Avatar, Stat, Spinner, MedalBadge, IllustrativeBadge, StatusPill, type Tone } from './display';
+export { ProgressBar, Meter, Stars, Chip, Avatar, Stat, Spinner, MedalBadge, IllustrativeBadge, StatusPill, OutcomeMark, type Tone } from './display';
 export { Tabs, NavList, type TabDef, type NavItem } from './Tabs';
 export { HoverCard } from './HoverCard';
 export { kitSound, setKitSoundHandler, type KitSound } from './sound';
 export { useArmed } from './useArmed';
+export {
+  ROBOT_STATUS_META,
+  OUTCOME_META,
+  SEVERITY_GLYPH,
+  UI_SCALE_MIN,
+  UI_SCALE_MAX,
+  robotStatusMeta,
+  outcomeKind,
+  clampUiScale,
+  cssZoom,
+  localPoint,
+  focusableIn,
+  trapTabKey,
+  pressable,
+  type RobotStatusKey,
+  type OutcomeKind,
+  type StatusMeta,
+} from './a11y';

@@ -46,7 +46,7 @@ export function QuizOverlay({ questionIds, context }: { questionIds: string[]; c
     <Modal width={820} backdrop="blur" className="qz-modal" labelledBy="quiz-title">
       {result ? (
         <div className="qz-res">
-          <div className={`qz-res__badge ${result.passed ? 'is-pass' : 'is-fail'}`}>
+          <div className={`qz-res__badge ${result.passed ? 'is-pass' : 'is-fail'}`} aria-hidden>
             <Icon name={result.passed ? 'check' : 'refresh'} size={28} stroke={2.4} />
           </div>
           <h2 id="quiz-title">{result.passed ? (result.correct === result.total ? 'Perfect score' : 'Checkpoint passed') : 'Not yet — let’s review'}</h2>
@@ -84,6 +84,7 @@ export function QuizOverlay({ questionIds, context }: { questionIds: string[]; c
                   setResult(null);
                   setRound((r) => r + 1);
                 }}
+                autoFocus
               >
                 Retry checkpoint
               </Button>

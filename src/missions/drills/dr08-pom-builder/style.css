@@ -2,7 +2,7 @@
 .dr08 > .dk-legend { grid-area: legend; }
 .dr08-editor { grid-area: editor; border-radius: 12px; overflow: hidden; border: 1px solid #2b2d30; background: #1e1f22; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45); }
 .dr08-editor__tab { padding: 8px 12px; background: #2b2d30; font: 600 12px/1 var(--dk-mono); color: #dfe1e5; box-shadow: 0 -2px 0 #3574f0 inset; }
-.dr08-src { padding: 12px 14px; font: 500 13.5px/1.6 var(--dk-mono); color: #bcbec4; max-height: calc(100vh - 320px); overflow: auto; }
+.dr08-src { padding: 12px 14px; font: 500 13.5px/1.6 var(--dk-mono); color: #bcbec4; max-height: calc(calc(100vh / var(--ui-scale)) - 320px); overflow: auto; }
 .dr08-src .kw { color: #cf8e6d; }
 .dr08-src .cls { color: #e8ba36; }
 .dr08-row { display: block; white-space: pre; line-height: 1.9; }

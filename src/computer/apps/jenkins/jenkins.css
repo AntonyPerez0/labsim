@@ -5,9 +5,9 @@
   --jk-link: #0b6aa2;
   --jk-border: #e5e5e5;
   --jk-hover: #f5f5f7;
-  --jk-success: #138347;
-  --jk-failure: #e6001f;
-  --jk-unstable: #fe820a;
+  --jk-success: var(--cb-ok, #138347);
+  --jk-failure: var(--cb-bad, #e6001f);
+  --jk-unstable: var(--cb-warn, #fe820a);
   --jk-grey: #9a9aaa;
   --jk-primary: #0b6aa2;
   --jk-mono: "Cascadia Mono", "JetBrains Mono", Consolas, "DejaVu Sans Mono", Menlo, monospace;
@@ -148,7 +148,7 @@
 .jk-param-desc { color: var(--jk-muted); font-size: 13px; margin-top: 4px; }
 .jk-check { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
 .jk-error { color: var(--jk-failure); margin-top: 10px; white-space: pre-wrap; }
-.jk-notice { position: absolute; top: 108px; right: 24px; background: #138347; color: #fff; border-radius: 999px; padding: 6px 16px; font-weight: 600; box-shadow: 0 4px 16px #0003; z-index: 50; animation: jk-fade 2.4s ease forwards; }
+.jk-notice { position: absolute; top: 108px; right: 24px; background: var(--cb-st-available, #138347); color: #fff; border-radius: 999px; padding: 6px 16px; font-weight: 600; box-shadow: 0 4px 16px #0003; z-index: 50; animation: jk-fade 2.4s ease forwards; }
 @keyframes jk-fade { 0%, 80% { opacity: 1; } 100% { opacity: 0; } }
 .jk-banner { border-radius: 8px; padding: 10px 14px; margin: 0 0 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .jk-banner-warn { background: #fff4e5; border: 1px solid #ffd39b; }
@@ -169,8 +169,13 @@
 .jk-stage-build span { color: var(--jk-muted); font-size: 11.5px; }
 .jk-stage-cell { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; border: 0; border-left: 3px solid transparent; background: transparent; font: inherit; color: var(--jk-text); cursor: pointer; position: relative; }
 .jk-stage-cell:hover { filter: brightness(.97); }
-.jk-st-success { background: #e3f3e8; border-left-color: #138347; }
-.jk-st-failed { background: #fbe1e3; border-left-color: #e6001f; }
+.jk-st-success { background: var(--cb-ok-bg, #e3f3e8); border-left-color: var(--cb-ok, #138347); }
+.jk-st-failed { background: var(--cb-bad-bg, #fbe1e3); border-left-color: var(--cb-bad, #e6001f); }
+/* Stage result as a shape, not only the tint (colour-blind safety). */
+.jk-st-success::before, .jk-st-failed::before, .jk-st-skipped::before { position: absolute; left: 5px; top: 3px; font-size: 11px; font-weight: 800; line-height: 1; }
+.jk-st-success::before { content: "✓"; color: var(--cb-ok, #138347); }
+.jk-st-failed::before { content: "✗"; color: var(--cb-bad, #c4001a); }
+.jk-st-skipped::before { content: "–"; color: var(--jk-muted); }
 .jk-st-running { border-left-color: #0b6aa2; background: repeating-linear-gradient(-45deg, #e1effa 0 10px, #cfe4f5 10px 20px); background-size: 28px 28px; animation: jk-stripes 1s linear infinite; }
 .jk-st-skipped { background: #f0f0f2; border-left-color: #9a9aaa; color: var(--jk-muted); }
 .jk-st-pending { cursor: default; }
@@ -258,3 +263,6 @@
 .jk-kv { border-collapse: collapse; }
 .jk-kv td { padding: 6px 12px 6px 0; border-bottom: 1px solid var(--jk-border); }
 .jk-kv td:first-child { font-weight: 600; white-space: nowrap; }
+
+/* High contrast (settings): darker secondary text and borders. */
+:root[data-high-contrast="true"] .jk-root { --jk-muted: #45434f; --jk-border: #8a8a96; }

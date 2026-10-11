@@ -4,7 +4,7 @@
 .dr19-term__bar { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: linear-gradient(180deg, #1b2124, #12171a); font: 600 12px/1 var(--dk-mono); color: var(--dk-ink-2); }
 .dr19-term__target { margin-left: auto; color: #c3cec8; }
 .dr19-term__target b { color: #8ff06a; }
-.dr19-term__body { height: clamp(260px, calc(100vh - 340px), 520px); overflow: auto; padding: 10px 14px; font: 500 13.5px/1.5 var(--dk-mono); color: #d8f5d0; }
+.dr19-term__body { height: clamp(260px, calc(calc(100vh / var(--ui-scale)) - 340px), 520px); overflow: auto; padding: 10px 14px; font: 500 13.5px/1.5 var(--dk-mono); color: #d8f5d0; }
 .dr19-line { white-space: pre-wrap; word-break: break-all; }
 .dr19-line.is-cmd { color: #ffffff; }
 .dr19-line.is-err { color: #ff8a80; }
@@ -28,7 +28,7 @@
 .dr19-device.is-won { box-shadow: 0 0 0 2px #63d443, 0 0 30px rgba(99, 212, 67, 0.35); }
 .dr19-device__label { font: 700 11px/1 var(--dk-mono); color: var(--dk-ink-2); }
 .dr19-screen { display: block; border-radius: 8px; box-shadow: 0 0 0 8px #15181c, 0 0 0 10px #2a2f36; }
-.dr19-device.is-portrait .dr19-screen { height: clamp(220px, calc(100vh - 470px), 360px); width: auto; aspect-ratio: 720 / 1280; }
+.dr19-device.is-portrait .dr19-screen { height: clamp(220px, calc(calc(100vh / var(--ui-scale)) - 470px), 360px); width: auto; aspect-ratio: 720 / 1280; }
 .dr19-device.is-landscape .dr19-screen { width: 100%; height: auto; }
 .dr19-screen text { font-family: var(--font-ui, Inter, system-ui, sans-serif); }
 .dr19-ripple { fill: none; stroke: #f5b301; stroke-width: 6; animation: dr19-ripple 900ms ease-out both; }

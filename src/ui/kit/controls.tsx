@@ -30,7 +30,7 @@ export function Toggle({ checked, onChange, label, hint, disabled }: { checked: 
   );
 }
 
-export function Slider({ value, onChange, min, max, step = 0.01, label, format, disabled }: {
+export function Slider({ value, onChange, min, max, step = 0.01, label, format, disabled, ariaLabel }: {
   value: number;
   onChange: (v: number) => void;
   min: number;
@@ -39,6 +39,7 @@ export function Slider({ value, onChange, min, max, step = 0.01, label, format, 
   label?: ReactNode;
   format?: (v: number) => string;
   disabled?: boolean;
+  ariaLabel?: string;
 }) {
   const id = useId();
   const pct = ((value - min) / (max - min)) * 100;
@@ -58,6 +59,8 @@ export function Slider({ value, onChange, min, max, step = 0.01, label, format, 
           step={step}
           value={value}
           disabled={disabled}
+          aria-label={ariaLabel}
+          aria-valuetext={format ? format(value) : undefined}
           onChange={(e) => onChange(Number(e.target.value))}
           style={{ '--pct': `${pct}%` } as CSSProperties}
         />
@@ -166,13 +169,23 @@ export function TextField({ value, onChange, placeholder, maxLength, onEnter, au
 
 /** A labelled settings row: label + hint on the left, control on the right. */
 export function FieldRow({ label, hint, children }: { label: ReactNode; hint?: ReactNode; children: ReactNode }) {
+  // The control group is named by the row's label (and described by its hint) for screen readers.
+  const id = useId();
   return (
     <div className="k-fieldrow">
       <div className="k-fieldrow__text">
-        <div className="k-fieldrow__label">{label}</div>
-        {hint ? <div className="k-fieldrow__hint">{hint}</div> : null}
+        <div className="k-fieldrow__label" id={`${id}-l`}>
+          {label}
+        </div>
+        {hint ? (
+          <div className="k-fieldrow__hint" id={`${id}-h`}>
+            {hint}
+          </div>
+        ) : null}
       </div>
-      <div className="k-fieldrow__control">{children}</div>
+      <div className="k-fieldrow__control" role="group" aria-labelledby={`${id}-l`} aria-describedby={hint ? `${id}-h` : undefined}>
+        {children}
+      </div>
     </div>
   );
 }

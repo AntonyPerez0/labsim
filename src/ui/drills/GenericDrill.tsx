@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useGame } from '@/core/store';
 import type { DrillComponentProps } from '@/missions';
 import { questionById } from '@/content';
-import { EmptyState, Kbd } from '@/ui/kit';
+import { EmptyState, Kbd, OutcomeMark } from '@/ui/kit';
 
 interface SimpleData {
   prompt?: string;
@@ -62,6 +62,7 @@ export function GenericDrill({ item, answer }: DrillComponentProps) {
           <button key={i} type="button" className={`qz-opt${picked === i ? (i === correctIdx ? ' is-right' : ' is-wrong') : ''}`} disabled={picked !== null} onClick={() => pick(i)}>
             <Kbd k={String.fromCharCode(65 + i)} size="sm" />
             <span className="qz-opt__text">{o}</span>
+            {picked === i ? <OutcomeMark kind={i === correctIdx ? 'pass' : 'fail'} label={i === correctIdx ? 'correct' : 'wrong'} /> : null}
           </button>
         ))}
       </div>

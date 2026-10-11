@@ -66,7 +66,7 @@ export function StatBlocks(props: { added: number; removed: number }) {
   return (
     <span className="gh-diff-stat" aria-hidden="true">
       {Array.from({ length: 5 }, (_, i) => (
-        <i key={i} style={{ background: i < g ? '#1f883d' : i < g + r ? '#d1242f' : '#d1d9e0' }} />
+        <i key={i} style={{ background: i < g ? 'var(--cb-st-available, #1f883d)' : i < g + r ? 'var(--cb-bad, #d1242f)' : '#d1d9e0' }} />
       ))}
     </span>
   );

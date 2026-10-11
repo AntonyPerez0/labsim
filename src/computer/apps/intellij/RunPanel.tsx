@@ -119,7 +119,7 @@ export function RunPanel({ model, windowFocused, onOpenLocation }: RunPanelProps
         <button type="button" className="ij-tbtn" title="Stop (Ctrl+F2)" aria-label="Stop" data-hint="intellij.stopButton" disabled={!running} onClick={() => stopRun(model, tab)}>
           <IcStop active={running} />
         </button>
-        <button type="button" className={`ij-tbtn${showPassed ? ' ij-on' : ''}`} title="Show Passed" aria-pressed={showPassed} onClick={() => setShowPassed(!showPassed)}>
+        <button type="button" className={`ij-tbtn${showPassed ? ' ij-on' : ''}`} title="Show Passed" aria-label="Show Passed" aria-pressed={showPassed} onClick={() => setShowPassed(!showPassed)}>
           <IcCheck />
         </button>
         <button type="button" className="ij-tbtn" title="Expand All" aria-label="Expand All">

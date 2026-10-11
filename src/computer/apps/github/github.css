@@ -9,9 +9,9 @@
   --gh-accent: #0969da;
   --gh-success: #1f883d;
   --gh-success-hover: #1c8139;
-  --gh-open: #1a7f37;
+  --gh-open: var(--cb-ok, #1a7f37);
   --gh-merged: #8250df;
-  --gh-closed: #d1242f;
+  --gh-closed: var(--cb-bad, #d1242f);
   --gh-attention: #9a6700;
   --gh-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   position: absolute;
@@ -112,7 +112,7 @@
 .gh-subtab { border: 0; background: none; font: inherit; font-size: 14px; color: var(--gh-muted); padding: 8px 8px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
 .gh-subtab[aria-selected="true"] { color: var(--gh-fg); font-weight: 600; border-bottom-color: #fd8c73; }
 .gh-subtab:disabled { color: #818b98; cursor: not-allowed; }
-.gh-modal-backdrop { position: absolute; inset: 0; background: #1f232866; z-index: 80; display: flex; align-items: flex-start; justify-content: center; padding-top: 10vh; }
+.gh-modal-backdrop { position: absolute; inset: 0; background: #1f232866; z-index: 80; display: flex; align-items: flex-start; justify-content: center; padding-top: calc(10vh / var(--ui-scale)); }
 .gh-modal { width: 480px; max-width: calc(100% - 32px); background: #fff; border-radius: 12px; box-shadow: 0 8px 24px #42474e40; overflow: hidden; }
 .gh-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 16px; font-weight: 600; font-size: 14px; border-bottom: 1px solid var(--gh-border-muted); }
 .gh-modal-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
@@ -231,11 +231,11 @@
 .gh-diff-table td { padding: 0 8px; vertical-align: top; white-space: pre-wrap; word-break: break-word; }
 .gh-diff-table .gh-dn { width: 50px; text-align: right; color: var(--gh-muted); user-select: none; padding: 0 8px; position: relative; }
 .gh-diff-table .gh-dsign { width: 20px; user-select: none; padding: 0 0 0 8px; }
-.gh-diff-add td { background: #dafbe1; }
-.gh-diff-add td.gh-dn { background: #aceebb; }
-.gh-diff-add .gh-dsign { color: #1a7f37; }
-.gh-diff-del td { background: #ffebe9; }
-.gh-diff-del td.gh-dn { background: #ffcecb; }
+.gh-diff-add td { background: var(--cb-diff-add-bg, #dafbe1); }
+.gh-diff-add td.gh-dn { background: color-mix(in srgb, var(--cb-diff-add-bg, #aceebb) 70%, var(--cb-ok, #aceebb)); }
+.gh-diff-add .gh-dsign { color: var(--cb-ok, #1a7f37); }
+.gh-diff-del td { background: var(--cb-diff-del-bg, #ffebe9); }
+.gh-diff-del td.gh-dn { background: color-mix(in srgb, var(--cb-diff-del-bg, #ffcecb) 70%, var(--cb-bad, #ffcecb)); }
 .gh-diff-del .gh-dsign { color: var(--gh-closed); }
 .gh-diff-hunk td { background: #ddf4ff; color: var(--gh-muted); padding-top: 4px; padding-bottom: 4px; }
 .gh-diff-hunk td.gh-dn { background: #b6e3ff; }
@@ -287,10 +287,10 @@
 .gh-sidebar-item h4 { margin: 0 0 8px; font-size: 12px; font-weight: 600; color: var(--gh-muted); display: flex; justify-content: space-between; align-items: center; }
 .gh-sidebar-item .gh-reviewer { display: flex; align-items: center; gap: 6px; font-size: 14px; margin: 4px 0; }
 .gh-files-layout { display: flex; gap: 16px; align-items: flex-start; }
-.gh-file-tree { flex: 0 0 280px; position: sticky; top: 0; font-size: 14px; border: 1px solid var(--gh-border-muted); border-radius: 6px; padding: 8px; max-height: 70vh; overflow: auto; }
+.gh-file-tree { flex: 0 0 280px; position: sticky; top: 0; font-size: 14px; border: 1px solid var(--gh-border-muted); border-radius: 6px; padding: 8px; max-height: calc(70vh / var(--ui-scale)); overflow: auto; }
 .gh-file-tree button { display: flex; align-items: center; gap: 6px; width: 100%; text-align: left; border: 0; background: none; padding: 4px 6px; border-radius: 6px; font: inherit; font-size: 13px; color: var(--gh-fg); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .gh-file-tree button:hover { background: #818b981a; }
-.gh-review-pop { width: 640px; max-width: 80vw; padding: 16px; }
+.gh-review-pop { width: 640px; max-width: calc(80vw / var(--ui-scale)); padding: 16px; }
 .gh-review-pop label { display: flex; gap: 8px; align-items: flex-start; margin: 8px 0; cursor: pointer; }
 .gh-review-pop label small { display: block; color: var(--gh-muted); }
 .gh-review-pop label.gh-disabled { color: #818b98; cursor: not-allowed; }
@@ -318,7 +318,7 @@
 .gh-ab div:first-child i { margin-left: auto; }
 
 /* Editor */
-.gh-editor { display: flex; font: 12px/20px var(--gh-mono); border-top: 1px solid var(--gh-border); min-height: 360px; max-height: 60vh; overflow: auto; }
+.gh-editor { display: flex; font: 12px/20px var(--gh-mono); border-top: 1px solid var(--gh-border); min-height: 360px; max-height: calc(60vh / var(--ui-scale)); overflow: auto; }
 .gh-editor-gutter { flex: 0 0 52px; text-align: right; color: var(--gh-muted); padding: 8px 12px 8px 0; user-select: none; background: #fff; position: sticky; left: 0; }
 .gh-editor-area { position: relative; flex: 1; min-width: 0; }
 .gh-editor-pre, .gh-editor-ta { margin: 0; padding: 8px; font: inherit; line-height: 20px; white-space: pre; tab-size: 2; }
@@ -327,3 +327,6 @@
 .gh-editor-ta::selection { background: #0969da33; }
 .gh-finder { width: 560px; }
 .gh-finder-list { max-height: 360px; overflow: auto; }
+
+/* High contrast (settings) */
+:root[data-high-contrast="true"] .gh-root { --gh-border: #8c959f; }

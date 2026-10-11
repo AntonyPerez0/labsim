@@ -113,7 +113,7 @@
 .ij-field-error {
   grid-column: 2;
   margin-top: -5px;
-  color: #ff6b68;
+  color: var(--cb-bad-d, #ff6b68);
   font-size: 12px;
 }
 .ij-check {
@@ -204,7 +204,7 @@
   color: var(--ij-dim);
 }
 .ij-err {
-  color: #ff6b68;
+  color: var(--cb-bad-d, #ff6b68);
 }
 
 /* ── run window ── */
@@ -239,10 +239,10 @@
   overflow: hidden;
 }
 .ij-run-result.ij-pass {
-  color: #5fb15f;
+  color: var(--cb-ok-d, #5fb15f);
 }
 .ij-run-result.ij-fail {
-  color: #ff6b68;
+  color: var(--cb-bad-d, #ff6b68);
 }
 .ij-run-node {
   display: flex;
@@ -376,7 +376,7 @@
   align-items: center;
 }
 .ij-inline-err {
-  color: #ff6b68;
+  color: var(--cb-bad-d, #ff6b68);
   font-size: 12px;
 }
 
@@ -579,10 +579,10 @@
   display: flex;
   gap: 6px;
   margin: 3px 0;
-  color: #e0806f;
+  color: var(--cb-bad-d, #e0806f);
 }
 .ij-uia-goal.is-ok {
-  color: #6aab73;
+  color: var(--cb-ok-d, #6aab73);
 }
 .ij-uia-goal-ic {
   width: 14px;
@@ -636,7 +636,7 @@
   color: #6f6f6f;
 }
 .ij-uia-done.is-done {
-  color: #6aab73;
+  color: var(--cb-ok-d, #6aab73);
 }
 .ij-uia-row.is-sel .ij-uia-done {
   color: #fff;

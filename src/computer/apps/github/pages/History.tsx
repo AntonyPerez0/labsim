@@ -271,7 +271,7 @@ export function BranchesPage(props: { repo: GitRepo }) {
       <span className="gh-muted" style={{ fontSize: 12 }}>
         <Rel ms={r.atMs} />
       </span>
-      <span>{r.pr && r.pr.state === 'open' ? <Oct name="checkCircle" color="#1a7f37" title="All checks have passed" /> : null}</span>
+      <span>{r.pr && r.pr.state === 'open' ? <Oct name="checkCircle" color="var(--cb-ok, #1a7f37)" title="All checks have passed" /> : null}</span>
       <span>
         {isDefault ? (
           <span className="gh-label">Default</span>
@@ -291,7 +291,7 @@ export function BranchesPage(props: { repo: GitRepo }) {
       <span>
         {r.pr ? (
           <a href="#" className="gh-flux" style={{ gap: 4, fontSize: 12 }} onClick={(e) => (e.preventDefault(), navigate(pullRoute(repo.id, r.pr!.number)))}>
-            <Oct name={r.pr.state === 'merged' ? 'merge' : r.pr.state === 'closed' ? 'prClosed' : 'pr'} color={r.pr.state === 'merged' ? '#8250df' : r.pr.state === 'closed' ? '#d1242f' : '#1a7f37'} />#{r.pr.number}
+            <Oct name={r.pr.state === 'merged' ? 'merge' : r.pr.state === 'closed' ? 'prClosed' : 'pr'} color={r.pr.state === 'merged' ? '#8250df' : r.pr.state === 'closed' ? 'var(--cb-bad, #d1242f)' : 'var(--cb-ok, #1a7f37)'} />#{r.pr.number}
           </a>
         ) : null}
       </span>

@@ -65,7 +65,7 @@ function CodeButton(props: { repo: GitRepo }) {
         <div className="gh-clone-url">
           <input className="gh-input gh-input-sm" readOnly value={url} aria-label="Clone URL" onFocus={(e) => e.currentTarget.select()} />
           <button type="button" className="gh-btn gh-btn-sm" data-hint={`github.cloneUrl:${proto}`} onClick={copy} aria-label="Copy url to clipboard" title="Copy url to clipboard">
-            {copied ? <Oct name="check" color="#1a7f37" /> : <Oct name="copy" />}
+            {copied ? <Oct name="check" color="var(--cb-ok, #1a7f37)" /> : <Oct name="copy" />}
           </button>
         </div>
         <div className="gh-clone-note">

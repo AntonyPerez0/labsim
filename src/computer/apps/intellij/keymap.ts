@@ -4,6 +4,7 @@
  * close tab, Alt+Shift+U update project, Alt+Shift+B branches).
  */
 import { useEffect, useState } from 'react';
+import { cssZoom } from '@/ui/kit/a11y';
 import type { IdeModel } from './ideModel';
 
 export interface KeyLike {
@@ -106,9 +107,11 @@ export function startSplitterDrag(model: IdeModel, kind: 'left' | 'bottom', e: R
   const startY = e.clientY;
   const w0 = model.leftWidth;
   const h0 = model.bottomHeight;
+  // Pointer deltas are visual px; the IDE's sizes are its own (UI-scale zoomed) CSS px.
+  const z = cssZoom(e.currentTarget as Element);
   const move = (ev: MouseEvent) => {
-    if (kind === 'left') model.leftWidth = Math.max(160, Math.min(700, w0 + ev.clientX - startX));
-    else model.bottomHeight = Math.max(90, Math.min(700, h0 - (ev.clientY - startY)));
+    if (kind === 'left') model.leftWidth = Math.max(160, Math.min(700, w0 + (ev.clientX - startX) / z));
+    else model.bottomHeight = Math.max(90, Math.min(700, h0 - (ev.clientY - startY) / z));
     model.changed();
   };
   const up = () => {

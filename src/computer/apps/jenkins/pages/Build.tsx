@@ -116,7 +116,7 @@ function BuildStageRow(props: { build: JenkinsBuild }) {
             {b.stages.map((s) => (
               <td key={s.name} style={{ borderLeft: '1px solid #f0f0f2', padding: 0 }}>
                 {s.status === 'pending' ? null : (
-                  <button type="button" className={`jk-stage-cell jk-st-${s.status}`} onClick={() => navigate(`${buildUrl(b, 'console')}?stage=${encodeURIComponent(s.name)}`)}>
+                  <button type="button" className={`jk-stage-cell jk-st-${s.status}`} aria-label={`${s.name}: ${s.status}`} onClick={() => navigate(`${buildUrl(b, 'console')}?stage=${encodeURIComponent(s.name)}`)}>
                     {s.status === 'skipped' ? '' : fmtStage(s.status === 'running' ? (s.startedMs != null ? now - s.startedMs : 0) : s.durationMs)}
                   </button>
                 )}

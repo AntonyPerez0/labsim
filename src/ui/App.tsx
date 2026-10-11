@@ -5,7 +5,7 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { store, useGame } from '@/core/store';
 import { engine } from '@/engine';
-import { initComputer } from '@/computer';
+import { initComputer } from '@/computer/shell/boot'; // not the barrel: the desktop UI loads lazily
 import { goMenu } from '@/ui/services/nav';
 import { ErrorBoundary, FatalScreen } from './app/ErrorBoundary';
 import { getBootError, subscribeBootError } from './app/bootError';
@@ -17,6 +17,7 @@ import { FocusDialogueLayer, Hud, ToastLayer } from './hud/Hud';
 import { DebugOverlay } from './hud/DebugOverlay';
 import { FpsCounter } from './hud/FpsCounter';
 import { OverlayHost } from './overlays/OverlayHost';
+import { CoachLayer } from './guide/coach/CoachLayer';
 
 function useEngineFocused(): boolean {
   const [focused, setFocused] = useState(false);
@@ -81,6 +82,9 @@ function Root() {
       <OverlayHost />
       <FocusDialogueLayer />
       <ToastLayer />
+      <ErrorBoundary label="coach">
+        <CoachLayer />
+      </ErrorBoundary>
       {showFps ? <FpsCounter /> : null}
       {debug ? (
         <ErrorBoundary label="debug">

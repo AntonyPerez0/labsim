@@ -27,7 +27,7 @@
 .dr03-line.is-stopped { animation-play-state: paused; }
 .dr03-line.is-right { border-color: #63d443; box-shadow: 0 0 0 2px rgba(99, 212, 67, 0.35), 0 8px 24px rgba(0, 0, 0, 0.5); }
 .dr03-line.is-wrong { border-color: #f5b301; box-shadow: 0 0 0 2px rgba(245, 179, 1, 0.35), 0 8px 24px rgba(0, 0, 0, 0.5); }
-@keyframes dr03-slide { from { transform: translateX(min(100vw, 1100px)); } to { transform: translateX(-110%); } }
+@keyframes dr03-slide { from { transform: translateX(min(calc(100vw / var(--ui-scale)), 1100px)); } to { transform: translateX(-110%); } }
 @keyframes dr03-pop { from { transform: translateX(-50%) scale(0.85); opacity: 0; } to { transform: translateX(-50%); opacity: 1; } }
 .dr03-line__src { font: 800 11px/1 var(--dk-mono); color: #6b7a73; min-width: 22px; }
 .dr03-line__text { font: 600 20px/1.2 var(--dk-mono); color: #e6fbe0; }

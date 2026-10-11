@@ -1,6 +1,7 @@
 /**
  * Main menu (GP §2.1): the 3D lab stays visible behind a blurred, dimmed glass layer. Left rail —
- * Continue · Academy · Arcade · Certification · Free Play · Field Manual · Profile · Settings · About —
+ * Continue · Academy · Curriculum map · Practice · Arcade · Certification · Free Play · Field Manual ·
+ * Profile · Settings · About —
  * with badges (cards due on Field Manual, weakest tag on Arcade, exam ready on Certification); top bar
  * with the player card (name, rank, XP to next rank, streak). First launch goes title → new profile →
  * quick setup → M01 (GP §6.1).
@@ -23,12 +24,16 @@ import { ArcadeHub, DailyScreen, DrillsScreen, ShiftSetup } from './ArcadeScreen
 import { CertificationScreen, FreePlayScreen } from './OtherScreens';
 import { ProfileScreen } from './ProfileScreen';
 import { AboutScreen } from './About';
+import { CurriculumMap } from '@/ui/guide/CurriculumMap';
+import { PracticeHub } from '@/ui/guide/PracticeHub';
 
-type RailId = 'continue' | 'academy' | 'arcade' | 'certification' | 'freeplay' | 'manual' | 'profile' | 'settings' | 'about';
+type RailId = 'continue' | 'academy' | 'curriculum' | 'practice' | 'arcade' | 'certification' | 'freeplay' | 'manual' | 'profile' | 'settings' | 'about';
 
 const SCREEN_RAIL: Partial<Record<MenuScreen, RailId>> = {
   home: 'continue',
   academy: 'academy',
+  curriculum: 'curriculum',
+  practice: 'practice',
   arcade: 'arcade',
   'shift-setup': 'arcade',
   drills: 'arcade',
@@ -64,6 +69,8 @@ export function MainMenu({ screen = 'home' }: { screen?: MenuScreen }) {
   const rail: { id: RailId; label: string; icon: string; badge?: string | number | null; tone?: string; onClick: () => void; locked?: string | null }[] = [
     { id: 'continue', label: 'Home', icon: 'home', onClick: () => go('home') },
     { id: 'academy', label: 'Academy', icon: 'graduation', onClick: () => go('academy') },
+    { id: 'curriculum', label: 'Curriculum map', icon: 'map', onClick: () => go('curriculum') },
+    { id: 'practice', label: 'Practice', icon: 'target', onClick: () => go('practice') },
     { id: 'arcade', label: 'Arcade', icon: 'bolt', badge: badges.weakestTag ? 'weak spot' : null, tone: 'amber', onClick: () => go('arcade') },
     { id: 'certification', label: 'Certification', icon: 'award', badge: badges.examReady ? 'exam ready' : null, tone: 'gold', onClick: () => go('certification') },
     { id: 'freeplay', label: 'Free Play', icon: 'sandbox', locked: fp.unlocked ? null : fp.reason, onClick: () => go('freeplay') },
@@ -107,6 +114,8 @@ export function MainMenu({ screen = 'home' }: { screen?: MenuScreen }) {
                 r.onClick();
               }}
               title={r.locked ?? undefined}
+              data-coach={`nav-${r.id}`}
+              aria-current={active === r.id ? 'page' : undefined}
             >
               <Icon name={r.locked ? 'lock' : r.icon} size={17} />
               <span className="grow">{r.label}</span>
@@ -144,6 +153,10 @@ export function MainMenu({ screen = 'home' }: { screen?: MenuScreen }) {
             <AboutScreen onBack={() => setAbout(false)} />
           ) : screen === 'academy' ? (
             <AcademyScreen />
+          ) : screen === 'curriculum' ? (
+            <CurriculumMap />
+          ) : screen === 'practice' ? (
+            <PracticeHub />
           ) : screen === 'arcade' ? (
             <ArcadeHub />
           ) : screen === 'shift-setup' ? (

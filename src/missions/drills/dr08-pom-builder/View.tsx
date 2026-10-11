@@ -88,6 +88,7 @@ function Build({ d, data, why }: { d: DrillHandle<PomData, unknown>; data: Build
             <span className="kw">package</span> com.labsim.uia.
             <button type="button" className={`dr08-token${st ? (pkg === 'pageobjects' ? ' is-ok' : ' is-bad') : ''}`} onClick={() => !st && setPkg((p) => cycle(PACKAGES, p))}>
               {pkg}
+              {st ? <span className="dk-mark">{pkg === 'pageobjects' ? ' ✓' : ' ✗'}</span> : null}
             </button>
             ; <Kbd k="P" size="sm" />
           </div>
@@ -96,6 +97,7 @@ function Build({ d, data, why }: { d: DrillHandle<PomData, unknown>; data: Build
             <span className="kw">public class</span> <span className="cls">{data.cls}</span> <span className="kw">extends</span>{' '}
             <button type="button" className={`dr08-token${st ? (sup === 'BaseTest' ? ' is-ok' : ' is-bad') : ''}`} onClick={() => !st && setSup((s) => cycle(SUPERS, s))}>
               {sup}
+              {st ? <span className="dk-mark">{sup === 'BaseTest' ? ' ✓' : ' ✗'}</span> : null}
             </button>{' '}
             {'{'} <Kbd k="E" size="sm" />
           </div>

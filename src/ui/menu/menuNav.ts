@@ -10,6 +10,8 @@ const PARENT: Partial<Record<MenuScreen, MenuScreen>> = {
   'new-profile': 'title',
   'quick-setup': 'new-profile',
   academy: 'home',
+  curriculum: 'home',
+  practice: 'home',
   arcade: 'home',
   'shift-setup': 'arcade',
   drills: 'arcade',

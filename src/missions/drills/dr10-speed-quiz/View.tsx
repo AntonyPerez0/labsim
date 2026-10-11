@@ -66,7 +66,12 @@ function Hotspot({ d, data }: { d: DrillHandle<SpeedData>; data: HotspotData }) 
           disabled={q.locked}
           onPick={(region, el) => q.answer(region, region === data.target, el, region === data.target ? {} : { detail: `you clicked ${region.replace(/-/g, ' ')}` })}
         />
-        {q.picked ? <div className={`dr10-label ${q.picked.correct ? 'is-right' : 'is-wrong'}`}>{data.label}</div> : null}
+        {q.picked ? (
+          <div className={`dr10-label ${q.picked.correct ? 'is-right' : 'is-wrong'}`}>
+            <span className="dk-mark">{q.picked.correct ? '✓ ' : '✗ '}</span>
+            {data.label}
+          </div>
+        ) : null}
       </div>
       <Legend items={[['', 'mouse: click the part of the render']]} />
     </div>

@@ -155,7 +155,7 @@
   border-radius: 6px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
   z-index: 30;
-  max-height: 70vh;
+  max-height: calc(70vh / var(--ui-scale));
   overflow: auto;
 }
 .orka-dropdown-item {
@@ -412,10 +412,10 @@
   color: #000;
 }
 .orka-bg-success {
-  background: #198754;
+  background: var(--cb-st-available, #198754);
 }
 .orka-bg-danger {
-  background: #dc3545;
+  background: var(--cb-st-connfailed, #dc3545);
 }
 .orka-bg-primary {
   background: #0d6efd;
@@ -580,10 +580,10 @@
   color: #6c757d;
 }
 .orka-ok {
-  color: #198754;
+  color: var(--cb-ok, #198754);
 }
 .orka-fail {
-  color: #dc3545;
+  color: var(--cb-bad, #dc3545);
 }
 .orka-grey {
   color: #6c757d;
@@ -690,7 +690,7 @@ select.orka-control {
 .orka-invalid-msg {
   display: block;
   margin-top: 2px;
-  color: #dc3545;
+  color: var(--cb-bad, #dc3545);
   font-size: 12.25px;
 }
 .orka-form-text {
@@ -969,10 +969,10 @@ select.orka-control {
   white-space: pre-wrap;
 }
 .orka-log-fail {
-  color: #b02a37;
+  color: var(--cb-bad, #b02a37);
 }
 .orka-log-recovered {
-  color: #198754;
+  color: var(--cb-ok, #198754);
 }
 .orka-log-skipped {
   color: #6c757d;
@@ -1166,4 +1166,24 @@ select.orka-control {
 /* ── Login ── */
 .orka-login {
   max-width: 420px;
+}
+
+/* Status shape (colour-blind safety, src/ui/kit/a11y.ts) */
+.orka-st-glyph {
+  display: inline-block;
+  margin-right: 4px;
+  font-size: 0.9em;
+  line-height: 1;
+}
+/* Unselected status filter: text in the status colour must stay readable on white (≥ 4.5:1). */
+.orka-btn-outline:not(.orka-on) {
+  color: color-mix(in srgb, var(--orka-c, #6c757d) 78%, #000);
+}
+:root[data-high-contrast='true'] .orka-root {
+  --orka-border: #6c757d;
+  --orka-secondary: #495057;
+}
+:root[data-high-contrast='true'] .orka-root .orka-sub,
+:root[data-high-contrast='true'] .orka-root .orka-grey {
+  color: #3d4349;
 }

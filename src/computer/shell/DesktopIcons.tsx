@@ -7,6 +7,7 @@ import { APP_META, type AppId } from '../apps';
 import { AppIcon, Glyph } from './icons';
 import { LOCKED_TEXT } from './gating';
 import { wmApi } from './wmStore';
+import { desktopScale } from './scale';
 
 type IconId = AppId | 'recycle';
 const ICON_ORDER: IconId[] = ['files', 'browser', 'orka', 'jenkins', 'github', 'intellij', 'vscode', 'terminal', 'gimp', 'camera', 'ollama', 'chat', 'dashboard', 'cardreader', 'recycle'];
@@ -103,8 +104,9 @@ export function DesktopIcons(props: { height: number; isUnlocked(app: AppId): bo
     const base = pos[id];
     let moved = false;
     const onMove = (ev: globalThis.PointerEvent) => {
-      const dx = ev.clientX - start.x;
-      const dy = ev.clientY - start.y;
+      const k = desktopScale();
+      const dx = (ev.clientX - start.x) / k;
+      const dy = (ev.clientY - start.y) / k;
       if (!moved && Math.abs(dx) + Math.abs(dy) < 5) return;
       moved = true;
       setDrag({ id, x: ORIGIN + base.c * CELL_W + dx, y: ORIGIN + base.r * CELL_H + dy });
@@ -114,8 +116,8 @@ export function DesktopIcons(props: { height: number; isUnlocked(app: AppId): bo
       window.removeEventListener('pointerup', onUp);
       setDrag(null);
       if (!moved) return;
-      const x = ORIGIN + base.c * CELL_W + (ev.clientX - start.x);
-      const y = ORIGIN + base.r * CELL_H + (ev.clientY - start.y);
+      const x = ORIGIN + base.c * CELL_W + (ev.clientX - start.x) / desktopScale();
+      const y = ORIGIN + base.r * CELL_H + (ev.clientY - start.y) / desktopScale();
       const c = Math.max(0, Math.round((x - ORIGIN) / CELL_W));
       const r = Math.min(rows - 1, Math.max(0, Math.round((y - ORIGIN) / CELL_H)));
       const occupant = ICON_ORDER.find((o) => o !== id && pos[o].c === c && pos[o].r === r);

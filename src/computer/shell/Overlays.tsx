@@ -8,6 +8,7 @@ import { useGameShallow } from '@/core/store';
 import { APP_META, clearHint, getCurrentHint, type HintRequest } from '../apps';
 import { AppIcon } from './icons';
 import { effectiveRect, useShell, wmApi } from './wmStore';
+import { desktopScale } from './scale';
 
 /* ─────────────────────────────── Objective pin ─────────────────────────────── */
 
@@ -121,7 +122,8 @@ export function HintOverlay(props: { rootRef: RefObject<HTMLDivElement | null> }
         }
         const rr = root.getBoundingClientRect();
         const er = el.getBoundingClientRect();
-        const next = { x: er.left - rr.left - 4, y: er.top - rr.top - 4, w: er.width + 8, h: er.height + 8 };
+        const k = desktopScale();
+        const next = { x: (er.left - rr.left) / k - 4, y: (er.top - rr.top) / k - 4, w: er.width / k + 8, h: er.height / k + 8 };
         const sig = `${next.x}|${next.y}|${next.w}|${next.h}`;
         if (sig !== last) {
           last = sig;
@@ -143,7 +145,7 @@ export function HintOverlay(props: { rootRef: RefObject<HTMLDivElement | null> }
     const root = rootRef.current;
     if (!root) return;
     const rr = root.getBoundingClientRect();
-    setGhost({ x: rr.width / 2, y: rr.height / 2, burst: false });
+    setGhost({ x: rr.width / desktopScale() / 2, y: rr.height / desktopScale() / 2, burst: false });
     const t1 = window.setTimeout(() => setGhost({ x: rect.x + rect.w / 2, y: rect.y + rect.h / 2, burst: false }), 30);
     const t2 = window.setTimeout(() => setGhost({ x: rect.x + rect.w / 2, y: rect.y + rect.h / 2, burst: true }), 960);
     return () => {

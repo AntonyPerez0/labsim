@@ -6,6 +6,7 @@
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useGame } from '@/core/store';
+import { cssZoom } from '@/ui/kit/a11y';
 import { streakMultiplier } from './scoring';
 import './kit.css';
 
@@ -64,7 +65,9 @@ export function DrillFrame({ children, accent }: { children: ReactNode; accent?:
     if (!el || !host) return null;
     const a = el.getBoundingClientRect();
     const b = host.getBoundingClientRect();
-    return { x: a.left + a.width / 2 - b.left, y: a.top + a.height / 2 - b.top };
+    // Rects are visual px; pop-ups are positioned in the (UI-scaled, CSS-zoomed) host's own px.
+    const z = cssZoom(host);
+    return { x: (a.left + a.width / 2 - b.left) / z, y: (a.top + a.height / 2 - b.top) / z };
   }, []);
 
   const api = useMemo<FxApi>(
@@ -100,7 +103,8 @@ export function DrillFrame({ children, accent }: { children: ReactNode; accent?:
     const host = ref.current;
     if (!host) return;
     const b = host.getBoundingClientRect();
-    lastPointer.current = { x: e.clientX - b.left, y: e.clientY - b.top };
+    const z = cssZoom(host);
+    lastPointer.current = { x: (e.clientX - b.left) / z, y: (e.clientY - b.top) / z };
   };
   // Keyboard answers anchor pop-ups to the centre again.
   useEffect(() => {

@@ -16,6 +16,7 @@ import { duration, num, pct, shortTitle } from '@/ui/services/format';
 import { uiSound } from '@/ui/services/sound';
 import { tagLabel } from '@/ui/data/views';
 import { TeachCardView } from '@/ui/hud/TeachCard';
+import { PractiseThis } from '@/ui/guide/PractiseThis';
 
 const KIND_LABEL: Record<ActivityResult['kind'], string> = {
   academy: 'Academy debrief',
@@ -162,6 +163,7 @@ export function Debrief() {
                 </ul>
               </section>
             ) : null}
+            {r.academy ? <PractiseThis moduleId={r.academy.moduleId || r.activityId} /> : null}
             {cards.length ? (
               <section className="debrief__section">
                 <div className="caps">What went wrong — and what to do instead</div>

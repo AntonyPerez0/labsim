@@ -1,4 +1,4 @@
-.dr11 { display: flex; flex-direction: column; gap: 18px; align-items: center; padding-top: 2vh; }
+.dr11 { display: flex; flex-direction: column; gap: 18px; align-items: center; padding-top: calc(2vh / var(--ui-scale)); }
 .dr11-lane { display: grid; grid-template-columns: 150px minmax(0, 560px) 150px; gap: 22px; align-items: center; width: 100%; justify-content: center; }
 .dr11-side { height: 180px; border-radius: 18px; border: 1px solid var(--dk-line); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; font: 800 18px/1 var(--font-ui, inherit); color: var(--dk-ink); cursor: pointer; transition: transform 140ms ease, box-shadow 140ms ease; }
 .dr11-side.is-reject { background: linear-gradient(160deg, rgba(239, 75, 63, 0.22), rgba(239, 75, 63, 0.06)); }

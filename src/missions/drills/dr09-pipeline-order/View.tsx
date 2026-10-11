@@ -79,7 +79,10 @@ export function View(props: DrillComponentProps) {
           const state = st && v !== undefined ? (v === slot ? 'is-right' : 'is-wrong') : '';
           return (
             <div key={slot} className={`dr09-slot ${v !== undefined ? 'is-filled' : ''} ${state} ${slot === shown.length && !st ? 'is-next' : ''}`}>
-              <span className="dr09-slot__n">{slot + 1}</span>
+              <span className="dr09-slot__n">
+                {slot + 1}
+                {state ? <span className="dk-mark">{state === 'is-right' ? ' ✓' : ' ✗'}</span> : null}
+              </span>
               {v !== undefined ? (
                 <button type="button" className="dr09-card is-placed" onClick={() => unplace(slot)} disabled={!!st}>
                   {it.data.steps[v]}

@@ -154,7 +154,7 @@ describe('drawDeviceDisplay', () => {
         if (dev.secondaryDisplay) render2d.drawDeviceDisplay(fakeCtx(), lab, dev, 'secondary', { pxPerMm: 4, timeMs: 0 });
       }
     }
-  });
+  }, 30_000); // ~5 s of canvas drawing in jsdom; slow on a loaded CI box
 });
 
 describe('drawTablet', () => {

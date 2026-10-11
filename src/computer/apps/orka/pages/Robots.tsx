@@ -18,6 +18,7 @@ import {
   STATUSES,
   STATUS_COLOR,
   STATUS_LABEL,
+  StatusGlyph,
   SortTh,
   StatusChip,
   addAlert,
@@ -119,6 +120,7 @@ function StatusMenu(props: { r: OrkaRobot; onPick(s: RobotStatus): void; disable
             >
               <span style={{ width: 14 }}>{props.r.status === s ? <Fa.check size={12} /> : null}</span>
               <span className="orka-badge orka-pill" style={{ background: STATUS_COLOR[s] }}>
+                <StatusGlyph status={s} />
                 {STATUS_LABEL[s]}
               </span>
             </button>
@@ -271,6 +273,7 @@ export function RobotsPage() {
                     data-hint={`orka.robots.filter.status:${s}`}
                     onClick={() => toggleStatus(s)}
                   >
+                    <StatusGlyph status={s} />
                     {STATUS_LABEL[s]} ({counts[s]})
                   </button>
                 );

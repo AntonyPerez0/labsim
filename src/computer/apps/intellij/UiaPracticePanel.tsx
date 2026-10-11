@@ -4,6 +4,7 @@
  * (practice/uiaExercises.ts). Solves are kept in `progress.uiaPractice`.
  */
 import { emitAppAction } from '@/computer/apps';
+import { pressable } from '@/ui/kit/a11y';
 import { getState, mutate, useGame } from '@/core/store';
 import type { RepoId } from '@/sim';
 import { openFile, saveAll, writeProjectFile } from './actions';
@@ -147,7 +148,7 @@ export function UiaPracticePanel({ model, repo }: { model: IdeModel; repo: RepoI
       {UIA_EXERCISES.map((e) => {
         const st = stats?.[e.id];
         return (
-          <div key={e.id} className={`ij-uia-row${p?.exerciseId === e.id ? ' is-sel' : ''}`} data-hint={`intellij.uiaPractice.exercise:${e.id}`} onClick={() => start(model, repo, e.id)}>
+          <div key={e.id} className={`ij-uia-row${p?.exerciseId === e.id ? ' is-sel' : ''}`} data-hint={`intellij.uiaPractice.exercise:${e.id}`} {...pressable(() => start(model, repo, e.id))}>
             <span className={`ij-uia-done${st?.solved ? ' is-done' : ''}`}>{st?.solved ? '✓' : '○'}</span>
             <span className="ij-uia-name">{e.title}</span>
             <span className={`ij-uia-chip ij-uia-l${e.level}`}>{e.topic}</span>

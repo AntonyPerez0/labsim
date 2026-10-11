@@ -80,6 +80,21 @@ export class WebAudioEngine implements AudioEngine {
     for (const l of this.loops) l.ensureStarted();
   }
 
+  private pausedForBackground = false;
+
+  /** Hidden tab: suspend the audio graph (no synth/ambience work in the background), resume on return. */
+  setBackground(hidden: boolean): void {
+    const ctx = this.ctx;
+    if (!ctx) return;
+    if (hidden && ctx.state === 'running') {
+      this.pausedForBackground = true;
+      void ctx.suspend().catch(() => undefined);
+    } else if (!hidden && this.pausedForBackground) {
+      this.pausedForBackground = false;
+      void ctx.resume().then(() => this.onState(), () => undefined);
+    }
+  }
+
   setHrtf(on: boolean): void {
     if (this.hrtf === on) return;
     this.hrtf = on;

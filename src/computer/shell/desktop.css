@@ -86,7 +86,7 @@
   left: 0;
   top: 0;
   right: 0;
-  bottom: 48px;
+  bottom: calc(48px * var(--ui-scale, 1)); /* above the (UI-scaled) taskbar */
 }
 .ws-window {
   pointer-events: auto;
@@ -310,7 +310,7 @@
   left: 0;
   top: 0;
   right: 0;
-  bottom: 48px;
+  bottom: calc(48px * var(--ui-scale, 1));
 }
 .ws-icon {
   position: absolute;
@@ -386,6 +386,16 @@
   background: rgba(32, 32, 32, 0.85);
   backdrop-filter: blur(20px);
   border-top: 1px solid #ffffff14;
+  container-type: inline-size;
+}
+/* Narrow desktops (phones): drop the search pill so the pinned apps never run under the tray
+   (search stays available in the Start menu). */
+@container (max-width: 860px) {
+  .ws-taskbar .ws-tb-search,
+  .ws-taskbar .ws-tray-btn[aria-label="Show hidden icons"],
+  .ws-taskbar .ws-tray-btn[aria-label^="Speakers"] {
+    display: none;
+  }
 }
 .ws-tb-center {
   grid-column: 2;
@@ -1278,4 +1288,13 @@
 }
 .ws-fd-gtk .ws-fd-foot .ws-btn:not(.ws-btn-primary):hover {
   background: #4c4c4c;
+}
+
+/* Settings → Text and interface size: the shell chrome follows `--ui-scale` too (app content is
+   zoomed separately in src/ui/styles/a11y.css — `.ws-client > *` — so nothing is scaled twice).
+   Desktop.tsx subtracts the zoomed taskbar height from the work area. */
+.ws-taskbar,
+.ws-start,
+.ws-titlebar {
+  zoom: var(--ui-scale, 1);
 }

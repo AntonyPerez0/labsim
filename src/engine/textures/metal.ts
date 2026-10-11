@@ -110,7 +110,7 @@ export function makePerforatedSteel(o: PerforatedOptions, anisotropy: number): P
   layout.draw(alpha.ctx, k, 0);
 
   // Height: blurred hole mask → rolled/punched edge bevel.
-  const height = makeCanvas(W, H);
+  const height = makeCanvas(W, H, true);
   height.ctx.fillStyle = '#fff';
   height.ctx.fillRect(0, 0, W, H);
   height.ctx.filter = 'blur(2.5px)';

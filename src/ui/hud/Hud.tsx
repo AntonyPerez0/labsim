@@ -18,6 +18,7 @@ import { TeachCardPanel } from './TeachCard';
 import { Subtitles } from './Subtitles';
 import { Waypoint } from './Waypoint';
 import { TOUCH_DEVICE, TouchControls } from './TouchControls';
+import { NextStepChip } from '@/ui/guide/NextStep';
 
 /** Overlays under which the HUD stays visible (non-pausing panels; the world keeps running). */
 const HUD_OVERLAYS = new Set(['none', 'tickets', 'notebook', 'sandbox']);
@@ -59,6 +60,7 @@ export function Hud({ engineFocused }: { engineFocused: boolean }) {
       {!sidePanel ? (
         <div className="hud-tr">
           <ObjectiveTracker />
+          <NextStepChip />
           {hasTickets ? <TicketQueue /> : null}
         </div>
       ) : null}

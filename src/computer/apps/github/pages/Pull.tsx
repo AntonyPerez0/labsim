@@ -104,7 +104,7 @@ function Conversation(props: { repo: GitRepo; pr: PullRequest }) {
                 {firstLine(c.message)}
               </a>
               <span className="gh-spacer" />
-              <Oct name="check" color="#1a7f37" />
+              <Oct name="check" color="var(--cb-ok, #1a7f37)" />
               <a href="#" className="gh-sha gh-muted" onClick={(e) => (e.preventDefault(), navigate(commitRoute(repo.id, c.sha)))}>
                 {shortSha(c.sha)}
               </a>
@@ -282,12 +282,12 @@ function MergeBox(props: { repo: GitRepo; pr: PullRequest }) {
   const label = method === 'merge' ? 'Merge pull request' : method === 'squash' ? 'Squash and merge' : 'Rebase and merge';
   return (
     <div className="gh-mergebox">
-      <span className="gh-mergebox-icon" style={{ background: blocked ? '#59636e' : '#1f883d' }}>
+      <span className="gh-mergebox-icon" style={{ background: blocked ? '#59636e' : 'var(--cb-st-available, #1f883d)' }}>
         <Oct name="merge" size={24} />
       </span>
       <div className="gh-mergebox-card">
         <div className="gh-mb-section">
-          <span className="gh-mb-circle" style={{ background: approved ? '#1f883d' : changes ? '#d1242f' : '#9a6700' }}>
+          <span className="gh-mb-circle" style={{ background: approved ? 'var(--cb-st-available, #1f883d)' : changes ? 'var(--cb-bad, #d1242f)' : '#9a6700' }}>
             <Oct name={approved ? 'check' : changes ? 'fileDiff' : 'eye'} />
           </span>
           <div>
@@ -304,7 +304,7 @@ function MergeBox(props: { repo: GitRepo; pr: PullRequest }) {
           </div>
         </div>
         <div className="gh-mb-section">
-          <span className="gh-mb-circle" style={{ background: checks === 'success' ? '#1f883d' : checks === 'failure' ? '#d1242f' : '#9a6700' }}>
+          <span className="gh-mb-circle" style={{ background: checks === 'success' ? 'var(--cb-st-available, #1f883d)' : checks === 'failure' ? 'var(--cb-bad, #d1242f)' : '#9a6700' }}>
             <Oct name={checks === 'success' ? 'check' : checks === 'failure' ? 'x' : 'dot'} />
           </span>
           <div>
@@ -313,7 +313,7 @@ function MergeBox(props: { repo: GitRepo; pr: PullRequest }) {
           </div>
         </div>
         <div className="gh-mb-section">
-          <span className="gh-mb-circle" style={{ background: blocked ? '#d1242f' : '#1f883d' }}>
+          <span className="gh-mb-circle" style={{ background: blocked ? 'var(--cb-bad, #d1242f)' : 'var(--cb-st-available, #1f883d)' }}>
             <Oct name={blocked ? 'x' : 'check'} />
           </span>
           <div>
@@ -412,7 +412,7 @@ function Sidebar(props: { repo: GitRepo; pr: PullRequest }) {
           <div className="gh-reviewer" key={r}>
             <Avatar who={r} size={20} playerInitials={playerInitials} /> {login(r)}
             <span className="gh-spacer" />
-            {pr.approvals.includes(r) ? <Oct name="check" color="#1a7f37" title="Approved" /> : pr.verdict === 'CHANGES_REQUESTED' ? <Oct name="fileDiff" color="#d1242f" title="Requested changes" /> : <Oct name="dot" color="#9a6700" title="Awaiting requested review" />}
+            {pr.approvals.includes(r) ? <Oct name="check" color="var(--cb-ok, #1a7f37)" title="Approved" /> : pr.verdict === 'CHANGES_REQUESTED' ? <Oct name="fileDiff" color="var(--cb-bad, #d1242f)" title="Requested changes" /> : <Oct name="dot" color="#9a6700" title="Awaiting requested review" />}
           </div>
         ))}
         {pr.approvals
@@ -421,7 +421,7 @@ function Sidebar(props: { repo: GitRepo; pr: PullRequest }) {
             <div className="gh-reviewer" key={a}>
               <Avatar who={a} size={20} playerInitials={playerInitials} /> {login(a)}
               <span className="gh-spacer" />
-              <Oct name="check" color="#1a7f37" title="Approved" />
+              <Oct name="check" color="var(--cb-ok, #1a7f37)" title="Approved" />
             </div>
           ))}
       </div>
@@ -582,7 +582,7 @@ function FilesChanged(props: { repo: GitRepo; pr: PullRequest }) {
         </div>
         <span className="gh-spacer" />
         <span className="gh-sha">
-          <span style={{ color: '#1a7f37' }}>+{stats.added}</span> <span style={{ color: '#d1242f' }}>−{stats.removed}</span> <StatBlocks {...stats} />
+          <span style={{ color: 'var(--cb-ok, #1a7f37)' }}>+{stats.added}</span> <span style={{ color: 'var(--cb-bad, #d1242f)' }}>−{stats.removed}</span> <StatBlocks {...stats} />
         </span>
         <ReviewPopover repo={repo} pr={pr} pending={pending} onDone={() => setPending(key, [])} />
       </div>
@@ -668,8 +668,8 @@ export function PullPage(props: { repo: GitRepo; number: number; tab: Tab }) {
             </a>
           ))}
           <span className="gh-pr-tab-stat">
-            <span style={{ color: '#1a7f37' }}>+{stats.added}</span>
-            <span style={{ color: '#d1242f' }}>−{stats.removed}</span>
+            <span style={{ color: 'var(--cb-ok, #1a7f37)' }}>+{stats.added}</span>
+            <span style={{ color: 'var(--cb-bad, #d1242f)' }}>−{stats.removed}</span>
             <StatBlocks {...stats} />
           </span>
         </nav>
@@ -697,7 +697,7 @@ export function PullPage(props: { repo: GitRepo; number: number; tab: Tab }) {
           <div className="gh-row">
             <div className="gh-file-tree" style={{ flex: '0 0 280px', position: 'static' }}>
               <div className="gh-flux" style={{ padding: 6, fontWeight: 600 }}>
-                {pr.checks === 'success' ? <Oct name="checkCircle" color="#1a7f37" /> : pr.checks === 'failure' ? <Oct name="xCircle" color="#d1242f" /> : <Oct name="dot" color="#9a6700" />}
+                {pr.checks === 'success' ? <Oct name="checkCircle" color="var(--cb-ok, #1a7f37)" /> : pr.checks === 'failure' ? <Oct name="xCircle" color="var(--cb-bad, #d1242f)" /> : <Oct name="dot" color="#9a6700" />}
                 Jenkins
               </div>
               <div className="gh-flux" style={{ padding: '4px 6px 4px 28px', fontSize: 13 }}>

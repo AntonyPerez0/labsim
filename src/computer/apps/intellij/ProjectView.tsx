@@ -3,6 +3,7 @@
  * keyboard navigation, drag & drop (→ Move refactoring) and the context menu.
  */
 import { useMemo, useRef, useState } from 'react';
+import { rootPoint } from './rootContext';
 import { emitAppAction, getWindowManager } from '@/computer/apps';
 import type { GitRepo } from '@/sim';
 import { FileIcon, IcChevronDown, IcChevronRight, IcFolder, IcLibrary, IcModule, IcScratch } from './icons';
@@ -202,8 +203,8 @@ export function ProjectView(props: ProjectViewProps) {
     e.preventDefault();
     if (row.decor) return;
     select(row, false);
-    const r = rootEl()?.getBoundingClientRect();
-    setMenu({ x: e.clientX - (r?.left ?? 0), y: e.clientY - (r?.top ?? 0), items: contextItems(row) });
+    const p = rootPoint(rootEl() ?? null, e.clientX, e.clientY);
+    setMenu({ x: p.x, y: p.y, items: contextItems(row) });
   };
 
   const selectedIndex = rows.findIndex((r) => r.node.path === model.selectedNode);

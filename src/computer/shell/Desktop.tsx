@@ -2,9 +2,10 @@
  * The workstation desktop (Apps §1): wallpaper, icons, windows, taskbar, start menu, toasts, flyouts,
  * objective pin, hints, switcher; global keyboard (Esc stands up), gating and the mission bridge.
  */
-import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { bus } from '@/core/bus';
-import { getState } from '@/core/store';
+import { getState, useGame } from '@/core/store';
+import { clampUiScale } from '@/ui/kit/a11y';
 import { drainOpenRequests, setWindowManager, type AppId, type AppParams } from '../apps';
 import { exitOverlay, initComputer } from './boot';
 import { isAppUnlocked, LOCKED_TEXT, useUnlockedApps } from './gating';
@@ -29,9 +30,11 @@ import {
   useShell,
   wmApi,
 } from './wmStore';
+import { fitScale, setDesktopScale } from './scale';
 import './desktop.css';
 
 const TASKBAR_H = 48;
+const ZOOM_SUPPORTED = typeof CSS !== 'undefined' && typeof CSS.supports === 'function' && CSS.supports('zoom', '0.5');
 
 function Wallpaper() {
   return (
@@ -81,8 +84,11 @@ export function Desktop(props: { onExit?: () => void }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const popup = useShell((s) => s.popup);
   const height = useShell((s) => s.workArea.h);
+  const uiScale = useGame((s) => clampUiScale(s.progress.settings.uiScale));
   const unlocked = useUnlockedApps();
   const isUnlocked = useCallback((app: AppId) => unlocked === 'all' || unlocked.includes(app), [unlocked]);
+  // Small screens: lay the desktop out at a larger logical size and scale it down (see scale.ts).
+  const [fit, setFit] = useState<{ k: number; w: number; h: number }>({ k: 1, w: 0, h: 0 });
 
   const standUp = useCallback(() => {
     setPopup(null);
@@ -180,17 +186,61 @@ export function Desktop(props: { onExit?: () => void }) {
     };
   }, []);
 
-  // Work area = viewport minus taskbar.
+  // Fit to the container (the monitor's screen): track its size, orientation and the URL bar.
+  useLayoutEffect(() => {
+    const host = rootRef.current?.parentElement;
+    if (!host) return;
+    const measure = () => {
+      const w = host.clientWidth;
+      const h = host.clientHeight;
+      const k = fitScale(w, h);
+      setDesktopScale(k);
+      setFit((prev) => (prev.k === k && prev.w === w && prev.h === h ? prev : { k, w, h }));
+    };
+    measure();
+    window.addEventListener('orientationchange', measure);
+    if (typeof ResizeObserver === 'undefined') return () => window.removeEventListener('orientationchange', measure);
+    const ro = new ResizeObserver(measure);
+    ro.observe(host);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('orientationchange', measure);
+      setDesktopScale(1);
+    };
+  }, []);
+  // CSS `zoom` (not a transform): `currentCSSZoom`-based pointer helpers in the apps
+  // (`cssZoom`/`localPoint` in src/ui/kit/a11y.ts) then see the desktop scale automatically.
+  const fitStyle: CSSProperties | undefined =
+    fit.k < 1 && fit.w > 0
+      ? {
+          inset: 'auto',
+          left: 0,
+          top: 0,
+          width: `${fit.w / fit.k}px`,
+          height: `${fit.h / fit.k}px`,
+          ...(ZOOM_SUPPORTED ? { zoom: fit.k } : { transform: `scale(${fit.k})`, transformOrigin: '0 0' }),
+        }
+      : undefined;
+
+  // Work area = viewport minus taskbar (in desktop px: clientWidth ignores the scale transform).
   useLayoutEffect(() => {
     const el = rootRef.current;
     if (!el) return;
-    const measure = () => setWorkArea(Math.round(el.clientWidth) || 1600, Math.max(200, Math.round(el.clientHeight - TASKBAR_H)) || 852);
+    // Desktop px: on a scaled desktop derive them from the (unzoomed) host size — CSSOM sizes of a
+    // `zoom`ed element differ between engines. The taskbar follows the UI text scale (desktop.css
+    // zooms it by --ui-scale).
+    const measure = () => {
+      const scaled = fit.k < 1 && fit.w > 0;
+      const w = scaled ? fit.w / fit.k : el.clientWidth;
+      const h = scaled ? fit.h / fit.k : el.clientHeight;
+      setWorkArea(Math.round(w) || 1600, Math.max(200, Math.round(h - TASKBAR_H * uiScale)) || 852);
+    };
     measure();
     if (typeof ResizeObserver === 'undefined') return;
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [fit, uiScale]);
 
   // Keyboard Lock when fullscreen (Apps §1.8).
   useEffect(() => {
@@ -273,7 +323,9 @@ export function Desktop(props: { onExit?: () => void }) {
     <DesktopRootContext.Provider value={rootRef}>
       <div
         ref={rootRef}
-        className="ws-root"
+        className={`ws-root${fit.k < 1 ? ' ws-root--scaled' : ''}`}
+        style={fitStyle}
+        data-scale={fit.k < 1 ? fit.k : undefined}
         data-app="desktop"
         onPointerDown={(e) => {
           if (shell.getState().popup) setPopup(null);

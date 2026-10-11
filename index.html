@@ -4,13 +4,48 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#0b0f0c" />
+    <meta name="color-scheme" content="dark" />
+    <!-- IPs and port numbers in the game text must not turn into phone links on iOS. -->
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>LabSim — Automation Lab</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b0f0c'/%3E%3Cg fill='%2343b02a'%3E%3Crect x='6' y='7' width='20' height='4.5' rx='2.25'/%3E%3Crect x='6' y='13.75' width='14' height='4.5' rx='2.25'/%3E%3Crect x='6' y='20.5' width='17' height='4.5' rx='2.25'/%3E%3C/g%3E%3C/svg%3E" />
+    <style>
+      /* First paint before any script has loaded (slow phones spend seconds downloading and
+         parsing the game). Removed by src/main.tsx once the React loading screen is up. */
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #060809; overscroll-behavior: none; }
+      .boot-splash { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: radial-gradient(ellipse at 50% 40%, #0e1b14 0%, #070a09 55%, #040606 100%); color: #f1f6f2; font: 14px/1.45 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; transition: opacity 250ms; }
+      .boot-splash.is-done { opacity: 0; pointer-events: none; }
+      .boot-splash__box { width: min(420px, 80vw); display: flex; flex-direction: column; gap: 14px; }
+      .boot-splash__brand { display: flex; align-items: center; gap: 14px; }
+      .boot-splash__title { font: 800 30px/1 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; letter-spacing: -0.03em; }
+      .boot-splash__sub { font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em; color: #8a9891; margin-top: 4px; }
+      .boot-splash__bar { position: relative; height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.07); overflow: hidden; }
+      .boot-splash__bar span { position: absolute; top: 0; bottom: 0; width: 30%; border-radius: 4px; background: linear-gradient(90deg, #2b7d19, #63d443); animation: boot-slide 1.3s ease-in-out infinite; }
+      .boot-splash__status { font-size: 12px; color: #8a9891; }
+      @keyframes boot-slide { from { left: -30%; } to { left: 100%; } }
+      @media (prefers-reduced-motion: reduce) { .boot-splash__bar span { animation: none; left: 0; width: 100%; opacity: 0.4; } }
+    </style>
   </head>
   <body>
     <div id="app">
       <canvas id="scene"></canvas>
       <div id="ui-root"></div>
+    </div>
+    <div class="boot-splash" id="boot-splash" role="progressbar" aria-label="Loading LabSim" aria-busy="true">
+      <div class="boot-splash__box">
+        <div class="boot-splash__brand">
+          <svg width="44" height="44" viewBox="0 0 32 32" aria-hidden="true"><g fill="#43b02a"><rect x="6" y="7" width="20" height="4.5" rx="2.25" /><rect x="6" y="13.75" width="14" height="4.5" rx="2.25" /><rect x="6" y="20.5" width="17" height="4.5" rx="2.25" /></g></svg>
+          <div>
+            <div class="boot-splash__title">LabSim</div>
+            <div class="boot-splash__sub">LabSim Automation Lab</div>
+          </div>
+        </div>
+        <div class="boot-splash__bar"><span></span></div>
+        <div class="boot-splash__status" id="boot-splash-status">Downloading the game…</div>
+      </div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -3,6 +3,7 @@
  * Check / Hint / New variant, goal checklist and the known-good action lines to copy.
  */
 import { useState } from 'react';
+import { pressable } from '@/ui/kit/a11y';
 import { getWindowManager } from '@/computer/apps';
 import { useGame } from '@/core/store';
 import { checkPractice, startExercise } from './actions';
@@ -129,7 +130,7 @@ export function PracticeView({ model }: { model: VsModel }) {
       {EXERCISES.map((e) => {
         const st = stats?.[e.id];
         return (
-          <div key={e.id} className={`vsc-practice__row${p?.exerciseId === e.id ? ' is-sel' : ''}`} data-hint={`vscode.practice.exercise:${e.id}`} onClick={() => startExercise(model, e.id)}>
+          <div key={e.id} className={`vsc-practice__row${p?.exerciseId === e.id ? ' is-sel' : ''}`} data-hint={`vscode.practice.exercise:${e.id}`} {...pressable(() => startExercise(model, e.id))}>
             <span className={`vsc-practice__done${st?.solved ? ' is-done' : ''}`}>{st?.solved ? '✓' : '○'}</span>
             <span className="vsc-practice__name">{e.title}</span>
             <span className={`vsc-chip vsc-chip--l${e.level}`}>{e.topic}</span>
@@ -138,14 +139,14 @@ export function PracticeView({ model }: { model: VsModel }) {
         );
       })}
 
-      <div className="vsc-scm__head vsc-clickable" onClick={() => setShowRef((v) => !v)}>
+      <div className="vsc-scm__head vsc-clickable" aria-expanded={showRef} {...pressable(() => setShowRef((v) => !v))}>
         {showRef ? '▾' : '▸'} Known-good action lines
       </div>
       {showRef ? (
         <div className="vsc-practice__ref">
           <p className="vsc-dim vsc-small">Copy whole lines instead of typing JSON (also in parrot/tests/_templates/known_good_actions.json).</p>
           {KNOWN_GOOD.map((l) => (
-            <div key={l} className="vsc-practice__refline" title="Click to copy" onClick={() => getWindowManager()?.clipboard.write(l, 'vscode')}>
+            <div key={l} className="vsc-practice__refline" title="Click to copy" {...pressable(() => getWindowManager()?.clipboard.write(l, 'vscode'))}>
               <code>{l}</code>
             </div>
           ))}

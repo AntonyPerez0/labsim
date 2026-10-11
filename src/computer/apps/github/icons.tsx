@@ -68,7 +68,7 @@ export type OctName = keyof typeof P;
 export function Oct(props: { name: OctName; size?: number; className?: string; color?: string; title?: string }) {
   const s = props.size ?? 16;
   return (
-    <svg viewBox="0 0 16 16" width={s} height={s} className={`gh-oct${props.className ? ` ${props.className}` : ''}`} fill={props.color ?? 'currentColor'} aria-hidden={props.title ? undefined : true} role={props.title ? 'img' : undefined}>
+    <svg viewBox="0 0 16 16" width={s} height={s} className={`gh-oct${props.className ? ` ${props.className}` : ''}`} fill="currentColor" style={props.color ? { color: props.color } : undefined} aria-hidden={props.title ? undefined : true} role={props.title ? 'img' : undefined}>
       {props.title ? <title>{props.title}</title> : null}
       {P[props.name]}
     </svg>

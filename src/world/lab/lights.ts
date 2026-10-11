@@ -3,10 +3,12 @@
  * fluorescent with a prismatic lens and a seeded flicker), supply diffusers, egg-crate returns,
  * smoke detectors with a blinking pilot LED, sprinkler heads (instanced), troffer spot lights
  * (12 on Medium+, 6 pair-midpoint spots on Low), hemisphere fill, corridor spot, bench task light
- * (Medium+) and the magnifier-lamp light (High+).
+ * (Medium+) and the magnifier-lamp light (High+). Potato lights the room with just the hemisphere
+ * plus one soft directional "ceiling" key (two lights → the cheapest forward-lighting shaders).
  */
 import {
   CanvasTexture,
+  DirectionalLight,
   Group,
   HemisphereLight,
   InstancedMesh,
@@ -26,11 +28,15 @@ import { eggCrateTex, seeded, ventGrilleTex } from './kit/procTex';
 import type { LabCtx } from './kit/context';
 
 const H = ROOM.interior.ceilingY;
+/** Potato hemisphere fill: Lambert copies get no image-based light, so the fill does that job. */
+const POTATO_HEMI = 1.9;
 
 export interface LightRig {
   troffers: Map<string, SpotLight>;
   lowSpots: SpotLight[];
   hemi: HemisphereLight;
+  /** Potato only: the single key light. */
+  potatoKey: DirectionalLight;
   bench: PointLight;
   magnifier: PointLight;
   fluorescentMat: MeshStandardMaterial;
@@ -189,6 +195,14 @@ export function buildLights(ctx: LabCtx): LightRig {
   const hemi = new HemisphereLight(LIGHTS.hemisphere.sky, LIGHTS.hemisphere.ground, LIGHTS.hemisphere.intensity);
   hemi.name = 'lab.hemisphere';
   group.add(hemi);
+  // potato key: a broad top-down light, slightly from the window side so box faces separate
+  const potatoKey = new DirectionalLight('#f3f6ff', 1.25);
+  potatoKey.name = 'lab.potatoKey';
+  potatoKey.position.set(1.5, H, 2.5);
+  potatoKey.target.position.set(0, 0, 0);
+  potatoKey.castShadow = false;
+  potatoKey.visible = false;
+  group.add(potatoKey, potatoKey.target);
   // corridor spot (only matters in the corridor)
   const cs = new SpotLight('#fff6ea', LIGHTS.corridor.intensity, 0, LIGHTS.corridor.angle, LIGHTS.corridor.penumbra, 2);
   cs.position.set(...LIGHTS.corridor.pos);
@@ -241,11 +255,14 @@ export function buildLights(ctx: LabCtx): LightRig {
 
   function applyQuality(q: QualityPreset): void {
     quality = q;
+    const potato = q === 'potato';
     const low = q === 'low';
-    for (const s of troffers.values()) s.visible = !low && lightsOn;
+    for (const s of troffers.values()) s.visible = !low && !potato && lightsOn;
     for (const s of lowSpots) s.visible = low && lightsOn;
-    hemi.intensity = (low ? LIGHTS.hemisphere.lowIntensity : LIGHTS.hemisphere.intensity) * (lightsOn ? 1 : 0.25);
-    bench.visible = q !== 'low';
+    potatoKey.visible = potato && lightsOn;
+    cs.visible = !potato;
+    hemi.intensity = (potato ? POTATO_HEMI : low ? LIGHTS.hemisphere.lowIntensity : LIGHTS.hemisphere.intensity) * (lightsOn ? 1 : 0.25);
+    bench.visible = !low && !potato;
     magnifier.visible = q === 'high' || q === 'ultra';
   }
   applyQuality(quality);
@@ -254,6 +271,7 @@ export function buildLights(ctx: LabCtx): LightRig {
     troffers,
     lowSpots,
     hemi,
+    potatoKey,
     bench,
     magnifier,
     fluorescentMat: fluMat,

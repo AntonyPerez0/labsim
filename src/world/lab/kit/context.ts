@@ -16,6 +16,7 @@ import {
 import type { Engine, Interactable, InteractVerb } from '@/engine/types';
 import type { QualityPreset } from '@/core/state';
 import { store } from '@/core/store';
+import { getQuality } from '@/engine/quality';
 import type { LabState } from '@/sim/types';
 import { INTERACTABLE_IDS } from '../../layout';
 import { CanvasAtlas, type AtlasSlot, type DrawFn } from './atlas';
@@ -49,14 +50,17 @@ export interface LabCtx {
 }
 
 export function createLabCtx(engine: Engine, root: Group): LabCtx {
+  // Potato: label/print/screen atlases at half resolution (¼ of the texture memory and upload time).
+  // Decided at build time; switching presets later keeps the built atlases.
+  const k = getQuality(store.getState().progress.settings.quality).reducedDetail ? 0.5 : 1;
   const ctx: LabCtx = {
     engine,
     mats: createLabMats(engine),
     root,
-    labels: new CanvasAtlas(engine, 'lab.labels', 2048, 4, (tex) => new MeshStandardMaterial({ map: tex, roughness: 0.55, metalness: 0 })),
-    prints: new CanvasAtlas(engine, 'lab.prints', 2048, 6, (tex) => new MeshStandardMaterial({ map: tex, roughness: 0.78, metalness: 0 })),
+    labels: new CanvasAtlas(engine, 'lab.labels', 2048, 4, (tex) => new MeshStandardMaterial({ map: tex, roughness: 0.55, metalness: 0 }), 2048, k),
+    prints: new CanvasAtlas(engine, 'lab.prints', 2048, 6, (tex) => new MeshStandardMaterial({ map: tex, roughness: 0.78, metalness: 0 }), 2048, k),
     // Self-lit small screens (scope, printer LCDs, phone, readouts): unlit, peak ≈ 1.12 (§3.5).
-    screens: new CanvasAtlas(engine, 'lab.screens', 1024, 4, (tex) => new MeshBasicMaterial({ map: tex, color: new Color(1.12, 1.12, 1.12), toneMapped: true })),
+    screens: new CanvasAtlas(engine, 'lab.screens', 1024, 4, (tex) => new MeshBasicMaterial({ map: tex, color: new Color(1.12, 1.12, 1.12), toneMapped: true }), 1024, k),
     leds: new LedSet('lab', 7),
     inst: new InstanceSet(),
     statics: new StaticCollector(),

@@ -1,5 +1,6 @@
 /** Git dialogs (Apps §4.10): Push Commits, Update Project / Pull, Create New Branch, Branches popup. */
 import { useMemo, useState } from 'react';
+import { rootPoint } from './rootContext';
 import type { GitRepo } from '@/sim';
 import { Buttons, Dialog } from './Dialog';
 import { FileIcon, IcBranch, IcSearch } from './icons';
@@ -138,12 +139,12 @@ export function BranchesPopup(props: {
   const remote = Object.keys(repo.branches).sort();
   const match = (b: string) => b.toLowerCase().includes(q.toLowerCase());
   const open = (e: React.MouseEvent, b: string, isRemote: boolean) => {
-    const root = (e.currentTarget as HTMLElement).closest('.ij-root')?.getBoundingClientRect();
     const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const p = rootPoint((e.currentTarget as HTMLElement).closest<HTMLElement>('.ij-root'), r.right, r.top);
     const target = isRemote ? b : b;
     setMenu({
-      x: r.right - (root?.left ?? 0),
-      y: r.top - (root?.top ?? 0),
+      x: p.x,
+      y: p.y,
       items: [
         { label: 'Checkout', disabled: !isRemote && b === current, onClick: () => props.onCheckout(target) },
         { label: `New Branch from '${isRemote ? `origin/${b}` : b}'…`, onClick: () => props.onNewBranch(isRemote ? `origin/${b}` : b) },

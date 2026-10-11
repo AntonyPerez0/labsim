@@ -22,6 +22,7 @@ import {
   Vector3,
 } from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
+import { seg as detail } from '../../detail';
 
 export const MM = 0.001;
 export const DEG = Math.PI / 180;
@@ -84,24 +85,24 @@ export function boxG(w: number, h: number, d: number): BufferGeometry {
 /** Rounded box (radius in mm, clamped to half the smallest side). */
 export function rboxG(w: number, h: number, d: number, r: number, seg = 1): BufferGeometry {
   const rr = Math.max(0.01, Math.min(r, w / 2 - 0.01, h / 2 - 0.01, d / 2 - 0.01));
-  return new RoundedBoxGeometry(w * MM, h * MM, d * MM, seg, rr * MM);
+  return new RoundedBoxGeometry(w * MM, h * MM, d * MM, detail(seg, 1), rr * MM);
 }
 
 /** Cylinder along +Y (diameter, height mm). */
 export function cylG(d: number, h: number, seg = 16, open = false): BufferGeometry {
-  return new CylinderGeometry((d / 2) * MM, (d / 2) * MM, h * MM, seg, 1, open);
+  return new CylinderGeometry((d / 2) * MM, (d / 2) * MM, h * MM, detail(seg, 6), 1, open);
 }
 
 export function coneG(d1: number, d2: number, h: number, seg = 16): BufferGeometry {
-  return new CylinderGeometry((d2 / 2) * MM, (d1 / 2) * MM, h * MM, seg, 1, false);
+  return new CylinderGeometry((d2 / 2) * MM, (d1 / 2) * MM, h * MM, detail(seg, 6), 1, false);
 }
 
 export function sphereG(d: number, ws = 12, hs = 8, thetaLen = Math.PI): BufferGeometry {
-  return new SphereGeometry((d / 2) * MM, ws, hs, 0, Math.PI * 2, 0, thetaLen);
+  return new SphereGeometry((d / 2) * MM, detail(ws, 6), detail(hs, 4), 0, Math.PI * 2, 0, thetaLen);
 }
 
 export function torusG(d: number, tube: number, rs = 6, ts = 16, arc = Math.PI * 2): BufferGeometry {
-  return new TorusGeometry((d / 2) * MM, (tube / 2) * MM, rs, ts, arc);
+  return new TorusGeometry((d / 2) * MM, (tube / 2) * MM, detail(rs, 3), detail(ts, 8), arc);
 }
 
 /** Extrude a 2D outline (mm, in the XY plane) along +Z by depth mm. */
@@ -112,7 +113,7 @@ export function extrudeG(shape: Shape, depth: number, curveSegments = 4, bevel =
     bevelSize: bevel * MM,
     bevelThickness: bevel * MM,
     bevelSegments: 1,
-    curveSegments,
+    curveSegments: detail(curveSegments, 1),
   });
   return g;
 }
@@ -132,7 +133,8 @@ export function shapeMm(pts: readonly (readonly [number, number])[], holes: (rea
 }
 
 /** Circle hole path (mm) for shapes. */
-export function circlePath(cx: number, cy: number, r: number, seg = 12): (readonly [number, number])[] {
+export function circlePath(cx: number, cy: number, r: number, segments = 12): (readonly [number, number])[] {
+  const seg = detail(segments, 6);
   const out: [number, number][] = [];
   for (let i = 0; i < seg; i++) {
     const a = (-i / seg) * Math.PI * 2;
@@ -221,7 +223,7 @@ export function tubeG(points: readonly (readonly [number, number, number])[], d:
     'catmullrom',
     0.35,
   );
-  return new TubeGeometry(curve, Math.max(4, points.length * segPerPoint), (d / 2) * MM, radial, closed);
+  return new TubeGeometry(curve, Math.max(4, points.length * detail(segPerPoint, 2)), (d / 2) * MM, detail(radial, 3), closed);
 }
 
 /** Helix coil (coiled cable / spring) along +Y from y0 to y1 (mm). */

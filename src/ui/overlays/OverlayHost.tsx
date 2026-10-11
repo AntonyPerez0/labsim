@@ -2,28 +2,32 @@
  * Renders the overlay for `ui.overlay` (one at a time; see `docs/ARCHITECTURE.md` "Overlays and input").
  * Each overlay sits in its own error boundary so a crash in one panel never blanks the game.
  */
+import { lazy, Suspense } from 'react';
 import { useGame } from '@/core/store';
 import type { Overlay } from '@/core/state';
 import { ErrorBoundary } from '@/ui/app/ErrorBoundary';
 import { closeOverlay } from '@/ui/services/nav';
 import { MainMenu } from '@/ui/menu/MainMenu';
-import { FieldManual } from '@/ui/manual/FieldManual';
 import { TicketDrawer } from '@/ui/hud/TicketDrawer';
 import { SandboxPanel } from '@/ui/hud/SandboxPanel';
 import { PauseMenu } from './PauseMenu';
 import { SettingsOverlay } from './Settings';
-import { QuizOverlay } from './quiz/QuizOverlay';
 import { Debrief } from './Debrief';
 import { Briefing } from './Briefing';
-import { ComputerOverlay, TabletOverlay } from './FocusOverlays';
 import { InspectOverlay } from './InspectOverlay';
-import { DrillHost } from './DrillHost';
 import { Notebook } from './Notebook';
-import { FlashcardsOverlay } from './Flashcards';
-import { CertificationOverlay } from './Certification';
 import { ControlsOverlay } from './ControlsOverlay';
 import { RankUpOverlay } from './RankUp';
 import { TeachCardModal } from './TeachCardModal';
+
+// Heavy, not-needed-at-boot overlays load on first use (separate chunks: faster first load on phones).
+const FieldManual = lazy(() => import('@/ui/manual/FieldManual').then((m) => ({ default: m.FieldManual })));
+const QuizOverlay = lazy(() => import('./quiz/QuizOverlay').then((m) => ({ default: m.QuizOverlay })));
+const ComputerOverlay = lazy(() => import('./FocusOverlays').then((m) => ({ default: m.ComputerOverlay })));
+const TabletOverlay = lazy(() => import('./FocusOverlays').then((m) => ({ default: m.TabletOverlay })));
+const DrillHost = lazy(() => import('./DrillHost').then((m) => ({ default: m.DrillHost })));
+const FlashcardsOverlay = lazy(() => import('./Flashcards').then((m) => ({ default: m.FlashcardsOverlay })));
+const CertificationOverlay = lazy(() => import('./Certification').then((m) => ({ default: m.CertificationOverlay })));
 
 function render(o: Overlay) {
   switch (o.kind) {
@@ -80,7 +84,7 @@ export function OverlayHost() {
   return (
     <div className={`ov-layer ov-layer--${overlay.kind}`} key={key}>
       <ErrorBoundary label={`overlay ${overlay.kind}`} resetKey={key}>
-        {render(overlay)}
+        <Suspense fallback={null}>{render(overlay)}</Suspense>
       </ErrorBoundary>
     </div>
   );

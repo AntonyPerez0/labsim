@@ -16,6 +16,7 @@ import {
   type Intersection,
   type Material,
   type Mesh,
+  type MeshLambertMaterial,
   type MeshStandardMaterial,
   type Object3D,
   type PerspectiveCamera,
@@ -260,11 +261,13 @@ export class InteractionSystem {
     for (const mesh of this.highlightMeshes) {
       const mat = mesh.material as Material | Material[];
       if (Array.isArray(mat)) continue;
+      // PBR materials, or their Lambert copies on the potato preset (`cheapMaterials.ts`).
       const std = mat as MeshStandardMaterial;
-      if (!std.isMeshStandardMaterial) continue;
+      if (!std.isMeshStandardMaterial && !(mat as MeshLambertMaterial).isMeshLambertMaterial) continue;
       let v = this.variants.get(mat) as MeshStandardMaterial | undefined;
       if (!v) {
         v = std.clone();
+        v.userData.keepMaterial = true;
         this.variants.set(mat, v);
       } else {
         v.copy(std); // pick up any changes made to the original since last time

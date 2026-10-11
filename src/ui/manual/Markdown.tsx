@@ -135,7 +135,9 @@ function inlineToken(t: Inline, onLink: (id: string) => void): ReactNode {
             </div>
           }
         >
-          <span className="md-term">{content}</span>
+          <span className="md-term" tabIndex={0}>
+            {content}
+          </span>
         </HoverCard>
       ) : (
         content

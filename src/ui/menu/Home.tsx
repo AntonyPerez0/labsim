@@ -1,40 +1,20 @@
 /**
- * Main-menu home: "next up" mission card (Continue / next module), mode tiles with live stats, rank &
- * streak, weak-spot chip and recent achievements.
+ * Main-menu home: the "Start here" card (next module, mentor, time, what you'll learn — `@/ui/guide`),
+ * mode tiles with live stats, weak-spot chip and recent achievements.
  */
 import { useGame } from '@/core/store';
-import type { ProgressState } from '@/core/state';
-import { MODULES, MODULES_BY_ID, personName, teamMember } from '@/content';
-import { Avatar, Button, Card, Chip, Icon, MedalBadge, Stars } from '@/ui/kit';
+import { MODULES } from '@/content';
+import { Card, Chip, Icon, MedalBadge, Stars } from '@/ui/kit';
 import { mq } from '@/ui/services/missions';
 import { goMenu, openOverlay } from '@/ui/services/nav';
-import { resumeAcademy, startModule } from '@/ui/services/actions';
-import { achievementViews, drillRows, modeUnlock, modulesCompleted, nextModule, shiftRows, tagLabel, totalStars } from '@/ui/data/views';
-import { num, shortTitle, estLabel } from '@/ui/services/format';
+import { achievementViews, drillRows, modeUnlock, modulesCompleted, shiftRows, tagLabel, totalStars } from '@/ui/data/views';
+import { num, shortTitle } from '@/ui/services/format';
+import { CoachTaperOffer, StartHereCard } from '@/ui/guide/StartHere';
 
-export function continueTarget(p: ProgressState): { label: string; moduleId: string; resume: boolean } | null {
-  if (p.academyCheckpoint) {
-    const m = MODULES_BY_ID[p.academyCheckpoint.moduleId];
-    return { label: `${p.academyCheckpoint.moduleId} · ${m ? shortTitle(m.title) : ''} — step ${p.academyCheckpoint.stepIndex + 1}`, moduleId: p.academyCheckpoint.moduleId, resume: true };
-  }
-  const next = nextModule(p);
-  if (!next) return null;
-  const m = MODULES_BY_ID[next];
-  return { label: `${next} · ${m ? shortTitle(m.title) : ''}`, moduleId: next, resume: false };
-}
-
-export function continueGame(p: ProgressState): void {
-  const t = continueTarget(p);
-  if (!t) return;
-  if (t.resume && resumeAcademy()) return;
-  startModule(t.moduleId);
-}
+export { continueTarget, continueGame } from '@/ui/services/continue';
 
 export function HomeScreen() {
   const progress = useGame((s) => s.progress);
-  const target = continueTarget(progress);
-  const meta = target ? MODULES_BY_ID[target.moduleId] : null;
-  const mentor = meta ? teamMember(meta.mentor) : null;
   const done = modulesCompleted(progress);
   const stars = totalStars(progress);
   const shifts = shiftRows(progress);
@@ -60,42 +40,10 @@ export function HomeScreen() {
           <h1>{progress.playerName}</h1>
           <p className="muted">Forty-two rigs in Orka, twelve of them here in the lab. Let’s keep them green.</p>
         </div>
-        {target && meta ? (
-          <Card className="home__next">
-            <div className="home__next-eyebrow">
-              <span className="caps">{target.resume ? 'Pick up where you left off' : 'Next up in the Academy'}</span>
-              <span className="mono dim">{meta.id}</span>
-            </div>
-            <div className="home__next-title">{meta.title}</div>
-            <div className="home__next-mentor">
-              <Avatar name={personName(meta.mentor)} color={mentor?.color ?? '#43b02a'} size={30} />
-              <span>
-                with <strong>{personName(meta.mentor)}</strong> · {estLabel(meta)}
-              </span>
-            </div>
-            <p className="home__next-obj">{meta.summary}</p>
-            <div className="row">
-              <Button variant="primary" size="lg" icon="play" onClick={() => continueGame(progress)}>
-                {target.resume ? 'Continue' : progress.modules[meta.id] ? 'Resume module' : 'Start module'}
-              </Button>
-              <Button variant="ghost" onClick={() => goMenu('academy')}>
-                Module map
-              </Button>
-            </div>
-          </Card>
-        ) : (
-          <Card className="home__next">
-            <div className="caps">Academy complete</div>
-            <div className="home__next-title">All 18 modules done — the lab is yours.</div>
-            <div className="row">
-              <Button variant="primary" icon="award" onClick={() => goMenu('certification')}>
-                Certification
-              </Button>
-              <Button onClick={() => goMenu('shift-setup')}>Full Shift</Button>
-            </div>
-          </Card>
-        )}
+        <StartHereCard />
       </section>
+
+      <CoachTaperOffer />
 
       <section className="home__tiles">
         <Tile icon="graduation" title="Academy" stat={`${done}/${MODULES.length}`} sub={`${stars}/54 stars`} onClick={() => goMenu('academy')} />

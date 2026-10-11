@@ -61,6 +61,116 @@ export function saveProgress(p: ProgressState): void {
   }
 }
 
+/* ───────────────────────── Export / import (a file the player keeps) ───────────────────────── */
+
+/** `format` field of an exported progress file. */
+export const EXPORT_FORMAT = 'labsim-progress';
+/** Version of the export envelope (not of `ProgressState`, which travels as `progress.version`). */
+export const EXPORT_VERSION = 1;
+/** Imports larger than this are refused before parsing (a real save is well under 1 MB). */
+export const IMPORT_MAX_BYTES = 8 * 1024 * 1024;
+
+export interface ProgressExport {
+  format: typeof EXPORT_FORMAT;
+  version: number;
+  /** ISO timestamp of the export. */
+  exportedAt: string;
+  progress: ProgressState;
+}
+
+/** What the confirm dialog shows before an import replaces the current progress. */
+export interface ProgressSummary {
+  playerName: string;
+  xp: number;
+  rank: string;
+  modulesDone: number;
+  exportedAt: string | null;
+}
+
+export type ImportResult = { ok: true; progress: ProgressState; summary: ProgressSummary } | { ok: false; error: string };
+
+/** Settings that describe this device rather than the player: an import keeps the current browser's values. */
+export const DEVICE_SETTING_KEYS = ['quality', 'resolutionScale', 'dynamicResolution', 'autoQuality', 'frameRateCap', 'shadows', 'ao'] as const;
+/** Flags that describe this device (hardware detection done once per browser). */
+export const DEVICE_FLAG_KEYS = ['qualityDetected'] as const;
+
+/**
+ * The progress to store after an import: the imported player, with this device's graphics settings and
+ * hardware-detection flags kept (a save from a desktop must not force "Ultra" onto a phone).
+ */
+export function withDeviceSettings(imported: ProgressState, current: ProgressState): ProgressState {
+  const out: ProgressState = { ...imported, settings: { ...imported.settings }, flags: { ...imported.flags } };
+  const settings = out.settings as unknown as Record<string, unknown>;
+  const cur = current.settings as unknown as Record<string, unknown>;
+  for (const k of DEVICE_SETTING_KEYS) if (k in cur) settings[k] = cur[k];
+  for (const k of DEVICE_FLAG_KEYS) {
+    if (k in current.flags) out.flags[k] = current.flags[k]!;
+    else delete out.flags[k];
+  }
+  return out;
+}
+
+/** The JSON envelope written to an export file (a deep copy: later store changes never leak in). */
+export function buildExportPayload(p: ProgressState, now: Date = new Date()): ProgressExport {
+  return { format: EXPORT_FORMAT, version: EXPORT_VERSION, exportedAt: now.toISOString(), progress: JSON.parse(JSON.stringify(p)) as ProgressState };
+}
+
+/** "labsim-progress-ada-2026-10-11.json" (name slugged to a–z, 0–9 and dashes). */
+export function exportFileName(playerName: string, now: Date = new Date()): string {
+  const slug =
+    playerName
+      .normalize('NFKD')
+      .replace(/[^\w\s-]/g, '')
+      .trim()
+      .toLowerCase()
+      .replace(/[\s_]+/g, '-')
+      .replace(/-+/g, '-')
+      .slice(0, 24) || 'player';
+  const d = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  return `labsim-progress-${slug}-${d}.json`;
+}
+
+function countModulesDone(p: ProgressState): number {
+  return Object.values(p.modules ?? {}).filter((m) => !!m && (m.status === 'complete' || m.completed)).length;
+}
+
+export function summarizeProgress(p: ProgressState, exportedAt: string | null = null): ProgressSummary {
+  return { playerName: p.playerName, xp: p.xp, rank: p.rank, modulesDone: countModulesDone(p), exportedAt };
+}
+
+/**
+ * Validate an exported file's text and turn it into a complete `ProgressState` (via `migrateProgress`).
+ * Never throws; a bad file yields `{ ok: false, error }` with a message fit to show the player.
+ */
+export function parseProgressImport(text: string): ImportResult {
+  if (typeof text !== 'string' || !text.trim()) return { ok: false, error: 'That file is empty.' };
+  if (text.length > IMPORT_MAX_BYTES) return { ok: false, error: 'That file is far too big to be a LabSim progress file.' };
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    return { ok: false, error: 'That file is not valid JSON — pick the .json file LabSim exported.' };
+  }
+  if (!isPlainObject(parsed) || parsed.format !== EXPORT_FORMAT) return { ok: false, error: 'That JSON file is not a LabSim progress export.' };
+  const version = typeof parsed.version === 'number' ? parsed.version : NaN;
+  if (!Number.isFinite(version) || version < 1) return { ok: false, error: 'This progress file has no valid version number.' };
+  if (version > EXPORT_VERSION) return { ok: false, error: 'This progress file comes from a newer version of LabSim. Update the game, then try again.' };
+  const raw = parsed.progress;
+  if (!isPlainObject(raw)) return { ok: false, error: 'This progress file has no progress in it.' };
+  if (typeof raw.playerName !== 'string' || typeof raw.xp !== 'number' || !Number.isFinite(raw.xp) || raw.xp < 0) return { ok: false, error: 'This progress file looks damaged (no player name or XP).' };
+  if (raw.modules !== undefined && !isPlainObject(raw.modules)) return { ok: false, error: 'This progress file looks damaged (modules).' };
+  if (raw.flags !== undefined && !isPlainObject(raw.flags)) return { ok: false, error: 'This progress file looks damaged (flags).' };
+  if (raw.settings !== undefined && !isPlainObject(raw.settings)) return { ok: false, error: 'This progress file looks damaged (settings).' };
+  let progress: ProgressState;
+  try {
+    progress = migrateProgress(raw);
+  } catch {
+    return { ok: false, error: 'This progress file could not be read.' };
+  }
+  const exportedAt = typeof parsed.exportedAt === 'string' ? parsed.exportedAt : null;
+  return { ok: true, progress, summary: summarizeProgress(progress, exportedAt) };
+}
+
 export function clearProgress(): void {
   try {
     localStorage.removeItem(PROGRESS_KEY);

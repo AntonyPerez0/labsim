@@ -16,6 +16,7 @@ import { radialTex, seeded } from './kit/procTex';
 import { rad } from './kit/shared';
 import { laptop } from './props/furniture';
 import { drawOfficeScreen } from './props/screenArt';
+import { reducedWorldDetail } from '../detail';
 
 export function buildDecor(ctx: LabCtx): void {
   const { mats } = ctx;
@@ -42,11 +43,13 @@ export function buildDecor(ctx: LabCtx): void {
     b.add(tubeGeo([[-cw / 2 + 0.02, 0.86, -cd / 2 + 0.05], [-cw / 2 - 0.06, 0.92, -cd / 2 + 0.05], [-cw / 2 - 0.06, 0.92, cd / 2 - 0.05], [-cw / 2 + 0.02, 0.86, cd / 2 - 0.05]], 0.012, 8, 30), mats.satinBlack, null, 'cast');
     // top: open laptop (terminal), label tape cassettes, zip-tie bag
     b.within(xf(0.08, 0.866, 0, 0, 0.25, 0), () => laptop(ctx, b, termSlot.page.material, (w, h) => ctx.screens.quad(w, h, termSlot), 112));
-    for (let i = 0; i < 3; i++) b.add(rboxGeo(0.045, 0.012, 0.06, 0.003, 1), mats.offWhitePlastic, xf(-0.25, 0.874 + i * 0.012, -0.1, 0, 0.2 * i, 0), 'none');
-    b.add(rboxGeo(0.12, 0.02, 0.18, 0.008, 2), ctx.engine.materials.get('lab.bagClear', () => new MeshStandardMaterial({ color: '#dfe5e8', roughness: 0.2, transparent: true, opacity: 0.55 })), xf(-0.24, 0.876, 0.08, 0, 0.4, 0), 'none');
-    for (let i = 0; i < 12; i++) b.box(0.003, 0.002, 0.15, mats.blackPlastic, -0.26 + i * 0.004, 0.878, 0.08, 0.4, 'none');
+    // (potato: no clutter — tape cassettes, the zip-tie bag and the cable coils are pure decoration)
+    const clutter = !reducedWorldDetail();
+    if (clutter) for (let i = 0; i < 3; i++) b.add(rboxGeo(0.045, 0.012, 0.06, 0.003, 1), mats.offWhitePlastic, xf(-0.25, 0.874 + i * 0.012, -0.1, 0, 0.2 * i, 0), 'none');
+    if (clutter) b.add(rboxGeo(0.12, 0.02, 0.18, 0.008, 2), ctx.engine.materials.get('lab.bagClear', () => new MeshStandardMaterial({ color: '#dfe5e8', roughness: 0.2, transparent: true, opacity: 0.55 })), xf(-0.24, 0.876, 0.08, 0, 0.4, 0), 'none');
+    if (clutter) for (let i = 0; i < 12; i++) b.box(0.003, 0.002, 0.15, mats.blackPlastic, -0.26 + i * 0.004, 0.878, 0.08, 0.4, 'none');
     // middle: coiled cables
-    for (const [x, m] of [[-0.15, mats.cat6Yellow], [0.12, mats.cableBlack]] as const) {
+    if (clutter) for (const [x, m] of [[-0.15, mats.cat6Yellow], [0.12, mats.cableBlack]] as const) {
       for (let k = 0; k < 6; k++) b.add(torusGeo(0.09 - k * 0.004, 0.0035, 5, 28), m, xf(x, 0.518 + k * 0.006, 0, Math.PI / 2, 0, k * 0.4), 'none');
     }
     // bottom: a small cardboard box + a spare cradle
@@ -95,7 +98,7 @@ export function buildDecor(ctx: LabCtx): void {
   const spill = new Mesh(mergeGeometries(quads, false)!, spillMat);
   spill.renderOrder = 2;
   spill.name = 'lab.rackSpill';
-  ctx.root.add(spill);
+  if (!reducedWorldDetail()) ctx.root.add(spill); // additive overdraw; potato skips it
   /* ── Low preset: blob shadow decals under floor furniture (§7.4 "shadows off → blob decals") ── */
   const blobMat = new MeshBasicMaterial({ map: radialTex('rgba(0,0,0,1)', 'rgba(0,0,0,0)'), transparent: true, opacity: 0.35, depthWrite: false, color: 0x000000 });
   blobMat.name = 'lab.blobShadow';
@@ -111,7 +114,8 @@ export function buildDecor(ctx: LabCtx): void {
   blob.renderOrder = 1;
   ctx.root.add(blob);
   ctx.hooks.push(() => {
-    const low = ctx.quality() === 'low';
+    const q = ctx.quality();
+    const low = q === 'low' || q === 'potato';
     if (blob.visible !== low) blob.visible = low;
   });
   void sphereGeo;

@@ -203,6 +203,12 @@ export interface Engine {
    */
   markShadowsDirty(): void;
   setQuality(q: QualityPreset, resolutionScale?: number): void;
+  /** Start downloading what preset `q` needs (the post-fx chunk) before `init()`. */
+  preload(q: QualityPreset): void;
+  /** Resolves once the active preset's render pipeline is ready (post-fx loaded, if it has any). */
+  pipelineReady(): Promise<void>;
+  /** Compile the scene's shaders ahead of the first frame (boot's last loading step). */
+  warmup(): Promise<void>;
   setFov(fov: number): void;
 
   registerInteractable(i: Interactable): () => void;

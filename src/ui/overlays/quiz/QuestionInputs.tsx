@@ -7,7 +7,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { QuizAnswerValue } from '@/core/state';
 import type { QuizQuestion } from '@/content';
-import { Button, Icon, Kbd, Select, TextField } from '@/ui/kit';
+import { Button, Icon, Kbd, OutcomeMark, Select, TextField } from '@/ui/kit';
 
 export interface InputProps {
   q: QuizQuestion;
@@ -63,7 +63,7 @@ function Choice({ q, perm, locked, submitted, correct, onSubmit, tf }: InputProp
   }, [locked, perm, onSubmit, tf]);
 
   return (
-    <div className={`qz-options${tf ? ' qz-options--tf' : ''}`} role="radiogroup">
+    <div className={`qz-options${tf ? ' qz-options--tf' : ''}`} role="radiogroup" aria-labelledby="quiz-prompt">
       {perm.map((ai, i) => {
         const chosen = submitted === ai;
         const isAnswer = locked && correct !== null && ai === q.answer;
@@ -73,6 +73,7 @@ function Choice({ q, perm, locked, submitted, correct, onSubmit, tf }: InputProp
             <Kbd k={tf ? String(i + 1) : LETTERS[i]!} size="sm" />
             <span className="qz-opt__text">{options[ai]}</span>
             {isAnswer ? <Icon name="check" size={16} stroke={2.6} /> : locked && chosen && correct === false ? <Icon name="x" size={16} stroke={2.6} /> : null}
+            {isAnswer ? <span className="sr-only">(correct answer)</span> : locked && chosen && correct === false ? <span className="sr-only">(your answer, wrong)</span> : null}
           </button>
         );
       })}
@@ -104,15 +105,18 @@ function MultiChoice({ q, perm, locked, submitted, correct, onSubmit }: InputPro
   return (
     <>
       <div className="qz-hint">Select all that apply.</div>
-      <div className="qz-options" role="group">
+      <div className="qz-options" role="group" aria-labelledby="quiz-prompt">
         {perm.map((ai, i) => {
           const on = shown.includes(ai);
-          const cls = ['qz-opt', 'qz-opt--check', on ? 'is-chosen' : '', locked && correct !== null && answers.has(ai) ? 'is-right' : '', locked && correct !== null && on && !answers.has(ai) ? 'is-wrong' : ''].filter(Boolean).join(' ');
+          const right = locked && correct !== null && answers.has(ai);
+          const wrong = locked && correct !== null && on && !answers.has(ai);
+          const cls = ['qz-opt', 'qz-opt--check', on ? 'is-chosen' : '', right ? 'is-right' : '', wrong ? 'is-wrong' : ''].filter(Boolean).join(' ');
           return (
             <button key={ai} type="button" role="checkbox" aria-checked={on} className={cls} disabled={locked} onClick={() => toggle(ai)}>
               <span className="qz-check">{on ? <Icon name="check" size={12} stroke={3} /> : null}</span>
               <Kbd k={LETTERS[i]!} size="sm" />
               <span className="qz-opt__text">{options[ai]}</span>
+              {right ? <OutcomeMark kind="pass" label={on ? 'correct, selected' : 'correct, missed'} /> : wrong ? <OutcomeMark kind="fail" label="wrong, selected" /> : null}
             </button>
           );
         })}
@@ -166,6 +170,7 @@ function OrderInput({ q, perm, locked, submitted, correct, onSubmit }: InputProp
               <span className="qz-order__num">{i + 1}</span>
               {!locked ? <Icon name="drag" size={14} className="qz-order__grip" /> : null}
               <span className="qz-order__text">{text}</span>
+              {right === true ? <OutcomeMark kind="pass" label="right place" /> : right === false ? <OutcomeMark kind="fail" label="wrong place" /> : null}
               {!locked ? (
                 <span className="qz-order__btns">
                   <button type="button" aria-label="Move up" disabled={i === 0} onClick={() => move(i, i - 1)}>
@@ -201,7 +206,9 @@ function MatchInput({ q, perm, locked, submitted, correct, onSubmit }: InputProp
           const ok = locked && correct !== null ? v === right : null;
           return (
             <div key={left} className={`qz-match__row${ok === true ? ' is-right' : ok === false ? ' is-wrong' : ''}`}>
-              <div className="qz-match__left">{left}</div>
+              <div className="qz-match__left">
+                {ok === true ? <OutcomeMark kind="pass" label="right" /> : ok === false ? <OutcomeMark kind="fail" label="wrong" /> : null} {left}
+              </div>
               <Icon name="arrow-right" size={14} className="dim" />
               {locked ? (
                 <div className="qz-match__value">
@@ -226,7 +233,9 @@ function FillInput({ locked, submitted, correct, onSubmit }: InputProps) {
   return (
     <div className={`qz-fill${locked && correct !== null ? (correct ? ' is-right' : ' is-wrong') : ''}`}>
       {locked ? (
-        <div className="qz-fill__answer mono">{shown || '—'}</div>
+        <div className="qz-fill__answer mono">
+          {correct === true ? <OutcomeMark kind="pass" label="right" /> : correct === false ? <OutcomeMark kind="fail" label="wrong" /> : null} {shown || '—'}
+        </div>
       ) : (
         <TextField value={text} onChange={setText} placeholder="Type your answer" autoFocus mono onEnter={() => text.trim() && onSubmit(text)} ariaLabel="Answer" />
       )}

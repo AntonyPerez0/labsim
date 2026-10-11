@@ -329,7 +329,7 @@
 }
 .ij-diff-row {
   display: grid;
-  grid-template-columns: 40px 1fr 40px 1fr;
+  grid-template-columns: 50px 1fr 50px 1fr;
   min-height: 18px;
   white-space: pre;
   color: var(--ij-ed-fg);
@@ -346,10 +346,21 @@
   overflow: hidden;
 }
 .ij-diff-add > span:nth-child(4) {
-  background: #294436;
+  background: var(--cb-diff-add-bg-d, #294436);
 }
 .ij-diff-del > span:nth-child(2) {
-  background: #484a4a;
+  background: var(--cb-diff-del-bg-d, #484a4a);
+}
+/* Change kind as a gutter sign, not only the tint (colour-blind safety). */
+.ij-diff-add > span:nth-child(3)::after {
+  content: ' +';
+}
+.ij-diff-del > span:nth-child(1)::after {
+  content: ' −';
+}
+.ij-diff-mod > span:nth-child(1)::after,
+.ij-diff-mod > span:nth-child(3)::after {
+  content: ' ~';
 }
 .ij-diff-mod > span:nth-child(2),
 .ij-diff-mod > span:nth-child(4) {
@@ -373,10 +384,10 @@
   color: #808080;
 }
 .ij-con-err {
-  color: #ff6b68;
+  color: var(--cb-bad-d, #ff6b68);
 }
 .ij-con-ok {
-  color: #5fb15f;
+  color: var(--cb-ok-d, #5fb15f);
 }
 .ij-con-link {
   color: #589df6;

@@ -78,11 +78,22 @@ export function fitText(ctx: CanvasRenderingContext2D, text: string, w: number, 
   const gap = o.lineGap ?? 1.12;
   let size = Math.floor(availH / (lines.length * gap) / 0.74);
   const weight = o.weight ?? 400;
-  for (; size > 5; size--) {
-    ctx.font = `${weight} ${size}px ${o.font}`;
+  const widestAt = (sz: number): number => {
+    ctx.font = `${weight} ${sz}px ${o.font}`;
     let widest = 0;
     for (const l of lines) widest = Math.max(widest, ctx.measureText(l).width);
-    if (widest <= availW && lines.length * size * gap * 0.82 <= availH + size * 0.2) break;
+    return widest;
+  };
+  const fitsH = (sz: number) => lines.length * sz * gap * 0.82 <= availH + sz * 0.2;
+  // Setting `ctx.font` is costly (hundreds of labels at boot): text width scales ~linearly with the
+  // size, so jump to the estimate (+1 for hinting) and step down from there instead of from the top.
+  const w0 = widestAt(size);
+  if (!(w0 <= availW && fitsH(size))) {
+    const denom = lines.length * gap * 0.82 - 0.2;
+    const estH = denom > 0 ? Math.floor(availH / denom) : size;
+    const estW = w0 > 0 ? Math.floor((size * availW) / w0) : size;
+    size = Math.max(5, Math.min(size - 1, estH + 1, estW + 1));
+    for (; size > 5; size--) if (widestAt(size) <= availW && fitsH(size)) break;
   }
   ctx.font = `${weight} ${size}px ${o.font}`;
   ctx.fillStyle = o.color;

@@ -6,10 +6,11 @@ import type { ReactNode } from 'react';
 
 export type BallKind = 'success' | 'failure' | 'unstable' | 'aborted' | 'notbuilt' | 'disabled' | 'queued';
 
+/** Ball fills; `--cb-*` swap in a colour-blind-safe palette (src/ui/styles/a11y.css). Every ball also has a glyph. */
 const BALL_COLOR: Record<BallKind, string> = {
-  success: '#138347',
-  failure: '#e6001f',
-  unstable: '#fe820a',
+  success: 'var(--cb-st-available, #138347)',
+  failure: 'var(--cb-st-connfailed, #e6001f)',
+  unstable: 'var(--cb-warn, #fe820a)',
   aborted: '#9a9aaa',
   notbuilt: '#9a9aaa',
   disabled: '#9a9aaa',
@@ -36,12 +37,12 @@ export function Ball(props: { kind: BallKind; running?: boolean; size?: number; 
       <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
         {kind === 'queued' ? (
           <>
-            <circle cx="12" cy="12" r="9" fill="none" stroke={c} strokeWidth="1.8" />
-            <path d="M12 7v5.2l3.2 2" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" />
+            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.8" />
+            <path d="M12 7v5.2l3.2 2" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
           </>
         ) : (
           <>
-            <circle cx="12" cy="12" r={running ? 8 : 10} fill={kind === 'notbuilt' || kind === 'disabled' ? 'none' : c} stroke={c} strokeWidth={kind === 'notbuilt' || kind === 'disabled' ? 1.8 : 0} />
+            <circle cx="12" cy="12" r={running ? 8 : 10} fill={kind === 'notbuilt' || kind === 'disabled' ? 'none' : 'currentColor'} stroke="currentColor" strokeWidth={kind === 'notbuilt' || kind === 'disabled' ? 1.8 : 0} />
             {kind === 'success' ? <path d={running ? 'M8.6 12.2l2.3 2.3 4.6-4.8' : 'M7.6 12.3l3 3 5.8-6.1'} fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /> : null}
             {kind === 'failure' ? <path d={running ? 'M9.4 9.4l5.2 5.2M14.6 9.4l-5.2 5.2' : 'M8.6 8.6l6.8 6.8M15.4 8.6l-6.8 6.8'} stroke="#fff" strokeWidth="2" strokeLinecap="round" /> : null}
             {kind === 'unstable' ? <path d="M12 7.2v6M12 16.2v.4" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" /> : null}

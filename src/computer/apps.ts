@@ -100,6 +100,8 @@ export interface AppParams {
   prompt?: string;
   /** ollama: workstation image path to attach. */
   attach?: string;
+  /** intellij: open the project's UIA Practice tool window ("uia"); used by the menu's Practice hub. */
+  practice?: 'uia';
 }
 
 /** Inline SVG markup (24×24 viewBox) — rendered with dangerouslySetInnerHTML or as an <img> data URI. */

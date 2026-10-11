@@ -3,6 +3,10 @@
  * Pure data + helpers (no three.js), so it can be unit-tested and read by the debug overlay.
  *
  * Budget targets
+ *  - potato: very old laptops, Chromebooks, phones and software rendering (SwiftShader/llvmpipe).
+ *            Renders straight to the canvas (no EffectComposer, no AO/bloom/SMAA/outline/vignette),
+ *            no shadows, no image-based lighting, Lambert materials, DPR 0.5–0.75, 30 fps cap,
+ *            low-res device screens updated at a low rate, decorative clutter skipped.
  *  - low:    integrated GPUs at ≥ 30 fps. No AO, no shadows, no bloom, no outline, DPR 0.75–1.
  *  - medium: mainstream laptops. Half-res AO, 2 shadow casters @1024, bloom, emissive highlight.
  *  - high:   discrete GPUs (default). Half-res AO, 4 casters @2048, bloom, outline highlight.
@@ -35,9 +39,49 @@ export interface QualitySettings {
   anisotropy: number;
   /** HRTF panning for positional audio (else equal-power). */
   hrtf: boolean;
+  /**
+   * Post-processing chain (EffectComposer: AO / bloom / tone mapping / SMAA …). false = render
+   * straight to the canvas with renderer tone mapping; `postprocessing` + `n8ao` are not even loaded.
+   */
+  postFx: boolean;
+  /** Image-based lighting (PMREM of the lab room) on PBR materials. */
+  environment: boolean;
+  /** Swap PBR (Standard/Physical) materials for Lambert copies (see `cheapMaterials.ts`). */
+  cheapMaterials: boolean;
+  /** Frame-rate cap applied when the player's `frameRateCap` setting is 0 (Display). */
+  defaultFrameCap: 0 | 30 | 60;
+  /** Skip purely decorative small props (clutter, cable ties, posters' extras…). */
+  reducedDetail: boolean;
+  /** Device/tablet screen textures: max redraws per frame, min ms between animation redraws, mipmaps. */
+  screens: { redrawsPerFrame: number; animMinMs: number; nearM: number; mipmaps: boolean };
 }
 
+const FULL_SCREENS = { redrawsPerFrame: 3, animMinMs: 100, nearM: 4.5, mipmaps: true } as const;
+
 export const QUALITY_PRESETS: Readonly<Record<QualityPreset, QualitySettings>> = {
+  potato: {
+    preset: 'potato',
+    pixelRatioScale: 0.5,
+    pixelRatioMin: 0.5,
+    pixelRatioMax: 0.75,
+    shadows: false,
+    shadowMapSize: 256,
+    shadowRadius: 1,
+    maxShadowLights: 0,
+    ao: null,
+    bloom: null,
+    smaa: 'low',
+    outline: false,
+    vignette: false,
+    anisotropy: 1,
+    hrtf: false,
+    postFx: false,
+    environment: false,
+    cheapMaterials: true,
+    defaultFrameCap: 30,
+    reducedDetail: true,
+    screens: { redrawsPerFrame: 1, animMinMs: 400, nearM: 2.5, mipmaps: false },
+  },
   low: {
     preset: 'low',
     pixelRatioScale: 0.85,
@@ -54,6 +98,12 @@ export const QUALITY_PRESETS: Readonly<Record<QualityPreset, QualitySettings>> =
     vignette: true,
     anisotropy: 2,
     hrtf: false,
+    postFx: true,
+    environment: true,
+    cheapMaterials: false,
+    defaultFrameCap: 0,
+    reducedDetail: false,
+    screens: FULL_SCREENS,
   },
   medium: {
     preset: 'medium',
@@ -71,6 +121,12 @@ export const QUALITY_PRESETS: Readonly<Record<QualityPreset, QualitySettings>> =
     vignette: true,
     anisotropy: 4,
     hrtf: false,
+    postFx: true,
+    environment: true,
+    cheapMaterials: false,
+    defaultFrameCap: 0,
+    reducedDetail: false,
+    screens: FULL_SCREENS,
   },
   high: {
     preset: 'high',
@@ -88,6 +144,12 @@ export const QUALITY_PRESETS: Readonly<Record<QualityPreset, QualitySettings>> =
     vignette: true,
     anisotropy: 8,
     hrtf: true,
+    postFx: true,
+    environment: true,
+    cheapMaterials: false,
+    defaultFrameCap: 0,
+    reducedDetail: false,
+    screens: FULL_SCREENS,
   },
   ultra: {
     preset: 'ultra',
@@ -105,8 +167,34 @@ export const QUALITY_PRESETS: Readonly<Record<QualityPreset, QualitySettings>> =
     vignette: true,
     anisotropy: 16,
     hrtf: true,
+    postFx: true,
+    environment: true,
+    cheapMaterials: false,
+    defaultFrameCap: 0,
+    reducedDetail: false,
+    screens: FULL_SCREENS,
   },
 };
+
+/** Presets from cheapest to richest (auto-detect steps down this list). */
+export const QUALITY_ORDER: readonly QualityPreset[] = ['potato', 'low', 'medium', 'high', 'ultra'];
+
+/** The next cheaper preset (potato stays potato). */
+export function lowerPreset(p: QualityPreset): QualityPreset {
+  const i = QUALITY_ORDER.indexOf(p);
+  return i <= 0 ? 'potato' : QUALITY_ORDER[i - 1]!;
+}
+
+/** `a` is cheaper than `b`. */
+export function isCheaperPreset(a: QualityPreset, b: QualityPreset): boolean {
+  return QUALITY_ORDER.indexOf(a) < QUALITY_ORDER.indexOf(b);
+}
+
+/** Effective frame-rate cap (fps, 0 = none): the player's setting, else the preset's default. */
+export function effectiveFrameCap(setting: number | undefined, preset: QualityPreset): number {
+  if (setting === 30 || setting === 60) return setting;
+  return getQuality(preset).defaultFrameCap;
+}
 
 export function getQuality(preset: QualityPreset): QualitySettings {
   return QUALITY_PRESETS[preset] ?? QUALITY_PRESETS.high;

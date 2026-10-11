@@ -10,6 +10,7 @@ import { goMenu } from '@/ui/services/nav';
 import { startModule } from '@/ui/services/actions';
 import { setSetting } from '@/ui/overlays/Settings';
 import { unlockAudio } from '@/ui/services/sound';
+import { TOUCH_DEVICE } from '@/ui/hud/TouchControls';
 
 export function TitleScreen() {
   const loading = useGame((s) => s.ui.loading !== null);
@@ -45,7 +46,13 @@ export function TitleScreen() {
         <h1 className="title__name">LabSim</h1>
         <div className="title__sub">LabSim Automation Lab</div>
         <div className="title__press">
-          Press any key <Kbd k="Enter" size="sm" /> or click to start
+          {TOUCH_DEVICE ? (
+            'Tap to start'
+          ) : (
+            <>
+              Press any key <Kbd k="Enter" size="sm" /> or click to start
+            </>
+          )}
         </div>
       </div>
       <div className="title__foot">A first-person training simulator · names are configurable · progress stays in this browser</div>
@@ -134,6 +141,7 @@ export function QuickSetup() {
             />
           </FieldRow>
           <Toggle label="Reduce motion" checked={st.reducedMotion} onChange={(v) => setSetting('reducedMotion', v)} />
+          <Toggle label="Coach tips" hint="Short pointers the first time you see each screen and app. Recommended for your first week — they fade out on their own." checked={st.coachTips} onChange={(v) => setSetting('coachTips', v)} />
           <FieldRow label="Realism" hint={realism === 'strict' ? 'Strict = “Real Lab”: no markers, history-only terminal, Arcade hints tier 1 only, XP ×1.25.' : 'Standard is recommended for your first week.'}>
             <Segmented
               value={realism}

@@ -11,6 +11,7 @@ import { Button, LabWordmark, Kbd } from '@/ui/kit';
 import { hasMission, ma } from '@/ui/services/missions';
 import { goMenu, openOverlay, resumeFromPause, setExploring } from '@/ui/services/nav';
 import { shortTitle } from '@/ui/services/format';
+import { NextStepCard } from '@/ui/guide/NextStep';
 
 /** Leave the current activity for the main menu (runtime `quit`, or a local reset when it is missing). */
 export function quitToMenu(): void {
@@ -97,6 +98,7 @@ export function PauseMenu() {
             <Button variant="primary" size="lg" icon="play" kbd="Esc" block onClick={resumeFromPause} autoFocus>
               Resume
             </Button>
+            <NextStepCard />
             {academy ? (
               <div className="pause__pair">
                 <Button icon="refresh" block onClick={() => ma('restartStep')}>

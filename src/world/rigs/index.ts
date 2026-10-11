@@ -10,6 +10,7 @@ import { store } from '@/core/store';
 import type { LabState } from '@/sim/types';
 import { RACKS, TOUCH_RIGS, rigDevice } from '../layout';
 import { RigKit } from './kit/context';
+import { yieldToPaint } from '../yieldFrame';
 import { buildTouchRack, type RackHandles } from './rack';
 import { buildTouchRig, type TouchRigView } from './touchRig';
 import { TouchRigBinder } from './rigView';
@@ -46,7 +47,7 @@ export function rigsWorld(): RigsWorld | null {
   return current;
 }
 
-const yieldFrame = () => new Promise<void>((r) => setTimeout(r, 0));
+const yieldFrame = yieldToPaint;
 
 function serialsFor(lab: LabState | undefined, rigId: string): Record<string, string> {
   const out: Record<string, string> = {};
@@ -67,17 +68,20 @@ export async function buildRigs(engine: Engine, onProgress: (p: number, label: s
     const def = TOUCH_RIGS[i]!;
     onProgress(0.05 + (i / TOUCH_RIGS.length) * 0.6, `Robot ${def.hrn}…`);
     views.push(buildTouchRig(kit, def, serialsFor(lab, def.id)));
-    if (i % 2 === 1) await yieldFrame();
+    await yieldFrame();
   }
   onProgress(0.7, 'Kallus shelf…');
   const kallus = buildKallusShelf(kit);
+  await yieldFrame();
   onProgress(0.76, 'Tethered bench…');
   const tethered = buildTethered(kit, lab);
+  await yieldFrame();
   onProgress(0.82, 'ADB shelf…');
   const adb = buildAdbShelf(kit, lab);
   const table = buildBuildTable(kit);
   await yieldFrame();
   onProgress(0.88, 'Merging geometry…');
+  await yieldFrame();
   kit.finish();
   kit.root.updateMatrixWorld(true);
   kit.updateDynamic();

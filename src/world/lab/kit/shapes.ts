@@ -19,6 +19,7 @@ import {
   Vector3,
 } from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
+import { seg as detail } from '../../detail';
 
 export type V3 = [number, number, number];
 
@@ -29,11 +30,11 @@ export function boxGeo(w: number, h: number, d: number): BufferGeometry {
 /** Rounded box (radius clamped to half the smallest side). */
 export function rboxGeo(w: number, h: number, d: number, r: number, seg = 2): BufferGeometry {
   const rr = Math.max(0.0002, Math.min(r, Math.min(w, h, d) / 2 - 1e-5));
-  return new RoundedBoxGeometry(w, h, d, seg, rr);
+  return new RoundedBoxGeometry(w, h, d, detail(seg, 1), rr);
 }
 
 export function cylGeo(rTop: number, rBottom: number, h: number, seg = 16, openEnded = false): BufferGeometry {
-  return new CylinderGeometry(rTop, rBottom, h, seg, 1, openEnded);
+  return new CylinderGeometry(rTop, rBottom, h, detail(seg, 6), 1, openEnded);
 }
 
 /** Plane facing +Z, centred. */
@@ -62,24 +63,24 @@ export function uvPlane(w: number, h: number, rect: UvRect): BufferGeometry {
 }
 
 export function sphereGeo(r: number, ws = 12, hs = 8): BufferGeometry {
-  return new SphereGeometry(r, ws, hs);
+  return new SphereGeometry(r, detail(ws, 6), detail(hs, 4));
 }
 
 export function torusGeo(R: number, r: number, radial = 8, tubular = 16, arc = Math.PI * 2): BufferGeometry {
-  return new TorusGeometry(R, r, radial, tubular, arc);
+  return new TorusGeometry(R, r, detail(radial, 3), detail(tubular, 8), arc);
 }
 
 /** Smooth tube through the points (cables, hoses). */
 export function tubeGeo(points: V3[], r: number, radial = 6, tubularPerM = 40, closed = false): BufferGeometry {
   const curve = new CatmullRomCurve3(points.map((p) => new Vector3(...p)), closed, 'centripetal');
   const len = curve.getLength();
-  const seg = Math.max(4, Math.ceil(len * tubularPerM));
-  return new TubeGeometry(curve, seg, r, radial, closed);
+  const seg = Math.max(4, Math.ceil(len * detail(tubularPerM, 8)));
+  return new TubeGeometry(curve, seg, r, detail(radial, 3), closed);
 }
 
 /** Lathe around Y from [radius, y] profile points. */
 export function latheGeo(profile: [number, number][], seg = 24): BufferGeometry {
-  return new LatheGeometry(profile.map(([r, y]) => new Vector2(r, y)), seg);
+  return new LatheGeometry(profile.map(([r, y]) => new Vector2(r, y)), detail(seg, 6));
 }
 
 /** Rounded rectangle shape centred on the origin. */
@@ -108,7 +109,7 @@ export function extrudeGeo(shape: Shape, depth: number, bevel = 0, curveSegments
     bevelThickness: bevel,
     bevelSize: bevel,
     bevelSegments: 1,
-    curveSegments,
+    curveSegments: detail(curveSegments, 1),
   });
 }
 

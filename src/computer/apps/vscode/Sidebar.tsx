@@ -1,5 +1,6 @@
 /** Side bar views: Explorer (two workspace roots), Search, Source Control, Run and Debug. */
 import { useMemo, useState } from 'react';
+import { pressable } from '@/ui/kit/a11y';
 import { emitAppAction } from '@/computer/apps';
 import { useGame } from '@/core/store';
 import type { LabState } from '@/sim';
@@ -177,7 +178,7 @@ export function SearchView({ model }: { model: VsModel }) {
               <span className="vsc-badge">{r.hits.length}</span>
             </div>
             {r.hits.map((h) => (
-              <div key={h.line} className="vsc-search__hit" onClick={() => openFile(model, 'repo', r.path, { line: h.line })}>
+              <div key={h.line} className="vsc-search__hit" {...pressable(() => openFile(model, 'repo', r.path, { line: h.line }))}>
                 {h.text}
               </div>
             ))}
@@ -357,7 +358,7 @@ export function RunView({ model }: { model: VsModel }) {
             </p>
             <div className="vsc-scm__head">Tests</div>
             {tests.map((t) => (
-              <div key={t} className={`vsc-scm__row${t === current ? ' is-sel' : ''}`} onClick={() => openFile(model, 'repo', t)}>
+              <div key={t} className={`vsc-scm__row${t === current ? ' is-sel' : ''}`} {...pressable(() => openFile(model, 'repo', t))}>
                 <FileIcon name={t} />
                 <span className="vsc-scm__name">{t.split('/').pop()}</span>
                 <span className="vsc-dim vsc-scm__dir">{t.slice(6, t.lastIndexOf('/'))}</span>

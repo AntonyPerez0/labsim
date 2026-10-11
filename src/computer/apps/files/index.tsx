@@ -4,6 +4,7 @@
  * Context menu: Open, Open with ▸ GIMP / Ollama WebUI / IntelliJ IDEA, Copy as path. Emits `files.opened`.
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent as ReactMouseEvent } from 'react';
+import { cssZoom } from '@/ui/kit/a11y';
 import { useGame } from '@/core/store';
 import type { LabState } from '@/sim/types';
 import { emitAppAction, fmtClock, fmtDate, type AppId, type AppProps } from '../../apps';
@@ -143,10 +144,12 @@ export function FilesApp(props: AppProps) {
     ev.stopPropagation();
     const r = rootRef.current?.getBoundingClientRect();
     if (entry) setSelected(entry.path);
-    const w = r?.width ?? 1000;
-    const h = r?.height ?? 700;
-    const x = Math.max(4, Math.min(ev.clientX - (r?.left ?? 0), w - 214));
-    const y = Math.max(4, Math.min(ev.clientY - (r?.top ?? 0), h - (entry ? 150 : 175)));
+    // Visual px → the (UI-scale zoomed) root's own px.
+    const z = cssZoom(rootRef.current);
+    const w = r ? r.width / z : 1000;
+    const h = r ? r.height / z : 700;
+    const x = Math.max(4, Math.min((ev.clientX - (r?.left ?? 0)) / z, w - 214));
+    const y = Math.max(4, Math.min((ev.clientY - (r?.top ?? 0)) / z, h - (entry ? 150 : 175)));
     setMenu({ x, y, entry, sub: false, flip: x + 420 > w });
   };
 

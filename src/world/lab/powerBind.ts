@@ -436,7 +436,8 @@ export function bindPowerWall(ctx: LabCtx, rig: PowerWallRig): void {
       if (blown && lastBlown.get(id) === false) {
         engine.audio.play('fuse-pop', { position: [part(id).x, part(id).y, F + 0.02] });
         flash.position.set(part(id).x, part(id).y, F + 0.05);
-        flash.visible = true;
+        // (potato: a third light would recompile every lit shader for a 150 ms spark)
+        flash.visible = ctx.quality() !== 'potato';
         flashT = 0.15;
       }
       lastBlown.set(id, blown);

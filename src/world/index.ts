@@ -12,6 +12,9 @@ import type { Engine } from '@/engine/types';
 import { bus } from '@/core/bus';
 import { LOCATIONS, SPAWN_BY_ID, degToRad } from './layout';
 import { installPortalCulling } from './portal';
+import { reducedWorldDetail, setWorldDetail } from './detail';
+import { store } from '@/core/store';
+import { getQuality } from '@/engine/quality';
 
 export * from './layout';
 
@@ -48,12 +51,16 @@ export async function buildWorld(engine: Engine, onProgress: ProgressFn): Promis
   for (const off of unregisterLocations) off();
   unregisterLocations = LOCATIONS.map((l) => engine.registerLocation({ id: l.id, label: l.label, center: l.center, radius: l.radius }));
 
+  // Potato builds lower-tessellation curves and skips purely decorative clutter (World §7.4).
+  setWorldDetail(getQuality(store.getState().progress.settings.quality).reducedDetail);
+
   const { buildLab } = await import('./lab');
   const { buildRigs } = await import('./rigs');
   onProgress(0.05, 'Building the lab…');
   await buildLab(engine, (p, l) => onProgress(0.05 + p * 0.5, l));
   onProgress(0.55, 'Wiring up robots…');
   await buildRigs(engine, (p, l) => onProgress(0.55 + p * 0.45, l));
+  if (reducedWorldDetail()) hideTinyDetail(engine);
   // Live webcam streams for the workstation's Lab Cameras app (World App. B).
   webcamsOff?.();
   webcamsOff = (await import('./webcams')).registerWebcams();
@@ -68,6 +75,17 @@ export async function buildWorld(engine: Engine, onProgress: ProgressFn): Promis
     if (!teleportToLocation(engine, e.locationId)) console.warn('[world] unknown spawn location', e.locationId);
   });
   onProgress(1, 'Ready');
+}
+
+/**
+ * Potato: instanced screw heads and nuts are hundreds of tiny instances (~22k triangles, 4 draws)
+ * nobody sees at half resolution. Hidden, not removed (raycasts never target them).
+ */
+const TINY_DETAIL = new Set(['screws-black', 'lab.inst:screw', 'lab.inst:screwBlack', 'lab.inst:nut']);
+function hideTinyDetail(engine: Engine): void {
+  engine.scene.traverse((o) => {
+    if (TINY_DETAIL.has(o.name)) o.visible = false;
+  });
 }
 
 /** Teleport the player to a named spawn (`spawn.*`) — for missions, menus and debug tools. */

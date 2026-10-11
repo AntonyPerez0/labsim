@@ -3,6 +3,7 @@
  * Move (pan), Zoom, Measure and Color Picker tools. Purely a view: the parent owns selection/zoom state.
  */
 import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent as RMouseEvent } from 'react';
+import { cssZoom, localPoint } from '@/ui/kit/a11y';
 import { clampSel, hitHandle, moveSel, resizeSel, zoomIn, zoomOut, type Handle, type Sel, type Tool } from './model';
 
 export interface View {
@@ -215,9 +216,10 @@ export function GimpCanvas(props: CanvasProps) {
     drawRulers(hrRef.current, vrRef.current, size, ox, oy, view.zoom, pointer);
   });
 
+  // Canvas-local CSS px (client coordinates are visual px; the app is CSS-zoomed by the UI-scale setting).
   const local = (e: { clientX: number; clientY: number }) => {
-    const r = cvRef.current!.getBoundingClientRect();
-    return { sx: e.clientX - r.left, sy: e.clientY - r.top };
+    const p = localPoint(cvRef.current!, e.clientX, e.clientY);
+    return { sx: p.x, sy: p.y };
   };
 
   const onDown = (e: RMouseEvent<HTMLCanvasElement>) => {
@@ -264,9 +266,7 @@ export function GimpCanvas(props: CanvasProps) {
       const d = drag.current;
       const c = cvRef.current;
       if (!c) return;
-      const r = c.getBoundingClientRect();
-      const sx = e.clientX - r.left;
-      const sy = e.clientY - r.top;
+      const { x: sx, y: sy } = localPoint(c, e.clientX, e.clientY);
       const p = { x: (sx - ox) / view.zoom, y: (sy - oy) / view.zoom };
       const inside = sx >= 0 && sy >= 0 && sx < size.w && sy < size.h;
       if (inside || d) {
@@ -283,7 +283,7 @@ export function GimpCanvas(props: CanvasProps) {
       }
       switch (d.mode) {
         case 'pan':
-          setView({ zoom: d.start.zoom, cx: d.start.cx - (e.clientX - d.mx) / view.zoom, cy: d.start.cy - (e.clientY - d.my) / view.zoom });
+          setView({ zoom: d.start.zoom, cx: d.start.cx - (e.clientX - d.mx) / cssZoom(c) / view.zoom, cy: d.start.cy - (e.clientY - d.my) / cssZoom(c) / view.zoom });
           break;
         case 'new': {
           const bx = Math.round(p.x);
@@ -315,9 +315,9 @@ export function GimpCanvas(props: CanvasProps) {
       if (!d) return;
       drag.current = null;
       const c = cvRef.current;
-      const r = c?.getBoundingClientRect();
-      const sx = r ? e.clientX - r.left : 0;
-      const sy = r ? e.clientY - r.top : 0;
+      const lp = c ? localPoint(c, e.clientX, e.clientY) : { x: 0, y: 0 };
+      const sx = lp.x;
+      const sy = lp.y;
       if (d.mode === 'new') {
         const s = liveRef.current;
         setLive(null);

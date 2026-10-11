@@ -23,7 +23,8 @@ export type * from './arcadeState';
 
 /* ═════════════════════════════ Settings (GP §6.3, §7.3) ═════════════════════════════ */
 
-export type QualityPreset = 'low' | 'medium' | 'high' | 'ultra';
+/** `potato`: very old laptops, Chromebooks and phones (no post-fx, no shadows, half resolution, 30 fps cap). */
+export type QualityPreset = 'potato' | 'low' | 'medium' | 'high' | 'ultra';
 
 export type ColourBlindMode = 'off' | 'deuter' | 'prot' | 'trit';
 
@@ -129,6 +130,19 @@ export interface Settings {
   /** Graphics overrides on top of the quality preset (null = preset default). */
   shadows: boolean | null;
   ao: boolean | null;
+  /**
+   * Pick a quality preset from the hardware once (first boot; `progress.flags.qualityDetected` records it).
+   * Detection only ever LOWERS the preset — it never overrides a player's higher choice on capable hardware.
+   */
+  autoQuality: boolean;
+  /** Frame-rate cap for the 3D view: 0 = display refresh, 30 or 60. Potato defaults to 30. */
+  frameRateCap: 0 | 30 | 60;
+  /** 2D UI text/interface scale (0.85–1.5). Applies to menus, HUD, Field Manual and the workstation apps. */
+  uiScale: number;
+  /** High-contrast UI: solid panels, stronger borders and text, focus rings always visible. */
+  highContrast: boolean;
+  /** Hand-holding: coach tips that point at the next thing to do (first visit of each screen/app). */
+  coachTips: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -159,6 +173,11 @@ export const DEFAULT_SETTINGS: Settings = {
   bindings: {},
   shadows: null,
   ao: null,
+  autoQuality: true,
+  frameRateCap: 0,
+  uiScale: 1,
+  highContrast: false,
+  coachTips: true,
 };
 
 /* ═════════════════════════════ Tools & parts (GP §6.4) ═════════════════════════════ */
@@ -275,7 +294,11 @@ export type MenuScreen =
   | 'profile'
   | 'achievements'
   | 'leaderboards'
-  | 'settings';
+  | 'settings'
+  /** Start-here path: every module in order with state, time and unlocks (src/ui/guide). */
+  | 'curriculum'
+  /** Practice hub: drills, flashcards, shifts, Parrot and UIA code practice (src/ui/guide). */
+  | 'practice';
 
 export type TicketPanel = 'list' | 'detail' | 'call' | 'escalate' | 'reply' | 'bug' | 'task';
 

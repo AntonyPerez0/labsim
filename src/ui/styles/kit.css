@@ -1,9 +1,9 @@
 /* ───────────────────────── UI kit (src/ui/kit) ───────────────────────── */
 
 /* tones (set --tone for chips, meters, bars) */
-.k-tone-green { --tone: var(--lab); --tone-hi: var(--lab-hi); --tone-a: var(--lab-18); }
-.k-tone-amber { --tone: var(--amber); --tone-hi: #ffd04a; --tone-a: var(--amber-a15); }
-.k-tone-red { --tone: var(--red); --tone-hi: #ff7a70; --tone-a: var(--red-a15); }
+.k-tone-green { --tone: var(--ok); --tone-hi: var(--ok-hi); --tone-a: var(--ok-a); }
+.k-tone-amber { --tone: var(--warn); --tone-hi: var(--warn-hi); --tone-a: var(--warn-a); }
+.k-tone-red { --tone: var(--bad); --tone-hi: var(--bad-hi); --tone-a: var(--bad-a); }
 .k-tone-blue { --tone: var(--blue); --tone-hi: #8cc8ff; --tone-a: var(--blue-a15); }
 .k-tone-violet { --tone: var(--violet); --tone-hi: #c6b6ff; --tone-a: var(--violet-a15); }
 .k-tone-grey { --tone: #8a9891; --tone-hi: #c3cec8; --tone-a: rgba(255, 255, 255, 0.07); }
@@ -139,7 +139,7 @@
 .k-modal {
   position: relative;
   max-width: 100%;
-  max-height: calc(100vh - 48px);
+  max-height: calc(calc(100vh / var(--ui-scale)) - 48px);
   overflow: auto;
   border-radius: var(--r-xl);
   border: 1px solid var(--line-2);

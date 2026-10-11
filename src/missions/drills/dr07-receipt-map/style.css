@@ -5,7 +5,7 @@
 .dr07-stage { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 16px; align-items: stretch; }
 .dr07-device { display: flex; align-items: center; justify-content: center; padding: 22px; border-radius: 18px; background: radial-gradient(ellipse at center, rgba(74, 168, 255, 0.08), transparent 70%), #0b0f12; border: 1px solid var(--dk-line); min-height: 340px; }
 .dr07-svg { display: block; border-radius: 6px; box-shadow: 0 0 0 10px #15181c, 0 0 0 12px #2a2f36, 0 20px 50px rgba(0, 0, 0, 0.6); cursor: crosshair; background: #fff; animation: dr07-in 240ms var(--ease-out, ease-out) both; }
-.dr07-device.is-portrait .dr07-svg { height: clamp(300px, calc(100vh - 330px), 560px); width: auto; }
+.dr07-device.is-portrait .dr07-svg { height: clamp(300px, calc(calc(100vh / var(--ui-scale)) - 330px), 560px); width: auto; }
 .dr07-device.is-landscape .dr07-svg { width: min(100%, 640px); height: auto; }
 .dr07-svg.is-blind { box-shadow: 0 0 0 10px #15181c, 0 0 0 13px rgba(245, 179, 1, 0.45), 0 20px 50px rgba(0, 0, 0, 0.6); }
 .dr07-svg text { font-family: var(--font-ui, Inter, system-ui, sans-serif); user-select: none; }

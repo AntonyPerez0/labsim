@@ -12,7 +12,6 @@ import { CanvasTexture, LinearFilter, LinearMipmapLinearFilter, MeshBasicMateria
  * Animation-only redraws (spinners, pulses, periodic tablet refresh) run only for screens near the
  * camera; content changes always redraw, but far ones are rate-limited.
  */
-const NEAR_SQ = 4.5 * 4.5;
 const FAR_CHANGE_MIN_MS = 250;
 const _wp = new Vector3();
 function distSq(mesh: Mesh, cam: { x: number; y: number; z: number } | null, cache: { p?: Vector3 }): number {
@@ -27,6 +26,7 @@ function distSq(mesh: Mesh, cam: { x: number; y: number; z: number } | null, cac
 import { store } from '@/core/store';
 import { bus } from '@/core/bus';
 import type { QualityPreset } from '@/core/state';
+import { getQuality, type QualitySettings } from '@/engine/quality';
 import { render2d, screenCanvasSize, TABLET_CANVAS_BY_PRESET, SCREEN_BRIGHTNESS_SCALE, type TabletTab } from '@/render2d';
 import { createTerminalDevice, createDisplayState, createRigState } from '@/sim';
 import type { BannerColor, TerminalDevice, DeviceTypeCode, LabState, OrkaRobot, RigState, ScreenName } from '@/sim/types';
@@ -88,13 +88,15 @@ interface TabletSlot {
   pressed: { id: string; at: number } | null;
 }
 
-function makeTex(canvas: HTMLCanvasElement): CanvasTexture {
+function makeTex(canvas: HTMLCanvasElement, q: QualitySettings): CanvasTexture {
   const t = new CanvasTexture(canvas);
   t.colorSpace = SRGBColorSpace;
-  t.minFilter = LinearMipmapLinearFilter;
+  // Potato: no mip chain to rebuild on every upload (that is a full extra pass per redraw).
+  const mips = q.screens.mipmaps;
+  t.minFilter = mips ? LinearMipmapLinearFilter : LinearFilter;
   t.magFilter = LinearFilter;
-  t.anisotropy = 8;
-  t.generateMipmaps = true;
+  t.anisotropy = mips ? 8 : 1;
+  t.generateMipmaps = mips;
   return t;
 }
 
@@ -105,12 +107,14 @@ export class ScreenManager {
   private rr = 0;
   private rrT = 0;
   private quality: QualityPreset = 'high';
+  private q: QualitySettings = getQuality('high');
+  private nearSq = 4.5 * 4.5;
   private readonly offs: (() => void)[] = [];
   /** Focused display key renders at native resolution (World §3.5). */
   focusedKey: string | null = null;
 
   constructor() {
-    this.quality = store.getState().progress?.settings?.quality ?? 'high';
+    this.setPreset(store.getState().progress?.settings?.quality ?? 'high');
     this.offs.push(
       bus.on('device.touched', (p) => {
         this.ripples.set(`${p.deviceId}:${p.display}`, { x: p.xMm, y: p.yMm, at: performance.now() });
@@ -122,10 +126,16 @@ export class ScreenManager {
     for (const o of this.offs) o();
   }
 
+  private setPreset(q: QualityPreset): void {
+    this.quality = q;
+    this.q = getQuality(q);
+    this.nearSq = this.q.screens.nearM * this.q.screens.nearM;
+  }
+
   addDevice(b: DeviceDisplayBinding): void {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d')!;
-    const tex = makeTex(canvas);
+    const tex = makeTex(canvas, this.q);
     const mat = new MeshBasicMaterial({ map: tex, toneMapped: true });
     mat.name = 'screenLit';
     b.mesh.material = mat;
@@ -137,7 +147,7 @@ export class ScreenManager {
   addTablet(b: TabletBinding): void {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d')!;
-    const tex = makeTex(canvas);
+    const tex = makeTex(canvas, this.q);
     const mat = new MeshBasicMaterial({ map: tex, toneMapped: true });
     mat.name = 'tabletLit';
     mat.color.setScalar(SCREEN_BRIGHTNESS_SCALE * 0.95);
@@ -165,11 +175,11 @@ export class ScreenManager {
       h = Math.ceil(s.b.hMm * k);
       pxPerMm = k;
     }
-    if (s.canvas.width !== w || s.canvas.height !== h) {
+    if (s.canvas.width !== w || s.canvas.height !== h || s.tex.generateMipmaps !== this.q.screens.mipmaps) {
       s.canvas.width = w;
       s.canvas.height = h;
       s.tex.dispose();
-      s.tex = makeTex(s.canvas);
+      s.tex = makeTex(s.canvas, this.q);
       s.mat.map = s.tex;
       s.mat.needsUpdate = true;
     }
@@ -179,11 +189,11 @@ export class ScreenManager {
 
   private sizeTablet(t: TabletSlot): void {
     const { w, h } = TABLET_CANVAS_BY_PRESET[this.quality];
-    if (t.canvas.width !== w || t.canvas.height !== h) {
+    if (t.canvas.width !== w || t.canvas.height !== h || t.tex.generateMipmaps !== this.q.screens.mipmaps) {
       t.canvas.width = w;
       t.canvas.height = h;
       t.tex.dispose();
-      t.tex = makeTex(t.canvas);
+      t.tex = makeTex(t.canvas, this.q);
       t.mat.map = t.tex;
       t.mat.needsUpdate = true;
     }
@@ -206,14 +216,14 @@ export class ScreenManager {
   private near(mesh: Mesh): boolean {
     let c = this.posCache.get(mesh);
     if (!c) this.posCache.set(mesh, (c = {}));
-    return distSq(mesh, this.cam, c) < NEAR_SQ;
+    return distSq(mesh, this.cam, c) < this.nearSq;
   }
 
   update(lab: LabState, nowMs: number, camera?: { x: number; y: number; z: number }): void {
     this.cam = camera ?? null;
     const q = store.getState().progress?.settings?.quality ?? 'high';
     if (q !== this.quality) {
-      this.quality = q;
+      this.setPreset(q);
       for (const d of this.devices) this.size(d);
       for (const t of this.tablets) this.sizeTablet(t);
     }
@@ -252,7 +262,7 @@ export class ScreenManager {
       if (sig !== s.sig) {
         s.sig = sig;
         s.dirty = true;
-      } else if (anim && near && nowMs - s.lastAnim > (ripAge < 1000 || ds.toast ? 100 : ANIM_INTERVAL_MS[ds.screen] ?? 100)) s.dirty = true;
+      } else if (anim && near && nowMs - s.lastAnim > Math.max(this.q.screens.animMinMs, ripAge < 1000 || ds.toast ? 100 : ANIM_INTERVAL_MS[ds.screen] ?? 100)) s.dirty = true;
       if (!s.dirty) continue;
       if (!near && !this.focusedKey) {
         if (nowMs - this.lastFarDraw < FAR_CHANGE_MIN_MS) continue; // stays dirty; drawn on a later frame
@@ -261,7 +271,7 @@ export class ScreenManager {
       queue.push(s);
     }
     if (queue.length === 0) return;
-    const n = Math.min(3, queue.length);
+    const n = Math.min(this.q.screens.redrawsPerFrame, queue.length);
     for (let i = 0; i < n; i++) {
       const s = queue[(this.rr + i) % queue.length]!;
       this.drawDevice(s, lab, nowMs);
@@ -302,7 +312,7 @@ export class ScreenManager {
   }
 
   private updateTablets(lab: LabState, nowMs: number): void {
-    let budget = 2;
+    let budget = Math.min(2, this.q.screens.redrawsPerFrame);
     const n = this.tablets.length;
     for (let i = 0; i < n; i++) {
       const t = this.tablets[(this.rrT + i) % n]!;
@@ -324,7 +334,8 @@ export class ScreenManager {
       const pressed = t.pressed && nowMs - t.pressed.at < 160 ? t.pressed.id : null;
       const robot = this.robotFor(lab, t.b.rigId, t.b.hrn);
       const sig = `${rig === t.fallbackRig ? 'fb' : 'live'}|${rig.tablet?.tab}|${rig.tablet?.statusText}|${rig.banner}|${rig.dashboardLocked}|${rig.steppersEnabled}|${rig.dipArm}|${rig.tapArm}|${rig.phonePusher}|${rig.solenoid?.down}|${rig.magneticLock?.engaged}|${Math.round(rig.gantry.xMm * 10)}|${Math.round(rig.gantry.yMm * 10)}|${robot.humanReadableName}|${robot.status}|${boot}|${pressed}|${t.canvas.width}`;
-      const periodic = this.near(t.b.mesh) && nowMs - t.lastDraw > (wiping ? 33 : rig.banner === 'yellow' ? 100 : 500);
+      const minMs = this.q.screens.animMinMs;
+      const periodic = this.near(t.b.mesh) && nowMs - t.lastDraw > Math.max(wiping ? 33 : rig.banner === 'yellow' ? 100 : 500, wiping ? 0 : minMs * 2.5);
       if ((sig !== t.sig || periodic) && budget > 0) {
         budget--;
         t.sig = sig;

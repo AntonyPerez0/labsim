@@ -36,6 +36,11 @@ export function Choice({
       <Kbd k={k} />
       <span className="dk-choice__label">{label}</span>
       {sub ? <span className="dk-choice__sub">{sub}</span> : null}
+      {state ? (
+        <span className={`dk-choice__mark is-${state}`} aria-label={state === 'right' ? 'correct' : state === 'wrong' ? 'wrong' : 'the right answer'} role="img">
+          {state === 'wrong' ? '✗' : '✓'}
+        </span>
+      ) : null}
     </button>
   );
 }

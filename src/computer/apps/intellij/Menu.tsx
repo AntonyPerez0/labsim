@@ -1,5 +1,6 @@
 /** Darcula popup menus (main menu dropdowns, context menus) with submenus and keyboard navigation. */
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { cssZoom } from '@/ui/kit/a11y';
 import { createPortal } from 'react-dom';
 import { useIdeRoot } from './rootContext';
 import { IcChevronRight } from './icons';
@@ -33,10 +34,11 @@ export function MenuList({ items, x, y, onClose, autoFocus = true }: { items: Me
     if (!el || !root) return;
     const r = root.getBoundingClientRect();
     const m = el.getBoundingClientRect();
+    const z = cssZoom(root); // visual px → the root's own (UI-scale zoomed) px
     let nx = x;
     let ny = y;
-    if (m.right > r.right) nx = Math.max(0, x - (m.right - r.right) - 4);
-    if (m.bottom > r.bottom) ny = Math.max(0, y - (m.bottom - r.bottom) - 4);
+    if (m.right > r.right) nx = Math.max(0, x - (m.right - r.right) / z - 4);
+    if (m.bottom > r.bottom) ny = Math.max(0, y - (m.bottom - r.bottom) / z - 4);
     if (nx !== x || ny !== y) setPos({ x: nx, y: ny });
   }, [x, y]);
 
@@ -48,7 +50,8 @@ export function MenuList({ items, x, y, onClose, autoFocus = true }: { items: Me
     if (!el || !root) return;
     const r = el.getBoundingClientRect();
     const rr = root.getBoundingClientRect();
-    setSub({ index: i, x: r.right - rr.left - 2, y: r.top - rr.top - 4 });
+    const z = cssZoom(root);
+    setSub({ index: i, x: (r.right - rr.left) / z - 2, y: (r.top - rr.top) / z - 4 });
   };
 
   const activate = (i: number) => {

@@ -3,6 +3,7 @@
  */
 import type { CSSProperties, ReactNode } from 'react';
 import { Icon, type IconName } from './Icon';
+import { OUTCOME_META, robotStatusMeta, type OutcomeKind } from './a11y';
 
 export type Tone = 'green' | 'amber' | 'red' | 'blue' | 'violet' | 'grey' | 'gold' | 'cyan';
 
@@ -113,23 +114,25 @@ export function IllustrativeBadge({ compact }: { compact?: boolean }) {
   );
 }
 
-/** Orka robot status pill with colour-blind glyphs (GP §6.1). */
+/** Orka robot status pill with colour-blind glyphs (GP §6.1); shapes come from `ROBOT_STATUS_META`. */
 export function StatusPill({ status, size = 'md' }: { status: string; size?: 'sm' | 'md' }) {
-  const key = status.toUpperCase().replace(/\s+/g, '_');
-  const meta: Record<string, { label: string; glyph: string; cls: string }> = {
-    AVAILABLE: { label: 'Available', glyph: '●', cls: 'available' },
-    UNAVAILABLE: { label: 'Unavailable', glyph: '◆', cls: 'unavailable' },
-    OFFLINE: { label: 'Offline', glyph: '○', cls: 'offline' },
-    CONNECTION_FAILED: { label: 'Connection Failed', glyph: '✕', cls: 'connfailed' },
-    RESERVED: { label: 'Reserved', glyph: '■', cls: 'reserved' },
-  };
-  const m = meta[key] ?? { label: status, glyph: '●', cls: 'offline' };
+  const m = robotStatusMeta(status);
   return (
     <span className={`k-status k-status--${m.cls} k-status--${size}`}>
       <span className="k-status__glyph" aria-hidden>
         {m.glyph}
       </span>
       {m.label}
+    </span>
+  );
+}
+
+/** Outcome mark (✓ ✗ ⚠ …) so results never rely on colour alone. Decorative unless `label` is given. */
+export function OutcomeMark({ kind, label, className }: { kind: OutcomeKind; label?: string; className?: string }) {
+  const m = OUTCOME_META[kind];
+  return (
+    <span className={`a11y-mark a11y-mark--${m.cls}${className ? ` ${className}` : ''}`} aria-hidden={label ? undefined : true} aria-label={label} role={label ? 'img' : undefined}>
+      {m.glyph}
     </span>
   );
 }

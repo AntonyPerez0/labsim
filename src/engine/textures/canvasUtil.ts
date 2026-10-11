@@ -13,11 +13,16 @@ import {
   type Texture,
 } from 'three';
 
-export function makeCanvas(w: number, h: number): { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D } {
+/**
+ * `readback`: the pixels will be read with getImageData — use a CPU-backed canvas. Reading back a
+ * GPU canvas stalls on the GPU (seconds on software GL / weak phones; the perforated-steel height
+ * field alone took ~4 s under SwiftShader).
+ */
+export function makeCanvas(w: number, h: number, readback = false): { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D } {
   const canvas = document.createElement('canvas');
   canvas.width = Math.max(1, Math.round(w));
   canvas.height = Math.max(1, Math.round(h));
-  const ctx = canvas.getContext('2d', { willReadFrequently: false });
+  const ctx = canvas.getContext('2d', { willReadFrequently: readback });
   if (!ctx) throw new Error('2D canvas unavailable');
   return { canvas, ctx };
 }

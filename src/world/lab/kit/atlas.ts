@@ -22,6 +22,8 @@ export interface AtlasSlot {
   rect: UvRect;
   /** Pixel rect inside the page canvas. */
   px: { x: number; y: number; w: number; h: number };
+  /** Page px per requested px (< 1 on the potato preset); draw functions always see requested px. */
+  k?: number;
 }
 
 export class AtlasPage {
@@ -86,19 +88,28 @@ export class CanvasAtlas {
     private readonly makeMaterial: (tex: CanvasTexture) => Material = (tex) =>
       new MeshStandardMaterial({ map: tex, roughness: 0.6, metalness: 0 }),
     private readonly height = size,
+    /** Resolution scale (potato: 0.5 → quarter of the texture memory and upload time). */
+    private readonly k = 1,
   ) {}
 
   private newPage(): AtlasPage {
-    const p = new AtlasPage(this.size, this.pages.length, this.makeMaterial, 8, this.height);
+    const p = new AtlasPage(Math.round(this.size * this.k), this.pages.length, this.makeMaterial, this.k < 1 ? 1 : 8, Math.round(this.height * this.k));
     p.material.name = `${this.name}#${p.index}`;
     this.pages.push(p);
     return p;
   }
 
   /** Allocate a w × h px region and draw into it (ctx translated + clipped to the region). */
-  draw(w: number, h: number, fn: DrawFn): AtlasSlot {
-    w = Math.max(4, Math.round(w));
-    h = Math.max(4, Math.round(h));
+  draw(w0: number, h0: number, fn: DrawFn): AtlasSlot {
+    const k = this.k;
+    const lw = Math.max(4, Math.round(w0));
+    const lh = Math.max(4, Math.round(h0));
+    const w = Math.max(4, Math.round(lw * k));
+    const h = Math.max(4, Math.round(lh * k));
+    const draw: DrawFn = k === 1 ? fn : (c) => {
+      c.scale(w / lw, h / lh);
+      fn(c, lw, lh);
+    };
     let page: AtlasPage | undefined;
     let at: { x: number; y: number } | null = null;
     for (const p of this.pages) {
@@ -121,20 +132,21 @@ export class CanvasAtlas {
     ctx.clip();
     ctx.translate(at.x - this.pad, at.y - this.pad);
     ctx.scale((w + this.pad * 2) / w, (h + this.pad * 2) / h);
-    fn(ctx, w, h);
+    draw(ctx, w, h);
     ctx.restore();
     ctx.save();
     ctx.beginPath();
     ctx.rect(at.x, at.y, w, h);
     ctx.clip();
     ctx.translate(at.x, at.y);
-    fn(ctx, w, h);
+    draw(ctx, w, h);
     ctx.restore();
     this.dirty.add(page);
-    const S = this.size;
-    const SH = this.height;
+    const S = page.size;
+    const SH = page.height;
     return {
       page,
+      k: k === 1 ? undefined : w / lw,
       px: { x: at.x, y: at.y, w, h },
       rect: { u0: at.x / S, u1: (at.x + w) / S, v0: 1 - (at.y + h) / SH, v1: 1 - at.y / SH },
     };
@@ -161,12 +173,14 @@ export class CanvasAtlas {
 export function redrawSlot(slot: AtlasSlot, fn: DrawFn): void {
   const { ctx } = slot.page;
   const { x, y, w, h } = slot.px;
+  const k = slot.k ?? 1;
   ctx.save();
   ctx.beginPath();
   ctx.rect(x, y, w, h);
   ctx.clip();
   ctx.translate(x, y);
-  fn(ctx, w, h);
+  if (k !== 1) ctx.scale(k, k);
+  fn(ctx, Math.round(w / k), Math.round(h / k));
   ctx.restore();
   slot.page.texture.needsUpdate = true;
 }

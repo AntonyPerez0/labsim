@@ -11,34 +11,7 @@ import { Avatar, Button, Chip, Icon, ProgressBar, Stars } from '@/ui/kit';
 import { moduleViewFor, modulesCompleted, nextModule, totalStars } from '@/ui/data/views';
 import { resumeAcademy, startModule } from '@/ui/services/actions';
 import { pct, shortTitle, estLabel } from '@/ui/services/format';
-
-const TRACKS: { title: string; sub: string; ids: string[] }[] = [
-  { title: 'Foundations', sub: 'The lab, the devices, power and the robots', ids: ['M01', 'M02', 'M03', 'M04', 'M05'] },
-  { title: 'Orka & Jenkins', sub: 'Statuses, entities, merchants, screens and pipelines', ids: ['M06', 'M07', 'M08', 'M09', 'M10', 'M11'] },
-  { title: 'Automation code', sub: 'ADB, uia-relay, config.properties, Parrot and OCR', ids: ['M12', 'M13', 'M14', 'M15', 'M16'] },
-  { title: 'Capstone', sub: 'AI, infrastructure, teams and the capstone shift', ids: ['M17', 'M18'] },
-];
-
-/** GP §2.2.2 — what each module unlocks outside the Academy (display). */
-const UNLOCKS: Record<string, string[]> = {
-  M01: ['DR10 Speed Quiz', 'DR14', 'DR17', 'Field Manual: Lab Basics'],
-  M03: ['INC03, INC17, INC18', 'DR04, DR13', 'Hotbar: multimeter, spare fuse'],
-  M04: ['6 incidents', 'DR16 Park It!', '5-minute Shift', 'Free Play', 'Hotbar: screwdriver'],
-  M05: ['INC19, INC56', 'Terminal'],
-  M06: ['12 incidents', 'DR01, DR09', 'Weak Spot', 'Hotbar: Ethernet cable'],
-  M07: ['9 incidents', 'DR11, DR12'],
-  M08: ['INC23, INC28, INC49–51'],
-  M09: ['INC20, INC21, INC52', 'DR07'],
-  M10: ['INC53–55, INC58', 'Hotbar: test card', '10-minute Shift'],
-  M11: ['INC26, INC39, INC44'],
-  M12: ['DR03, DR19 ADB Speedrun'],
-  M13: ['INC32–34', 'DR08 POM Builder, DR15'],
-  M14: ['INC27, INC29, INC30, INC35, INC47', 'DR02, DR09 (all sets)', 'Daily Challenge'],
-  M15: ['INC22, INC25', 'DR06 JSON Medic, DR18'],
-  M16: ['INC24, INC36–38, INC64', 'DR05'],
-  M17: ['INC10, INC57, INC61'],
-  M18: ['Full Shift (20 min)', 'Certification exams'],
-};
+import { MODULE_UNLOCKS, TRACKS } from '@/ui/guide/curriculum';
 
 export function AcademyScreen() {
   const progress = useGame((s) => s.progress);
@@ -129,7 +102,7 @@ function ModuleBriefing({ id }: { id: string }) {
   const m = v.meta;
   const mentor = teamMember(m.mentor);
   const locked = v.state === 'locked';
-  const unlocks = v.unlocks.drills.length || v.unlocks.incidents.length || v.unlocks.modes.length ? [...v.unlocks.modes, ...v.unlocks.drills, ...v.unlocks.incidents] : (UNLOCKS[id] ?? []);
+  const unlocks = v.unlocks.drills.length || v.unlocks.incidents.length || v.unlocks.modes.length ? [...v.unlocks.modes, ...v.unlocks.drills, ...v.unlocks.incidents] : (MODULE_UNLOCKS[id] ?? []);
   return (
     <aside className="brief" key={id}>
       <div className="brief__eyebrow">

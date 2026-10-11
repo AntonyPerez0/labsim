@@ -52,7 +52,7 @@ function stopLoopIfIdle(): void {
 /** Quality preset → player resolution and fps (Apps §8.4). */
 export function captureProfile(): { w: number; h: number; fps: number } {
   const q = getState().progress?.settings?.quality ?? 'high';
-  if (q === 'low') return { w: 640, h: 360, fps: 2 };
+  if (q === 'low' || q === 'potato') return { w: 640, h: 360, fps: 2 };
   if (q === 'medium') return { w: 960, h: 540, fps: 5 };
   return { w: 1280, h: 720, fps: 10 };
 }

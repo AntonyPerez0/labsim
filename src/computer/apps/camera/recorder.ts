@@ -105,7 +105,7 @@ let scratch: HTMLCanvasElement | null = null;
 function lowQualityHeadless(): boolean {
   const q = getState().progress?.settings?.quality;
   const camOpen = getWindowManager()?.windows().some((w) => w.app === 'camera' && !w.minimized) ?? false;
-  return q === 'low' && !camOpen;
+  return (q === 'low' || q === 'potato') && !camOpen;
 }
 
 function grab(rec: Recording, lab: LabState): void {

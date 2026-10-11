@@ -9,6 +9,7 @@ import type { OrkaEntityName } from '@/sim/events';
 import type { RobotStatus } from '@/sim/types';
 import { buildRoute, fmtTime24, parseQuery, type WindowManagerApi } from '../../apps';
 import { Fa } from './icons';
+import { ROBOT_STATUS_META } from '@/ui/kit/a11y';
 
 /* ─────────────────────────────── Page context ─────────────────────────────── */
 
@@ -162,17 +163,28 @@ export const STATUS_LABEL: Record<RobotStatus, string> = {
   CONNECTION_FAILED: 'Connection Failed',
   RESERVED: 'Reserved',
 };
+/** Status fills; the `--cb-st-*` tokens swap in a colour-blind-safe palette (src/ui/styles/a11y.css). */
 export const STATUS_COLOR: Record<RobotStatus, string> = {
-  AVAILABLE: '#2e9e4f',
-  UNAVAILABLE: '#8b5cf6',
-  OFFLINE: '#6b7280',
-  CONNECTION_FAILED: '#dc2626',
-  RESERVED: '#2563eb',
+  AVAILABLE: 'var(--cb-st-available, #2e9e4f)',
+  UNAVAILABLE: 'var(--cb-st-unavailable, #8b5cf6)',
+  OFFLINE: 'var(--cb-st-offline, #6b7280)',
+  CONNECTION_FAILED: 'var(--cb-st-connfailed, #dc2626)',
+  RESERVED: 'var(--cb-st-reserved, #2563eb)',
 };
+
+/** Shape next to the status word, so the status never depends on the fill colour alone. */
+export function StatusGlyph(props: { status: RobotStatus }) {
+  return (
+    <span className="orka-st-glyph" aria-hidden="true">
+      {ROBOT_STATUS_META[props.status].glyph}
+    </span>
+  );
+}
 
 export function StatusChip(props: { status: RobotStatus }) {
   return (
     <span className="orka-badge orka-pill" style={{ background: STATUS_COLOR[props.status] }}>
+      <StatusGlyph status={props.status} />
       {STATUS_LABEL[props.status]}
     </span>
   );

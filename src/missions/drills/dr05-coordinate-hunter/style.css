@@ -9,14 +9,14 @@
 .dr05-canvaswrap { position: relative; padding: 18px 0 0 18px; background: #2e2e2e; min-width: 0; align-self: start; width: 100%;
   /* On short viewports the screenshot is height-bound: shrink the whole wrap so the rulers, the pointer
      mapping and the drawn 1280×800 image keep the same aspect (no letterboxing inside the SVG). */
-  max-width: calc((100vh - 290px) * 1.6 + 18px); }
+  max-width: calc((calc(100vh / var(--ui-scale)) - 290px) * 1.6 + 18px); }
 .dr05-ruler { position: absolute; background: #3a3a3a; color: #a8a8a8; font: 9px/1 var(--dk-mono); overflow: hidden; }
 .dr05-ruler.is-top { left: 18px; right: 0; top: 0; height: 18px; border-bottom: 1px solid #222; }
 .dr05-ruler.is-left { left: 0; top: 18px; bottom: 0; width: 18px; border-right: 1px solid #222; }
 .dr05-ruler span { position: absolute; }
 .dr05-ruler.is-top span { top: 0; height: 18px; border-left: 1px solid #777; padding-left: 2px; padding-top: 2px; }
 .dr05-ruler.is-left span { left: 0; width: 18px; border-top: 1px solid #777; writing-mode: vertical-rl; padding-top: 2px; }
-.dr05-canvas { display: block; width: 100%; height: auto; max-height: calc(100vh - 290px); aspect-ratio: 1280 / 800; cursor: crosshair; user-select: none; background: #fff; }
+.dr05-canvas { display: block; width: 100%; height: auto; max-height: calc(calc(100vh / var(--ui-scale)) - 290px); aspect-ratio: 1280 / 800; cursor: crosshair; user-select: none; background: #fff; }
 .dr05-sel { fill: rgba(255, 255, 255, 0.04); stroke: #000; stroke-width: 1.2; vector-effect: non-scaling-stroke; shape-rendering: crispEdges; }
 .dr05-sel.is-ants { fill: none; stroke: #fff; stroke-dasharray: 4 4; animation: dr05-ants 600ms linear infinite; }
 .dr05-sel.is-loupe { fill: none; stroke: #ff3df0; stroke-width: 1.5; }
@@ -27,7 +27,7 @@
 .dr05-guide { stroke: rgba(0, 120, 255, 0.55); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .dr05-loupe { position: absolute; right: 10px; bottom: 10px; width: 168px; height: 168px; border-radius: 50%; border: 3px solid #e7e7e7; background: #fff; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); pointer-events: none; }
 .dr05-loupe__x { stroke: rgba(255, 0, 140, 0.8); stroke-width: 0.12; }
-.dr05-dock { display: flex; flex-direction: column; gap: 10px; padding: 10px; background: #3c3c3c; border-left: 1px solid #2a2a2a; overflow: auto; max-height: calc(100vh - 250px); }
+.dr05-dock { display: flex; flex-direction: column; gap: 10px; padding: 10px; background: #3c3c3c; border-left: 1px solid #2a2a2a; overflow: auto; max-height: calc(calc(100vh / var(--ui-scale)) - 250px); }
 .dr05-task { padding: 10px; border-radius: 8px; background: #1f2426; border: 1px solid #5b4bd1; }
 .dr05-task .dk-eyebrow { color: #b6a6ff; margin-bottom: 6px; }
 .dr05-task__text { font: 750 18px/1.3 var(--font-display, inherit); color: #fff; }

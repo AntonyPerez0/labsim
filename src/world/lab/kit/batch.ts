@@ -10,6 +10,7 @@
 import {
   MeshStandardMaterial,
   BufferGeometry,
+  BufferAttribute,
   Float32BufferAttribute,
   Matrix4,
   Mesh,
@@ -44,11 +45,20 @@ export function xf(x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0, order: 'XYZ' | '
 }
 
 /**
- * Normalise a geometry for merging: non-indexed, only `position` / `normal` / `uv`, no groups,
- * transformed by `m`. Always returns a new geometry.
+ * Normalise a geometry for merging: indexed (an identity index is added to non-indexed shapes such
+ * as extrusions), only `position` / `normal` / `uv`, no groups, transformed by `m`. Always returns
+ * a new geometry. Keeping the primitives' own indices means cylinders, spheres and tubes share
+ * their vertices: the merged lab has ~2–3× fewer vertices to upload and shade than a non-indexed
+ * merge (the rigs' `prepForMerge` does the same).
  */
 export function prepGeometry(g: BufferGeometry, m: Matrix4 | null): BufferGeometry {
-  const out = g.index ? g.toNonIndexed() : g.clone();
+  const out = g.clone();
+  if (!out.index) {
+    const n = out.getAttribute('position').count;
+    const idx = new (n > 65535 ? Uint32Array : Uint16Array)(n);
+    for (let i = 0; i < n; i++) idx[i] = i;
+    out.setIndex(new BufferAttribute(idx, 1));
+  }
   for (const k of Object.keys(out.attributes)) {
     if (k !== 'position' && k !== 'normal' && k !== 'uv') out.deleteAttribute(k);
   }
@@ -118,7 +128,7 @@ export class StaticBatch {
       this.buckets.set(key, b);
     }
     b.geos.push(g);
-    this.triangles += g.getAttribute('position').count / 3;
+    this.triangles += (g.index ? g.index.count : g.getAttribute('position').count) / 3;
   }
 
   /** Axis-aligned box centred at (x, y, z) in the current frame (optional Y rotation, radians). */

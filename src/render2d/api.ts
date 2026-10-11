@@ -148,6 +148,7 @@ export function currencyPrefix(country: 'US' | 'CA' | null | undefined): string 
 
 /** Device screen canvas resolution per preset: px/mm, capped on the long side. */
 export const SCREEN_PX_PER_MM: Readonly<Record<QualityPreset, { pxPerMm: number; capPx: number }>> = {
+  potato: { pxPerMm: 2, capPx: 320 },
   low: { pxPerMm: 3, capPx: 512 },
   medium: { pxPerMm: 4, capPx: 768 },
   high: { pxPerMm: 6, capPx: 1024 },
@@ -195,6 +196,7 @@ export interface PxRect {
 export const TABLET_CANVAS = { w: 1280, h: 800, activeMm: { w: 172.3, h: 107.7 }, pxPerMm: 7.43 } as const;
 
 export const TABLET_CANVAS_BY_PRESET: Readonly<Record<QualityPreset, { w: number; h: number }>> = {
+  potato: { w: 384, h: 240 },
   low: { w: 512, h: 320 },
   medium: { w: 768, h: 480 },
   high: { w: 1024, h: 640 },

@@ -4,7 +4,7 @@
 .dr10-hot { color: #ffd76a; }
 .dr10.is-hot .dk-prompt { border-color: rgba(255, 215, 106, 0.35); }
 .dr10-scene { position: relative; display: flex; justify-content: center; padding: 12px; border-radius: 16px; background: radial-gradient(ellipse at center, rgba(255, 215, 106, 0.06), transparent 70%), #0b0f12; border: 1px solid var(--dk-line); }
-.dr10-svg { width: 100%; max-width: 760px; max-height: calc(100vh - 360px); min-height: 260px; display: block; }
+.dr10-svg { width: 100%; max-width: 760px; max-height: calc(calc(100vh / var(--ui-scale)) - 360px); min-height: 260px; display: block; }
 .dr10-svg text { font-family: var(--font-ui, Inter, system-ui, sans-serif); user-select: none; pointer-events: none; }
 .dr10-region { cursor: pointer; transition: filter 120ms ease, opacity 120ms ease; }
 .dr10-region:hover { filter: drop-shadow(0 0 6px rgba(255, 215, 106, 0.9)) brightness(1.08); }

@@ -30,6 +30,7 @@ import {
   type WindowState,
 } from './wmStore';
 import { FileDialog } from './FileDialog';
+import { desktopScale } from './scale';
 
 /** Desktop root element (pointer → desktop coordinates). */
 export const DesktopRootContext = createContext<RefObject<HTMLDivElement | null> | null>(null);
@@ -40,7 +41,8 @@ function useLocalPoint() {
   const root = useContext(DesktopRootContext);
   return (e: { clientX: number; clientY: number }) => {
     const r = root?.current?.getBoundingClientRect();
-    return { x: e.clientX - (r?.left ?? 0), y: e.clientY - (r?.top ?? 0) };
+    const k = desktopScale(); // screen px → desktop px on scaled (small-screen) desktops
+    return { x: (e.clientX - (r?.left ?? 0)) / k, y: (e.clientY - (r?.top ?? 0)) / k };
   };
 }
 

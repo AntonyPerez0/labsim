@@ -68,6 +68,7 @@ export function View(props: DrillComponentProps) {
   const btn = (a: ParkAction, label: string) => (
     <button type="button" data-dr16={a} className={`dr16-btn${result?.action === a ? (result.ok ? ' is-right' : ' is-wrong') : ''}`} onClick={(e) => act(a, e.currentTarget)}>
       <span>{label}</span>
+      {result?.action === a ? <span className="dk-mark">{result.ok ? '✓' : '✗'}</span> : null}
       <Kbd k={KEY[a]} size="sm" />
     </button>
   );

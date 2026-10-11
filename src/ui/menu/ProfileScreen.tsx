@@ -1,6 +1,7 @@
 /**
  * Profile (GP §4.3–§4.7): career rank ladder with XP thresholds, certificate titles and promotion
- * status; lifetime stats; shift grades; achievements (46, secret ones hidden); local leaderboards.
+ * status; lifetime stats; shift grades; achievements (46, secret ones hidden); local leaderboards. The
+ * Career tab starts with the "saved only in this browser" reminder and the export / import buttons.
  */
 import { useState } from 'react';
 import { useGame } from '@/core/store';
@@ -10,6 +11,7 @@ import { Chip, Icon, ProgressBar, Segmented, Select, Stat, Tabs } from '@/ui/kit
 import { mq } from '@/ui/services/missions';
 import { achievementViews, drillRows, rankViewFor, modulesCompleted, totalStars } from '@/ui/data/views';
 import { dateLabel, duration, num } from '@/ui/services/format';
+import { LocalSaveNotice } from '@/ui/guide/ProgressTransfer';
 
 type Tab = 'overview' | 'achievements' | 'leaderboards';
 
@@ -30,6 +32,7 @@ export function ProfileScreen({ tab: initial }: { tab: Tab }) {
           ]}
         />
       </div>
+      {tab === 'overview' ? <LocalSaveNotice /> : null}
       {tab === 'overview' ? <Overview /> : tab === 'achievements' ? <Achievements /> : <Boards />}
     </div>
   );

@@ -433,3 +433,15 @@
   text-decoration: line-through;
 }
 
+
+/* High contrast (settings): brighter secondary text and stronger borders. */
+:root[data-high-contrast='true'] .ij-root:not(.ij-light) {
+  --ij-dim: #c4c4c4;
+  --ij-border: #6b6b6b;
+  --ij-border2: #8a8a8a;
+}
+:root[data-high-contrast='true'] .ij-root.ij-light {
+  --ij-dim: #3f4250;
+  --ij-border: #8a8a8a;
+  --ij-border2: #7a7a7a;
+}

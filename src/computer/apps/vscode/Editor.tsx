@@ -6,6 +6,7 @@
  * Programmatic edits go through `execCommand('insertText')` so the browser's own undo stack keeps working.
  */
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { cssZoom } from '@/ui/kit/a11y';
 import { emitAppAction, getWindowManager } from '@/computer/apps';
 import { formatDocument, saveBuffer } from './actions';
 import { offsetToLineCol, stringTokenAt, tokenizeLine, type Diagnostic, type Span } from './jsonLang';
@@ -98,7 +99,8 @@ export function Editor({ model, buffer: b, repoLabel, diagnostics, focused }: Pr
 
   useLayoutEffect(() => {
     const w = measureRef.current?.getBoundingClientRect().width;
-    if (w && w > 0) setCharW(w / 20);
+    // Visual width → CSS px of the (UI-scale zoomed) editor.
+    if (w && w > 0) setCharW(w / 20 / cssZoom(measureRef.current));
   }, []);
 
   // Restore scroll / selection when the tab becomes active.
@@ -330,13 +332,14 @@ export function Editor({ model, buffer: b, repoLabel, diagnostics, focused }: Pr
   const onMouseMove = (e: React.MouseEvent<HTMLTextAreaElement>) => {
     if (!diagnostics.length) return;
     const r = e.currentTarget.getBoundingClientRect();
-    const line = Math.floor((e.clientY - r.top) / LH);
-    const col = Math.floor((e.clientX - r.left - PAD_LEFT) / charW);
+    const zz = cssZoom(e.currentTarget);
+    const line = Math.floor((e.clientY - r.top) / zz / LH);
+    const col = Math.floor(((e.clientX - r.left) / zz - PAD_LEFT) / charW);
     let off = 0;
     for (let i = 0; i < line && i < lines.length; i++) off += lines[i]!.length + 1;
     const pos = off + col;
     const d = diagnostics.find((x) => pos >= x.from && pos < Math.max(x.to, x.from + 1) && line < lines.length && col <= (lines[line]?.length ?? 0));
-    if (d) setHover({ x: e.clientX - r.left, y: (line + 1) * LH + 2, d });
+    if (d) setHover({ x: (e.clientX - r.left) / zz, y: (line + 1) * LH + 2, d });
     else if (hover) setHover(null);
   };
 

@@ -1,0 +1,184 @@
+/* ───────────────────────── Phones & tablets (layout only; desktop untouched) ─────────────────────────
+   Imported by src/main.tsx after global.css. Everything here is behind a media query or the
+   `data-touch` / `data-orient` / `data-kb` attributes (set in src/ui/hud/TouchControls.tsx and
+   src/main.tsx), so a desktop browser window never matches. Keep desktop styling in the feature
+   stylesheets. */
+
+/* No double-tap zoom, no rubber-band scroll / pull-to-refresh behind the game. */
+html {
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+html,
+body,
+#app {
+  overscroll-behavior: none;
+}
+#scene {
+  touch-action: none;
+}
+
+/* ───────────── Main menu (src/ui/menu/MainMenu.tsx) ───────────── */
+
+/* Phones in portrait / narrow windows: the 292 px rail becomes a top bar — brand + Continue on one
+   row, every rail item in a horizontal scroller below (all items reachable, incl. Curriculum map /
+   Practice), content underneath. */
+@media (max-width: 720px) {
+  .menu {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .menu__rail {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 8px 10px;
+    padding: calc(8px + env(safe-area-inset-top, 0px)) calc(10px + env(safe-area-inset-right, 0px)) 6px calc(10px + env(safe-area-inset-left, 0px));
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    overflow: visible;
+  }
+  .menu__brand { padding: 0; gap: 8px; }
+  .menu__brand .menu__mark { width: 26px; height: 26px; }
+  .menu__title { font-size: 18px; }
+  .menu__subtitle { display: none; }
+  .menu__continue { padding: 7px 10px; gap: 8px; min-width: 0; }
+  .menu__continue-label { font-size: 13px; }
+  .menu__continue-sub { max-width: none; font-size: 10.5px; }
+  .menu__nav {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    gap: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    touch-action: pan-x;
+    margin: 0 -10px;
+    padding: 0 10px 2px;
+  }
+  .menu__nav::-webkit-scrollbar { display: none; }
+  .menu__nav-item { flex: none; gap: 7px; padding: 8px 11px; font-size: 13px; }
+  .menu__nav-item > .grow { overflow: visible; }
+  .menu__nav-item.is-active::before { left: 10px; right: 10px; top: auto; bottom: 0; width: auto; height: 2px; border-radius: 2px; }
+  .menu__rail-foot { display: none; }
+  .menu__top { padding: 8px 12px 0; }
+  .menu__xp { display: none; }
+  .menu__content { padding: 12px 12px calc(16px + env(safe-area-inset-bottom, 0px)); }
+  .menu__main.is-wide .menu__content { padding: 8px; }
+}
+
+/* Phones in landscape (short screens): keep the rail, but slim and scrollable. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .menu { grid-template-columns: 200px minmax(0, 1fr); }
+  .menu__rail { gap: 8px; padding: calc(10px + env(safe-area-inset-top, 0px)) 10px 8px calc(10px + env(safe-area-inset-left, 0px)); overflow-y: auto; }
+  .menu__brand { padding: 0 4px 2px; gap: 8px; }
+  .menu__brand .menu__mark { width: 24px; height: 24px; }
+  .menu__title { font-size: 17px; }
+  .menu__subtitle { display: none; }
+  .menu__continue { padding: 7px 10px; gap: 8px; }
+  .menu__continue-label { font-size: 13px; }
+  .menu__continue-sub { max-width: 130px; font-size: 10.5px; }
+  .menu__nav { flex: none; overflow: visible; }
+  .menu__nav-item { padding: 7px 10px; gap: 9px; font-size: 13px; }
+  .menu__nav-item.is-active::before { left: -10px; }
+  .menu__rail-foot { display: none; }
+  .menu__top { padding: 6px calc(12px + env(safe-area-inset-right, 0px)) 0 12px; }
+  .menu__player { padding: 4px 10px 4px 5px; }
+  .menu__xp { width: 170px; }
+  .menu__content { padding: 10px calc(14px + env(safe-area-inset-right, 0px)) 14px 14px; }
+  .menu__main.is-wide .menu__content { padding: 8px; }
+}
+
+/* Home screen (src/ui/menu/Home.tsx): stack the hero on narrow content areas. */
+@media (max-width: 980px) {
+  .home__hero { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .home__tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .home { gap: 12px; }
+  .home__greet h1 { font-size: 30px; }
+  .home__tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .home__row { grid-template-columns: minmax(0, 1fr); }
+}
+@media (orientation: landscape) and (max-height: 520px) {
+  .home__greet h1 { font-size: 28px; }
+}
+
+/* ───────────── Field Manual (src/ui/manual, overlay + menu tab) ───────────── */
+@media (max-width: 720px) {
+  .manual-ov { padding: calc(4px + env(safe-area-inset-top, 0px)) 4px calc(4px + env(safe-area-inset-bottom, 0px)); }
+  .fm { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .fm__side { max-height: 36vh; max-height: 36dvh; padding: 10px 10px 8px; gap: 8px; border-right: 0; border-bottom: 1px solid var(--line); }
+  .fm__brand-sub { display: none; }
+  .fm__bar { padding: 6px 10px; overflow-x: auto; }
+  .fm__bar-hint { display: none; }
+  .fm__content { padding: 14px 14px 28px; }
+  .mh__hero h1 { font-size: 26px; }
+  .mh__quick { grid-template-columns: minmax(0, 1fr); }
+  .mh__grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .art__layout { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .gloss__group { grid-template-columns: 28px 1fr; }
+  .mprog__groups { grid-template-columns: minmax(0, 1fr); }
+}
+@media (orientation: landscape) and (max-height: 520px) {
+  .manual-ov { padding: 6px calc(6px + env(safe-area-inset-right, 0px)) 6px calc(6px + env(safe-area-inset-left, 0px)); }
+  .fm { grid-template-columns: 210px minmax(0, 1fr); }
+  .fm__side { padding: 10px 8px 8px 10px; gap: 8px; }
+  .fm__brand-sub { display: none; }
+  .fm__content { padding: 14px 18px 24px; }
+  .art__layout { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+}
+
+/* ───────────── In-lab HUD with touch controls (touch.css has the controls themselves) ───────────── */
+/* Phones in portrait: the joystick and the action cluster fill the bottom ~230 px — lift the
+   hotbar / dialogue column above them and narrow it to the screen. */
+@media (orientation: portrait) and (max-width: 600px) {
+  :root[data-touch='on'] .hud-bc {
+    bottom: calc(240px + env(safe-area-inset-bottom, 0px));
+    width: calc(100vw - 20px);
+    min-width: 0;
+  }
+  :root[data-touch='on'] .hud-hotbar__slots { gap: 4px; padding: 4px; }
+  :root[data-touch='on'] .hud-tr { width: min(340px, calc(100vw - 24px)); }
+  :root[data-touch='on'] .hud-toasts { width: min(340px, calc(100vw - 24px)); bottom: calc(330px + env(safe-area-inset-bottom, 0px)); }
+  .tc-rotate { top: calc(200px + env(safe-area-inset-top, 0px)); }
+}
+/* Phones in landscape: compact the top-left clock column so it doesn't eat the view. */
+@media (orientation: landscape) and (max-height: 520px) {
+  :root[data-touch='on'] .hud-tl { max-width: 260px; }
+  :root[data-touch='on'] .hud-bc { width: min(560px, calc(100vw - 340px)); min-width: 0; }
+  :root[data-touch='on'] .hud-prompt { top: calc(50% + 14px); padding: 6px 11px 7px; }
+}
+/* The interaction prompt (what the Interact button will do) stays readable above the hotbar. */
+:root[data-touch='on'] .hud-prompt { z-index: 2; }
+
+/* ───────────── Modals and settings rows (kit) on narrow screens ───────────── */
+@media (max-width: 720px), (orientation: landscape) and (max-height: 520px) {
+  /* The grid track must not grow to a modal's fixed width: clamp it to the screen. */
+  .k-modal-backdrop {
+    grid-template-columns: minmax(0, 1fr);
+    padding: calc(8px + env(safe-area-inset-top, 0px)) calc(8px + env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) calc(8px + env(safe-area-inset-left, 0px));
+  }
+  .k-modal { max-width: 100%; max-height: calc(calc(100dvh / var(--ui-scale, 1)) - 16px); padding: 16px 14px; justify-self: center; }
+  .k-fieldrow { flex-wrap: wrap; gap: 8px 14px; }
+  .k-fieldrow__text { flex: 1 1 200px; min-width: 0; }
+  .k-fieldrow__control { max-width: 100%; overflow-x: auto; }
+  .k-seg { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+  .settings__body { max-height: none; height: auto; }
+  .settings-modal .settings__body { height: auto; max-height: calc(calc(100dvh / var(--ui-scale, 1)) - 150px); }
+}
+
+/* ───────────── Workstation desktop on small screens (src/computer/shell) ───────────── */
+/* The desktop is scaled to fit (Desktop.tsx + shell/scale.ts); give touch users bigger hit areas. */
+:root[data-touch='on'] .ws-root--scaled .ws-winbtn { min-width: 52px; }
+
+/* ───────────── On-screen keyboard (data-kb set from visualViewport in src/main.tsx) ───────────── */
+/* The keyboard covers the bottom of the page: lift the desktop's taskbar-anchored popups and keep
+   the bottom-anchored HUD widgets above it instead of letting the page scroll. */
+:root[data-kb='open'] .hud-bc,
+:root[data-kb='open'] .hud-toasts {
+  bottom: calc(var(--kb, 0px) + 8px);
+}

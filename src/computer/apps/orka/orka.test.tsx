@@ -46,7 +46,7 @@ describe('Orka robots list (Apps §2.4)', () => {
     });
     const host = await open('/robot');
     const btn = m!.container.querySelector('[data-hint="orka.robots.filter.status:AVAILABLE"]');
-    expect(btn?.textContent).toMatch(/^Available \(\d+\)$/);
+    expect(btn?.textContent).toMatch(/^●?Available \(\d+\)$/);
     await click(btn);
     expect(host.routes.at(-1)).toBe('/robot?status.in=AVAILABLE&page=1&sort=id,asc');
     const ev = cap.of('orka.robots.filtered')[0]!;
