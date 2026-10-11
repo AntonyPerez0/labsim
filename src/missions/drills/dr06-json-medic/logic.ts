@@ -1,10 +1,10 @@
 /**
- * DR06 JSON Medic ("Comma Hunt", GP §2.4.3, Cur M15): 5 Pigeon payloads (25–60 lines) in the Pigeon shape
+ * DR06 JSON Medic ("Comma Hunt", GP §2.4.3, Cur M15): 5 Parrot payloads (25–60 lines) in the Parrot shape
  * (`name`, `connectionType`, `platforms`, `actions[{action, params, store}]`). One syntax error each:
  * missing comma between objects 40 %, between fields 20 %, missing `]`/`}` 15 %, trailing comma 10 %,
  * unquoted key 10 %, single quotes 5 %. Some items show the LSTR console line, which points at the line
  * *after* a missing comma — the lesson is to look at the end of the previous line. Click the line (exact 100,
- * ±1 50), then pick the fix. No error highlighting (Pigeon has no linter, F208). Hint (−50): paste a
+ * ±1 50), then pick the fix. No error highlighting (Parrot has no linter, F208). Hint (−50): paste a
  * known-good block from `tests/_templates/known_good_actions.json` (F209).
  * Scoring (custom): line points + 150 for the right fix − 50 per hint; a perfect item adds a speed bonus
  * (8 pts per second under 35 s) and the streak multiplier.
@@ -281,10 +281,10 @@ export function medicItem(rng: RngState, index: number): DrillItem<MedicData> {
   const facts = ['F208', 'F209', 'F205', 'F012'];
   return {
     id: `DR06:${file}:${err}:${inj.errLine}`,
-    tags: ['pigeon.json', 'pigeon.nolint'],
+    tags: ['parrot.json', 'parrot.nolint'],
     factIds: facts,
-    teach: teach(`Line ${inj.errLine}: ${FIX_TEXT[err].toLowerCase()}`, FIX_WHY[err], { ref: 'Ref §5', factIds: facts, tag: 'pigeon.json', doInstead: 'Read the end of the line *before* the one the parser blames — or paste a known-good block.' }),
-    data: { file: `pigeon/tests/${file}`, lines: inj.lines, err, errLine: inj.errLine, console: showConsole ? lstrMessage(inj.lines) : null, fixes: shuffle(rng, [err, ...others]) },
+    teach: teach(`Line ${inj.errLine}: ${FIX_TEXT[err].toLowerCase()}`, FIX_WHY[err], { ref: 'Ref §5', factIds: facts, tag: 'parrot.json', doInstead: 'Read the end of the line *before* the one the parser blames — or paste a known-good block.' }),
+    data: { file: `parrot/tests/${file}`, lines: inj.lines, err, errLine: inj.errLine, console: showConsole ? lstrMessage(inj.lines) : null, fixes: shuffle(rng, [err, ...others]) },
   };
 }
 
@@ -319,8 +319,8 @@ export const DR06: DrillDef<MedicData> = {
   id: 'DR06',
   name: 'JSON Medic',
   alias: 'Comma Hunt',
-  format: 'Pigeon payload: click the error, pick the fix; 5 payloads, 90 s',
-  tags: ['pigeon.json', 'pigeon.nolint'],
+  format: 'Parrot payload: click the error, pick the fix; 5 payloads, 90 s',
+  tags: ['parrot.json', 'parrot.nolint'],
   unlockedBy: ['M15'],
   durationS: 90,
   itemCount: 5,

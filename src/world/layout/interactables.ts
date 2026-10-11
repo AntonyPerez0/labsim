@@ -13,7 +13,7 @@ import { E, G, R, REACH, ia, fuseVerbs, stripEntries, MULTIMETER, TEST_CARDS, ty
 import { adbCatalogue, rackCatalogue, tetheredCatalogue, touchRigCatalogue } from './interactablesRigs';
 import { LIBRARY_ITEMS } from './props';
 import { AC_STRIPS, POWER_WALL_PARTS } from './power';
-import { BUILD_TABLE_ITEMS, CALLUS_BOXES } from './shelves';
+import { BUILD_TABLE_ITEMS, KALLUS_BOXES } from './shelves';
 import type { Builder, Zone } from './types';
 
 export type { InteractableSpec, VerbInput, VerbKey, VerbSpec } from './interactionSpec';
@@ -35,7 +35,7 @@ function entranceAndDesks(): InteractableSpec[] {
       'LAB SAFETY CARD',
       '1. Never touch a robot while a test is running.',
       '2. If you move an arm by hand, Park All before you walk away.',
-      '3. LabSim terminals and Collis probes go on the AC power strips — never the DC rails.',
+      '3. LabSim terminals and Kollis probes go on the AC power strips — never the DC rails.',
     ], 'west-wall', 'lab'),
     seat('desk.player.chair'),
     seat('desk.player.computer'),
@@ -45,7 +45,7 @@ function entranceAndDesks(): InteractableSpec[] {
     ia('desk.player.phone', 'Desk phone', [E('Play voicemail', { effect: 'mentor message if queued' })], [], 'desks', 'lab'),
     ia('desk.player.mug', 'Coffee mug', [E('Drink', { when: 'Mug is empty' })], [], 'desks', 'lab'),
     ia('desk.player.card-reader', 'USB card reader', [E('Swipe test card', { requiresTool: TEST_CARDS, effect: 'workstation Card Reader utility receives the track data (INC55)' })], [], 'desks', 'lab'),
-    ia('desk.player.sticky-notes', 'Sticky notes', [], ['ADB → :5444 (NOT 5555!)', 'orca.lab.local:8080 · jenkins.lab.local:8080', 'theme=avocado · kernelType=CPA'], 'desks', 'lab'),
+    ia('desk.player.sticky-notes', 'Sticky notes', [], ['ADB → :5444 (NOT 5555!)', 'orka.lab.local:8080 · jenkins.lab.local:8080', 'theme=avocado · kernelType=CPA'], 'desks', 'lab'),
     ia('tool.ruler', 'Steel ruler', [E('Pick up', { effect: 'carried; E on any device screen = Measure (snaps to the screen top-left (0,0))' })], ['150 mm steel rule'], 'desks', 'lab'),
     ia('desk.coworker-1.device', "Coworker's Flux", [
       E('Look at screen', { effect: 'uprightFocusPose' }),
@@ -87,7 +87,7 @@ function powerWall(): InteractableSpec[] {
       }
       case 'tap':
         out.push(ia(p.id, `DC tap lead ${p.labels[0]}`, [
-          E('Plug <carried plug> here', { when: 'Carrying a plug', sim: `sim.power.plug(loadId, { kind: 'dc-rail', targetId: '${p.sim!.ids[0]}' })`, effect: '18 V trap: spark + fry if a LabSim/Collis PSU' }),
+          E('Plug <carried plug> here', { when: 'Carrying a plug', sim: `sim.power.plug(loadId, { kind: 'dc-rail', targetId: '${p.sim!.ids[0]}' })`, effect: '18 V trap: spark + fry if a LabSim/Kollis PSU' }),
         ], ['DC rail tap — Pis/NUCs only'], 'power-wall', 'lab', { reach: wall }));
         break;
       case 'tag':
@@ -108,7 +108,7 @@ function powerWall(): InteractableSpec[] {
     ia('tool.multimeter', 'Multimeter', [E('Pick up', { effect: 'hotbar 2' })], [], 'power-wall', 'lab'),
     ia('power.fuse-tray', 'Spare fuses', [E('Take fuse', { effect: 'hotbar 3; R cycles 5 / 7.5 / 10 / 15 A' })], ['5 A tan · 7.5 A brown · 10 A red · 15 A blue'], 'power-wall', 'lab'),
     ia('power.bench.flux4-psu', 'Flux 4 power brick', [E('Pick up', { effect: 'carry; plug via any socket target' })], [], 'power-wall', 'lab'),
-    ia('power.bench.collis-spare', 'Spare Collis probe', [E('Pick up', { effect: 'carry; plug via any socket target' })], [], 'power-wall', 'lab'),
+    ia('power.bench.kollis-spare', 'Spare Kollis probe', [E('Pick up', { effect: 'carry; plug via any socket target' })], [], 'power-wall', 'lab'),
     ia('power.bench.desk-fan', 'Desk fan', [E('Pick up', { effect: 'carry; plug via any socket target' })], [], 'power-wall', 'lab'),
   );
   return out;
@@ -120,24 +120,24 @@ function strips(): InteractableSpec[] {
     const builder: Builder = s.id === 'power.strip.w' ? 'lab' : 'rigs';
     const zone: Zone = s.id === 'power.strip.w' ? 'power-wall' : 'rack-row';
     const label = s.id === 'power.strip.w' ? 'AC strip (bench)' : s.id === 'power.strip.t' || s.id === 'power.strip.d' ? 'AC strip' : `AC strip ${s.name}`;
-    const callout = s.id === 'power.strip.w' ? 'AC STRIP — LABSIM / COLLIS ONLY' : 'Commercial AC strip — LabSim devices & Collis probes';
+    const callout = s.id === 'power.strip.w' ? 'AC STRIP — LABSIM / KOLLIS ONLY' : 'Commercial AC strip — LabSim devices & Kollis probes';
     out.push(...stripEntries(s.id, label, callout, zone, builder, s.sim.ids[0]!));
   }
   return out;
 }
 
-/* ───────────────────────────── Callus shelf ───────────────────────────── */
+/* ───────────────────────────── Kallus shelf ───────────────────────────── */
 
-function callus(): InteractableSpec[] {
+function kallus(): InteractableSpec[] {
   const out: InteractableSpec[] = [];
-  for (const b of CALLUS_BOXES) {
-    const callouts = b.stickyNote ? [b.stickyNote.join(' ')] : ['Windows box running Callus'];
+  for (const b of KALLUS_BOXES) {
+    const callouts = b.stickyNote ? [b.stickyNote.join(' ')] : ['Windows box running Kallus'];
     out.push(ia(b.id, b.label, [
       E('Power button', { input: 'press', sim: `sim.host.powerCycle('${b.sim.ids[0]}') / power on`, effect: 'hold 4 s = force off' }),
       R('Re-seat Ethernet', { sim: `sim.host.setEthernet('${b.sim.ids[0]}', true)` }),
     ], callouts, 'rack-row', 'rigs'));
   }
-  out.push(ia('callus.monitor', 'Callus console', [E('Switch KVM', { effect: 'box 1 → 4' })], [], 'rack-row', 'rigs'));
+  out.push(ia('kallus.monitor', 'Kallus console', [E('Switch KVM', { effect: 'box 1 → 4' })], [], 'rack-row', 'rigs'));
   return out;
 }
 
@@ -145,9 +145,9 @@ function callus(): InteractableSpec[] {
 
 function serverFabWalls(): InteractableSpec[] {
   const out: InteractableSpec[] = [
-    ia('server.blade', 'GPU server blade', [E('Power button', { input: 'hold', holdMs: 4000, sim: "sim.host.powerCycle('gpu-blade')", effect: 'GW13 trap: takes Orca, Jenkins and Ollama down' })], [
+    ia('server.blade', 'GPU server blade', [E('Power button', { input: 'hold', holdMs: 4000, sim: "sim.host.powerCycle('gpu-blade')", effect: 'GW13 trap: takes Orka, Jenkins and Ollama down' })], [
       '4× NVIDIA GPUs (2 on top, 2 underneath)',
-      'Hosts the Orca, Jenkins and Ollama VMs',
+      'Hosts the Orka, Jenkins and Ollama VMs',
     ], 'server', 'lab'),
   ];
   for (const n of [1, 2, 3, 4] as const) {
@@ -160,29 +160,29 @@ function serverFabWalls(): InteractableSpec[] {
     ia('fab.printer-bambu', 'Bambu Lab', [E('Start print / Check print', { effect: 'replacement cradle: 90 s real' })], ['Prints the black PLA fixtures', 'CAD from simple geometric shapes'], 'fab', 'lab'),
     ia('fab.laptop-cad', 'CAD laptop', [E('Look', { effect: 'focus' })], [], 'fab', 'lab', { focus: 'upright' }),
     ia('fab.spare-cradle', 'Printed cradle', [E('Pick up', { effect: 'carry (INC59)' })], [], 'fab', 'lab'),
-    ia('jared.bolt-bins', 'Bolt bins', [E('Sort bolts', { effect: 'minigame overlay: 10 bolts → 2.5 mm / 5 mm' })], ['2.5 mm and 5 mm bolts'], 'jared', 'lab'),
-    ia('jared.solder', 'Soldering station', [E('Iron on / off', { effect: 'tip glows' })], ['~300 solder points per robot'], 'jared', 'lab'),
-    ia('jared.label-maker', 'Label maker', [E('Print label', { effect: 'Build Day' })], [], 'jared', 'lab'),
-    ia(WALL_BINS.red.id, 'Red bin', [E('Open', { effect: `take: ${WALL_BINS.red.contents.join(', ')}` })], [WALL_BINS.red.label], 'jared', 'lab', { reach: REACH.wallBoard }),
-    ia(WALL_BINS.blue.id, 'Blue bin', [E('Open', { effect: `take: ${WALL_BINS.blue.contents.join(', ')}` })], [WALL_BINS.blue.label], 'jared', 'lab', { reach: REACH.wallBoard }),
+    ia('jaden.bolt-bins', 'Bolt bins', [E('Sort bolts', { effect: 'minigame overlay: 10 bolts → 2.5 mm / 5 mm' })], ['2.5 mm and 5 mm bolts'], 'jaden', 'lab'),
+    ia('jaden.solder', 'Soldering station', [E('Iron on / off', { effect: 'tip glows' })], ['~300 solder points per robot'], 'jaden', 'lab'),
+    ia('jaden.label-maker', 'Label maker', [E('Print label', { effect: 'Build Day' })], [], 'jaden', 'lab'),
+    ia(WALL_BINS.red.id, 'Red bin', [E('Open', { effect: `take: ${WALL_BINS.red.contents.join(', ')}` })], [WALL_BINS.red.label], 'jaden', 'lab', { reach: REACH.wallBoard }),
+    ia(WALL_BINS.blue.id, 'Blue bin', [E('Open', { effect: `take: ${WALL_BINS.blue.contents.join(', ')}` })], [WALL_BINS.blue.label], 'jaden', 'lab', { reach: REACH.wallBoard }),
   );
   for (const label of WALL_DRAWER_LABELS) {
-    out.push(ia(wallDrawerId(label), `Drawer ${label}`, [E('Open', { effect: 'take item' })], [label], 'jared', 'lab', { reach: REACH.wallBoard }));
+    out.push(ia(wallDrawerId(label), `Drawer ${label}`, [E('Open', { effect: 'take item' })], [label], 'jaden', 'lab', { reach: REACH.wallBoard }));
   }
   for (const n of [1, 2, 3, 4, 5] as const) {
     const tape = n === 2 ? 'SPARE FLUX 2' : n === 3 ? 'SPARE MICRO 3' : null;
-    out.push(ia(`chest.husky.d${n}`, `Husky drawer ${n}`, [E('Open / Close', { effect: tape ? `sound drawer; take ${tape}` : 'sound drawer' })], tape ? [tape] : [], 'jared', 'lab'));
+    out.push(ia(`chest.husky.d${n}`, `Husky drawer ${n}`, [E('Open / Close', { effect: tape ? `sound drawer; take ${tape}` : 'sound drawer' })], tape ? [tape] : [], 'jaden', 'lab'));
   }
   out.push(
-    ia('cabinet.storage', 'Storage cabinet', [E('Sign out spare', { effect: '120 s (gameplay) → spare Collis probe' })], ['SPARES — SIGN OUT WITH JARED'], 'jared', 'lab'),
-    ia('cabinet.storage.legacy-shelf', 'Legacy shelf', [E('Place / Take', { effect: 'legacy Flux 1 (INC42)' })], [], 'jared', 'lab'),
+    ia('cabinet.storage', 'Storage cabinet', [E('Sign out spare', { effect: '120 s (gameplay) → spare Kollis probe' })], ['SPARES — SIGN OUT WITH JADEN'], 'jaden', 'lab'),
+    ia('cabinet.storage.legacy-shelf', 'Legacy shelf', [E('Place / Take', { effect: 'legacy Flux 1 (INC42)' })], [], 'jaden', 'lab'),
     ia('wall.whiteboard', 'Whiteboard', [E('Use whiteboard', { effect: 'focus + diagram builder overlay' })], [], 'west-wall', 'lab', { reach: REACH.wallBoard, focus: 'board' }),
     ia('wall.roadmap', 'Roadmap board', [E('Sort roadmap', { effect: 'overlay' })], [], 'west-wall', 'lab', { reach: REACH.wallBoard, focus: 'board' }),
   );
   for (const f of HISTORY_FRAMES) {
     out.push(ia(`wall.history.${f}`, 'Team history', [], [HISTORY_TEXT[f]], 'south-wall', 'lab', { reach: REACH.wallBoard }));
   }
-  out.push(ia('wall.history.match', 'Match the teams', [E('Match teams', { effect: 'overlay (M18)' })], ['Semi · Sedi · IPX · PayCore · Core OS'], 'south-wall', 'lab', { reach: REACH.wallBoard, focus: 'board' }));
+  out.push(ia('wall.history.match', 'Match the teams', [E('Match teams', { effect: 'overlay (M18)' })], ['Semi · Sedi · IPX · PayCrest · Core OS'], 'south-wall', 'lab', { reach: REACH.wallBoard, focus: 'board' }));
   for (const id of ['poster.lab', 'poster.network', 'poster.esd', 'poster.pool', 'poster.5444', 'poster.power', 'poster.park']) {
     out.push(ia(id, 'Poster', [], [POSTER_TITLES[id] ?? 'Poster'], id === 'poster.lab' ? 'south-wall' : 'room', 'lab', { reach: REACH.wallBoard }));
   }
@@ -204,9 +204,9 @@ function serverFabWalls(): InteractableSpec[] {
 
 const HISTORY_TEXT: Record<(typeof HISTORY_FRAMES)[number], string> = {
   semi: 'SEMI TEAM: third-party POS SDKs · USB Pay Display · Secure Network Pay Display',
-  sedi: "SEDI (QA) TEAM: tested Semi's apps with the Lester framework",
-  ipx: 'IPX: Integrated Payment Experience — uia-remote standalone + tethered',
-  paycore: 'PAYCORE: uia-remote for LabSim Dining · card matrices · standalone rigs Unavailable',
+  sedi: "SEDI (QA) TEAM: tested Semi's apps with the Lister framework",
+  ipx: 'IPX: Integrated Payment Experience — uia-relay standalone + tethered',
+  paycrest: 'PAYCREST: uia-relay for LabSim Dining · card matrices · standalone rigs Unavailable',
 };
 
 const POSTER_TITLES: Record<string, string> = {
@@ -215,7 +215,7 @@ const POSTER_TITLES: Record<string, string> = {
   'poster.esd': 'ATTENTION — ELECTROSTATIC SENSITIVE DEVICES',
   'poster.pool': 'THE POOL · 42 RIGS',
   'poster.5444': 'ADB over TCP in this lab: port 5444',
-  'poster.power': 'LABSIM DEVICES (18V) & COLLIS PROBES: AC STRIPS ONLY',
+  'poster.power': 'LABSIM DEVICES (18V) & KOLLIS PROBES: AC STRIPS ONLY',
   'poster.park': 'ARM MOVED? → PARK ALL',
 };
 
@@ -226,7 +226,7 @@ function buildCatalogue(): InteractableSpec[] {
     ...entranceAndDesks(),
     ...powerWall(),
     ...strips(),
-    ...callus(),
+    ...kallus(),
     ...rackCatalogue(),
     ...touchRigCatalogue(),
     ...tetheredCatalogue(),

@@ -12,7 +12,7 @@ export function mmss(seconds: number): string {
   return `${neg ? '−' : ''}${m}:${String(r).padStart(2, '0')}`;
 }
 
-/** Game clock ms since game-midnight → "08:15" (24 h, as Orca/Jenkins timestamps). */
+/** Game clock ms since game-midnight → "08:15" (24 h, as Orka/Jenkins timestamps). */
 export function gameClock(nowMs: number): string {
   const day = 86_400_000;
   const t = ((nowMs % day) + day) % day;

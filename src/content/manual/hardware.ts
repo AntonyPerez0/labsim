@@ -13,7 +13,7 @@ export const HARDWARE_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>
     summary: "Every LabSim target device the lab tests — Stand, Micro, Flux and Compass — plus the shortcuts that matter day to day: the shared Flux 3/4/Pocket profile, the printerless Pocket and Duet 2, and the Micro 3 hot-swap.",
     factIds: ["F055", "F056", "F057", "F058", "F059", "F060", "F061", "F062", "F054", "F258", "F254"],
     tags: ["devices", "hw.devices"],
-    related: ["mfd-cfd-tethered", "orca-robot-device", "adb-vs-physical-bots", "stand-duet-dual-screen"],
+    related: ["mfd-cfd-tethered", "orka-robot-device", "adb-vs-physical-bots", "stand-duet-dual-screen"],
     keywords: ["Stand 2018", "Stand 2", "Stand Duet", "Duet 2", "Duet 3", "Micro 2", "Micro 3", "Micro 4", "Flux 1", "Flux 2", "Flux 3", "Flux 4", "Flux Pocket", "Compass", "printer", "profile", "hot-swap"],
     practice: ["INC44", "INC23", "DR18"],
     body: `## The four families
@@ -23,17 +23,17 @@ export const HARDWARE_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>
 | **Stand** | Stand 2018, Stand 2, Stand Duet (Duet 1, Duet 2, upcoming Duet 3) {F055} | Countertop terminals. The Stand Duet is one terminal driving two displays (MFD + CFD) — see [[stand-duet-dual-screen]]. The Duet 2 is printerless |
 | **Micro** | Micro 2, Micro 3, upcoming Micro 4 {F056} | Compass countertop terminals. The Micro 3 is the hot-swap equivalent for the printerless Stand Duet 2 {F057} |
 | **Flux** | Flux 1, Flux 2, Flux 3, Flux 4, Flux Pocket {F058} | Handhelds. Flux 3, Flux 4 and Flux Pocket share exactly the same testing profile {F059}; the Pocket omits the physical printer block {F060} |
-| **Compass** | LabSim Compass | The target terminal for the Canadian market, used on the Westers test beds {F061} |
+| **Compass** | LabSim Compass | The target terminal for the Canadian market, used on the Westerly test beds {F061} |
 
 The **Stand Duet 3** and **Micro 4** are upcoming devices on the roadmap, and their release timing is uncertain {F062}. You will see them as sealed boxes in the device library.
 
 ## Shortcuts that save hours
 
 - **One profile for three Fluxes.** A test that passes on the Flux 3 profile covers the Flux 4 and Flux Pocket too, because they share the same testing profile {F059}. In the sim that shared profile is called \`FLUX_GEN3\`†.
-- **…but the Pocket has no printer.** Anything that prints (receipt tests, "select print") must not land on a Flux Pocket {F060}. That is what the \`printer\` capability is for ([[orca-capabilities]]).
+- **…but the Pocket has no printer.** Anything that prints (receipt tests, "select print") must not land on a Flux Pocket {F060}. That is what the \`printer\` capability is for ([[orka-capabilities]]).
 - **Micro 3 for a dead Duet 2.** The Duet 2 has no receipt printer, and printer mechanics are outside these testing profiles, so a functionally equivalent Micro 3 sits ready as its hot-swap {F057}.
 - **Modular shelves make swaps quick.** A failed Duet 2 can be swapped for a Flux 3 in minutes rather than days {F258}.
-- **Canada means Compass.** Canadian payment flows need physical PIN entry, so they run on Compass touch robots on the Westers beds {F061} ([[adb-vs-physical-bots]]). A new engineer's first assignment is the Compass test workflow in UI Automator {F254}.
+- **Canada means Compass.** Canadian payment flows need physical PIN entry, so they run on Compass touch robots on the Westerly beds {F061} ([[adb-vs-physical-bots]]). A new engineer's first assignment is the Compass test workflow in UI Automator {F254}.
 
 ## MFD and CFD
 
@@ -43,9 +43,9 @@ The **Stand Duet 3** and **Micro 4** are upcoming devices on the roadmap, and th
 
 | Where | Looks like |
 |---|---|
-| Orca Device Type (enum, ALL CAPS) | \`STAND_2018\`, \`STAND_2\`, \`STAND_DUET\`, \`STAND_DUET_2\`, \`STAND_DUET_3\`, \`MICRO_2\`, \`MICRO_3\`, \`MICRO_4\`, \`FLUX_1\` … \`FLUX_4\`, \`FLUX_POCKET\`, \`COMPASS\`† |
+| Orka Device Type (enum, ALL CAPS) | \`STAND_2018\`, \`STAND_2\`, \`STAND_DUET\`, \`STAND_DUET_2\`, \`STAND_DUET_3\`, \`MICRO_2\`, \`MICRO_3\`, \`MICRO_4\`, \`FLUX_1\` … \`FLUX_4\`, \`FLUX_POCKET\`, \`COMPASS\`† |
 | Jenkins \`DEVICE_TYPE\` parameter | The same enum string, exactly — \`FLUX_3\`, never \`flux_3\` |
-| uia-remote \`config.properties\` \`deviceType\` | The family only: \`Micro\`, \`Flux\` or \`Stand\` |
+| uia-relay \`config.properties\` \`deviceType\` | The family only: \`Micro\`, \`Flux\` or \`Stand\` |
 
 > **Illustrative (sim only):** The exact enum spellings are the sim's†; the rule that Device Type is an enum and Jenkins values must be ALL CAPS is from the reference.
 `,
@@ -56,8 +56,8 @@ The **Stand Duet 3** and **Micro 4** are upcoming devices on the roadmap, and th
     category: "Hardware",
     summary: "Merchant Facing vs Customer Facing devices, how tethered pairs are wired and labelled (MEGATRON DEV1, OPTIMUS STG), and the Semi Team apps that link the two screens.",
     factIds: ["F054", "F237", "F238", "F239", "F052", "F053", "F126", "F127", "F128", "F265", "F266"],
-    tags: ["devices", "hw.devices", "orca.tethered", "semi.paydisplay"],
-    related: ["device-families", "orca-urls-tethering-offsets", "tax-test", "config-properties"],
+    tags: ["devices", "hw.devices", "orka.tethered", "semi.paydisplay"],
+    related: ["device-families", "orka-urls-tethering-offsets", "tax-test", "config-properties"],
     keywords: ["MEGATRON", "OPTIMUS", "DEV1", "STG", "staging mirror", "code name", "webcam", "SmartStripe Probe", "connectivity hub", "USB Pay Display", "Secure Network Pay Display", "tethered", "nested"],
     practice: ["INC45", "INC46", "INC47"],
     image: "tethered-megatron-optimus-rack.jpg",
@@ -84,11 +84,11 @@ A **tethered** setup pairs two devices, for example a Stand 2 tethered to a Micr
 
 The **USB Pay Display** and **Secure Network Pay Display** apps, maintained by the Semi Team, link MFDs and CFDs over USB or the local network {F052} {F053}.
 
-## How Orca and the tests know a rig is tethered
+## How Orka and the tests know a rig is tethered
 
-- Orca's **USB Tethered Device Configuration** populates MFD and CFD relations for nested setups {F126}.
-- **If the MFD field is populated, the pipeline treats the rig as tethered** {F128}. An empty MFD field makes a tethered rig run as standalone — see [[orca-urls-tethering-offsets]].
-- Running locally, uia-remote's \`config.properties\` needs \`runType=tethered\`, \`merchantFacingDeviceIp\` and \`customerFacingDeviceIp\` — see [[config-properties]].
+- Orka's **USB Tethered Device Configuration** populates MFD and CFD relations for nested setups {F126}.
+- **If the MFD field is populated, the pipeline treats the rig as tethered** {F128}. An empty MFD field makes a tethered rig run as standalone — see [[orka-urls-tethering-offsets]].
+- Running locally, uia-relay's \`config.properties\` needs \`runType=tethered\`, \`merchantFacingDeviceIp\` and \`customerFacingDeviceIp\` — see [[config-properties]].
 
 > **Illustrative (sim only):** MEGATRON's devices (Stand 2 MFD + Micro 2 CFD) and OPTIMUS's nested Micro 3s are the sim's roster†; the labels and hardware are as in the reference photo.
 `,
@@ -97,10 +97,10 @@ The **USB Pay Display** and **Secure Network Pay Display** apps, maintained by t
     id: "robot-pi",
     title: "The Robot Pi (Raspberry Pi Controller)",
     category: "Hardware",
-    summary: "The ~$50 Raspberry Pi on every shelf is the Robot Controller: it routes ADB, serves the camera stream, drives steppers and solenoids, and runs card programming under Wine — and it is what Orca pings every 5 minutes.",
+    summary: "The ~$50 Raspberry Pi on every shelf is the Robot Controller: it routes ADB, serves the camera stream, drives steppers and solenoids, and runs card programming under Wine — and it is what Orka pings every 5 minutes.",
     factIds: ["F063", "F064", "F065", "F019", "F020", "F021", "F099", "F086", "F123"],
     tags: ["pi.controller", "hw.pi", "cards.wine", "tools.terminal"],
-    related: ["linux-and-wine", "nuc-minix-history", "orca-health-check", "power-distribution", "terminal-cheatsheet"],
+    related: ["linux-and-wine", "nuc-minix-history", "orka-health-check", "power-distribution", "terminal-cheatsheet"],
     keywords: ["Raspberry Pi", "Robot Controller", "Robot Pi", "health endpoint", "robot-controller", "ssh", "5V 10A", "controller"],
     practice: ["INC01", "INC04", "INC56", "DR17"],
     body: `## What it is
@@ -111,7 +111,7 @@ A Raspberry Pi — a cheap unit of about **$50** {F063} — operates as the **Ro
 
 The Robot Pi handles {F065}:
 
-- **ADB routing** — Orca's Robot ADB Service URL routes to the Pi controller {F123}.
+- **ADB routing** — Orka's Robot ADB Service URL routes to the Pi controller {F123}.
 - **Camera streams** from the rig webcams.
 - **Stepper motors** (moving the gantry) and **solenoids** (tapping).
 - **Wine card-programming emulation** — Windows-only card-programming software layers, running under Wine {F021}.
@@ -120,7 +120,7 @@ It is powered from the **5V DC, 10A** step-down line {F086}.
 
 ## Why it matters to you
 
-Every 5 minutes Orca's synchronized background thread pings the Robot Controller on every Pi {F099}. If the ping drops or returns anything but HTTP 200, the robot goes **Connection Failed** ([[orca-health-check]]).
+Every 5 minutes Orka's synchronized background thread pings the Robot Controller on every Pi {F099}. If the ping drops or returns anything but HTTP 200, the robot goes **Connection Failed** ([[orka-health-check]]).
 
 ## Checking a Pi yourself
 
@@ -133,7 +133,7 @@ ps aux | grep -i wine              # the card-programming software under Wine
 curl -i http://10.42.10.11:8000/health   # → HTTP/1.1 200 OK†
 \`\`\`
 
-> **Illustrative (sim only):** The IP addresses, the service name \`robot-controller\`, port 8000 and the \`/health\` path are the sim's†. The idea — a controller service on the Pi that Orca pings for a 200 — is the reference's.
+> **Illustrative (sim only):** The IP addresses, the service name \`robot-controller\`, port 8000 and the \`/health\` path are the sim's†. The idea — a controller service on the Pi that Orka pings for a 200 — is the reference's.
 
 ## LED reading guide†
 
@@ -151,7 +151,7 @@ curl -i http://10.42.10.11:8000/health   # → HTTP/1.1 200 OK†
     summary: "Why the Robot Pis run Linux instead of Windows, and how Wine lets them run the Windows-only card-programming software anyway.",
     factIds: ["F019", "F020", "F021", "F065", "F068"],
     tags: ["pi.controller", "hw.pi", "cards.wine"],
-    related: ["robot-pi", "nuc-minix-history", "callus"],
+    related: ["robot-pi", "nuc-minix-history", "kallus"],
     keywords: ["Linux", "Wine", "compatibility layer", "card programming", "Windows-only", "isolation"],
     practice: ["INC56"],
     body: `## Linux: isolation by design
@@ -165,7 +165,7 @@ Some card-programming software only exists for Windows. **Wine** is a compatibil
 | Question | Answer |
 |---|---|
 | Does the Pi run Windows? | No — Linux, with Wine for Windows-only software |
-| Does Callus run under Wine on the Pi? | No — Callus runs on the Windows/Minix boxes ([[callus]]) |
+| Does Kallus run under Wine on the Pi? | No — Kallus runs on the Windows/Minix boxes ([[kallus]]) |
 | What breaks if Wine breaks? | Card programming on that Pi; taps and ADB keep working |
 
 ## Spotting it
@@ -185,7 +185,7 @@ ps aux | grep -i wine
     summary: "The lab's local Windows execution machines, why aggressive security monitoring pushed hardware control off the NUCs onto Raspberry Pis, and what still runs on the Windows boxes today.",
     factIds: ["F066", "F067", "F068", "F049", "F085"],
     tags: ["pi.controller", "hw.nuc"],
-    related: ["robot-pi", "linux-and-wine", "callus", "power-distribution"],
+    related: ["robot-pi", "linux-and-wine", "kallus", "power-distribution"],
     keywords: ["Intel NUC", "ASUS NUC", "Minix", "corporate", "security monitoring", "disk full", "Windows", "history", "migration"],
     practice: ["INC19", "INC02"],
     body: `## What they are
@@ -202,7 +202,7 @@ ps aux | grep -i wine
 
 ## What still runs on Windows boxes
 
-**Callus** — the card-emulation microservice that drives the Collis probes — runs on the local Windows/Minix boxes {F049} ([[callus]]). A Minix box running Callus going offline is a typical cause of Connection Failed ([[ts-connection-failed]]).
+**Kallus** — the card-emulation microservice that drives the Kollis probes — runs on the local Windows/Minix boxes {F049} ([[kallus]]). A Minix box running Kallus going offline is a typical cause of Connection Failed ([[ts-connection-failed]]).
 
 ## Quick comparison
 
@@ -210,7 +210,7 @@ ps aux | grep -i wine
 |---|---|---|
 | OS | Linux | Windows |
 | Power | 5V DC, 10A | 12V DC (NUC) |
-| Job today | Robot Controller: ADB, camera, steppers, solenoids, Wine | Callus service; no hardware control on the NUCs |
+| Job today | Robot Controller: ADB, camera, steppers, solenoids, Wine | Kallus service; no hardware control on the NUCs |
 `,
   },
   {
@@ -254,7 +254,7 @@ About three years ago the lab was redesigned around **standardised modular shelv
 
 ## Where you'll see it
 
-- {{jared}}'s bench: bolt bins (2.5 mm and 5 mm) and the soldering station.
+- {{jaden}}'s bench: bolt bins (2.5 mm and 5 mm) and the soldering station.
 - The 3D print corner: the Prusa printer, a CAD screen and (sim only) a Bambu Lab printer†.
 - Inside any touch-robot bay: the gantry, the motor board and the wiring loom ([[touch-robot-anatomy]]).
 `,

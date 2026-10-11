@@ -1,8 +1,8 @@
 /**
- * Visual Studio Code (Dark Modern) — the editor the team uses for Pigeon's raw JSON tests.
- * Workspace = the cloned repo folder (default pigeon, `~/IdeaProjects/<repo>`) + `~/pigeon-practice`.
- * Saves → `sim.git.writeFile` / `sim.host.writeFile`; git → `sim.git.*`; ▶ → `sim.runner.runLocal('pigeon')`.
- * VS Code's JSON support flags raw syntax only — it knows nothing about LSTR (no Pigeon-aware linter).
+ * Visual Studio Code (Dark Modern) — the editor the team uses for Parrot's raw JSON tests.
+ * Workspace = the cloned repo folder (default parrot, `~/IdeaProjects/<repo>`) + `~/parrot-practice`.
+ * Saves → `sim.git.writeFile` / `sim.host.writeFile`; git → `sim.git.*`; ▶ → `sim.runner.runLocal('parrot')`.
+ * VS Code's JSON support flags raw syntax only — it knows nothing about LSTR (no Parrot-aware linter).
  * Routes: `/`, `/folder/:repo`, `/folder/:repo/file/*path`, `/practice`. Export name: `VSCodeApp`.
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
@@ -79,7 +79,7 @@ const MENUS: { label: string; items: { label: string; hint?: string; run: (m: Vs
     label: 'Run',
     items: [
       { label: 'Run LSTR Test', run: (m) => setSide(m, 'run') },
-      { label: 'Pigeon Practice', run: (m) => setSide(m, 'practice') },
+      { label: 'Parrot Practice', run: (m) => setSide(m, 'practice') },
     ],
   },
   {
@@ -91,7 +91,7 @@ const MENUS: { label: string; items: { label: string; hint?: string; run: (m: Vs
     items: [
       { label: 'Show All Commands', hint: 'Ctrl+Shift+P', run: (m) => commandPalette(m) },
       {
-        label: 'Pigeon JSON tips',
+        label: 'Parrot JSON tips',
         run: (m) =>
           m.toast('info', 'VS Code checks JSON syntax only. The red squiggle sits AFTER a missing comma; unknown actions, bad ${variables} and wrong screens only fail when LSTR runs.', undefined, 14000),
       },
@@ -173,7 +173,7 @@ function Watermark({ model, cloned }: { model: VsModel; cloned: boolean }) {
         </button>
       ) : (
         <button type="button" className="vsc-btn vsc-btn--secondary" onClick={() => setSide(model, 'practice')}>
-          Open Pigeon Practice
+          Open Parrot Practice
         </button>
       )}
     </div>
@@ -185,7 +185,7 @@ export function VSCodeApp(props: AppProps) {
   const model = useMemo(() => getVsModel(windowId), [windowId]);
   useSyncExternalStore(model.subscribe, model.getVersion, model.getVersion);
   const [menu, setMenu] = useState<number | null>(null);
-  const target = parseRoute(route ?? params?.route ?? (params?.repo || params?.file ? `/folder/${params?.repo ?? 'pigeon'}${params?.file ? `/file/${params.file}` : ''}` : undefined));
+  const target = parseRoute(route ?? params?.route ?? (params?.repo || params?.file ? `/folder/${params?.repo ?? 'parrot'}${params?.file ? `/file/${params.file}` : ''}` : undefined));
   const cloned = useGame((s) => !!s.lab.repos?.[model.repo]?.local);
   const repoFilesRef = useGame((s) => s.lab.repos?.[model.repo]?.local?.files);
   const wsFilesRef = useGame((s) => s.lab.workstation?.files);
@@ -216,7 +216,7 @@ export function VSCodeApp(props: AppProps) {
 
   const active = model.active;
   const buffer = model.activeBuffer();
-  const title = buffer ? `${buffer.path.split('/').pop()}${buffer.text !== buffer.base ? ' ●' : ''} - ${buffer.root === 'repo' ? model.repo : 'pigeon-practice'} - Visual Studio Code` : `${cloned ? model.repo : 'Welcome'} - Visual Studio Code`;
+  const title = buffer ? `${buffer.path.split('/').pop()}${buffer.text !== buffer.base ? ' ●' : ''} - ${buffer.root === 'repo' ? model.repo : 'parrot-practice'} - Visual Studio Code` : `${cloned ? model.repo : 'Welcome'} - Visual Studio Code`;
   const onTitleRef = useRef(onTitle);
   onTitleRef.current = onTitle;
   useEffect(() => {
@@ -280,7 +280,7 @@ export function VSCodeApp(props: AppProps) {
     { id: 'search', label: 'Search (Ctrl+Shift+F)', icon: <IconSearch /> },
     { id: 'scm', label: 'Source Control (Ctrl+Shift+G)', icon: <IconScm />, badge: scmCount },
     { id: 'run', label: 'Run and Debug', icon: <IconRun /> },
-    { id: 'practice', label: 'Pigeon Practice', icon: <IconFlask /> },
+    { id: 'practice', label: 'Parrot Practice', icon: <IconFlask /> },
   ];
 
   return (
@@ -411,7 +411,7 @@ export function VSCodeApp(props: AppProps) {
             ) : null}
             {buffer ? (
               <div className="vsc-crumbs">
-                {(buffer.root === 'repo' ? [model.repo, ...buffer.path.split('/')] : ['pigeon-practice', ...buffer.path.split('/')]).map((c, i, arr) => (
+                {(buffer.root === 'repo' ? [model.repo, ...buffer.path.split('/')] : ['parrot-practice', ...buffer.path.split('/')]).map((c, i, arr) => (
                   <span key={i}>
                     {c}
                     {i < arr.length - 1 ? <span className="vsc-crumbs__sep">›</span> : null}
@@ -421,7 +421,7 @@ export function VSCodeApp(props: AppProps) {
             ) : null}
             <div className="vsc-editor-host">
               {buffer ? (
-                <Editor key={buffer.id} model={model} buffer={buffer} repoLabel={buffer.root === 'repo' ? model.repo : 'pigeon-practice'} diagnostics={diagnostics} focused={focused} />
+                <Editor key={buffer.id} model={model} buffer={buffer} repoLabel={buffer.root === 'repo' ? model.repo : 'parrot-practice'} diagnostics={diagnostics} focused={focused} />
               ) : active?.startsWith('diff:') ? (
                 <DiffEditor model={model} path={active.slice(5)} />
               ) : (
@@ -475,7 +475,7 @@ export function VSCodeApp(props: AppProps) {
             <span className="vsc-status__item">{buffer.path.endsWith('.json') ? 'JSON' : buffer.path.endsWith('.md') ? 'Markdown' : 'Plain Text'}</span>
           </>
         ) : null}
-        <button type="button" className="vsc-status__item" title="Pigeon Practice" onClick={() => setSide(model, 'practice')}>
+        <button type="button" className="vsc-status__item" title="Parrot Practice" onClick={() => setSide(model, 'practice')}>
           🧪 Practice
         </button>
       </div>

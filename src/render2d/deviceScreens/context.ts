@@ -70,7 +70,7 @@ export function orderView(o: OrderState | null | undefined): OrderView {
 export function merchantOf(lab: LabState, device: TerminalDevice): MerchantConfig | null {
   const id = device.merchantConfigId;
   if (id === null || id === undefined) return null;
-  return lab.orca?.merchants?.[id] ?? null;
+  return lab.orka?.merchants?.[id] ?? null;
 }
 
 /**

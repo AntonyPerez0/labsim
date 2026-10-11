@@ -52,7 +52,7 @@ function bayWebcam(rigId: string): CameraDef {
     ...def,
     lookAt: rigToWorld(rig, [cfd.x + cfd.w / 2, 100, cfd.z + cfd.h / 2]),
     note:
-      'Solved projection: choose the vertical FOV so the padded `TOTAL $10.83` text rect of the L8 customer-cart screen (padded to 236:44) spans 236 px of 1280, then camera.setViewOffset(1280, 720, …) so its centre lands at (530, 310) — bbox (412, 288, 236, 44) of Orca CFD_TOTAL (±4 px).',
+      'Solved projection: choose the vertical FOV so the padded `TOTAL $10.83` text rect of the L8 customer-cart screen (padded to 236:44) spans 236 px of 1280, then camera.setViewOffset(1280, 720, …) so its centre lands at (530, 310) — bbox (412, 288, 236, 44) of Orka CFD_TOTAL (±4 px).',
   };
 }
 

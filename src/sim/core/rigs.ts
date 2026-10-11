@@ -188,7 +188,7 @@ export function rigsStep(lab: LabState, ctx: Ctx, sub: SubStep): void {
   }
   const rigs = ro(L.rigs);
   const hosts = ro(L.hosts);
-  const robots = ro(ro(L.orca).robots);
+  const robots = ro(ro(L.orka).robots);
   for (const id of Object.keys(rigs).sort()) {
     let rig = ro(rigs[id]!);
     const reachable = controllerReachable(lab, rig);
@@ -243,7 +243,7 @@ export function rigsStep(lab: LabState, ctx: Ctx, sub: SubStep): void {
       lab.rigs[id]!.banner = banner;
       ctx.emit('rig.bannerChanged', { rigId: id, from, to: banner, text });
     }
-    const robot = ro(robots[rig.orcaRobotId]);
+    const robot = ro(robots[rig.orkaRobotId]);
     const tablet = ro(rig.tablet);
     if (tablet.reachable !== reachable) {
       const w = lab.rigs[id]!;
@@ -288,7 +288,7 @@ function startupHoming(lab: LabState, rig: RigState): void {
   rig.queue.push({ kind: 'park', source: 'controller' });
 }
 
-/** Host whose USB webcam is this rig's camera (its own Pi, or the shared camera Pi) — physical, not Orca's URL. */
+/** Host whose USB webcam is this rig's camera (its own Pi, or the shared camera Pi) — physical, not Orka's URL. */
 function cameraHostOf(lab: LabState, rig: RigState): string {
   const cam = rig.webcam.cameraId ? CAMERA_BY_ID[rig.webcam.cameraId] : undefined;
   return cam?.hostId ?? rig.piHostId ?? '';
@@ -439,7 +439,7 @@ function solenoidContact(lab: LabState, ctx: Ctx, rig: RigState, ref: string | u
   if (ref && ref.startsWith('{')) {
     try {
       const q = JSON.parse(ref) as { req: string; robot: string; screen: string; button: string; actor: string; target?: 'MFD' | 'CFD'; x: number; y: number };
-      if (q.req) ctx.emit('orca.xyTouch', { robotName: q.robot, screen: q.screen, button: q.button, xMm: q.x, yMm: q.y, mode: 'probe', ok: true, hitButton, requestId: q.req, orcaMode: 'PHYSICAL_TAP', status: 200, actor: q.actor, ...(q.target ? { target: q.target } : {}) });
+      if (q.req) ctx.emit('orka.xyTouch', { robotName: q.robot, screen: q.screen, button: q.button, xMm: q.x, yMm: q.y, mode: 'probe', ok: true, hitButton, requestId: q.req, orkaMode: 'PHYSICAL_TAP', status: 200, actor: q.actor, ...(q.target ? { target: q.target } : {}) });
     } catch {
       /* not an xy_touch ref */
     }
@@ -567,16 +567,16 @@ function presentFromRef(lab: LabState, ctx: Ctx, rig: RigState, ref: string): vo
   } catch {
     return;
   }
-  const prof = lab.orca.cardProfiles[q.card];
+  const prof = lab.orka.cardProfiles[q.card];
   const owner = rig.deviceIds[0] ? lab.devices[rig.deviceIds[0]] : undefined;
   if (!prof || !owner) return;
   const c = customerSide(lab, owner);
   const misaligned = q.entry === 'DIP' && rig.dipArmToothOffset !== 0;
   const e = cardEvent(lab, ctx, c.dev, c.disp, prof, q.entry, { misaligned, cardFile: q.file ?? null });
-  const probe = lab.collis[q.probe];
+  const probe = lab.kollis[q.probe];
   if (probe) {
     probe.lastAction = { entry: q.entry, atMs: lab.time.nowMs, ok: !e, error: e };
-    ctx.emit('collis.action', e ? { collisId: probe.id, entry: q.entry, ok: false, error: e } : { collisId: probe.id, entry: q.entry, ok: true });
+    ctx.emit('kollis.action', e ? { kollisId: probe.id, entry: q.entry, ok: false, error: e } : { kollisId: probe.id, entry: q.entry, ok: true });
   }
 }
 
@@ -808,15 +808,15 @@ export function aimWebcam(lab: LabState, ctx: Ctx, rigId: string, dYaw: number, 
   return { ok: true, value: { aimedOk: rig.webcam.aimedOk } };
 }
 
-/** Orca pushes a new HRN to a reachable controller ≤ 2 s after save (Sim §3.7.5). */
+/** Orka pushes a new HRN to a reachable controller ≤ 2 s after save (Sim §3.7.5). */
 export function scheduleHrnPush(lab: LabState, robotId: number): void {
-  addTimer(lab, 'orca.hrnPush', 'phys', 1_500, { robotId });
+  addTimer(lab, 'orka.hrnPush', 'phys', 1_500, { robotId });
 }
 
 export function hrnPush(lab: LabState, ctx: Ctx, robotId: number): void {
-  const robot = lab.orca.robots[robotId];
+  const robot = lab.orka.robots[robotId];
   if (!robot) return;
-  const rig = lab.rigs[robot.name] ?? Object.values(lab.rigs).find((r) => r.orcaRobotId === robotId);
+  const rig = lab.rigs[robot.name] ?? Object.values(lab.rigs).find((r) => r.orkaRobotId === robotId);
   if (!rig || !controllerReachable(lab, rig)) return;
   if (rig.tablet.hrnShown === robot.humanReadableName) return;
   rig.tablet.hrnShown = robot.humanReadableName;

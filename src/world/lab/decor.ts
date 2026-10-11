@@ -52,7 +52,7 @@ export function buildDecor(ctx: LabCtx): void {
     // bottom: a small cardboard box + a spare cradle
     b.add(boxGeo(0.3, 0.16, 0.25), mats.cardboard, xf(-0.15, 0.216, 0));
     b.add(rboxGeo(0.1, 0.03, 0.23, 0.004, 1), mats.blackPla, xf(0.18, 0.151, 0, 0, 0.3, 0));
-    addTape(ctx, b, 'CART — RETURN TO JARED BENCH', 5, xf(0, 0.5, cd / 2 - 0.009));
+    addTape(ctx, b, 'CART — RETURN TO JADEN BENCH', 5, xf(0, 0.5, cd / 2 - 0.009));
   });
 
   /* ── anti-fatigue mat under the rack row ── */

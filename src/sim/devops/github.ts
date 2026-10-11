@@ -1,6 +1,6 @@
 /**
  * GitHub side (Sim §3.22.2–§3.22.3): pull requests, reviews/comments, merges, and the scripted NPC
- * reviewers — Jared (gort coordinates ±0.5 mm), Morgan (uia-remote / pigeon code facts), Tate
+ * reviewers — Jaden (gorth coordinates ±0.5 mm), Morgan (uia-relay / parrot code facts), Nate
  * (orchestrator, never merges). NPCs act 20 s physical after a PR opens and after each push to it.
  */
 import type { TxContext } from '@/core/store';
@@ -210,8 +210,8 @@ const lineOf = (text: string | null, needle: string): number | null => {
   return i >= 0 ? i + 1 : null;
 };
 
-/** Jared (gort): every changed screen-location file parses and each button is within ±0.5 mm of firmware truth. First offender only. */
-export function jaredFindings(pr: PullRequest): Finding[] {
+/** Jaden (gorth): every changed screen-location file parses and each button is within ±0.5 mm of firmware truth. First offender only. */
+export function jadenFindings(pr: PullRequest): Finding[] {
   for (const f of pr.files) {
     const m = /^config\/screen-locations\/([A-Z0-9_]+)\/([A-Z0-9_]+)\.json$/.exec(f.path);
     if (!m || f.after === null) continue;
@@ -239,11 +239,11 @@ export function jaredFindings(pr: PullRequest): Finding[] {
   return [];
 }
 
-/** Morgan (uia-remote, pigeon): CF09–CF12 clean, page objects with CF01 + CF04; Pigeon JSON parses. */
+/** Morgan (uia-relay, parrot): CF09–CF12 clean, page objects with CF01 + CF04; Parrot JSON parses. */
 export function morganFindings(repoId: RepoId, pr: PullRequest, headTree: Record<string, string>): Finding[] {
   const out: Finding[] = [];
   const changed = pr.files.map((f) => f.path);
-  if (repoId === 'pigeon') {
+  if (repoId === 'parrot') {
     for (const f of pr.files) {
       if (!f.path.endsWith('.json') || f.after === null) continue;
       const r = parseStrictJson(f.after);
@@ -281,7 +281,7 @@ export function morganFindings(repoId: RepoId, pr: PullRequest, headTree: Record
   return out;
 }
 
-const OWNER_CHAT: Record<string, string> = { jared: '#lab-automation', morgan: '#lab-automation', tate: '#lab-automation' };
+const OWNER_CHAT: Record<string, string> = { jaden: '#lab-automation', morgan: '#lab-automation', nate: '#lab-automation' };
 
 /** The owner NPC reviews an open PR (timer `npc.review`). */
 export function npcReview(lab: LabState, ctx: TxContext, repoId: RepoId, n: number): void {
@@ -291,12 +291,12 @@ export function npcReview(lab: LabState, ctx: TxContext, repoId: RepoId, n: numb
   pr.reviewDuePhysMs = null;
   const owner = REPO_OWNER[repoId];
   refreshPrFiles(lab, repoId, pr);
-  if (owner === 'tate') {
-    addComment(lab, ctx, repoId, pr, 'tate', { path: null, line: null, body: "Thanks — I'll take it from here." });
-    ctx.emit('github.prReviewed', { repo: repoId, number: n, by: 'tate', verdict: 'COMMENTED' });
+  if (owner === 'nate') {
+    addComment(lab, ctx, repoId, pr, 'nate', { path: null, line: null, body: "Thanks — I'll take it from here." });
+    ctx.emit('github.prReviewed', { repo: repoId, number: n, by: 'nate', verdict: 'COMMENTED' });
     return;
   }
-  const findings = owner === 'jared' ? jaredFindings(pr) : morganFindings(repoId, pr, treeAt(repo, pr.headSha));
+  const findings = owner === 'jaden' ? jadenFindings(pr) : morganFindings(repoId, pr, treeAt(repo, pr.headSha));
   if (findings.length) {
     for (const f of findings) addComment(lab, ctx, repoId, pr, owner, f);
     pr.verdict = 'CHANGES_REQUESTED';
@@ -309,7 +309,7 @@ export function npcReview(lab: LabState, ctx: TxContext, repoId: RepoId, n: numb
   ctx.emit('github.prReviewed', { repo: repoId, number: n, by: owner, verdict: 'APPROVED' });
   const r = mergePr(lab, ctx, repoId, n, owner);
   if (r.ok) {
-    const sync = repoId === 'gort' && pr.files.some((f) => f.path.startsWith('config/screen-locations/')) ? ' Orca picks up the screen locations in a few seconds.' : '';
+    const sync = repoId === 'gorth' && pr.files.some((f) => f.path.startsWith('config/screen-locations/')) ? ' Orka picks up the screen locations in a few seconds.' : '';
     core().addTimer(lab, 'npc.reply', 'phys', 2_000, { channel: OWNER_CHAT[owner] ?? '#lab-automation', author: owner, text: `Merged ${repoId}#${n} "${pr.title}".${sync}` });
   }
 }
@@ -319,8 +319,8 @@ export function npcMergeApproved(lab: LabState, ctx: TxContext, repoId: RepoId, 
   const pr = findPr(lab, repoId, n);
   if (!pr || pr.state !== 'open' || !pr.approvals.includes('player')) return;
   const owner = REPO_OWNER[repoId];
-  if (owner === 'tate') {
-    addComment(lab, ctx, repoId, pr, 'tate', { path: null, line: null, body: "Thanks — I'll take it from here." });
+  if (owner === 'nate') {
+    addComment(lab, ctx, repoId, pr, 'nate', { path: null, line: null, body: "Thanks — I'll take it from here." });
     return;
   }
   const r = mergePr(lab, ctx, repoId, n, owner);
@@ -421,10 +421,10 @@ export function unmergePr(lab: LabState, repoId: RepoId, n: number): string | nu
   if (!pr.reviewers.includes('player')) pr.reviewers.push('player');
   repo.branches[pr.sourceBranch] = pr.headSha;
   refreshPrFiles(lab, repoId, pr);
-  // Re-sync Orca rows from the rewritten main for the paths the PR touched.
-  if (repoId === 'gort') {
+  // Re-sync Orka rows from the rewritten main for the paths the PR touched.
+  if (repoId === 'gorth') {
     const paths = Object.keys(m.changes).filter((p) => p.startsWith('config/screen-locations/') && repo.files[p] !== undefined);
-    if (paths.length) lab.orca.pendingSyncs.push({ atPhysMs: lab.time.physMs, repo: 'gort', paths, commit: newHead });
+    if (paths.length) lab.orka.pendingSyncs.push({ atPhysMs: lab.time.physMs, repo: 'gorth', paths, commit: newHead });
   }
   void oldHead;
   return null;

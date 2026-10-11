@@ -38,7 +38,7 @@ describe('File Explorer model', () => {
     expect(dirFromRoute('/dir/~/Pictures')).toBe('~/Pictures');
     expect(dirFromRoute('/dir/Recycle%20Bin')).toBe('Recycle Bin');
     expect(dirFromRoute('/dir/')).toBe('~');
-    expect(crumbs('~/IdeaProjects/gort').map((c) => c.label)).toEqual(['Home', 'IdeaProjects', 'gort']);
+    expect(crumbs('~/IdeaProjects/gorth').map((c) => c.label)).toEqual(['Home', 'IdeaProjects', 'gorth']);
     expect(parentDir('~/Pictures')).toBe('~');
     expect(parentDir('~')).toBeNull();
   });

@@ -98,7 +98,7 @@ function buildPlayerDesk(ctx: LabCtx, b: StaticBatch): PlayerDesk {
   const ml = getProp('desk.player.monitor-l');
   hb.at(ml.pos[0], ml.pos[1], ml.pos[2], rad(ml.rotY), () => {
     addPrint(ctx.prints, hb, 0.076, 0.076, 192, 192, (g, w, h) => drawSticky(g, w, h, 'ADB → :5444 (NOT 5555!)', 3), xf(-0.17, 1.08 - DESK_TOP - 0.165, 0.0735, 0, 0, 0.05));
-    addPrint(ctx.prints, hb, 0.076, 0.076, 192, 192, (g, w, h) => drawSticky(g, w, h, 'orca.lab.local:8080 · jenkins.lab.local:8080', 4), xf(0.19, 1.08 - DESK_TOP - 0.168, 0.0735, 0, 0, -0.04));
+    addPrint(ctx.prints, hb, 0.076, 0.076, 192, 192, (g, w, h) => drawSticky(g, w, h, 'orka.lab.local:8080 · jenkins.lab.local:8080', 4), xf(0.19, 1.08 - DESK_TOP - 0.168, 0.0735, 0, 0, -0.04));
   });
   const sn = getProp('desk.player.sticky-notes');
   addPrint(ctx.prints, hb, 0.076, 0.076, 192, 192, (g, w, h) => drawSticky(g, w, h, 'theme=avocado · kernelType=CPA', 5), xf(sn.pos[0], DESK_TOP + 0.0012, sn.pos[2], -Math.PI / 2, 0, 0.2 + Math.PI));
@@ -227,10 +227,10 @@ const STATUS_FALLBACK: [string, string][] = [
 ];
 
 function mirrorState(lab: LabState, t: number, seated: boolean): MirrorState {
-  const robots = lab?.orca?.robots
-    ? Object.values(lab.orca.robots)
+  const robots = lab?.orka?.robots
+    ? Object.values(lab.orka.robots)
         .slice(0, 11)
-        .map((r) => [r.name, String(r.status), (r.deviceId != null ? lab.orca.devices?.[r.deviceId]?.deviceType : null) ?? ''] as [string, string, string])
+        .map((r) => [r.name, String(r.status), (r.deviceId != null ? lab.orka.devices?.[r.deviceId]?.deviceType : null) ?? ''] as [string, string, string])
     : [];
   const shellLines: string[] = [];
   return {

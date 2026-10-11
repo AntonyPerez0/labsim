@@ -280,7 +280,7 @@ export function deviceStroke(lab: LabState, ctx: Ctx, deviceId: string, disp: Di
 export function presentCardByHand(lab: LabState, ctx: Ctx, deviceId: string, entry: CardEntry, profileRef: number | string): Result {
   const d = lab.devices[deviceId];
   if (!d) return { ok: false, error: `unknown device '${deviceId}'` };
-  const prof = typeof profileRef === 'number' ? lab.orca.cardProfiles[profileRef] : Object.values(lab.orca.cardProfiles).find((c) => c.name === profileRef);
+  const prof = typeof profileRef === 'number' ? lab.orka.cardProfiles[profileRef] : Object.values(lab.orka.cardProfiles).find((c) => c.name === profileRef);
   if (!prof) return { ok: false, error: `no card profile '${profileRef}'` };
   const owner = d.role === 'cfd' && d.tetheredTo ? lab.devices[d.tetheredTo]! : d;
   const c = customerSide(lab, owner);
@@ -290,9 +290,9 @@ export function presentCardByHand(lab: LabState, ctx: Ctx, deviceId: string, ent
 
 /* ────────────────────────────── hardware swap & provisioning ────────────────────────────── */
 
-/** Laz end state (Sim §3.17.2 assign-merchant / §4.4.1 device.provision). */
+/** Lazo end state (Sim §3.17.2 assign-merchant / §4.4.1 device.provision). */
 export function provisionDevice(lab: LabState, ctx: Ctx, d: TerminalDevice, merchantId: number | null, resetAdb = false): void {
-  const m = merchantId != null ? lab.orca.merchants[merchantId] : undefined;
+  const m = merchantId != null ? lab.orka.merchants[merchantId] : undefined;
   d.merchantConfigId = m ? m.id : null;
   d.provisioned = !!m;
   d.apps = appsFor(m);
@@ -311,7 +311,7 @@ export function provisionDevice(lab: LabState, ctx: Ctx, d: TerminalDevice, merc
   ctx.emit('device.provisioned', { deviceId: d.id, merchantConfigId: d.merchantConfigId });
 }
 
-/** Physically swap a rig's device (Sim §3.24): old → storage (unplugged), new seated and powered; Orca untouched. */
+/** Physically swap a rig's device (Sim §3.24): old → storage (unplugged), new seated and powered; Orka untouched. */
 export function swapHardware(lab: LabState, ctx: Ctx, rigId: string, newType: DeviceTypeCode, opts: { deviceId?: string; storeAt?: string } = {}): Result<{ deviceId: string }> {
   const rig = lab.rigs[rigId];
   if (!rig) return { ok: false, error: `unknown rig '${rigId}'` };
@@ -370,9 +370,9 @@ export function swapHardware(lab: LabState, ctx: Ctx, rigId: string, newType: De
     }
   } else incoming.supply = hookup.kind === 'none' ? { kind: 'ac-strip', targetId: 'offscreen' } : hookup;
   if (incoming.battery) incoming.battery = { pct: Math.max(incoming.battery.pct, 0), charging: true };
-  // Serial binding: an Orca Device row with this serial names the device (Sim §1.15).
-  const row = Object.values(lab.orca.devices).find((r) => r.serial === incoming.serial);
-  incoming.orcaDeviceName = row ? row.name : '';
+  // Serial binding: an Orka Device row with this serial names the device (Sim §1.15).
+  const row = Object.values(lab.orka.devices).find((r) => r.serial === incoming.serial);
+  incoming.orkaDeviceName = row ? row.name : '';
   rig.deviceIds = rig.deviceIds.map((id) => (id === old.id ? incoming.id : id));
   ctx.emit('device.swapped', { rigId, removedDeviceId: old.id, installedDeviceId: incoming.id });
   log(lab, 'devices', 'info', `${rigId}: ${old.id} → ${storeAt}, ${incoming.id} installed`);

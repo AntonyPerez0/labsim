@@ -143,13 +143,13 @@ describe('drill host (GP §2.4.1)', () => {
     id: 'DR90',
     name: 'Test Triage',
     format: 'press 1–5',
-    tags: ['orca.status'],
+    tags: ['orka.status'],
     unlockedBy: [],
     durationS: 60,
     itemCount: 3,
     medals: { bronze: 100, silver: 200, gold: 400 },
     scoring: 'standard',
-    items: ['a', 'b', 'c', 'd'].map((x) => ({ id: `it-${x}`, tags: ['orca.status'], teach: { whatHappened: `Item ${x}`, why: 'Because.' }, data: { x } })),
+    items: ['a', 'b', 'c', 'd'].map((x) => ({ id: `it-${x}`, tags: ['orka.status'], teach: { whatHappened: `Item ${x}`, why: 'Because.' }, data: { x } })),
   };
 
   it('scores speed and streak, shows the inline Teach Card, awards medals and XP', () => {

@@ -1,5 +1,5 @@
 /**
- * Quiz bank — M07 Orca Entities: Robot, Device, Device Type, URLs, Tethering & Offsets (Cur §3). 25 items.
+ * Quiz bank — M07 Orka Entities: Robot, Device, Device Type, URLs, Tethering & Offsets (Cur §3). 25 items.
  * Transcribed from docs/design/10-curriculum.md; every answer re-verified against
  * docs/reference/REMOVED-internal-reference.md. Options are stored in the doc's canonical display order
  * (the UI reshuffles); `order` items store options in the CORRECT order; `match` pairs are the correct pairing.
@@ -14,7 +14,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     moduleId: "M07",
     difficulty: 1,
     checkpoint: "CP-M07.1",
-    prompt: "How many core database schemas (JHipster entities) does Orca have?",
+    prompt: "How many core database schemas (JHipster entities) does Orka have?",
     options: [
       "7",
       "4",
@@ -22,16 +22,16 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
       "5",
     ],
     answer: 0,
-    explanation: "Orca has 7 core database schemas (F114).",
+    explanation: "Orka has 7 core database schemas (F114).",
     factIds: ["F114"],
-    tags: ["orca.entities", "arch.stack"],
+    tags: ["orka.entities", "arch.stack"],
   },
   {
     id: "Q120",
     type: "mc",
     moduleId: "M07",
     difficulty: 1,
-    prompt: "Which of these is NOT one of Orca's core schemas?",
+    prompt: "Which of these is NOT one of Orka's core schemas?",
     options: [
       "Merchant Config entity",
       "Screen Compare Image entity",
@@ -41,7 +41,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     answer: 2,
     explanation: "The 7 are Robot, Robot Creation & Configuration, Robot Capabilities, Merchant Config, Screens & Screen Locations, Card Profile and Screen Compare Image (F114).",
     factIds: ["F114"],
-    tags: ["orca.entities", "arch.stack"],
+    tags: ["orka.entities", "arch.stack"],
   },
   {
     id: "Q121",
@@ -49,7 +49,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     moduleId: "M07",
     difficulty: 1,
     checkpoint: "CP-M07.1",
-    prompt: "What is a robot's \"Name\" field in Orca?",
+    prompt: "What is a robot's \"Name\" field in Orka?",
     options: [
       "The Pi's IP address",
       "The system identifier",
@@ -59,7 +59,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     answer: 1,
     explanation: "Name is the system identifier; Human Readable Name is the display string (F117).",
     factIds: ["F117"],
-    tags: ["orca.entities", "orca.names"],
+    tags: ["orka.entities", "orka.names"],
   },
   {
     id: "Q122",
@@ -77,7 +77,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     answer: 1,
     explanation: "The Human Readable Name is pushed to the front-mounted status tablet (F118).",
     factIds: ["F118"],
-    tags: ["orca.entities", "orca.names", "hw.tablet"],
+    tags: ["orka.entities", "orka.names", "hw.tablet"],
   },
   {
     id: "Q123",
@@ -85,7 +85,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     moduleId: "M07",
     difficulty: 2,
     checkpoint: "CP-M07.1",
-    prompt: "{{jared}} swaps JOHNNY-5's Flux 1 for a Flux 2. What is the right Orca change?",
+    prompt: "{{jaden}} swaps JOHNNY-5's Flux 1 for a Flux 2. What is the right Orka change?",
     options: [
       "Create a new Device for the Flux 2 and relink Robot Device, keeping the old Device for rollback",
       "Change JOHNNY-5's Offsets",
@@ -95,7 +95,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     answer: 0,
     explanation: "Robot Device links to a separate Device entity so upgrades leave legacy configs intact for rollback (F119, F120).",
     factIds: ["F119", "F120"],
-    tags: ["orca.entities", "orca.device"],
+    tags: ["orka.entities", "orka.device"],
   },
   {
     id: "Q124",
@@ -107,7 +107,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     answer: 0,
     explanation: "That is exactly why they are decoupled (F120).",
     factIds: ["F120"],
-    tags: ["orca.entities", "orca.device"],
+    tags: ["orka.entities", "orka.device"],
   },
   {
     id: "Q125",
@@ -119,12 +119,12 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
       "A camera stream",
       "A separate Device entity",
       "A Jenkins job",
-      "A Gort card file",
+      "A Gorth card file",
     ],
     answer: 1,
     explanation: "Robot Device links to a separate Device entity (F119).",
     factIds: ["F119"],
-    tags: ["orca.entities", "orca.device"],
+    tags: ["orka.entities", "orka.device"],
   },
   {
     id: "Q126",
@@ -141,7 +141,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     answer: 2,
     explanation: "Device Type is an enum of dimensions, layout metrics and internal strings (F121).",
     factIds: ["F121"],
-    tags: ["orca.entities", "orca.devicetype"],
+    tags: ["orka.entities", "orka.devicetype"],
   },
   {
     id: "Q127",
@@ -151,7 +151,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     checkpoint: "CP-M07.1",
     prompt: "Why must Jenkins pipeline env vars like DEVICE_TYPE be in ALL CAPS?",
     options: [
-      "They must match Orca's Device Type enum string definitions",
+      "They must match Orka's Device Type enum string definitions",
       "Jenkins rejects lower-case parameters",
       "It is only a style convention",
       "Linux environment variables are case-insensitive",
@@ -159,7 +159,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     answer: 0,
     explanation: "The Device Type enum dictates that env vars must be all-caps (F122).",
     factIds: ["F122"],
-    tags: ["orca.entities", "orca.devicetype", "jenkins.envvars"],
+    tags: ["orka.entities", "orka.devicetype", "jenkins.envvars"],
   },
   {
     id: "Q128",
@@ -172,7 +172,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     caseInsensitive: false,
     explanation: "All caps, matching the Device Type enum (F122). Case-sensitive. (Enum spelling FLUX_3 is the sim's illustrative enum.)",
     factIds: ["F122"],
-    tags: ["orca.entities", "orca.devicetype", "jenkins.envvars"],
+    tags: ["orka.entities", "orka.devicetype", "jenkins.envvars"],
   },
   {
     id: "Q129",
@@ -182,14 +182,14 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     prompt: "The Robot ADB Service URL routes to which component?",
     options: [
       "The Jenkins VM",
-      "Orca's MySQL",
+      "Orka's MySQL",
       "The Pi controller",
       "The LabSim device directly on port 5555",
     ],
     answer: 2,
     explanation: "It is the Robot ADB Service URL routing to the Pi controller (F123).",
     factIds: ["F123"],
-    tags: ["orca.entities", "orca.urls"],
+    tags: ["orka.entities", "orka.urls"],
   },
   {
     id: "Q130",
@@ -200,13 +200,13 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     options: [
       "Always shared across all 40+ rigs",
       "Only configured for CFDs",
-      "Stored in Gort",
+      "Stored in Gorth",
       "Either dedicated per Pi or shared across 4 rigs",
     ],
     answer: 3,
     explanation: "Camera streams are dedicated per Pi or shared across 4 rigs (F124).",
     factIds: ["F124"],
-    tags: ["orca.entities", "orca.urls", "vision.camera"],
+    tags: ["orka.entities", "orka.urls", "vision.camera"],
   },
   {
     id: "Q131",
@@ -223,7 +223,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     answer: 1,
     explanation: "URL Mappings store hardware-specific Dip, Tap and Swipe URLs (F125).",
     factIds: ["F125"],
-    tags: ["orca.entities", "orca.urls"],
+    tags: ["orka.entities", "orka.urls"],
   },
   {
     id: "Q132",
@@ -231,7 +231,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     moduleId: "M07",
     difficulty: 1,
     checkpoint: "CP-M07.1",
-    prompt: "In Orca, what makes a pipeline treat a rig as tethered?",
+    prompt: "In Orka, what makes a pipeline treat a rig as tethered?",
     options: [
       "The camera URL is shared",
       "The Human Readable Name contains \"MFD\"",
@@ -241,16 +241,16 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     answer: 3,
     explanation: "If MFD is populated, the pipeline treats the rig as tethered (F128).",
     factIds: ["F128"],
-    tags: ["orca.entities", "orca.tethered"],
+    tags: ["orka.entities", "orka.tethered"],
   },
   {
     id: "Q133",
     type: "mc",
     moduleId: "M07",
     difficulty: 2,
-    prompt: "Which is an example of a nested/tethered setup modelled in Orca?",
+    prompt: "Which is an example of a nested/tethered setup modelled in Orka?",
     options: [
-      "A Flux 3 with a Collis probe",
+      "A Flux 3 with a Kollis probe",
       "Two Flux Pockets sharing a camera",
       "A Stand 2 tethered to a Micro 2",
       "A Pi with a webcam",
@@ -258,7 +258,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     answer: 2,
     explanation: "Tethered configs populate MFD/CFD relations, e.g. Stand 2 + Micro 2, or nested Micro 3s (F126, F127).",
     factIds: ["F126", "F127"],
-    tags: ["orca.entities", "orca.tethered"],
+    tags: ["orka.entities", "orka.tethered"],
   },
   {
     id: "Q134",
@@ -270,7 +270,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     answer: 0,
     explanation: "That is the purpose of the USB Tethered Device Configuration (F126).",
     factIds: ["F126"],
-    tags: ["orca.entities", "orca.tethered"],
+    tags: ["orka.entities", "orka.tethered"],
   },
   {
     id: "Q135",
@@ -287,7 +287,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     answer: 1,
     explanation: "Offsets compensated for imprecise limit switches (F129).",
     factIds: ["F129"],
-    tags: ["orca.entities", "orca.offsets"],
+    tags: ["orka.entities", "orka.offsets"],
   },
   {
     id: "Q136",
@@ -296,15 +296,15 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     difficulty: 1,
     prompt: "Why are Offsets now mostly deprecated?",
     options: [
-      "{{tate}} removed the column",
-      "Orca moved to GCP",
+      "{{nate}} removed the column",
+      "Orka moved to GCP",
       "UI Automator 2.3 replaced them",
-      "{{jared}} calibrated the lab hardware to a true (0,0) origin",
+      "{{jaden}} calibrated the lab hardware to a true (0,0) origin",
     ],
     answer: 3,
-    explanation: "{{jared}}'s true (0,0) calibration made Offsets mostly deprecated (F130).",
+    explanation: "{{jaden}}'s true (0,0) calibration made Offsets mostly deprecated (F130).",
     factIds: ["F130"],
-    tags: ["orca.entities", "orca.offsets", "people.roles"],
+    tags: ["orka.entities", "orka.offsets", "people.roles"],
   },
   {
     id: "Q137",
@@ -317,7 +317,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     answer: 0,
     explanation: "With hardware calibrated to true (0,0), leftover offsets shift taps; the field is mostly deprecated (F129, F130). (Lesson scenario illustrative.)",
     factIds: ["F130", "F129"],
-    tags: ["orca.entities", "orca.offsets", "people.roles"],
+    tags: ["orka.entities", "orka.offsets", "people.roles"],
   },
   {
     id: "Q138",
@@ -334,14 +334,14 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     answer: 2,
     explanation: "Robot entity: 40+ rigs and status flags (F115).",
     factIds: ["F115"],
-    tags: ["orca.entities", "orca.robot"],
+    tags: ["orka.entities", "orka.robot"],
   },
   {
     id: "Q139",
     type: "mc",
     moduleId: "M07",
     difficulty: 1,
-    prompt: "Which of these is NOT stored in Orca's MySQL database?",
+    prompt: "Which of these is NOT stored in Orka's MySQL database?",
     options: [
       "Screen-coordinate tables",
       "Merchant profiles",
@@ -351,7 +351,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     answer: 2,
     explanation: "MySQL stores hardware states, merchant profiles and screen coordinates (F014). Build logs stay in Jenkins.",
     factIds: ["F014"],
-    tags: ["orca.entities", "arch.stack"],
+    tags: ["orka.entities", "arch.stack"],
   },
   {
     id: "Q140",
@@ -360,12 +360,12 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     difficulty: 3,
     prompt: "Match each robot naming field to its purpose.",
     pairs: [
-      ["Name", "System identifier used by Orca and pipelines"],
+      ["Name", "System identifier used by Orka and pipelines"],
       ["Human Readable Name", "Display string pushed to the status tablet"],
     ],
     explanation: "A robot has a Name (system identifier) and a Human Readable Name (display string). The Human Readable Name is pushed to the physical status tablet mounted on the front of the lab enclosure. (F117, F118)",
     factIds: ["F117", "F118"],
-    tags: ["orca.entities", "orca.names", "hw.tablet"],
+    tags: ["orka.entities", "orka.names", "hw.tablet"],
   },
   {
     id: "Q141",
@@ -377,7 +377,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     answer: 1,
     explanation: "Device Type is an enum of dimensions, layout metrics and internal strings (F121), which is why env vars must be ALL CAPS (F122).",
     factIds: ["F121"],
-    tags: ["orca.entities", "orca.devicetype"],
+    tags: ["orka.entities", "orka.devicetype"],
   },
   {
     id: "Q142",
@@ -392,7 +392,7 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     ],
     explanation: "URL Mappings store the Robot ADB Service URL, which routes to the Pi controller. The Camera Stream URL is either dedicated per Pi or shared across 4 rigs. URL Mappings also store the hardware-specific Dip, Tap and Swipe URLs. (F123, F124, F125)",
     factIds: ["F123", "F124", "F125"],
-    tags: ["orca.entities", "orca.urls", "vision.camera"],
+    tags: ["orka.entities", "orka.urls", "vision.camera"],
   },
   {
     id: "Q143",
@@ -404,6 +404,6 @@ export const QUIZ_M07: QuizQuestion[] = resolvePeople([
     answer: 0,
     explanation: "The pipeline treats the rig as tethered only if MFD is populated (F128).",
     factIds: ["F128", "F126"],
-    tags: ["orca.entities", "orca.tethered"],
+    tags: ["orka.entities", "orka.tethered"],
   },
 ]);

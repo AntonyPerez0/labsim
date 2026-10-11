@@ -19,7 +19,7 @@ import './ij-chrome.css';
 import './ij-editor.css';
 import './ij-panels.css';
 
-const REPOS: RepoId[] = ['gort', 'uia-remote', 'pigeon', 'orchestrator'];
+const REPOS: RepoId[] = ['gorth', 'uia-relay', 'parrot', 'orchestrator'];
 const SETTINGS_KEY = 'labsim.intellij.settings';
 
 interface IdeSettings {
@@ -76,7 +76,7 @@ export function IntelliJApp(props: AppProps) {
       emitAppAction('intellij', 'intellij.project.opened', { repo: openRepo });
       if (justCloned.current === openRepo) {
         model.startProgress('Indexing…', 1500);
-        if (openRepo === 'uia-remote') setTimeout(() => model.startProgress(`Maven: Importing '${openRepo}'…`, 1200), 1500);
+        if (openRepo === 'uia-relay') setTimeout(() => model.startProgress(`Maven: Importing '${openRepo}'…`, 1200), 1500);
         justCloned.current = null;
       }
     }

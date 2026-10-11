@@ -1,7 +1,7 @@
 /**
  * The VS Code text editor: a transparent <textarea> over a syntax-coloured <pre> (JSON tokens, bracket-pair
  * colours, `${VAR}` tint), line numbers, current-line highlight, red/yellow squiggles with hover messages and
- * the editing keys Pigeon work relies on (Shift+Alt+↓ duplicate line, Alt+↑/↓ move line, Ctrl+Shift+K delete
+ * the editing keys Parrot work relies on (Shift+Alt+↓ duplicate line, Alt+↑/↓ move line, Ctrl+Shift+K delete
  * line, Tab indent, auto-indent, auto-closing brackets/quotes, Shift+Alt+F format, Ctrl+F find).
  * Programmatic edits go through `execCommand('insertText')` so the browser's own undo stack keeps working.
  */

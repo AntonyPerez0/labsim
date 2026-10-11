@@ -4,7 +4,7 @@
  * CoreServices (xy_touch, card actions, ADB, touches, layouts, OCR) and read device screens from state.
  */
 import type { TxContext } from '@/core/store';
-import type { TerminalDevice, LabState, OrcaRobot, RunnerState, RunnerStep, ScreenName } from '../../types';
+import type { TerminalDevice, LabState, OrkaRobot, RunnerState, RunnerStep, ScreenName } from '../../types';
 import { core } from '../coreRef';
 
 /** Who owns the run: a Jenkins build or a local IntelliJ run. Rebuilt every tick (holds closures). */
@@ -14,7 +14,7 @@ export interface RunnerHost {
   out(lines: string[]): void;
   /** Host the runner executes on: 'jenkins-vm' (CI) or 'ws-17' (local). */
   fromHost: string;
-  robot: OrcaRobot | null;
+  robot: OrkaRobot | null;
   /** CI: injected env; local: config-derived equivalents (RUN_TYPE, DEVICE_FAMILY, …). */
   env: Record<string, string>;
   /** Repo tree the code facts are evaluated on (test repo at the run's commit / working tree). */
@@ -214,8 +214,8 @@ export function pageObjectName(d: TerminalDevice, display: 'primary' | 'secondar
   }
 }
 
-/** Orca screen name for the runtime screen (Sim §2.10.1); CFD_* on a Duet's secondary display. */
-export function orcaScreenFor(d: TerminalDevice, display: 'primary' | 'secondary'): string | null {
+/** Orka screen name for the runtime screen (Sim §2.10.1); CFD_* on a Duet's secondary display. */
+export function orkaScreenFor(d: TerminalDevice, display: 'primary' | 'secondary'): string | null {
   const disp = displayOf(d, display);
   const base: Partial<Record<ScreenName, string>> = {
     home: 'HOME',
@@ -317,7 +317,7 @@ export function visibleTexts(rc: RC, device: TerminalDevice, display: 'primary' 
   return parseDump(core().uiDump(rc.lab, device.id, 'primary')).map((n) => n.text);
 }
 
-/** Does the rig's gantry cover this display? (physical taps through Orca xy_touch, Sim §3.19.3) */
+/** Does the rig's gantry cover this display? (physical taps through Orka xy_touch, Sim §3.19.3) */
 export function probeCovers(rc: RC, display: 'primary' | 'secondary'): boolean {
   const r = rc.host.robot;
   if (!r) return false;
@@ -330,27 +330,27 @@ export function fmtMm(n: number): string {
 }
 
 /**
- * Who calls Orca on behalf of a runner. A build that holds the robot's checkout identifies itself by
- * its build id (Orca's lock check, Sim §3.5.2 #6: the holder may drive the robot); otherwise `jenkins`
- * for CI and the run's actor for local runs (Orca has no record of local runs, §3.4.4).
+ * Who calls Orka on behalf of a runner. A build that holds the robot's checkout identifies itself by
+ * its build id (Orka's lock check, Sim §3.5.2 #6: the holder may drive the robot); otherwise `jenkins`
+ * for CI and the run's actor for local runs (Orka has no record of local runs, §3.4.4).
  */
-export function orcaActor(rc: RC): string {
+export function orkaActor(rc: RC): string {
   const r = rc.host.robot;
-  const holder = r ? rc.lab.orca.robots[r.id]?.checkout?.buildId : undefined;
+  const holder = r ? rc.lab.orka.robots[r.id]?.checkout?.buildId : undefined;
   if (holder && holder === rc.host.id) return rc.host.id;
   return rc.host.kind === 'build' ? 'jenkins' : rc.host.actor;
 }
 
-/** Orca xy_touch from a runner with the console line (Sim §3.19.3). */
-export function runnerXyTouch(rc: RC, screen: string, button: string, prefix = '[orca]'): { ok: true; respondsAfterMs: number } | { ok: false; line: string } {
+/** Orka xy_touch from a runner with the console line (Sim §3.19.3). */
+export function runnerXyTouch(rc: RC, screen: string, button: string, prefix = '[orka]'): { ok: true; respondsAfterMs: number } | { ok: false; line: string } {
   const r = rc.host.robot;
   if (!r) return { ok: false, line: `${prefix} xy_touch ? ${screen}/${button} → 404 Not Found: no robot` };
-  const res = core().xyTouch(rc.lab, rc.ctx, r.name, screen, button, orcaActor(rc));
+  const res = core().xyTouch(rc.lab, rc.ctx, r.name, screen, button, orkaActor(rc));
   if (!res.ok) return { ok: false, line: `${prefix} xy_touch ${r.name} ${screen}/${button} → ${res.error}` };
   const v = res.value;
   const offs = r.offsetXMm !== 0 || r.offsetYMm !== 0 ? ` (offsets ${r.offsetXMm >= 0 ? '+' : ''}${fmtMm(r.offsetXMm)}/${r.offsetYMm >= 0 ? '+' : ''}${fmtMm(r.offsetYMm)})` : '';
-  out(rc, `${prefix} xy_touch ${r.name} ${screen}/${button} → ${v.orcaMode} (${fmtMm(v.xMm)}, ${fmtMm(v.yMm)})${offs}`);
-  if (v.orcaMode === 'PHYSICAL_TAP') ssv(rc, 'xyReq', v.requestId);
+  out(rc, `${prefix} xy_touch ${r.name} ${screen}/${button} → ${v.orkaMode} (${fmtMm(v.xMm)}, ${fmtMm(v.yMm)})${offs}`);
+  if (v.orkaMode === 'PHYSICAL_TAP') ssv(rc, 'xyReq', v.requestId);
   return { ok: true, respondsAfterMs: v.respondsAfterMs };
 }
 

@@ -41,7 +41,7 @@ export function View(props: DrillComponentProps) {
           <span>Reject</span>
         </button>
         <div className={`dr11-card ${fly} ${verdict}`}>
-          <div className="dr11-card__head">{cfg ? 'IntelliJ · uia-remote/config.properties' : 'Jenkins · Build with Parameters'}</div>
+          <div className="dr11-card__head">{cfg ? 'IntelliJ · uia-relay/config.properties' : 'Jenkins · Build with Parameters'}</div>
           {cfg ? (
             <pre className="dr11-code">
               <span className="dr11-dim">runType=standalone{'\n'}merchantFacingDeviceIp=10.42.30.12{'\n'}</span>
@@ -77,7 +77,7 @@ export function View(props: DrillComponentProps) {
           </>
         ) : (
           <>
-            Jenkins <code>DEVICE_TYPE</code> = the exact Orca Device Type enum — ALL CAPS, e.g. <b>FLUX_3</b>
+            Jenkins <code>DEVICE_TYPE</code> = the exact Orka Device Type enum — ALL CAPS, e.g. <b>FLUX_3</b>
           </>
         )}
       </div>

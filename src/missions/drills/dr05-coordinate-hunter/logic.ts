@@ -5,7 +5,7 @@
  * - Mode A: draw the box.
  * - Mode B (after the first Gold): also convert the button's centre to Screen Location mm with the Device
  *   Type's px/mm (±0.5 mm). Only device screenshots (screencaps) — never the webcam snapshot.
- * - Mode C: also type the Pigeon block `{"x":…, "y":…, "w":…, "h":…, "expected":"…"}` (Cur M15/M16 keys).
+ * - Mode C: also type the Parrot block `{"x":…, "y":…, "w":…, "h":…, "expected":"…"}` (Cur M15/M16 keys).
  *
  * Screens: the R2-D2 CFD webcam snapshot (Cur M16 target `TOTAL $10.83` at 412, 288, 236 × 44 — S10) and Micro 3
  * screencaps built from the sim's MICRO_GEN3 firmware tables (mm → px with MICRO_3's px/mm, Sim §2.2), so the
@@ -105,7 +105,7 @@ export const SHOTS: Record<ShotId, Shot> = {
 export interface HuntData {
   shot: ShotId;
   targetId: string;
-  /** The text to box / the Pigeon `expected` value. */
+  /** The text to box / the Parrot `expected` value. */
   expected: string;
   rect: PxRect;
   /** Screen Location centre in mm (mode B), null for webcam snapshots. */
@@ -119,13 +119,13 @@ export function huntItem(shot: Shot, el: ShotEl): DrillItem<HuntData> {
   const facts = ['F030', 'F212', 'F153'];
   return {
     id: `DR05:${shot.id}:${el.id}`,
-    tags: ['pigeon.gimp', 'orca.screencompare', 'orca.screens'],
+    tags: ['parrot.gimp', 'orka.screencompare', 'orka.screens'],
     factIds: facts,
-    teach: teach(`Target: Position ${el.x}, ${el.y} · Size ${el.w} × ${el.h}`, 'GIMP: Rectangle Select hugging the element\'s edges, then read Position and Size in Tool Options — those numbers go into the Screen Compare row or the Pigeon block. A box a few pixels off is how OCR checks get brittle.', {
+    teach: teach(`Target: Position ${el.x}, ${el.y} · Size ${el.w} × ${el.h}`, 'GIMP: Rectangle Select hugging the element\'s edges, then read Position and Size in Tool Options — those numbers go into the Screen Compare row or the Parrot block. A box a few pixels off is how OCR checks get brittle.', {
       ref: 'Ref §1.3, §5',
       factIds: facts,
       illustrative: true,
-      tag: 'pigeon.gimp',
+      tag: 'parrot.gimp',
       doInstead: 'Zoom in (hold the loupe over each edge) and nudge with the arrow keys.',
     }),
     data: { shot: shot.id, targetId: el.id, expected: el.text, rect: { x: el.x, y: el.y, w: el.w, h: el.h }, mm },
@@ -153,13 +153,13 @@ export function mmOk(data: HuntData, x: number, y: number): boolean {
   return Math.abs(x - data.mm.x) <= 0.5 && Math.abs(y - data.mm.y) <= 0.5;
 }
 
-/** Mode C: strict JSON with exactly the Pigeon keys, values = your selection, `expected` = the exact text. */
+/** Mode C: strict JSON with exactly the Parrot keys, values = your selection, `expected` = the exact text. */
 export function checkBlock(text: string, drawn: PxRect, expected: string): { ok: boolean; why: string } {
   let v: unknown;
   try {
     v = JSON.parse(text);
   } catch (e) {
-    return { ok: false, why: `Not valid JSON (${(e as Error).message.split('\n')[0]}) — Pigeon has no linter, so check every comma and quote.` };
+    return { ok: false, why: `Not valid JSON (${(e as Error).message.split('\n')[0]}) — Parrot has no linter, so check every comma and quote.` };
   }
   if (!v || typeof v !== 'object' || Array.isArray(v)) return { ok: false, why: 'The block must be one JSON object.' };
   const o = v as Record<string, unknown>;
@@ -204,8 +204,8 @@ export function generateHunt(rng: RngState, state: RootState | null, index: numb
 export const DR05: DrillDef<HuntData> = {
   id: 'DR05',
   name: 'Coordinate Hunter',
-  format: 'GIMP-style screenshot: draw the box; score by edge error (B: convert to mm · C: type the Pigeon block)',
-  tags: ['pigeon.gimp', 'orca.screens', 'orca.screencompare'],
+  format: 'GIMP-style screenshot: draw the box; score by edge error (B: convert to mm · C: type the Parrot block)',
+  tags: ['parrot.gimp', 'orka.screens', 'orka.screencompare'],
   unlockedBy: ['M16'],
   durationS: 90,
   itemCount: null,
@@ -214,7 +214,7 @@ export const DR05: DrillDef<HuntData> = {
   modes: [
     { id: 'A', title: 'Draw the box', unlock: 'always' },
     { id: 'B', title: 'Box + convert to mm', unlock: 'first-gold' },
-    { id: 'C', title: 'Box + type the Pigeon block', unlock: 'first-gold' },
+    { id: 'C', title: 'Box + type the Parrot block', unlock: 'first-gold' },
   ],
   generate: (rng, state, index) => generateHunt(rng, state, index),
   component: lazyDrill(() => import('./View'), '#9b7bff'),

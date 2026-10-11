@@ -43,28 +43,28 @@ export function resolveProbe(spec: ProbeSpec, s: RootState, ctx: ProbeContext): 
   const lab = s.lab;
   try {
     switch (spec.p) {
-      case 'orca.robot':
+      case 'orka.robot':
         return robotField(lab, spec.robot, spec.field);
-      case 'orca.robot.url': {
+      case 'orka.robot.url': {
         const r = robotByName(lab, spec.robot);
         if (!r) return null;
         const v = { adb: r.adbServiceUrl, camera: r.cameraStreamUrl, dip: r.dipUrl, tap: r.tapUrl, swipe: r.swipeUrl }[spec.kind];
         return v ?? null;
       }
-      case 'orca.device': {
+      case 'orka.device': {
         const d = deviceRowByName(lab, spec.device);
         if (spec.field === 'exists') return !!d && !d.retired;
         if (!d) return null;
         return spec.field === 'type' ? d.deviceType : spec.field === 'serial' ? d.serial : d.ip;
       }
-      case 'orca.screenLocation': {
+      case 'orka.screenLocation': {
         const screen = screenByTypeAndName(lab, spec.deviceType, spec.screen);
-        const loc = screen ? Object.values(lab.orca.screenLocations).find((l) => l.screenId === screen.id && l.button === spec.button) : undefined;
+        const loc = screen ? Object.values(lab.orka.screenLocations).find((l) => l.screenId === screen.id && l.button === spec.button) : undefined;
         if (spec.field === 'exists') return !!loc;
         if (!loc) return null;
         return spec.field === 'x' ? loc.xMm : loc.yMm;
       }
-      case 'orca.screenCompare': {
+      case 'orka.screenCompare': {
         const c = screenCompareByName(lab, spec.name);
         if (spec.field === 'exists') return !!c;
         if (!c) return spec.field === 'deprecated' ? false : null;
@@ -84,20 +84,20 @@ export function resolveProbe(spec: ProbeSpec, s: RootState, ctx: ProbeContext): 
         }
         return null;
       }
-      case 'orca.merchant': {
+      case 'orka.merchant': {
         const m = merchantByName(lab, spec.merchant);
         if (!m) return null;
         const v = (m as unknown as Record<string, unknown>)[spec.field];
         return scalar(v);
       }
-      case 'orca.cardProfile': {
+      case 'orka.cardProfile': {
         const c = cardProfileByName(lab, spec.profile);
         if (spec.field === 'exists') return !!c;
         if (!c) return null;
-        return spec.field === 'kind' ? c.entry : spec.field === 'trackData' ? c.trackData : c.gortPath;
+        return spec.field === 'kind' ? c.entry : spec.field === 'trackData' ? c.trackData : c.gorthPath;
       }
-      case 'orca.http': {
-        const app = lab.orca.app;
+      case 'orka.http': {
+        const app = lab.orka.app;
         if (!app.up) return 503;
         return app.dbConnected === false ? 500 : 200;
       }
@@ -136,8 +136,8 @@ export function resolveProbe(spec: ProbeSpec, s: RootState, ctx: ProbeContext): 
       }
       case 'hw.rig':
         return rigField(lab, spec.rig, spec.field);
-      case 'hw.collis': {
-        const c = lab.collis?.[spec.collis];
+      case 'hw.kollis': {
+        const c = lab.kollis?.[spec.kollis];
         if (!c) return null;
         if (spec.field === 'power') return c.powered ? (c.supply?.kind === 'dc-rail' ? 'DC' : 'AC') : 'OFF';
         if (spec.field === 'ribbon') return c.ribbonConnected ? 'SEATED' : 'UNSEATED';
@@ -303,7 +303,7 @@ function robotField(lab: LabState, name: string, field: string): ProbeValue {
     case 'offsetY':
       return r.offsetYMm;
     case 'capabilities':
-      return (r.capabilityIds ?? []).map((id) => lab.orca.capabilities[id]?.name).filter((n): n is string => !!n);
+      return (r.capabilityIds ?? []).map((id) => lab.orka.capabilities[id]?.name).filter((n): n is string => !!n);
     case 'lastHealthAt':
       return r.lastHealth?.atMs ?? r.lastHealthCheckMs ?? null;
     case 'lastHealthHttp':
@@ -361,7 +361,7 @@ function deviceField(lab: LabState, id: string, field: string): ProbeValue {
     case 'activeMerchant':
       return merchantById(lab, d.merchantConfigId)?.name ?? null;
     case 'psuOn': {
-      const load = lab.power?.loads?.[`psu-${d.orcaDeviceName}`];
+      const load = lab.power?.loads?.[`psu-${d.orkaDeviceName}`];
       return load ? load.powered : d.supply?.kind !== 'none' && d.power !== 'off';
     }
     case 'screen':
@@ -388,7 +388,7 @@ function propValue(lab: LabState, file: string, key: string): string | null {
   if (file === 'config') {
     const v = lab.workstation?.configProperties?.[key];
     if (v !== undefined) return v;
-    const text = lab.repos?.['uia-remote']?.local?.files?.['config.properties'];
+    const text = lab.repos?.['uia-relay']?.local?.files?.['config.properties'];
     return parseProperties(text)[key] ?? null;
   }
   if (file === 'alexConfig') {
@@ -528,7 +528,7 @@ const FACT_ALIASES: Record<string, string> = {
 };
 
 function classSource(lab: LabState, subject: string): { path: string; text: string } | null {
-  const repo = lab.repos?.['uia-remote'];
+  const repo = lab.repos?.['uia-relay'];
   if (!repo) return null;
   const local = subject.startsWith('local:');
   const name = local ? subject.slice(6) : subject;
@@ -580,7 +580,7 @@ export function codeFact(lab: LabState, fact: string, subject: string): boolean 
     case 'CF06':
       return /@After[\s\S]{0,200}goHome/.test(text);
     case 'CF07':
-      return /orca\.screenCompare\(/.test(text);
+      return /orka\.screenCompare\(/.test(text);
     case 'CF08':
       return /displayId\(/.test(text);
     case 'CF09':

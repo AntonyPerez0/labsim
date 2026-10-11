@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 // Load the store first: it seeds itself from '@/sim/initialState', which (via the sim) imports the store back.
 import '@/core/store';
 import { render2d, localButtons, effectiveButtons, btnCentre, hitButton, buttonActive, tabletStatusText, type LayoutQuery } from './index';
-import type { TerminalDevice, LabState, OrcaRobot, RigState, ScreenName, DeviceTypeCode } from '@/sim/types';
+import type { TerminalDevice, LabState, OrkaRobot, RigState, ScreenName, DeviceTypeCode } from '@/sim/types';
 import { createTerminalDevice, createDisplayState, createInitialLabState, createOrderState, createRigState } from '@/sim/initialState';
 import { layoutClassFor } from './api';
 import { registerFirmwareLayoutProvider } from './deviceScreens/layouts';
@@ -161,11 +161,11 @@ describe('drawTablet', () => {
   const rig = (over: Partial<RigState> = {}): RigState =>
     createRigState('wall-e', 1, 'touch', {
       gantry: { ...createRigState('x', 1, 'touch').gantry, xMm: 12, yMm: 58.5, targetXMm: 12, targetYMm: 58.5, maxXMm: 80, maxYMm: 148 },
-      piHostId: 'pi-wall-e', callusHostId: 'minix-01', collisId: 'collis-wall-e', shelfPropId: 'rack.a',
+      piHostId: 'pi-wall-e', kallusHostId: 'minix-01', kollisId: 'kollis-wall-e', shelfPropId: 'rack.a',
       tablet: { tab: 'motion-control', statusText: 'OK', brainbox: 'Brainbox v6', hrnShown: 'WALL-E', reachable: true },
       ...over,
     });
-  const robot = { id: 1, name: 'wall-e', humanReadableName: 'WALL-E', status: 'AVAILABLE', checkout: { buildId: 'Java/uia-remote-regression-flux#4120', jobId: 'Java/uia-remote-regression-flux', byName: false, startedMs: 0 } } as unknown as OrcaRobot;
+  const robot = { id: 1, name: 'wall-e', humanReadableName: 'WALL-E', status: 'AVAILABLE', checkout: { buildId: 'Java/uia-relay-regression-flux#4120', jobId: 'Java/uia-relay-regression-flux', byName: false, startedMs: 0 } } as unknown as OrkaRobot;
 
   it('draws all tabs, banners, boot phases and the lockout', () => {
     const lab = createInitialLabState();

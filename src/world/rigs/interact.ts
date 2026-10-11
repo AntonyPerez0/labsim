@@ -10,7 +10,7 @@ import type { RackHandles } from './rack';
 import type { TouchRigView } from './touchRig';
 import type { TouchRigBinder } from './rigView';
 import type { ScreenManager } from './screens';
-import type { CallusHandles } from './callusShelf';
+import type { KallusHandles } from './kallusShelf';
 import type { TetheredHandles } from './tethered';
 import type { AdbHandles } from './adbShelf';
 import type { BuildTableHandles } from './buildTable';
@@ -22,7 +22,7 @@ export interface InteractCtx {
   views: TouchRigView[];
   binders: TouchRigBinder[];
   racks: RackHandles[];
-  callus: CallusHandles;
+  kallus: KallusHandles;
   tethered: TetheredHandles;
   adb: AdbHandles;
   table: BuildTableHandles | null;

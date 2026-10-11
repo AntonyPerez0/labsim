@@ -16,7 +16,7 @@ export interface ParsedPrompt {
   shell: 'bash' | 'cmd' | 'powershell' | 'unknown';
   user: string | null;
   host: string | null;
-  /** Path as shown (`~`, `~/IdeaProjects/uia-remote`, `C:\Users\automation`). */
+  /** Path as shown (`~`, `~/IdeaProjects/uia-relay`, `C:\Users\automation`). */
   path: string | null;
   segments: PromptSegment[];
 }

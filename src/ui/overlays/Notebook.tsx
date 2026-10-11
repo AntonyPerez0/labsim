@@ -15,7 +15,7 @@ import { gameClock } from '@/ui/services/format';
 type Tab = 'notes' | 'evidence' | 'checklist' | 'safety';
 
 const SOURCE_LABEL: Record<string, string> = {
-  orca: 'Orca',
+  orka: 'Orka',
   notes: 'Notes',
   jenkins: 'Jenkins',
   tablet: 'Tablet',
@@ -82,8 +82,8 @@ export function Notebook({ tab: initial }: { tab?: Tab }) {
             <ol>
               <li>Never touch a robot while a test is running.</li>
               <li>If you move an arm by hand, Park All before you walk away.</li>
-              <li>LabSim terminals and Collis probes go on the AC power strips — never the DC rails.</li>
-              <li>Broken rig? Tell {personName('jared')}.</li>
+              <li>LabSim terminals and Kollis probes go on the AC power strips — never the DC rails.</li>
+              <li>Broken rig? Tell {personName('jaden')}.</li>
             </ol>
             <div className="muted">The card’s wording is invented for the sim; each rule restates a reference fact.</div>
           </div>
@@ -138,7 +138,7 @@ function Evidence({ entries }: { entries: EvidenceEntry[] }) {
   if (!all.length) {
     return (
       <EmptyState icon="search" title="No evidence yet">
-        Evidence is captured automatically as you read Orca Notes, Jenkins consoles, tablets, LEDs and meter readings.
+        Evidence is captured automatically as you read Orka Notes, Jenkins consoles, tablets, LEDs and meter readings.
       </EmptyState>
     );
   }

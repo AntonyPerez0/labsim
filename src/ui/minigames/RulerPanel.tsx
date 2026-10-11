@@ -5,7 +5,7 @@
  *   `app.action { app: 'world', action: 'ruler.measured', data: { deviceId, rigId, screen, button, xMm, yMm } }`.
  *
  * Positions come from the firmware layout tables the sim hit-tests touches against, so a reading is
- * exactly what Orca's Screen Locations must hold for that screen.
+ * exactly what Orka's Screen Locations must hold for that screen.
  */
 import { useMemo, useState } from 'react';
 import { emit, useGame } from '@/core/store';

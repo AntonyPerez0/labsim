@@ -17,14 +17,14 @@ export const SAMPLE_M01: LessonDef = {
     'Never fight a running robot: while a test is active the dashboard locks you out — wait for the job.',
     'Find the POWER panel (MAIN and MOTOR) and the rack-unit numbers on the rails.',
     'Remember where the black fixtures come from: the Prusa and Bambu Lab printers.',
-    'LabSim terminals and Collis probes go on the AC power strips — never the DC rails. Broken rig? Tell {{jared}}.',
+    'LabSim terminals and Kollis probes go on the AC power strips — never the DC rails. Broken rig? Tell {{jaden}}.',
   ],
   steps: [
     {
       id: 'M01.01',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: "Welcome to the LabSim automation lab! I'm {{morgan}}. I built uia-remote, and today I'm your onboarding buddy. Everything in this room exists to press buttons on LabSim devices so humans don't have to.",
+      text: "Welcome to the LabSim automation lab! I'm {{morgan}}. I built uia-relay, and today I'm your onboarding buddy. Everything in this room exists to press buttons on LabSim devices so humans don't have to.",
       factIds: ['F244'],
     },
     { id: 'M01.02', kind: 'walk-to', hud: 'Walk to Touch Rack A', location: 'loc.rack-a' },
@@ -32,7 +32,7 @@ export const SAMPLE_M01: LessonDef = {
       id: 'M01.03',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: 'Meet WALL-E. Every rig here is named after a famous robot. Orca tracks a pool of 40-plus rigs, and a dozen of them live in this room.',
+      text: 'Meet WALL-E. Every rig here is named after a famous robot. Orka tracks a pool of 40-plus rigs, and a dozen of them live in this room.',
       factIds: ['F115', 'F073'],
     },
     {
@@ -47,7 +47,7 @@ export const SAMPLE_M01: LessonDef = {
       id: 'M01.05',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: "That's the front-mounted status tablet, the robot's face. The name across the top comes straight from Orca.",
+      text: "That's the front-mounted status tablet, the robot's face. The name across the top comes straight from Orka.",
     },
     {
       id: 'M01.06',

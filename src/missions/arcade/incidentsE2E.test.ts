@@ -70,8 +70,8 @@ describe('authored incidents resolve end-to-end', { timeout: 30_000 }, () => {
 
   it('INC63: fixing the Human Readable Name resolves; editing Name would not', () => {
     const t = inject('INC63', 'johnny-5');
-    const robot = Object.values(getState().lab.orca.robots).find((r) => r.name === 'johnny-5')!;
-    sim.orca.saveRobot({ id: robot.id, humanReadableName: 'JOHNNY-5' }, 'player');
+    const robot = Object.values(getState().lab.orka.robots).find((r) => r.name === 'johnny-5')!;
+    sim.orka.saveRobot({ id: robot.id, humanReadableName: 'JOHNNY-5' }, 'player');
     run(1);
     expect(missions.resolveTicket(t.id).outcome).toBe('resolved');
   });
@@ -88,7 +88,7 @@ describe('authored incidents resolve end-to-end', { timeout: 30_000 }, () => {
 
   it('INC05: patience — reply R_WAIT_PING, touch nothing, the next ping restores the rig', () => {
     const t = inject('INC05', 'wall-e');
-    expect(state().lab.orca.robots[Object.values(state().lab.orca.robots).find((r) => r.name === 'wall-e')!.id]!.status).toBe('CONNECTION_FAILED');
+    expect(state().lab.orka.robots[Object.values(state().lab.orka.robots).find((r) => r.name === 'wall-e')!.id]!.status).toBe('CONNECTION_FAILED');
     expect(missions.replyTicket(t.id, 'R_WAIT_PING').correct).toBe(true);
     run(60); // the Pi finishes booting
     sim.skipToNextHealthCheck();
@@ -110,10 +110,10 @@ describe('authored incidents resolve end-to-end', { timeout: 30_000 }, () => {
     sim.skipToNextHealthCheck();
     run(1);
     expect(ticket(t.id).status).toBe('resolved');
-    expect(Object.values(state().lab.orca.robots).find((x) => x.name === 'rosie')!.status).toBe('UNAVAILABLE');
+    expect(Object.values(state().lab.orka.robots).find((x) => x.name === 'rosie')!.status).toBe('UNAVAILABLE');
   });
 
-  it('INC06: escalate with the curl endpoint, Jared power-cycles, reply R_FIXED', () => {
+  it('INC06: escalate with the curl endpoint, Jaden power-cycles, reply R_FIXED', () => {
     const t = inject('INC06', 'eve');
     const esc = missions.escalate(t.id, { cause: 'A', endpoint: 'http://10.42.10.12:8000/health' });
     expect(esc.outcome).toBe('accepted');
@@ -121,6 +121,6 @@ describe('authored incidents resolve end-to-end', { timeout: 30_000 }, () => {
     expect(missions.replyTicket(t.id, 'R_FIXED').correct).toBe(true);
     run(60);
     expect(ticket(t.id).status).toBe('resolved');
-    expect(Object.values(state().lab.orca.robots).find((x) => x.name === 'eve')!.status).toBe('RESERVED');
+    expect(Object.values(state().lab.orka.robots).find((x) => x.name === 'eve')!.status).toBe('RESERVED');
   });
 });

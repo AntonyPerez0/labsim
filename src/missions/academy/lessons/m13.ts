@@ -1,14 +1,14 @@
 /**
- * M13 — uia-remote: Structure & the Page Object Model (Cur §2 M13). Mentor {{morgan}}.
+ * M13 — uia-relay: Structure & the Page Object Model (Cur §2 M13). Mentor {{morgan}}.
  * Setup (`academy:M13`, Sim §4.4.2): `uia.scrollSwapped` (HomeScreen.open() Flux branch scrolls
- * horizontally) and `uia.missingScreenMethods { class: 'ReceiptScreen' }`; the player clones uia-remote
+ * horizontally) and `uia.missingScreenMethods { class: 'ReceiptScreen' }`; the player clones uia-relay
  * in step 3 and gets both bugs. Code facts are evaluated on the working tree (`local:<Class>`, Sim §3.19.6).
  */
 import { c, on, p } from '../../types';
 import type { Condition, LessonDef, ScriptAction } from '../../types';
 import { inject, localFilesNamed, zoneClick, say } from './helpers';
 
-const REPO = 'uia-remote';
+const REPO = 'uia-relay';
 const PO = 'app/src/androidTest/java/com/labsim/uia/pageobjects';
 
 /** Where each file belongs (folder segments its path must contain). */
@@ -114,7 +114,7 @@ export const M13: LessonDef = {
   deck: 'deck.M13',
   manualChapters: ['Test Frameworks'],
   realLabChecklist: [
-    'Clone uia-remote from GitHub into IntelliJ IDEA (Get from Version Control) and learn its Maven-style app/src layout.',
+    'Clone uia-relay from GitHub into IntelliJ IDEA (Get from Version Control) and learn its Maven-style app/src layout.',
     'Never modify app/src/main. Page objects go in androidTest/…/pageobjects, tests in …/testactions, DB code in …/databases, runners in test.',
     'Every screen class extends BaseTest, declares its locators in Zone 1 and its helpers in Zone 2, and implements waitForScreen() and isScreenPresent().',
     'Device quirks live in Zone 2 helpers: open(appName) scrolls vertically on a Flux and horizontally on a Micro or Stand.',
@@ -125,17 +125,17 @@ export const M13: LessonDef = {
       id: 'M13.01',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: "uia-remote is mine. I built it because no framework could automate native tethered setups: Stand-to-Micro, Micro-to-Micro, Stand Duet. It's Java on Google's Android UI Automator, version 2.3, and it drives standalone and tethered devices across native LabSim apps.",
+      text: "uia-relay is mine. I built it because no framework could automate native tethered setups: Stand-to-Micro, Micro-to-Micro, Stand Duet. It's Java on Google's Android UI Automator, version 2.3, and it drives standalone and tethered devices across native LabSim apps.",
       factIds: ['F159', 'F039', 'F040', 'F005', 'F006', 'F001'],
     },
     {
       id: 'M13.02',
       kind: 'computer-task',
-      hud: 'Copy the uia-remote clone URL',
+      hud: 'Copy the uia-relay clone URL',
       app: 'github',
-      route: '/labsim-lab/uia-remote',
+      route: '/labsim-lab/uia-relay',
       success: c.appAction('github', 'github.cloneUrl.copied', (d) => d.repo === REPO),
-      showMe: [{ app: 'github', route: '/labsim-lab/uia-remote', target: 'github.codeButton', action: 'click', caption: 'Code → copy the SSH URL' }],
+      showMe: [{ app: 'github', route: '/labsim-lab/uia-relay', target: 'github.codeButton', action: 'click', caption: 'Code → copy the SSH URL' }],
       factIds: ['F018'],
     },
     {
@@ -159,7 +159,7 @@ export const M13: LessonDef = {
       kind: 'computer-task',
       hud: 'Expand app/src and click the folder QA engineers never modify',
       app: 'intellij',
-      route: '/project/uia-remote',
+      route: '/project/uia-relay',
       success: c.appAction('intellij', 'intellij.tree.nodeClicked', (d) => d.repo === REPO && d.path === 'app/src/main' && d.kind === 'dir'),
       wrongActions: [
         {
@@ -179,7 +179,7 @@ export const M13: LessonDef = {
       kind: 'computer-task',
       hud: 'Put these files where they belong',
       app: 'intellij',
-      route: '/project/uia-remote',
+      route: '/project/uia-relay',
       onEnter: [stageFiles],
       success: c.all(c.forAll(PUZZLE, placed), appRegistrationFound),
       objectives: [
@@ -205,7 +205,7 @@ export const M13: LessonDef = {
       kind: 'computer-task',
       hud: 'Open HomeScreen.java and click Zone 1, then Zone 2',
       app: 'intellij',
-      route: `/project/uia-remote/file/${PO}/HomeScreen.java`,
+      route: `/project/uia-relay/file/${PO}/HomeScreen.java`,
       success: c.sequence(zoneClick('HomeScreen.java', 1), zoneClick('HomeScreen.java', 2)),
       objectives: [
         { id: 'M13.06.z1', text: 'Zone 1: Element Locators', done: c.happened(zoneClick('HomeScreen.java', 1)) },
@@ -225,7 +225,7 @@ export const M13: LessonDef = {
       kind: 'computer-task',
       hud: 'HomeScreenTest fails on WALL-E (Flux 3). Fix open()',
       app: 'intellij',
-      route: `/project/uia-remote/file/${PO}/HomeScreen.java`,
+      route: `/project/uia-relay/file/${PO}/HomeScreen.java`,
       success: c.all(c.eq(p.codeFact('openScroll', 'local:HomeScreen'), true), c.eq(p.localRun('HomeScreenTest').result, 'PASS')),
       objectives: [
         { id: 'M13.08.fix', text: 'FLUX → scrollVerticallyTo, Micro/Stand → scrollHorizontallyTo', done: c.eq(p.codeFact('openScroll', 'local:HomeScreen'), true) },
@@ -236,7 +236,7 @@ export const M13: LessonDef = {
         { afterS: 120, idle: true, effect: 'text', text: 'In open(): the FLUX branch must call scrollVerticallyTo(appName); the else branch scrollHorizontallyTo(appName).' },
         { afterS: 180, idle: true, effect: 'show-me-button' },
       ],
-      showMe: [{ app: 'intellij', route: `/project/uia-remote/file/${PO}/HomeScreen.java`, target: 'intellij.runButton', action: 'click' }],
+      showMe: [{ app: 'intellij', route: `/project/uia-relay/file/${PO}/HomeScreen.java`, target: 'intellij.runButton', action: 'click' }],
       factIds: ['F177', 'F176'],
     },
     {
@@ -244,7 +244,7 @@ export const M13: LessonDef = {
       kind: 'computer-task',
       hud: 'ReceiptScreenTest is flaky. Find out why',
       app: ['intellij', 'camera'],
-      route: `/project/uia-remote/file/${PO}/ReceiptScreen.java`,
+      route: `/project/uia-relay/file/${PO}/ReceiptScreen.java`,
       success: c.all(
         c.eq(p.codeFact('waitForScreen', 'local:ReceiptScreen'), true),
         c.eq(p.codeFact('isScreenPresent', 'local:ReceiptScreen'), true),
@@ -261,7 +261,7 @@ export const M13: LessonDef = {
         { afterS: 120, idle: true, effect: 'text', text: 'Alt+Enter on the class → Implement mandatory screen methods. Then make noReceipt() and print() call waitForScreen(); before their click.' },
         { afterS: 180, idle: true, effect: 'show-me-button' },
       ],
-      showMe: [{ app: 'intellij', route: `/project/uia-remote/file/${PO}/ReceiptScreen.java`, target: 'intellij.runButton', action: 'click' }],
+      showMe: [{ app: 'intellij', route: `/project/uia-relay/file/${PO}/ReceiptScreen.java`, target: 'intellij.runButton', action: 'click' }],
       factIds: ['F178', 'F179', 'F180'],
     },
     {
@@ -276,7 +276,7 @@ export const M13: LessonDef = {
       kind: 'computer-task',
       hud: "Order the runner's calls for a tethered sale",
       app: 'intellij',
-      route: '/project/uia-remote/file/app/src/test/java/com/labsim/uia/runner/MultiDeviceRunner.java',
+      route: '/project/uia-relay/file/app/src/test/java/com/labsim/uia/runner/MultiDeviceRunner.java',
       onEnter: [scrambleRunner],
       success: runnerOrdered,
       hints: [
@@ -285,6 +285,6 @@ export const M13: LessonDef = {
       ],
       factIds: ['F171', 'F183', 'F185', 'F186', 'F187'],
     },
-    { id: 'M13.12', kind: 'quiz-checkpoint', checkpointId: 'CP-M13.1', title: 'uia-remote & POM', questionIds: ['Q233', 'Q234', 'Q240', 'Q241', 'Q243', 'Q248', 'Q257', 'Q261'] },
+    { id: 'M13.12', kind: 'quiz-checkpoint', checkpointId: 'CP-M13.1', title: 'uia-relay & POM', questionIds: ['Q233', 'Q234', 'Q240', 'Q241', 'Q243', 'Q248', 'Q257', 'Q261'] },
   ],
 };

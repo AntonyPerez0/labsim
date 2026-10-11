@@ -9,12 +9,12 @@ import { ask, CONNECT_REFUSED, OLLAMA_IP, OLLAMA_PORT } from '../ollama';
 import { draw } from '../util';
 import { now, out, registerOps, ssv, sv, target } from './engine';
 import type { RC, StepHandler } from './engine';
-import { compileLstr } from './pigeon';
+import { compileLstr } from './parrot';
 
 let seq = 0;
 const S = (label: string, op: string, args: Record<string, string | number | boolean> = {}, role: RunnerStep['role'] = 'DEVICE'): RunnerStep => ({ id: `o${++seq}`, label, role, op, args });
 
-/** Go SDK plan from `go-sdk/tests/*.json` (gort). */
+/** Go SDK plan from `go-sdk/tests/*.json` (gorth). */
 export function compileGoSdkPlan(text: string | undefined, path: string, env: Record<string, string>): RunnerStep[] {
   seq = 0;
   if (text === undefined) return [S('load', 'lstrFail', { code: 'JSON_PARSE', lines: `panic: open ${path}: no such file or directory` })];
@@ -77,7 +77,7 @@ const ops: Record<string, StepHandler> = {
   goConnect(rc) {
     for (const k of ['APP_ID', 'APP_SECRET', 'API_KEY']) {
       if (!env(rc, k).trim()) {
-        return { fail: 'MISSING_CREDENTIAL', lines: [`panic: Terminal SDK: missing credential ${k} (env var empty)`, '', 'goroutine 1 [running]:', 'github.com/labsim-lab/gort/go-sdk/runner.connect(...)', '\t/var/lib/jenkins/workspace/Java/go-sdk-sale-smoke/go-sdk/runner/steps.go:16 +0x1c5', 'exit status 2'] };
+        return { fail: 'MISSING_CREDENTIAL', lines: [`panic: Terminal SDK: missing credential ${k} (env var empty)`, '', 'goroutine 1 [running]:', 'github.com/labsim-lab/gorth/go-sdk/runner.connect(...)', '\t/var/lib/jenkins/workspace/Java/go-sdk-sale-smoke/go-sdk/runner/steps.go:16 +0x1c5', 'exit status 2'] };
       }
     }
     const t = target(rc, 'DEVICE');
@@ -92,7 +92,7 @@ const ops: Record<string, StepHandler> = {
       return { sleep: 3_000 };
     }
     const amount = Number(step.args['amountCents'] ?? 1000);
-    const m = t.device.merchantConfigId != null ? rc.lab.orca.merchants[t.device.merchantConfigId] : undefined;
+    const m = t.device.merchantConfigId != null ? rc.lab.orka.merchants[t.device.merchantConfigId] : undefined;
     if (m && !m.pinBypass) return { fail: 'CARD_ERROR', lines: [`[go-sdk] Sale ${amount} → DECLINED (PIN_REQUIRED: ${m.name} is not a PIN-bypass merchant)`] };
     if (t.device.power !== 'on') return { fail: 'DEVICE_UNREACHABLE', lines: [`[go-sdk] Sale ${amount} → device not responding`] };
     const auth = `SIM${String(Math.floor(1000 * draw(rc.lab, 'devices'))).padStart(3, '0')}`;

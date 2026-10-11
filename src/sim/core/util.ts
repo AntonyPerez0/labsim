@@ -98,7 +98,7 @@ export function clone<T>(v: T): T {
   return v === undefined ? v : (JSON.parse(JSON.stringify(v)) as T);
 }
 
-/** Title-case status label used by Orca's UI and Notes (`Connection Failed`). */
+/** Title-case status label used by Orka's UI and Notes (`Connection Failed`). */
 export function statusLabel(s: string): string {
   return s
     .toLowerCase()

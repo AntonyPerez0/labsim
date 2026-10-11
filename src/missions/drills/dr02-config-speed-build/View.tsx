@@ -111,7 +111,7 @@ export function View(props: DrillComponentProps) {
       <div className="dr02-left">
         <div className={`dr02-card${st ? ' is-compact' : ''}`}>
           <div className="dr02-card__head">
-            <span className="dr02-card__eyebrow">Orca · Robot</span>
+            <span className="dr02-card__eyebrow">Orka · Robot</span>
             <span className="dr02-card__name">{data.hrn}</span>
             <span className={`dr02-kind is-${data.kind}`}>{data.kind}</span>
           </div>
@@ -271,7 +271,7 @@ export function View(props: DrillComponentProps) {
 function ConfigAssistant({ rows }: { rows: KeyGrade[] }) {
   return (
     <div className="dr02-assist">
-      <div className="dr02-assist__title">uia-remote Config Assistant</div>
+      <div className="dr02-assist__title">uia-relay Config Assistant</div>
       {rows.map((r) => (
         <div key={r.key} className={`dr02-row ${r.ok ? "is-ok" : "is-bad"}`}>
           <span className="dr02-row__mark">{r.ok ? "✓" : "✗"}</span>

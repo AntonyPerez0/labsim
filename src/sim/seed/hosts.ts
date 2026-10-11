@@ -1,10 +1,10 @@
 /**
- * Hosts (Sim §2.5): robot Pis, Callus Windows boxes, VMs on the GPU blade, the workstation and the
+ * Hosts (Sim §2.5): robot Pis, Kallus Windows boxes, VMs on the GPU blade, the workstation and the
  * lab switch, with their services, files, journals, scheduled tasks and USB devices.
  */
 import type { Host, HostKind, PowerHookup, SchedTask, ServiceState } from '../types';
 import { createHost } from '../builders';
-import { ROSTER, piDefs, CALLUS_BOXES } from './robots';
+import { ROSTER, piDefs, KALLUS_BOXES } from './robots';
 import type { PiDef } from './robots';
 
 export const PI_OS = 'Raspberry Pi OS (Debian 12, Linux 6.6.31-v8+ aarch64)';
@@ -19,8 +19,8 @@ export const BOOT_DELAYS: Record<string, number> = {
   cardprog: 36_000,
   'camera-stream': 40_000,
 };
-export const WIN_DELAYS: Record<string, number> = { sshd: 40_000, callus: 50_000, 'corporate-agent': 30_000, motion: 50_000 };
-export const VM_DELAYS: Record<string, number> = { sshd: 20_000, mysql: 30_000, orca: 45_000, jenkins: 45_000, ollama: 40_000 };
+export const WIN_DELAYS: Record<string, number> = { sshd: 40_000, kallus: 50_000, 'corporate-agent': 30_000, motion: 50_000 };
+export const VM_DELAYS: Record<string, number> = { sshd: 20_000, mysql: 30_000, orka: 45_000, jenkins: 45_000, ollama: 40_000 };
 /** `systemctl restart` / `sc start` readiness (Sim §2.5.2). */
 export const RESTART_DELAYS: Record<string, number> = {
   'robot-controller': 3_000,
@@ -28,11 +28,11 @@ export const RESTART_DELAYS: Record<string, number> = {
   cardprog: 4_000,
   'adb-service': 2_000,
   sshd: 1_000,
-  callus: 5_000,
+  kallus: 5_000,
   'corporate-agent': 2_000,
   motion: 5_000,
   mysql: 5_000,
-  orca: 20_000,
+  orka: 20_000,
   ollama: 10_000,
   jenkins: 30_000,
   hypervisor: 5_000,
@@ -51,12 +51,12 @@ function svc(name: string, port: number | null, delay: number, enabled = true): 
 const serialOf = (type: string, octet: number, prefix: string) => `SIM-${prefix}-0000${String(octet).padStart(2, '0')}`;
 
 /** `/etc/robot-controller/controller.yaml` (Sim §2.5.3) for a Pi. */
-export function controllerYaml(pi: PiDef, serials: string[], callusIp: string | null, motionLocal: boolean, cardprog: boolean): string {
+export function controllerYaml(pi: PiDef, serials: string[], kallusIp: string | null, motionLocal: boolean, cardprog: boolean): string {
   const lines: string[] = [];
   if (pi.robots.length === 1) lines.push(`robot: ${pi.robots[0]}`);
   else lines.push(`robots: [${pi.robots.join(', ')}]`);
   lines.push('listen: 0.0.0.0:8000');
-  if (callusIp) lines.push(`callus: http://${callusIp}:9000      # upstream checked by /health`);
+  if (kallusIp) lines.push(`kallus: http://${kallusIp}:9000      # upstream checked by /health`);
   if (motionLocal) lines.push('motion: local                        # "local" = 25-pin motor PCB on this Pi\'s USB; legacy form: nuc://10.42.20.3:9100');
   if (pi.camera) lines.push('camera: /dev/video0');
   lines.push('adb:', '  port: 5444', `  devices: [${serials.join(', ')}]`);
@@ -64,7 +64,7 @@ export function controllerYaml(pi: PiDef, serials: string[], callusIp: string | 
   return lines.join('\n') + '\n';
 }
 
-const CALLUS_IP: Record<string, string> = Object.fromEntries(CALLUS_BOXES.map((b) => [b.id, b.ip]));
+const KALLUS_IP: Record<string, string> = Object.fromEntries(KALLUS_BOXES.map((b) => [b.id, b.ip]));
 
 export function seedHosts(nowMs: number): Record<string, Host> {
   const hosts: Record<string, Host> = {};
@@ -97,8 +97,8 @@ export function seedHosts(nowMs: number): Record<string, Host> {
 
     const files: Record<string, string> = {};
     if (rows.length) {
-      const callusHost = rows.find((r) => r.callus)?.callus ?? null;
-      files['/etc/robot-controller/controller.yaml'] = controllerYaml(pi, serials, callusHost ? CALLUS_IP[callusHost]! : null, touch.length > 0, cardRigs.length > 0);
+      const kallusHost = rows.find((r) => r.kallus)?.kallus ?? null;
+      files['/etc/robot-controller/controller.yaml'] = controllerYaml(pi, serials, kallusHost ? KALLUS_IP[kallusHost]! : null, touch.length > 0, cardRigs.length > 0);
     }
     if (cardRigs.length) {
       files['/opt/cardprog/wineprefix-golden/'] = 'ok';
@@ -127,25 +127,25 @@ export function seedHosts(nowMs: number): Record<string, Host> {
     });
   }
 
-  for (const box of CALLUS_BOXES) {
+  for (const box of KALLUS_BOXES) {
     const nuc = box.kind === 'nuc';
     const services: Record<string, ServiceState> = {
       sshd: svc('sshd', 22, WIN_DELAYS.sshd!),
       'corporate-agent': svc('corporate-agent', null, WIN_DELAYS['corporate-agent']!),
-      callus: svc('callus', 9000, WIN_DELAYS.callus!, !nuc),
+      kallus: svc('kallus', 9000, WIN_DELAYS.kallus!, !nuc),
     };
     if (nuc) services.motion = svc('motion', 9100, WIN_DELAYS.motion!, false);
     const files: Record<string, string> = {
       'C:\\ProgramData\\SecAgent\\agent.cfg': nuc ? 'log.rotation=off' : 'log.rotation=on',
       'C:\\ProgramData\\SecAgent\\logs\\': nuc ? '<size:118.4G>' : '<size:2.1G>',
-      'C:\\gort\\': '',
+      'C:\\gorth\\': '',
     };
-    // C:\gort\cards\… mirrors callus.localCardFiles (filled by seed/index.ts from gort's file contents).
+    // C:\gorth\cards\… mirrors kallus.localCardFiles (filled by seed/index.ts from gorth's file contents).
     const total = nuc ? 237.9 : 64;
     const used = nuc ? 237.9 : box.id === 'minix-01' ? 39.0 : box.id === 'minix-02' ? 38.6 : 38.4;
     const sched: Record<string, SchedTask> = nuc
       ? {}
-      : { GortCardSync: { name: 'GortCardSync', dailyAt: '10:00', lastRunMs: -31_200_000, lastResult: 0, running: false, runEndsPhysMs: null } };
+      : { GorthCardSync: { name: 'GorthCardSync', dailyAt: '10:00', lastRunMs: -31_200_000, lastResult: 0, running: false, runEndsPhysMs: null } };
     const physical = box.id === 'minix-01' || box.id === 'minix-02' || nuc;
     hosts[box.id] = createHost(box.id, box.kind, box.hostname, box.ip, {
       osName: WIN_OS,
@@ -194,9 +194,9 @@ export function seedHosts(nowMs: number): Record<string, Host> {
       bootDurationMs: 45_000,
       hasPower: true,
     });
-  hosts['orca-vm'] = vm('orca-vm', 'orca', '10.42.1.10', ['orca.lab.local'], { orca: svc('orca', 8080, VM_DELAYS.orca!), mysql: svc('mysql', 3306, VM_DELAYS.mysql!) }, 100, 41, {
-    '/opt/orca/application-prod.yml':
-      'spring:\n  datasource:\n    url: jdbc:mysql://localhost:3306/orca\n    username: orca\n  jpa:\n    open-in-view: false\nserver:\n  port: 8080\norca:\n  health-check:\n    interval: 300000\n    timeout: 10000\n',
+  hosts['orka-vm'] = vm('orka-vm', 'orka', '10.42.1.10', ['orka.lab.local'], { orka: svc('orka', 8080, VM_DELAYS.orka!), mysql: svc('mysql', 3306, VM_DELAYS.mysql!) }, 100, 41, {
+    '/opt/orka/application-prod.yml':
+      'spring:\n  datasource:\n    url: jdbc:mysql://localhost:3306/orka\n    username: orka\n  jpa:\n    open-in-view: false\nserver:\n  port: 8080\norka:\n  health-check:\n    interval: 300000\n    timeout: 10000\n',
   });
   hosts['jenkins-vm'] = vm('jenkins-vm', 'jenkins', '10.42.1.11', ['jenkins.lab.local'], { jenkins: svc('jenkins', 8080, VM_DELAYS.jenkins!) }, 250, 58);
   hosts['ollama-vm'] = vm('ollama-vm', 'ollama', '10.42.1.12', ['ollama.lab.local'], { ollama: svc('ollama', 11434, VM_DELAYS.ollama!) }, 500, 33);

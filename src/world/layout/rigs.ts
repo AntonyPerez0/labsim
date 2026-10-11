@@ -44,37 +44,37 @@ export interface RigActuators {
   readonly powerPanel: boolean;
   readonly sideDoor: boolean;
   readonly webcam: boolean;
-  readonly collis: boolean;
+  readonly kollis: boolean;
   readonly smartstripe: boolean;
 }
 
 const TOUCH_ACTUATORS: RigActuators = {
   gantry: true, solenoid: true, dipArm: true, tapPaddle: true, phoneSled: true,
-  tablet: true, powerPanel: true, sideDoor: true, webcam: true, collis: true, smartstripe: false,
+  tablet: true, powerPanel: true, sideDoor: true, webcam: true, kollis: true, smartstripe: false,
 };
 const TETHERED_ACTUATORS: RigActuators = {
   gantry: false, solenoid: false, dipArm: false, tapPaddle: false, phoneSled: false,
-  tablet: false, powerPanel: false, sideDoor: false, webcam: false, collis: false, smartstripe: true,
+  tablet: false, powerPanel: false, sideDoor: false, webcam: false, kollis: false, smartstripe: true,
 };
 const ADB_ACTUATORS: RigActuators = {
   gantry: false, solenoid: false, dipArm: false, tapPaddle: false, phoneSled: false,
-  tablet: false, powerPanel: false, sideDoor: false, webcam: false, collis: false, smartstripe: false,
+  tablet: false, powerPanel: false, sideDoor: false, webcam: false, kollis: false, smartstripe: false,
 };
 
 /** Sim object ids a rig binds to (candidates; see `findSimObject`). */
 export interface RigSimIds {
   readonly rigId: string;
   readonly piHostId: string;
-  readonly collisId: string | null;
-  readonly callusHostId: string | null;
+  readonly kollisId: string | null;
+  readonly kallusHostId: string | null;
   /** 40-simulation §2.11 camera view id (`cam-wall-e`, `cam-rackb`, `cam-tethered`). */
   readonly cameraViewId: string | null;
-  /** Orca device-row names (MFD before CFD). Runtime devices: use `RigState.deviceIds`. */
-  readonly orcaDeviceNames: readonly string[];
-  /** Power loads: device bricks (`psu-<orca device name>`). */
+  /** Orka device-row names (MFD before CFD). Runtime devices: use `RigState.deviceIds`. */
+  readonly orkaDeviceNames: readonly string[];
+  /** Power loads: device bricks (`psu-<orka device name>`). */
   readonly deviceLoadIds: readonly string[];
   readonly piLoadId: string | null;
-  readonly collisLoadId: string | null;
+  readonly kollisLoadId: string | null;
   readonly mainTerminalId: string | null;
   readonly motorTerminalId: string | null;
   /** Per-bay inline fuse (World D2). The sim may model only rack-level fuses → render healthy. */
@@ -83,7 +83,7 @@ export interface RigSimIds {
 
 interface RigBase {
   readonly id: PhysicalRigId;
-  /** Human readable name as printed on tape labels (tablet text comes from Orca). */
+  /** Human readable name as printed on tape labels (tablet text comes from Orka). */
   readonly hrn: string;
   readonly env: 'DEV1' | 'STG';
   readonly locationId: string;
@@ -129,7 +129,7 @@ export interface TouchDeviceConfig {
 export interface TouchRigDef extends RigBase {
   readonly id: TouchRigId;
   readonly kind: 'touch';
-  /** Orca rig kind (ROSIE is a PayCore 'standalone' rig; physically identical). */
+  /** Orka rig kind (ROSIE is a PayCrest 'standalone' rig; physically identical). */
   readonly simKind: 'touch' | 'standalone';
   readonly rackId: RackDef['id'];
   readonly bay: BayNumber;
@@ -142,15 +142,15 @@ export interface TouchRigDef extends RigBase {
   /** Front-lip label (bay floor left end) and bay fuse tape. */
   readonly lipLabel: string;
   readonly fuseTape: string;
-  readonly collisPropId: string;
-  readonly callusBoxPropId: string;
+  readonly kollisPropId: string;
+  readonly kallusBoxPropId: string;
 }
 
 export interface TetheredFaceDef {
   readonly id: string;
   readonly role: 'mfd' | 'cfd';
   readonly deviceType: DeviceTypeCode;
-  readonly orcaDeviceName: string;
+  readonly orkaDeviceName: string;
   /** Face centre, rack.t-local metres (front surface at z 0). */
   readonly local: Vec3;
   /** Face centre, world. */
@@ -181,7 +181,7 @@ export interface TetheredRigDef extends RigBase {
     readonly bladeText: 'SmartStripe Probe';
     /** OPTIMUS also holds a white magstripe card in its CFD clamp at this x. */
     readonly cardX?: number;
-    readonly simCollisId: string;
+    readonly simKollisId: string;
   };
 }
 
@@ -202,17 +202,17 @@ export type RigDef = TouchRigDef | TetheredRigDef | AdbRigDef;
 
 /* ───────────────────────────── Touch rigs (§2.10) ───────────────────────────── */
 
-function touchSim(id: TouchRigId, rack: 'A' | 'B', orcaDeviceName: string): RigSimIds {
+function touchSim(id: TouchRigId, rack: 'A' | 'B', orkaDeviceName: string): RigSimIds {
   return {
     rigId: id,
     piHostId: `pi-${id}`,
-    collisId: `collis-${id}`,
-    callusHostId: rack === 'A' ? 'minix-01' : 'minix-02',
+    kollisId: `kollis-${id}`,
+    kallusHostId: rack === 'A' ? 'minix-01' : 'minix-02',
     cameraViewId: rack === 'A' ? `cam-${id}` : 'cam-rackb',
-    orcaDeviceNames: [orcaDeviceName],
-    deviceLoadIds: [`psu-${orcaDeviceName}`],
+    orkaDeviceNames: [orkaDeviceName],
+    deviceLoadIds: [`psu-${orkaDeviceName}`],
     piLoadId: `pi-${id}`,
-    collisLoadId: `psu-collis-${id}`,
+    kollisLoadId: `psu-kollis-${id}`,
     mainTerminalId: `MAIN-${id}`,
     motorTerminalId: `MOTOR-${id}`,
     bayFuseId: `F-${id.toUpperCase()}-5V`,
@@ -253,7 +253,7 @@ function touchRig(
   hrn: string,
   rack: 'A' | 'B',
   bay: BayNumber,
-  orcaDeviceName: string,
+  orkaDeviceName: string,
   configs: TouchDeviceConfig[],
   extra: { sidePanelText?: string; simKind?: 'standalone'; roleTags: string[] },
 ): TouchRigDef {
@@ -264,7 +264,7 @@ function touchRig(
     hostPropId: rackId, rackId, bay,
     doorSide: rack === 'A' ? -1 : 1,
     actuators: TOUCH_ACTUATORS,
-    sim: touchSim(id, rack, orcaDeviceName),
+    sim: touchSim(id, rack, orkaDeviceName),
     cameraId: `cam.${id}`,
     roleTags: extra.roleTags,
     sidePanelText: extra.sidePanelText ?? null,
@@ -272,18 +272,18 @@ function touchRig(
     deviceConfigs: configs,
     lipLabel: hrn,
     fuseTape: `F-${hrn}-5V 10A`,
-    collisPropId: `collis.${id}`,
-    callusBoxPropId: rack === 'A' ? 'callus.minix-01' : 'callus.minix-02',
+    kollisPropId: `kollis.${id}`,
+    kallusBoxPropId: rack === 'A' ? 'kallus.minix-01' : 'kallus.minix-02',
   };
 }
 
 export const TOUCH_RIGS: readonly TouchRigDef[] = [
   touchRig('wall-e', 'WALL-E', 'A', 4, 'wall-e-flux3', [flex('FLUX_3', 'flux-cradle-gen3', 'FLUX 3', [-34.0, -343.0], 89, -335, -275)], {
     sidePanelText: 'SETI',
-    roleTags: ['touch', 'collis', 'flexgen3', 'printer'],
+    roleTags: ['touch', 'kollis', 'flexgen3', 'printer'],
   }),
   touchRig('eve', 'EVE', 'A', 3, 'eve-flux4', [flex('FLUX_4', 'flux-cradle-gen3', 'FLUX 4', [-34.0, -346.0], 89, -338, -278)], {
-    roleTags: ['touch', 'collis', 'flexgen3', 'printer', 'legacy-nuc-motion'],
+    roleTags: ['touch', 'kollis', 'flexgen3', 'printer', 'legacy-nuc-motion'],
   }),
   touchRig('r2-d2', 'R2-D2', 'A', 2, 'r2-d2-duet', [
     {
@@ -294,7 +294,7 @@ export const TOUCH_RIGS: readonly TouchRigDef[] = [
       slotMm: [0, 85, -160], powerKeyZMm: -517, sledRailXMm: 198,
       nfcMm: [86.2, 119.7], cameraTargetMm: [0, 100, -242],
     },
-  ], { roleTags: ['touch', 'collis', 'duet', 'ocr'] }),
+  ], { roleTags: ['touch', 'kollis', 'duet', 'ocr'] }),
   touchRig('bumblebee', 'BUMBLEBEE', 'A', 1, 'bumblebee-micro3', [
     {
       type: 'MICRO_3', cradle: 'micro-dock', tape: 'MICRO 3',
@@ -303,14 +303,14 @@ export const TOUCH_RIGS: readonly TouchRigDef[] = [
       slotMm: [0, 82.5, -160], powerKeyZMm: -298, sledRailXMm: 127,
       nfcMm: [86.2, 119.7], cameraTargetMm: [0, 100, -242],
     },
-  ], { roleTags: ['touch', 'collis', 'micro', 'printer'] }),
+  ], { roleTags: ['touch', 'kollis', 'micro', 'printer'] }),
   touchRig('johnny-5', 'JOHNNY-5', 'B', 4, 'johnny-5-flux1', [
     small5('FLUX_1', 'flux-cradle-gen1', 'FLUX 1', [-31.15, -335.0], 87, -335, 65, -280),
     flex('FLUX_2', 'flux-cradle-gen2', 'FLUX 2', [-34.0, -348.0], 88, -338, -280),
-  ], { roleTags: ['touch', 'collis', 'flux-legacy', 'printer'] }),
+  ], { roleTags: ['touch', 'kollis', 'flux-legacy', 'printer'] }),
   touchRig('seti', 'SETI', 'B', 3, 'seti-compass', [small5('COMPASS', 'compass-cradle', 'COMPASS', [-31.15, -311.0], 85, -305, 68, -256)], {
     sidePanelText: 'SETI',
-    roleTags: ['touch', 'collis', 'canada', 'physical-pin'],
+    roleTags: ['touch', 'kollis', 'canada', 'physical-pin'],
   }),
   touchRig('baymax', 'BAYMAX', 'B', 2, 'baymax-st2018', [
     {
@@ -320,10 +320,10 @@ export const TOUCH_RIGS: readonly TouchRigDef[] = [
       slotMm: [0, 85, -160], powerKeyZMm: -352, sledRailXMm: 198,
       nfcMm: [155.0, 192.3], cameraTargetMm: [0, 100, -283],
     },
-  ], { roleTags: ['touch', 'collis', 'printer', 'build'] }),
+  ], { roleTags: ['touch', 'kollis', 'printer', 'build'] }),
   touchRig('rosie', 'ROSIE', 'B', 1, 'rosie-pocket', [flex('FLUX_POCKET', 'flux-cradle-pocket', 'FLUX POCKET', [-34.0, -320.0], 90, -302, -252)], {
     simKind: 'standalone',
-    roleTags: ['touch', 'collis', 'paycore', 'flexgen3', 'printerless'],
+    roleTags: ['touch', 'kollis', 'paycrest', 'flexgen3', 'printerless'],
   }),
 ];
 
@@ -345,7 +345,7 @@ function face(
   return {
     id: `rig.${rig}.${role}`,
     role, deviceType,
-    orcaDeviceName: `${rig}-${role}`,
+    orkaDeviceName: `${rig}-${role}`,
     local,
     world: rackTToWorld(local),
     faceM: micro3 ? [0.208, 0.158] : [0.21, 0.16],
@@ -361,13 +361,13 @@ function tetheredSim(id: TetheredRigId): RigSimIds {
   return {
     rigId: id,
     piHostId: 'pi-tethered',
-    collisId: `smartstripe-${id}`,
-    callusHostId: 'minix-02',
+    kollisId: `smartstripe-${id}`,
+    kallusHostId: 'minix-02',
     cameraViewId: 'cam-tethered',
-    orcaDeviceNames: [`${id}-mfd`, `${id}-cfd`],
+    orkaDeviceNames: [`${id}-mfd`, `${id}-cfd`],
     deviceLoadIds: [`psu-${id}-mfd`, `psu-${id}-cfd`],
     piLoadId: 'pi-tethered',
-    collisLoadId: null,
+    kollisLoadId: null,
     mainTerminalId: null,
     motorTerminalId: null,
     bayFuseId: null,
@@ -380,14 +380,14 @@ export const TETHERED_RIGS: readonly TetheredRigDef[] = [
     actuators: TETHERED_ACTUATORS, sim: tetheredSim('megatron'), cameraId: 'cam.tethered', roleTags: ['tethered', 'dev1'],
     mfd: face('megatron', 'mfd', 'STAND_2', -0.112, 1.34, 'DEV1', 'wordmark', 'lock', { glyph: '▶▬', color: '#111111' }),
     cfd: face('megatron', 'cfd', 'MICRO_2', -0.112, 1.12, 'DEV1', 'wordmark', 'dark'),
-    smartstripe: { id: 'rig.megatron.smartstripe', dongleX: -0.235, clampX: -0.15, bladeText: 'SmartStripe Probe', simCollisId: 'smartstripe-megatron' },
+    smartstripe: { id: 'rig.megatron.smartstripe', dongleX: -0.235, clampX: -0.15, bladeText: 'SmartStripe Probe', simKollisId: 'smartstripe-megatron' },
   },
   {
     id: 'optimus', hrn: 'OPTIMUS', kind: 'tethered', env: 'STG', locationId: 'loc.rack-tethered', hostPropId: 'rack.t',
     actuators: TETHERED_ACTUATORS, sim: tetheredSim('optimus'), cameraId: 'cam.tethered', roleTags: ['tethered', 'stg'],
     mfd: face('optimus', 'mfd', 'MICRO_3', 0.112, 1.34, 'STG', 'mark', 'lock', { glyph: '▬▶', color: '#2fbf5a' }),
     cfd: face('optimus', 'cfd', 'MICRO_3', 0.112, 1.12, 'STG', 'mark', 'dark'),
-    smartstripe: { id: 'rig.optimus.smartstripe', dongleX: 0.015, clampX: 0.07, cardX: 0.17, bladeText: 'SmartStripe Probe', simCollisId: 'smartstripe-optimus' },
+    smartstripe: { id: 'rig.optimus.smartstripe', dongleX: 0.015, clampX: 0.07, cardX: 0.17, bladeText: 'SmartStripe Probe', simKollisId: 'smartstripe-optimus' },
   },
 ];
 
@@ -399,11 +399,11 @@ export function shelfAdbToWorld(local: Vec3): Vec3 {
   return [round6(SHELF_ADB_ORIGIN[0] + local[0]), round6(local[1]), round6(SHELF_ADB_ORIGIN[2] + local[2])];
 }
 
-function adbSim(id: AdbRigId, orcaDeviceName: string): RigSimIds {
+function adbSim(id: AdbRigId, orkaDeviceName: string): RigSimIds {
   return {
-    rigId: id, piHostId: 'pi-adb-shelf', collisId: null, callusHostId: null, cameraViewId: null,
-    orcaDeviceNames: [orcaDeviceName], deviceLoadIds: [`psu-${orcaDeviceName}`], piLoadId: 'pi-adb-shelf',
-    collisLoadId: null, mainTerminalId: null, motorTerminalId: null, bayFuseId: null,
+    rigId: id, piHostId: 'pi-adb-shelf', kollisId: null, kallusHostId: null, cameraViewId: null,
+    orkaDeviceNames: [orkaDeviceName], deviceLoadIds: [`psu-${orkaDeviceName}`], piLoadId: 'pi-adb-shelf',
+    kollisLoadId: null, mainTerminalId: null, motorTerminalId: null, bayFuseId: null,
   };
 }
 
@@ -540,7 +540,7 @@ export function rigProbePoints(): ProbePointDef[] {
   return out;
 }
 
-/** Collis assignment: Rack A bay n → left half of Callus level n; Rack B → right half. */
-export function collisLevelFor(rig: TouchRigDef): { level: BayNumber; half: 'left' | 'right' } {
+/** Kollis assignment: Rack A bay n → left half of Kallus level n; Rack B → right half. */
+export function kollisLevelFor(rig: TouchRigDef): { level: BayNumber; half: 'left' | 'right' } {
   return { level: rig.bay, half: rig.rackId === 'rack.a' ? 'left' : 'right' };
 }

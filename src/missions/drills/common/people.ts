@@ -2,9 +2,9 @@
 import { personName } from '@/content';
 
 export const N = {
-  jared: personName('jared'),
-  tate: personName('tate'),
-  david: personName('david'),
+  jaden: personName('jaden'),
+  nate: personName('nate'),
+  devin: personName('devin'),
   morgan: personName('morgan'),
   riley: personName('riley'),
   sam: personName('sam'),

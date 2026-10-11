@@ -39,7 +39,7 @@ const HARDWARE_EVENTS = new Set([
 const WIRING_EVENTS = new Set(['power.fuseRemoved', 'power.fuseInserted', 'power.fuseReplaced', 'rig.reseated', 'host.ethernetChanged']);
 
 function isHardwareIncident(tags: readonly string[]): boolean {
-  return tags.some((t) => t.startsWith('hw.') || t.startsWith('power.') || t === 'cards.callus');
+  return tags.some((t) => t.startsWith('hw.') || t.startsWith('power.') || t === 'cards.kallus');
 }
 
 export const PROCESS_BONUSES: readonly ProcessBonusDef[] = [
@@ -84,14 +84,14 @@ export const PROCESS_BONUSES: readonly ProcessBonusDef[] = [
   },
   {
     id: 'PB03',
-    behaviour: personText('Coordinate change landed through a Gort PR merged by {{jared}} (not only a direct Orca edit)'),
+    behaviour: personText('Coordinate change landed through a Gorth PR merged by {{jaden}} (not only a direct Orka edit)'),
     points: 75,
     appliesTo: 'listed',
-    check: (ctx) => ctx.events.some((e) => e.type === 'github.prMerged' && pl(e).repo === 'gort' && pl(e).by === 'jared'),
+    check: (ctx) => ctx.events.some((e) => e.type === 'github.prMerged' && pl(e).repo === 'gorth' && pl(e).by === 'jaden'),
   },
   {
     id: 'PB04',
-    behaviour: 'Pigeon JSON fixed by pasting from tests/_templates/known_good_actions.json, or located with git diff',
+    behaviour: 'Parrot JSON fixed by pasting from tests/_templates/known_good_actions.json, or located with git diff',
     points: 25,
     appliesTo: 'listed',
     check: (ctx) =>
@@ -107,10 +107,10 @@ export const PROCESS_BONUSES: readonly ProcessBonusDef[] = [
     points: 50,
     appliesTo: 'listed',
     check: (ctx) => {
-      const created = ctx.events.some((e) => e.type === 'orca.entitySaved' && pl(e).entity === 'device' && pl(e).action === 'create' && player(e));
-      const deleted = ctx.events.some((e) => e.type === 'orca.entitySaved' && pl(e).entity === 'device' && pl(e).action === 'delete' && player(e));
+      const created = ctx.events.some((e) => e.type === 'orka.entitySaved' && pl(e).entity === 'device' && pl(e).action === 'create' && player(e));
+      const deleted = ctx.events.some((e) => e.type === 'orka.entitySaved' && pl(e).entity === 'device' && pl(e).action === 'delete' && player(e));
       const linked = ctx.events.some(
-        (e) => e.type === 'orca.entitySaved' && pl(e).entity === 'robot' && player(e) && ((pl(e).fields as string[] | undefined) ?? []).some((f) => /deviceId|device/i.test(f)),
+        (e) => e.type === 'orka.entitySaved' && pl(e).entity === 'robot' && player(e) && ((pl(e).fields as string[] | undefined) ?? []).some((f) => /deviceId|device/i.test(f)),
       );
       return created && linked && !deleted;
     },

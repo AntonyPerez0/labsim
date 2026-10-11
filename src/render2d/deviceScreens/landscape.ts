@@ -234,7 +234,7 @@ export function drawLandscape(sc: ScreenCtx): void {
       drawMark(sc.ctx, m.X(86), m.Y(46), m.S(16), '#ffffff');
       m.text('Resetting device…', W / 2, 64, 4, { color: '#ffffff', align: 'center' });
       progressBar(sc, 36, 70, 100, 3, progressOf(sc, 6000), C.green, '#1f2a3d');
-      m.text('Laz Automation', W / 2, 102, 2.4, { color: '#7b8794', align: 'center' });
+      m.text('Lazo Automation', W / 2, 102, 2.4, { color: '#7b8794', align: 'center' });
       return;
     case 'app-orders':
     case 'app-transactions':

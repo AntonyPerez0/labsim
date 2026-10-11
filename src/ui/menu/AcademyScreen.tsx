@@ -14,8 +14,8 @@ import { pct, shortTitle, estLabel } from '@/ui/services/format';
 
 const TRACKS: { title: string; sub: string; ids: string[] }[] = [
   { title: 'Foundations', sub: 'The lab, the devices, power and the robots', ids: ['M01', 'M02', 'M03', 'M04', 'M05'] },
-  { title: 'Orca & Jenkins', sub: 'Statuses, entities, merchants, screens and pipelines', ids: ['M06', 'M07', 'M08', 'M09', 'M10', 'M11'] },
-  { title: 'Automation code', sub: 'ADB, uia-remote, config.properties, Pigeon and OCR', ids: ['M12', 'M13', 'M14', 'M15', 'M16'] },
+  { title: 'Orka & Jenkins', sub: 'Statuses, entities, merchants, screens and pipelines', ids: ['M06', 'M07', 'M08', 'M09', 'M10', 'M11'] },
+  { title: 'Automation code', sub: 'ADB, uia-relay, config.properties, Parrot and OCR', ids: ['M12', 'M13', 'M14', 'M15', 'M16'] },
   { title: 'Capstone', sub: 'AI, infrastructure, teams and the capstone shift', ids: ['M17', 'M18'] },
 ];
 

@@ -1,7 +1,7 @@
 /**
  * DR13 Meter Reader (GP §2.4.3): a multimeter reading at a probe point on the power chain → the fault.
  * Power chain (Ref §6, F227): 120 V AC wall → Mean Well → 24 V DC rail → step-down regulators → 12 V DC
- * (NUCs) / 5 V DC 10 A (Pis), protected by inline fuses; LabSim devices (18 V) and Collis probes use
+ * (NUCs) / 5 V DC 10 A (Pis), protected by inline fuses; LabSim devices (18 V) and Kollis probes use
  * commercial AC strips. Readings/values are [illus.] (Cur M03); the logic is the reference's.
  */
 import type { DrillDef, DrillItem } from '../../types';
@@ -112,16 +112,16 @@ export const METER_ITEMS: readonly DrillItem<MeterData>[] = [
   m('JOHNNY-5 is Connection Failed but its Pi LEDs are on. 5 V branch:', [
     { at: 'reg5', label: '5 V regulator output', mode: 'V⎓', value: '5.07' },
     { at: 'pi', label: 'Pi side of the fuse', mode: 'V⎓', value: '5.06' },
-  ], ANS.piSide, [ANS.blownFuse, ANS.regDead, ANS.upstream], 'Power is fine all the way to the Pi — look at the network cable, the Pi itself or Callus instead.', { facts: ['F086', 'F087'], tags: ['power.rails', 'hw.pi'], illustrative: true }),
-  m("A Flux 4's power brick, plugged into the commercial AC strip. Output of the brick:", [{ at: 'lab', label: 'LabSim PSU brick output', mode: 'V⎓', value: '18.2' }], ANS.normal18, [ANS.wrongRail, ANS.regDead, ANS.blownFuse], 'LabSim devices draw an irregular 18 V, so LabSim terminals (and Collis probes) bypass the DC rails entirely and plug into commercial AC power strips.', {
+  ], ANS.piSide, [ANS.blownFuse, ANS.regDead, ANS.upstream], 'Power is fine all the way to the Pi — look at the network cable, the Pi itself or Kallus instead.', { facts: ['F086', 'F087'], tags: ['power.rails', 'hw.pi'], illustrative: true }),
+  m("A Flux 4's power brick, plugged into the commercial AC strip. Output of the brick:", [{ at: 'lab', label: 'LabSim PSU brick output', mode: 'V⎓', value: '18.2' }], ANS.normal18, [ANS.wrongRail, ANS.regDead, ANS.blownFuse], 'LabSim devices draw an irregular 18 V, so LabSim terminals (and Kollis probes) bypass the DC rails entirely and plug into commercial AC power strips.', {
     facts: ['F228', 'F229'],
     tags: ['power.18v'],
     branch: 'strip',
     illustrative: true,
   }),
-  m('A Collis probe PSU: where should it be plugged in, given this reading at the strip?', [{ at: 'strip', label: 'AC power strip socket', mode: 'V~', value: '120' }], 'On the commercial AC power strip — never the DC rails', [ANS.wrongRail, 'On the 12 V NUC line', 'On the 5 V 10 A Pi line'], 'Expensive Collis probes bypass the custom DC rails and plug into commercial AC power strips to prevent frying components.', {
+  m('A Kollis probe PSU: where should it be plugged in, given this reading at the strip?', [{ at: 'strip', label: 'AC power strip socket', mode: 'V~', value: '120' }], 'On the commercial AC power strip — never the DC rails', [ANS.wrongRail, 'On the 12 V NUC line', 'On the 5 V 10 A Pi line'], 'Expensive Kollis probes bypass the custom DC rails and plug into commercial AC power strips to prevent frying components.', {
     facts: ['F229'],
-    tags: ['power.18v', 'hw.collis'],
+    tags: ['power.18v', 'hw.kollis'],
     branch: 'strip',
   }),
   m('Rack A, 5 V branch, after a fuse swap:', [

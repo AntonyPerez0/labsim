@@ -1,9 +1,9 @@
 /**
- * Camera stream catalogue and availability (Apps §8.1–§8.2): distinct Orca Camera Stream URLs, the robots on
+ * Camera stream catalogue and availability (Apps §8.1–§8.2): distinct Orka Camera Stream URLs, the robots on
  * each, reachability of `camera-stream` :8081 with the reason line, the camera id behind a URL.
  */
 import { sim } from '@/sim';
-import type { LabState, OrcaRobot } from '@/sim/types';
+import type { LabState, OrkaRobot } from '@/sim/types';
 import { reach, reachErrorShort } from '@/computer/shell/reach';
 import { cameraDefForUrl } from './frames';
 
@@ -11,7 +11,7 @@ export interface StreamInfo {
   url: string;
   /** "10.42.10.40" */
   host: string;
-  robots: OrcaRobot[];
+  robots: OrkaRobot[];
 }
 
 export const STREAM_RE = /^https?:\/\/([\d.]+)(?::(\d+))?\/stream\.mjpg\/?$/i;
@@ -29,7 +29,7 @@ function ipKey(ip: string): number {
   return ip.split('.').reduce((a, p) => a * 256 + (Number(p) || 0), 0);
 }
 
-export function listStreams(robots: Record<number, OrcaRobot>): StreamInfo[] {
+export function listStreams(robots: Record<number, OrkaRobot>): StreamInfo[] {
   const by = new Map<string, StreamInfo>();
   for (const r of Object.values(robots)) {
     const url = (r.cameraStreamUrl ?? '').trim();
@@ -77,13 +77,13 @@ export function streamStatus(lab: LabState, url: string): StreamStatus {
 }
 
 /** Robot tag text: `R2-D2 · 10.42.10.14` (dedicated cameras) — the robot's Pi IP from its ADB service URL. */
-export function robotTag(r: OrcaRobot): string {
+export function robotTag(r: OrkaRobot): string {
   const ip = hostOfUrl(r.adbServiceUrl ?? '') ?? hostOfUrl(r.cameraStreamUrl) ?? '';
   return `${r.humanReadableName || r.name.toUpperCase()}${ip ? ` · ${ip}` : ''}`;
 }
 
 /** Snapshot file name (Apps §8.6): `r2d2_cfd.png` for R2-D2, else `<rig>_<hhmmss>.png`. */
-export function snapshotName(robot: OrcaRobot | null, cameraId: string | null, hhmmss: string): string {
+export function snapshotName(robot: OrkaRobot | null, cameraId: string | null, hhmmss: string): string {
   const rig = robot?.name ?? cameraId?.replace(/^cam-/, '') ?? 'camera';
   if (rig === 'r2-d2') return 'r2d2_cfd.png';
   return `${rig.replace(/[^a-z0-9]+/gi, '').toLowerCase()}_${hhmmss.replace(/:/g, '')}.png`;

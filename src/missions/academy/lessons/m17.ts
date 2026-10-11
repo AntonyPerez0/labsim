@@ -1,9 +1,9 @@
 /**
- * M17 — AI, Infrastructure & the Roadmap (Cur §2 M17). Mentor {{jared}}, cameo {{david}}.
+ * M17 — AI, Infrastructure & the Roadmap (Cur §2 M17). Mentor {{jaden}}, cameo {{devin}}.
  * Setup (`academy:M17`, Sim §4.4.2): GPU blade on `loc.server-shelf` (GPUs 1–2 on top, 3–4 underneath —
  * crouch to tag), retired tower on the floor, Ollama at `10.42.1.12:11434` with the vision model
  * `llava`, receipt image `walle_receipt_0912.jpg` (tip 18 % of $42.00 printed as $7.65 instead of $7.56),
- * and PR `uia-remote#212 [AI eval] Generated tests for ReceiptScreen` re-opened.
+ * and PR `uia-relay#212 [AI eval] Generated tests for ReceiptScreen` re-opened.
  */
 import type { RootState } from '@/core/state';
 import { c, on, p } from '../../types';
@@ -35,19 +35,19 @@ const receiptFlagged = c.happened(
 
 export const M17: LessonDef = {
   moduleId: 'M17',
-  mentor: 'jared',
-  setup: { preset: 'academy:M17', spawn: 'loc.workstation', apps: { unlock: ['ollama', 'github', 'orca', 'jenkins', 'terminal', 'chat'] } },
+  mentor: 'jaden',
+  setup: { preset: 'academy:M17', spawn: 'loc.workstation', apps: { unlock: ['ollama', 'github', 'orka', 'jenkins', 'terminal', 'chat'] } },
   deck: 'deck.M17',
   manualChapters: ['Infrastructure'],
   realLabChecklist: [
-    'One shelf-mounted blade with four NVIDIA GPUs (two exposed, two underneath) replaced the old tower and hosts the VMs, Orca, Jenkins and Ollama. Restarting it takes all of them down.',
-    'Orca runs on an on-premise lab VM backed by MySQL; the plan is to containerise it with Docker and move it to Google Cloud.',
+    'One shelf-mounted blade with four NVIDIA GPUs (two exposed, two underneath) replaced the old tower and hosts the VMs, Orka, Jenkins and Ollama. Restarting it takes all of them down.',
+    'Orka runs on an on-premise lab VM backed by MySQL; the plan is to containerise it with Docker and move it to Google Cloud.',
     'Ollama runs a local vision LLM as a proof of concept on webcam streams (receipt layout, tip math). It is a PoC, not a gate.',
     'Claude was evaluated for repository optimisation and test generation. Generated code still gets a human review against the team rules.',
     'Gen 2 Software PIN Bypass, built with the Core OS Team, will leave physical robots only for interactions that cannot be faked, like dipping a card.',
   ],
   steps: [
-    { id: 'M17.01', kind: 'walk-to', hud: 'Meet {{jared}} at the server shelf', location: 'loc.server-shelf' },
+    { id: 'M17.01', kind: 'walk-to', hud: 'Meet {{jaden}} at the server shelf', location: 'loc.server-shelf' },
     {
       id: 'M17.02',
       kind: 'interact',
@@ -62,7 +62,7 @@ export const M17: LessonDef = {
         {
           id: 'power-button',
           on: on('player.interacted', { interactableId: 'server.blade' }, (pl) => /power/i.test(pl.verb)),
-          say: 'Hands off the power button. That blade runs Orca, Jenkins and Ollama: every build in the lab dies with it.',
+          say: 'Hands off the power button. That blade runs Orka, Jenkins and Ollama: every build in the lab dies with it.',
           gw: 'GW13',
         },
       ],
@@ -81,8 +81,8 @@ export const M17: LessonDef = {
     {
       id: 'M17.04',
       kind: 'dialogue',
-      speaker: 'jared',
-      text: 'The blade replaced that tower. Four NVIDIA GPUs, two exposed, two underneath. It hosts our VMs, Orca and Jenkins, and Ollama. Orca is still on an on-prem VM with MySQL behind it. The plan is to containerise it with Docker and move it to Google Cloud.',
+      speaker: 'jaden',
+      text: 'The blade replaced that tower. Four NVIDIA GPUs, two exposed, two underneath. It hosts our VMs, Orka and Jenkins, and Ollama. Orka is still on an on-prem VM with MySQL behind it. The plan is to containerise it with Docker and move it to Google Cloud.',
       factIds: ['F075', 'F076', 'F077', 'F078', 'F023', 'F013', 'F022'],
     },
     {
@@ -108,27 +108,27 @@ export const M17: LessonDef = {
     {
       id: 'M17.06',
       kind: 'dialogue',
-      speaker: 'david',
+      speaker: 'devin',
       text: "Ollama is a local LLM runner on that blade. Right now it's a proof of concept: a vision LLM watching webcam streams to validate receipt layouts and tip math. Useful, but it's a PoC, not a gate.",
       factIds: ['F031', 'F032'],
     },
     {
       id: 'M17.07',
       kind: 'dialogue',
-      speaker: 'david',
+      speaker: 'devin',
       text: "Corporate AI initiatives also evaluated Claude, for repository optimisation and automated test generation. Generated tests still get a human review. Here's one.",
       factIds: ['F033'],
     },
     {
       id: 'M17.08',
       kind: 'computer-task',
-      hud: 'Review PR #212 in uia-remote',
+      hud: 'Review PR #212 in uia-relay',
       app: 'github',
-      route: '/labsim-lab/uia-remote/pull/212/files',
+      route: '/labsim-lab/uia-relay/pull/212/files',
       success: c.all(
-        c.eq(p.pr('uia-remote', 212).verdict, 'REQUEST_CHANGES'),
+        c.eq(p.pr('uia-relay', 212).verdict, 'REQUEST_CHANGES'),
         c.appAction('github', 'github.pr.reviewSubmitted', (d) => {
-          if (d.repo !== 'uia-remote' || d.number !== 212 || d.verdict !== 'REQUEST_CHANGES') return false;
+          if (d.repo !== 'uia-relay' || d.number !== 212 || d.verdict !== 'REQUEST_CHANGES') return false;
           const comments = (d.comments as { reason?: string | null; body?: string }[] | undefined) ?? [];
           return comments.some((cm) => cm.reason === 'missing-isScreenPresent' || /isScreenPresent/.test(cm.body ?? '')) || /isScreenPresent/.test(String(d.body ?? ''));
         }),
@@ -141,7 +141,7 @@ export const M17: LessonDef = {
             return d.number === 212 && d.verdict === 'APPROVE';
           }),
           say: 'Look again: waitForScreen() is there, but isScreenPresent() is missing. Both are mandatory on every screen class.',
-          speaker: 'david',
+          speaker: 'devin',
         },
       ],
       hints: [
@@ -149,7 +149,7 @@ export const M17: LessonDef = {
         { afterS: 120, idle: true, effect: 'text', text: 'Review changes → Request changes, reason "Missing mandatory isScreenPresent()".' },
         { afterS: 180, idle: true, effect: 'show-me-button' },
       ],
-      showMe: [{ app: 'github', route: '/labsim-lab/uia-remote/pull/212/files', target: 'github.reviewChanges', action: 'click' }],
+      showMe: [{ app: 'github', route: '/labsim-lab/uia-relay/pull/212/files', target: 'github.reviewChanges', action: 'click' }],
       factIds: ['F033', 'F180', 'F179'],
     },
     { id: 'M17.09', kind: 'walk-to', hud: 'Go to the roadmap board', location: 'loc.whiteboard' },
@@ -160,7 +160,7 @@ export const M17: LessonDef = {
       target: 'prop.roadmap-board',
       success: minigameDone('roadmap-sort', 8),
       hints: [
-        { afterS: 60, effect: 'text', text: 'Orca still runs on the on-prem VM today; Docker on GCP is the plan.' },
+        { afterS: 60, effect: 'text', text: 'Orka still runs on the on-prem VM today; Docker on GCP is the plan.' },
         { afterS: 120, effect: 'text', text: 'The NUCs no longer control hardware, and Stand Duet OCR is being phased out for UI Automator 2.3.' },
       ],
       factIds: ['F022', 'F023', 'F068', 'F032', 'F222', 'F156', 'F018'],
@@ -168,7 +168,7 @@ export const M17: LessonDef = {
     {
       id: 'M17.11',
       kind: 'dialogue',
-      speaker: 'jared',
+      speaker: 'jaden',
       text: "Gen 2 is the big one. We're working with the Core OS Team on a software framework that bypasses the robots for Secure Touch PIN entry. Then the robots only do what can't be faked, like dipping a card.",
       factIds: ['F222', 'F223'],
     },

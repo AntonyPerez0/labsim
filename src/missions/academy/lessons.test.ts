@@ -32,13 +32,13 @@ const WORLD_ACTIONS_UI = new Set(['minigame.completed', 'ruler.measured', 'white
 
 /** Fault catalogue of Sim §4.3 (fallback when the live sim catalogue is unavailable). */
 const DOC_FAULT_IDS = new Set(
-  'pi.hung pi.off pi.serviceDown camera.sharedHostDown camera.usbUnplugged pi.diskFull pi.wineBroken eth.unplugged eth.damaged callus.down nuc.diskFull vm.serviceDown orca.mysqlDown orca.appDown jenkins.down ollama.down net.switchDown fuse.blown fuse.underRated power.regulatorOff power.outletDead rig.lockReleased rig.steppersDisabled rig.motorOff rig.mainOff rig.solenoidLoose rig.dipArmMisaligned rig.cradleCracked rig.limitSwitchBroken rig.webcamMisaimed rig.motionOnNuc rig.rebuild device.unpowered device.dead device.adbTcpReset device.printerNoPaper laz.skipAdbRestore receipt.qrRollout tether.linkDown collis.unpowered collis.ribbonUnseated callus.syncStale merchant.credentialBlank merchant.ubiRouteWrong merchant.overwritten ubi.routeDown card.gortPathWrong card.trackDataCorrupt orca.offsets orca.hrnTypo orca.urlWrong orca.tetherCleared orca.tetherCloned orca.screenLocationShift orca.screenLocationTypo orca.missingReceiptMap orca.statusOverride orca.staleReservation ocr.labelShift ocr.capitalisation ocr.typo gort.capabilityDropped pigeon.missingComma pigeon.missingBracket pigeon.screenCompareEmpty uia.waitForScreenStub uia.scrollSwapped uia.missingScreenMethods uia.teardownMissing config.port5555 config.value config.themeKernel jenkins.envCase jenkins.jobMoved jenkins.capsConflict jenkins.namedRobot rig.testRunning'.split(
+  'pi.hung pi.off pi.serviceDown camera.sharedHostDown camera.usbUnplugged pi.diskFull pi.wineBroken eth.unplugged eth.damaged kallus.down nuc.diskFull vm.serviceDown orka.mysqlDown orka.appDown jenkins.down ollama.down net.switchDown fuse.blown fuse.underRated power.regulatorOff power.outletDead rig.lockReleased rig.steppersDisabled rig.motorOff rig.mainOff rig.solenoidLoose rig.dipArmMisaligned rig.cradleCracked rig.limitSwitchBroken rig.webcamMisaimed rig.motionOnNuc rig.rebuild device.unpowered device.dead device.adbTcpReset device.printerNoPaper lazo.skipAdbRestore receipt.qrRollout tether.linkDown kollis.unpowered kollis.ribbonUnseated kallus.syncStale merchant.credentialBlank merchant.uboRouteWrong merchant.overwritten ubo.routeDown card.gorthPathWrong card.trackDataCorrupt orka.offsets orka.hrnTypo orka.urlWrong orka.tetherCleared orka.tetherCloned orka.screenLocationShift orka.screenLocationTypo orka.missingReceiptMap orka.statusOverride orka.staleReservation ocr.labelShift ocr.capitalisation ocr.typo gorth.capabilityDropped parrot.missingComma parrot.missingBracket parrot.screenCompareEmpty uia.waitForScreenStub uia.scrollSwapped uia.missingScreenMethods uia.teardownMissing config.port5555 config.value config.themeKernel jenkins.envCase jenkins.jobMoved jenkins.capsConflict jenkins.namedRobot rig.testRunning'.split(
     ' ',
   ),
 );
 /** Setup ops of Sim §4.4.1. */
 const DOC_SETUP_OPS = new Set(
-  'flag.set config.patch orca.setStatus orca.createDevice orca.linkDevice orca.deleteEntity orca.syncFromGort device.stage device.swap device.provision power.plug power.addLoad ws.adbKnows chat.post ollama.seedReceipt repo.clone repo.commitFixture repo.deleteFile github.seedPr github.reopenPr github.unmergePr config.write jenkins.setParam jenkins.startBuild jenkins.seedBuild runner.startLocal'.split(' '),
+  'flag.set config.patch orka.setStatus orka.createDevice orka.linkDevice orka.deleteEntity orka.syncFromGorth device.stage device.swap device.provision power.plug power.addLoad ws.adbKnows chat.post ollama.seedReceipt repo.clone repo.commitFixture repo.deleteFile github.seedPr github.reopenPr github.unmergePr config.write jenkins.setParam jenkins.startBuild jenkins.seedBuild runner.startLocal'.split(' '),
 );
 
 function liveCatalogue(): { faults: Set<string> | null; ops: Set<string> | null } {
@@ -316,7 +316,7 @@ describe('Academy lessons — sim scenarios', () => {
 });
 
 describe('Academy lessons — text rules', () => {
-  const NAME = /\b(Morgan|Jared|Tate|David|Riley|Sam|Alex)\b/;
+  const NAME = /\b(Morgan|Jaden|Nate|Devin|Riley|Sam|Alex)\b/;
   const GENDERED = /\b(he|she|him|her|his|hers|himself|herself)\b/i;
 
   it('authored strings never spell team names (use {{key}} tokens) and never use gendered pronouns', () => {

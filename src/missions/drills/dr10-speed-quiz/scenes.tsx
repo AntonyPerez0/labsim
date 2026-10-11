@@ -149,7 +149,7 @@ function TabletTabs(p: SceneProps) {
         </R>
       ))}
       <text x="44" y="200" fontSize="15" fill="#4b5563">Rig description: Flux 3 touch robot (photo rig). Dedicated webcam.</text>
-      <text x="44" y="230" fontSize="15" fill="#4b5563">Robot Pi 10.42.10.11 · device 10.42.30.11 · Orca: Available</text>
+      <text x="44" y="230" fontSize="15" fill="#4b5563">Robot Pi 10.42.10.11 · device 10.42.30.11 · Orka: Available</text>
     </TabletFrame>
   );
 }

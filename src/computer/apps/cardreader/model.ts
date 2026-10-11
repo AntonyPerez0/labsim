@@ -2,7 +2,7 @@
  * MagStripe Reader model (Apps §12.1): the tracks each physical desk test card carries, the reader's last swipe
  * (module store shared by the window and the background listener) and the `workstation.cardSwiped` listener
  * started by `initComputer()` — beep, fill the fields, open/focus the window (+ toast) and emit `cardreader.swiped`.
- * Tracks come from the PHYSICAL card (Sim §2.9 VISA_STD_SWIPE canonical tracks), never from the Orca row (GP INC55).
+ * Tracks come from the PHYSICAL card (Sim §2.9 VISA_STD_SWIPE canonical tracks), never from the Orka row (GP INC55).
  */
 import { createStore, useStore } from 'zustand';
 import { bus } from '@/core/bus';

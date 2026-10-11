@@ -16,14 +16,14 @@
 import type { ComponentType } from 'react';
 import type { Engine } from '@/engine/types';
 import type { CardEntry, RobotStatus } from '@/sim/types';
-import type { OrcaEntityName, RigCommandName } from '@/sim/events';
+import type { OrkaEntityName, RigCommandName } from '@/sim/events';
 import { emit } from '@/core/store';
 import { bus } from '@/core/bus';
 
 /* ═══════════════════════════════ App ids & metadata ═══════════════════════════════ */
 
 export type AppId =
-  | 'orca'
+  | 'orka'
   | 'jenkins'
   | 'github'
   | 'ollama'
@@ -39,7 +39,7 @@ export type AppId =
   | 'files';
 
 export const APP_IDS: readonly AppId[] = [
-  'orca',
+  'orka',
   'jenkins',
   'github',
   'ollama',
@@ -58,7 +58,7 @@ export const APP_IDS: readonly AppId[] = [
 /** `app` field of `app.action` events: an app, the desktop shell, or the 3D status-tablet overlay. */
 export type AppEventSource = AppId | 'desktop' | 'tablet';
 
-export type RepoId = 'gort' | 'uia-remote' | 'pigeon' | 'orchestrator';
+export type RepoId = 'gorth' | 'uia-relay' | 'parrot' | 'orchestrator';
 export type DashboardTab = 'robot' | 'robot-control' | 'motion-control';
 
 /**
@@ -70,7 +70,7 @@ export interface AppParams {
   route?: string;
   /** browser: full URL. camera: stream URL. */
   url?: string;
-  /** intellij: project to open. vscode: folder to open (default pigeon). */
+  /** intellij: project to open. vscode: folder to open (default parrot). */
   repo?: RepoId;
   /** intellij / vscode: repo-relative file to open. files: not used. */
   file?: string;
@@ -78,7 +78,7 @@ export interface AppParams {
   line?: number;
   /** intellij: run configuration to select (e.g. "TaxTest"). */
   runConfig?: string;
-  /** terminal: working directory for a new/embedded session (e.g. "~/IdeaProjects/uia-remote"). */
+  /** terminal: working directory for a new/embedded session (e.g. "~/IdeaProjects/uia-relay"). */
   cwd?: string;
   /** terminal: text to put in the input line WITHOUT executing it. */
   command?: string;
@@ -114,7 +114,7 @@ export interface AppMeta {
   icon: AppIconSvg;
   /** 'browser' = hosted in the shell's Chromium-like frame (Apps §1.4). */
   chrome: 'browser' | 'native';
-  /** Web origin for browser-hosted apps ("http://orca.lab.local:8080"). */
+  /** Web origin for browser-hosted apps ("http://orka.lab.local:8080"). */
   origin: string | null;
   /** Route opened when no params.route is given. */
   homeRoute: string;
@@ -143,7 +143,7 @@ export interface AppProps {
   windowId: string;
   /** Parameters of the open request that created (or last re-targeted) this window. */
   params?: AppParams;
-  /** Set the window title ("Robots — Orchestrator", "HomeScreen.java – uia-remote"). */
+  /** Set the window title ("Robots — Orchestrator", "HomeScreen.java – uia-relay"). */
   onTitle?(title: string): void;
   /** Current route, controlled by the shell (window history). Apps render from it. */
   route?: string;
@@ -225,7 +225,7 @@ export function getWindowManager(): WindowManagerApi | null {
 
 export interface HintRequest {
   app: AppId;
-  /** A `data-hint` target, see APP_HINT_TARGETS ("orca.robots.statusFilter", "orca.robots.row:johnny-5"). */
+  /** A `data-hint` target, see APP_HINT_TARGETS ("orka.robots.statusFilter", "orka.robots.row:johnny-5"). */
   target: string;
   route?: string;
   /** Animate the ghost cursor ("Show me", Cur §2.0). */
@@ -427,7 +427,7 @@ export interface ResolvedUrl {
 }
 
 const WEB_HOSTS: { re: RegExp; app: AppId; origin: string }[] = [
-  { re: /^https?:\/\/(orca\.lab\.local|10\.42\.1\.10):8080/i, app: 'orca', origin: 'http://orca.lab.local:8080' },
+  { re: /^https?:\/\/(orka\.lab\.local|10\.42\.1\.10):8080/i, app: 'orka', origin: 'http://orka.lab.local:8080' },
   { re: /^https?:\/\/(jenkins\.lab\.local|10\.42\.1\.11):8080/i, app: 'jenkins', origin: 'http://jenkins.lab.local:8080' },
   { re: /^https?:\/\/(www\.)?github\.com(?=\/labsim-lab)/i, app: 'github', origin: 'https://github.com' },
   { re: /^https?:\/\/10\.42\.1\.12:3000/i, app: 'ollama', origin: 'http://10.42.1.12:3000' },
@@ -464,10 +464,10 @@ const r = (path: string, description: string): RouteDef => ({ path, description 
  * Desktop apps: pseudo-paths. Query parameters are not part of templates (use `matchRoute(...).query`).
  */
 export const APP_ROUTES = {
-  orca: {
+  orka: {
     home: r('/', 'Orchestrator home dashboard (status counts, health-check timer, active checkouts, alerts)'),
     login: r('/login', 'Sign in page'),
-    robots: r('/robot', "Robot list with Tate's filters; query status.in, deviceType.equals, rigKind.equals, environment.equals, name.contains, page, sort"),
+    robots: r('/robot', "Robot list with Nate's filters; query status.in, deviceType.equals, rigKind.equals, environment.equals, name.contains, page, sort"),
     robotNew: r('/robot/new', 'Create a new Robot'),
     robotView: r('/robot/:id/view', 'Robot detail incl. Notes and Check out'),
     robotEdit: r('/robot/:id/edit', 'Robot edit form (all configuration fields)'),
@@ -483,7 +483,7 @@ export const APP_ROUTES = {
     merchants: r('/merchant-config', 'Merchant Config list (truncated columns)'),
     merchantNew: r('/merchant-config/new', 'Create a Merchant Config'),
     merchantView: r('/merchant-config/:id/view', 'Merchant Config detail (credentials hidden)'),
-    merchantEdit: r('/merchant-config/:id/edit', 'Merchant Config Edit — the only view with App ID / App Secret / API Key / Ubi Route'),
+    merchantEdit: r('/merchant-config/:id/edit', 'Merchant Config Edit — the only view with App ID / App Secret / API Key / Ubo Route'),
     screens: r('/screen', 'Screen list; query deviceType.equals, name.contains, display.equals'),
     screenNew: r('/screen/new', 'Create a Screen (e.g. RECEIPT_OPTIONS_5 for FLUX_4)'),
     screenView: r('/screen/:id/view', 'Screen detail with its Screen Locations and Test tap'),
@@ -513,7 +513,7 @@ export const APP_ROUTES = {
   },
   jenkins: {
     dashboard: r('/', 'Dashboard, All view (folders Java and iOS)'),
-    view: r('/view/:view/', 'A view tab: Java, iOS, uia-remote, SDK-Go, Pigeon-LSTR, Laz, Vision-PoC'),
+    view: r('/view/:view/', 'A view tab: Java, iOS, uia-relay, SDK-Go, Parrot-LSTR, Lazo, Vision-PoC'),
     folder: r('/job/:folder/', 'Folder page (Java or iOS)'),
     job: r('/job/:folder/job/:job/', 'Job page with Stage View, Build History, permalinks'),
     buildWithParameters: r('/job/:folder/job/:job/build', 'Build with Parameters form'),
@@ -541,7 +541,7 @@ export const APP_ROUTES = {
     newFile: r('/labsim-lab/:repo/new/*ref', 'Create new file in <branch>/<dir>'),
     commits: r('/labsim-lab/:repo/commits/*ref', 'Commit history of a branch'),
     commit: r('/labsim-lab/:repo/commit/:sha', 'One commit with its diff'),
-    branches: r('/labsim-lab/:repo/branches', 'Branches (protected badge on gort/orchestrator main)'),
+    branches: r('/labsim-lab/:repo/branches', 'Branches (protected badge on gorth/orchestrator main)'),
     pulls: r('/labsim-lab/:repo/pulls', 'Pull request list; query q'),
     compare: r('/labsim-lab/:repo/compare/*range', 'Compare <base>...<head> and open a pull request'),
     pull: r('/labsim-lab/:repo/pull/:number', 'Pull request Conversation tab (merge box)'),
@@ -568,7 +568,7 @@ export const APP_ROUTES = {
     welcome: r('/', 'VS Code with the last folder (or the Welcome page when nothing is cloned)'),
     folder: r('/folder/:repo', 'Folder (local clone) open in the Explorer'),
     file: r('/folder/:repo/file/*path', 'Folder open with this repo-relative file in the active editor'),
-    practice: r('/practice', 'Pigeon Practice view (exercise list)'),
+    practice: r('/practice', 'Parrot Practice view (exercise list)'),
   },
   terminal: {
     tab: r('/tab/:n', 'Terminal tab n (1-based) is active'),
@@ -590,7 +590,7 @@ export const APP_ROUTES = {
   },
   chat: {
     channel: r('/channel/:name', 'A channel (name without "#", e.g. lab-automation)'),
-    dm: r('/dm/:user', 'Direct messages with a team member key (riley, jared, …)'),
+    dm: r('/dm/:user', 'Direct messages with a team member key (riley, jaden, …)'),
     mentions: r('/mentions', 'Mentions & reactions'),
   },
   cardreader: {
@@ -724,44 +724,44 @@ export const APP_ACTIONS = {
     clipboardCopied: 'desktop.clipboard.copied',
     notificationClicked: 'desktop.notification.clicked',
   },
-  orca: {
-    signedIn: 'orca.session.signedIn',
-    signedOut: 'orca.session.signedOut',
-    robotsFiltered: 'orca.robots.filtered',
-    robotViewed: 'orca.robot.viewed',
-    robotEditOpened: 'orca.robot.editOpened',
-    robotSaved: 'orca.robot.saved',
-    robotSaveFailed: 'orca.robot.saveFailed',
-    robotStatusChangeRequested: 'orca.robot.statusChangeRequested',
-    robotNotesViewed: 'orca.robot.notesViewed',
-    robotNoteAdded: 'orca.robot.noteAdded',
-    robotNoteResolved: 'orca.robot.noteResolved',
-    robotCheckoutAttempted: 'orca.robot.checkoutAttempted',
-    robotReleased: 'orca.robot.released',
-    entityDeleted: 'orca.entity.deleted',
-    healthCheckForced: 'orca.healthCheck.forced',
-    healthLogViewed: 'orca.healthLog.viewed',
-    deviceCreated: 'orca.device.created',
-    deviceSaved: 'orca.device.saved',
-    capabilitiesViewed: 'orca.capabilities.viewed',
-    capabilitySaved: 'orca.capability.saved',
-    matchPreviewRan: 'orca.matchPreview.ran',
-    merchantEditOpened: 'orca.merchant.editOpened',
-    merchantSaved: 'orca.merchant.saved',
-    merchantSecretRevealed: 'orca.merchant.secretRevealed',
-    screensFiltered: 'orca.screens.filtered',
-    screenViewed: 'orca.screen.viewed',
-    screenLocationsViewed: 'orca.screenLocations.viewed',
-    screenSaved: 'orca.screen.saved',
-    screenLocationSaved: 'orca.screenLocation.saved',
-    screenLocationTestTap: 'orca.screenLocation.testTap',
-    cardProfileViewed: 'orca.cardProfile.viewed',
-    cardProfileFieldClicked: 'orca.cardProfile.fieldClicked',
-    cardProfileSaved: 'orca.cardProfile.saved',
-    screenCompareSaved: 'orca.screenCompare.saved',
-    screenCompareTested: 'orca.screenCompare.tested',
-    screenCompareLayoutV2Toggled: 'orca.screenCompare.layoutV2Toggled',
-    apiExecuted: 'orca.api.executed',
+  orka: {
+    signedIn: 'orka.session.signedIn',
+    signedOut: 'orka.session.signedOut',
+    robotsFiltered: 'orka.robots.filtered',
+    robotViewed: 'orka.robot.viewed',
+    robotEditOpened: 'orka.robot.editOpened',
+    robotSaved: 'orka.robot.saved',
+    robotSaveFailed: 'orka.robot.saveFailed',
+    robotStatusChangeRequested: 'orka.robot.statusChangeRequested',
+    robotNotesViewed: 'orka.robot.notesViewed',
+    robotNoteAdded: 'orka.robot.noteAdded',
+    robotNoteResolved: 'orka.robot.noteResolved',
+    robotCheckoutAttempted: 'orka.robot.checkoutAttempted',
+    robotReleased: 'orka.robot.released',
+    entityDeleted: 'orka.entity.deleted',
+    healthCheckForced: 'orka.healthCheck.forced',
+    healthLogViewed: 'orka.healthLog.viewed',
+    deviceCreated: 'orka.device.created',
+    deviceSaved: 'orka.device.saved',
+    capabilitiesViewed: 'orka.capabilities.viewed',
+    capabilitySaved: 'orka.capability.saved',
+    matchPreviewRan: 'orka.matchPreview.ran',
+    merchantEditOpened: 'orka.merchant.editOpened',
+    merchantSaved: 'orka.merchant.saved',
+    merchantSecretRevealed: 'orka.merchant.secretRevealed',
+    screensFiltered: 'orka.screens.filtered',
+    screenViewed: 'orka.screen.viewed',
+    screenLocationsViewed: 'orka.screenLocations.viewed',
+    screenSaved: 'orka.screen.saved',
+    screenLocationSaved: 'orka.screenLocation.saved',
+    screenLocationTestTap: 'orka.screenLocation.testTap',
+    cardProfileViewed: 'orka.cardProfile.viewed',
+    cardProfileFieldClicked: 'orka.cardProfile.fieldClicked',
+    cardProfileSaved: 'orka.cardProfile.saved',
+    screenCompareSaved: 'orka.screenCompare.saved',
+    screenCompareTested: 'orka.screenCompare.tested',
+    screenCompareLayoutV2Toggled: 'orka.screenCompare.layoutV2Toggled',
+    apiExecuted: 'orka.api.executed',
   },
   jenkins: {
     viewOpened: 'jenkins.view.opened',
@@ -901,10 +901,10 @@ export type AppActionPayloads = {
   'desktop.clipboard.copied': { text: string; sourceApp: string };
   'desktop.notification.clicked': { app: string; title: string; route: string | null };
 
-  /* orca */
-  'orca.session.signedIn': { login: string };
-  'orca.session.signedOut': { login: string };
-  'orca.robots.filtered': {
+  /* orka */
+  'orka.session.signedIn': { login: string };
+  'orka.session.signedOut': { login: string };
+  'orka.robots.filtered': {
     status: RobotStatus[];
     deviceType: string | null;
     rigKind: string | null;
@@ -912,32 +912,32 @@ export type AppActionPayloads = {
     name: string;
     resultCount: number;
   };
-  'orca.robot.viewed': { robotId: number; name: string };
-  'orca.robot.editOpened': { robotId: number | null; name: string | null };
-  'orca.robot.saved': { robotId: number; name: string; created: boolean; changed: string[] };
-  'orca.robot.saveFailed': { robotId: number | null; error: string };
-  'orca.robot.statusChangeRequested': { robotId: number; name: string; from: RobotStatus; to: RobotStatus; confirmed: boolean } & Ok;
-  'orca.robot.notesViewed': { robotId: number; name: string; noteCount: number };
-  'orca.robot.noteAdded': { robotId: number; name: string; text: string } & Ok;
-  'orca.robot.noteResolved': { robotId: number; noteId: number } & Ok;
-  'orca.robot.checkoutAttempted': { robotId: number; name: string; status: RobotStatus; ok: boolean; message: string };
-  'orca.robot.released': { robotId: number; name: string } & Ok;
-  'orca.entity.deleted': { entity: OrcaEntityName; id: number } & Ok;
-  'orca.healthCheck.forced': Ok;
-  'orca.healthLog.viewed': { newestRun: number | null };
-  'orca.device.created': { deviceId: number; name: string; deviceType: string; serial: string; ip: string };
-  'orca.device.saved': { deviceId: number; name: string; changed: string[] };
-  'orca.capabilities.viewed': { robotId: number; robotName: string; document: string };
-  'orca.capability.saved': { capabilityId: number; name: string; created: boolean };
-  'orca.matchPreview.ran': { capabilities: string; environment: string; matches: string[] } & Ok;
-  'orca.merchant.editOpened': { merchantId: number; name: string };
-  'orca.merchant.saved': { merchantId: number; name: string; changed: string[] };
-  'orca.merchant.secretRevealed': { merchantId: number; name: string };
-  'orca.screens.filtered': { deviceType: string | null; name: string; display: string | null; resultCount: number };
-  'orca.screen.viewed': { screenId: number; name: string; deviceType: string };
-  'orca.screenLocations.viewed': { screenId: number; screen: string; deviceType: string; count: number };
-  'orca.screen.saved': { screenId: number; name: string; deviceType: string; created: boolean };
-  'orca.screenLocation.saved': {
+  'orka.robot.viewed': { robotId: number; name: string };
+  'orka.robot.editOpened': { robotId: number | null; name: string | null };
+  'orka.robot.saved': { robotId: number; name: string; created: boolean; changed: string[] };
+  'orka.robot.saveFailed': { robotId: number | null; error: string };
+  'orka.robot.statusChangeRequested': { robotId: number; name: string; from: RobotStatus; to: RobotStatus; confirmed: boolean } & Ok;
+  'orka.robot.notesViewed': { robotId: number; name: string; noteCount: number };
+  'orka.robot.noteAdded': { robotId: number; name: string; text: string } & Ok;
+  'orka.robot.noteResolved': { robotId: number; noteId: number } & Ok;
+  'orka.robot.checkoutAttempted': { robotId: number; name: string; status: RobotStatus; ok: boolean; message: string };
+  'orka.robot.released': { robotId: number; name: string } & Ok;
+  'orka.entity.deleted': { entity: OrkaEntityName; id: number } & Ok;
+  'orka.healthCheck.forced': Ok;
+  'orka.healthLog.viewed': { newestRun: number | null };
+  'orka.device.created': { deviceId: number; name: string; deviceType: string; serial: string; ip: string };
+  'orka.device.saved': { deviceId: number; name: string; changed: string[] };
+  'orka.capabilities.viewed': { robotId: number; robotName: string; document: string };
+  'orka.capability.saved': { capabilityId: number; name: string; created: boolean };
+  'orka.matchPreview.ran': { capabilities: string; environment: string; matches: string[] } & Ok;
+  'orka.merchant.editOpened': { merchantId: number; name: string };
+  'orka.merchant.saved': { merchantId: number; name: string; changed: string[] };
+  'orka.merchant.secretRevealed': { merchantId: number; name: string };
+  'orka.screens.filtered': { deviceType: string | null; name: string; display: string | null; resultCount: number };
+  'orka.screen.viewed': { screenId: number; name: string; deviceType: string };
+  'orka.screenLocations.viewed': { screenId: number; screen: string; deviceType: string; count: number };
+  'orka.screen.saved': { screenId: number; name: string; deviceType: string; created: boolean };
+  'orka.screenLocation.saved': {
     locationId: number;
     screenId: number;
     screen: string;
@@ -947,14 +947,14 @@ export type AppActionPayloads = {
     yMm: number;
     created: boolean;
   };
-  'orca.screenLocation.testTap': { robotName: string; screen: string; button: string; ok: boolean; response: string };
-  'orca.cardProfile.viewed': { profileId: number; name: string; entry: CardEntry };
-  'orca.cardProfile.fieldClicked': { profileId: number; name: string; field: 'trackData' | 'gortPath' };
-  'orca.cardProfile.saved': { profileId: number; name: string; changed: string[] };
-  'orca.screenCompare.saved': { compareId: number; name: string; created: boolean; x: number; y: number; w: number; h: number; expected: string };
-  'orca.screenCompare.tested': { compareId: number; name: string; text: string; expected: string; match: boolean | null } & Ok;
-  'orca.screenCompare.layoutV2Toggled': { on: boolean };
-  'orca.api.executed': { method: string; path: string; status: number };
+  'orka.screenLocation.testTap': { robotName: string; screen: string; button: string; ok: boolean; response: string };
+  'orka.cardProfile.viewed': { profileId: number; name: string; entry: CardEntry };
+  'orka.cardProfile.fieldClicked': { profileId: number; name: string; field: 'trackData' | 'gorthPath' };
+  'orka.cardProfile.saved': { profileId: number; name: string; changed: string[] };
+  'orka.screenCompare.saved': { compareId: number; name: string; created: boolean; x: number; y: number; w: number; h: number; expected: string };
+  'orka.screenCompare.tested': { compareId: number; name: string; text: string; expected: string; match: boolean | null } & Ok;
+  'orka.screenCompare.layoutV2Toggled': { on: boolean };
+  'orka.api.executed': { method: string; path: string; status: number };
 
   /* jenkins */
   'jenkins.view.opened': { view: string };
@@ -1029,7 +1029,7 @@ export type AppActionPayloads = {
   /* gimp */
   'gimp.image.opened': { path: string; ref: string; width: number; height: number };
   'gimp.selection.changed': { path: string; ref: string; x: number; y: number; w: number; h: number };
-  'gimp.selection.copied': { x: number; y: number; w: number; h: number; format: 'pigeon-json' | 'field'; text: string };
+  'gimp.selection.copied': { x: number; y: number; w: number; h: number; format: 'parrot-json' | 'field'; text: string };
 
   /* camera */
   'camera.stream.opened': { url: string; host: string | null; robotName: string | null; cameraId: string | null } & Ok;
@@ -1060,7 +1060,7 @@ export type AppActionPayloads = {
   /* files */
   'files.opened': { path: string; with: AppId };
 
-  /* vscode (repo = a RepoId, or "pigeon-practice" for the practice folder) */
+  /* vscode (repo = a RepoId, or "parrot-practice" for the practice folder) */
   'vscode.repo.cloned': { repo: string; url: string } & Ok;
   'vscode.folder.opened': { repo: string };
   'vscode.view.opened': { view: 'explorer' | 'search' | 'scm' | 'run' | 'practice' };
@@ -1104,47 +1104,47 @@ export function onAppAction<K extends AppActionName>(
 
 /**
  * `data-hint` targets lessons can point at. Parametrised targets end with ":" and take a suffix
- * (`orca.robots.row:johnny-5`). Apps put the attribute on the element; the shell draws the ring.
+ * (`orka.robots.row:johnny-5`). Apps put the attribute on the element; the shell draws the ring.
  */
 export const APP_HINT_TARGETS = [
   // desktop
   'desktop.icon:', // + AppId
   'desktop.taskbar:', // + AppId
   'desktop.standUp',
-  // orca
-  'orca.nav.entities',
-  'orca.nav.entity:', // + route key, e.g. merchants
-  'orca.nav.admin',
-  'orca.nav.healthCheckLog',
-  'orca.header.forceHealthCheck',
-  'orca.robots.filter.status', // the whole status toggle group
-  'orca.robots.filter.status:', // + status chip, e.g. AVAILABLE
-  'orca.robots.filter.deviceType',
-  'orca.robots.filter.rigKind',
-  'orca.robots.filter.environment',
-  'orca.robots.filter.name',
-  'orca.robots.row:', // + robot name
-  'orca.robots.rowEdit:', // + robot name
-  'orca.robots.rowStatus:', // + robot name
-  'orca.robot.field:', // + form field key, e.g. humanReadableName, tapUrl, mfdDeviceId, offsetYMm, status
-  'orca.robot.save',
-  'orca.robot.notes',
-  'orca.robot.checkout',
-  'orca.devices.create',
-  'orca.capabilities.robotSelect',
-  'orca.capabilities.matchPreview',
-  'orca.merchants.rowEdit:', // + merchant name
-  'orca.merchant.field:', // + appId | appSecret | apiKey | ubiRoute
-  'orca.screens.filter.deviceType',
-  'orca.screens.row:', // + screen name
-  'orca.screen.locations',
-  'orca.screen.addLocation',
-  'orca.screenLocation.testTap:', // + button
-  'orca.cardProfiles.row:', // + profile name
-  'orca.cardProfile.field:', // + trackData | gortPath
-  'orca.screenCompares.create',
-  'orca.screenCompare.test',
-  'orca.screenCompare.layoutV2',
+  // orka
+  'orka.nav.entities',
+  'orka.nav.entity:', // + route key, e.g. merchants
+  'orka.nav.admin',
+  'orka.nav.healthCheckLog',
+  'orka.header.forceHealthCheck',
+  'orka.robots.filter.status', // the whole status toggle group
+  'orka.robots.filter.status:', // + status chip, e.g. AVAILABLE
+  'orka.robots.filter.deviceType',
+  'orka.robots.filter.rigKind',
+  'orka.robots.filter.environment',
+  'orka.robots.filter.name',
+  'orka.robots.row:', // + robot name
+  'orka.robots.rowEdit:', // + robot name
+  'orka.robots.rowStatus:', // + robot name
+  'orka.robot.field:', // + form field key, e.g. humanReadableName, tapUrl, mfdDeviceId, offsetYMm, status
+  'orka.robot.save',
+  'orka.robot.notes',
+  'orka.robot.checkout',
+  'orka.devices.create',
+  'orka.capabilities.robotSelect',
+  'orka.capabilities.matchPreview',
+  'orka.merchants.rowEdit:', // + merchant name
+  'orka.merchant.field:', // + appId | appSecret | apiKey | uboRoute
+  'orka.screens.filter.deviceType',
+  'orka.screens.row:', // + screen name
+  'orka.screen.locations',
+  'orka.screen.addLocation',
+  'orka.screenLocation.testTap:', // + button
+  'orka.cardProfiles.row:', // + profile name
+  'orka.cardProfile.field:', // + trackData | gorthPath
+  'orka.screenCompares.create',
+  'orka.screenCompare.test',
+  'orka.screenCompare.layoutV2',
   // jenkins
   'jenkins.viewTab:', // + view name
   'jenkins.jobRow:', // + job id
@@ -1335,7 +1335,7 @@ const svg = (body: string): AppIconSvg =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">${body}</svg>`;
 
 export const APP_ICONS: Record<AppId, AppIconSvg> = {
-  orca: svg(
+  orka: svg(
     '<rect width="24" height="24" rx="5" fill="#353d47"/>' +
       '<path d="M3.5 14.2c1.6-4.6 7.3-7.3 12.6-5.4 1.6.6 2.9 1.7 3.6 3.1-1.1-.3-2.1-.2-2.9.4l1.4 2.3c-2.7 1.1-6.6 1.4-9.6.4L6.9 17.6l-.5-2.6c-1-.1-2-.4-2.9-.8z" fill="#fff"/>' +
       '<path d="M7.6 14.6c2.6.8 5.8.8 8.4-.1" stroke="#5ab7ee" stroke-width="1.3" fill="none" stroke-linecap="round"/>' +
@@ -1413,21 +1413,21 @@ export const APP_ICONS: Record<AppId, AppIconSvg> = {
 };
 
 export const APP_META: Record<AppId, AppMeta> = {
-  orca: {
-    id: 'orca',
+  orka: {
+    id: 'orka',
     title: 'Orchestrator',
-    iconLabel: 'Orca',
-    icon: APP_ICONS.orca,
+    iconLabel: 'Orka',
+    icon: APP_ICONS.orka,
     chrome: 'browser',
-    origin: 'http://orca.lab.local:8080',
-    homeRoute: APP_ROUTES.orca.home.path,
+    origin: 'http://orka.lab.local:8080',
+    homeRoute: APP_ROUTES.orka.home.path,
     defaultSize: { w: 1280, h: 820 },
     minSize: { w: 760, h: 480 },
     singleInstance: true,
     desktopIcon: true,
     pinned: true,
-    aliases: ['orca', 'orchestrator', 'robots', 'jhipster'],
-    exportName: 'OrcaApp',
+    aliases: ['orka', 'orchestrator', 'robots', 'jhipster'],
+    exportName: 'OrkaApp',
   },
   jenkins: {
     id: 'jenkins',
@@ -1458,7 +1458,7 @@ export const APP_META: Record<AppId, AppMeta> = {
     singleInstance: true,
     desktopIcon: true,
     pinned: true,
-    aliases: ['github', 'git', 'pull requests', 'gort', 'uia-remote', 'pigeon'],
+    aliases: ['github', 'git', 'pull requests', 'gorth', 'uia-relay', 'parrot'],
     exportName: 'GitHubApp',
   },
   ollama: {
@@ -1523,7 +1523,7 @@ export const APP_META: Record<AppId, AppMeta> = {
     singleInstance: true,
     desktopIcon: true,
     pinned: true,
-    aliases: ['vscode', 'vs code', 'code', 'visual studio code', 'json', 'pigeon', 'editor', 'practice'],
+    aliases: ['vscode', 'vs code', 'code', 'visual studio code', 'json', 'parrot', 'editor', 'practice'],
     exportName: 'VSCodeApp',
   },
   terminal: {

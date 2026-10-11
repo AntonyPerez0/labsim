@@ -85,7 +85,7 @@ export function parseRoute(route: string): JkPage {
   return { kind: 'notFound' };
 }
 
-/** `/job/Java/job/uia-remote-regression-flux/` */
+/** `/job/Java/job/uia-relay-regression-flux/` */
 export function jobUrl(jobId: string, suffix = ''): string {
   const i = jobId.indexOf('/');
   const folder = jobId.slice(0, i);
@@ -97,7 +97,7 @@ export function buildUrl(b: { jobId: string; number: number }, suffix = ''): str
   return jobUrl(b.jobId, `${b.number}/${suffix}`);
 }
 
-/** `Java » uia-remote-regression-flux` */
+/** `Java » uia-relay-regression-flux` */
 export function jobDisplayName(jobId: string): string {
   return jobId.replace('/', ' » ');
 }
@@ -328,13 +328,13 @@ export function search(j: JenkinsState, q: string, gate: string[] | null): Searc
 /** Static descriptions for folders (Apps §3.2). */
 export const FOLDER_DESCRIPTIONS: Record<string, string> = {
   Java: 'Legacy platform split: Java jobs (Android, Windows, REST, Go). iOS jobs live in the iOS folder.',
-  iOS: 'Legacy platform split: iOS jobs (Pigeon on iOS). Everything else lives in the Java folder.',
+  iOS: 'Legacy platform split: iOS jobs (Parrot on iOS). Everything else lives in the Java folder.',
 };
 
 /** Parameter descriptions when the sim's are empty (Apps §3.4). */
 export const PARAM_DESCRIPTIONS: Record<string, string> = {
-  DEVICE_TYPE: 'Orca DeviceType enum value, ALL CAPS (e.g. FLUX_3). Blank = any.',
-  ROBOT_NAME: 'Exact Orca robot Name (lowercase). Blank = any matching Available robot.',
+  DEVICE_TYPE: 'Orka DeviceType enum value, ALL CAPS (e.g. FLUX_3). Blank = any.',
+  ROBOT_NAME: 'Exact Orka robot Name (lowercase). Blank = any matching Available robot.',
   MERCHANT: 'Merchant Config name',
   CARD_PROFILE: 'Card profile name(s), comma separated',
   BACKEND_ENV: 'Backend environment (DEV1, DEV2, STG, QA, INT)',

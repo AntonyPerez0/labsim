@@ -1,5 +1,5 @@
 /**
- * DR07 Receipt Map — step 1: which Orca map matches this receipt screen (4 / 5)? Step 2: the robot only
+ * DR07 Receipt Map — step 1: which Orka map matches this receipt screen (4 / 5)? Step 2: the robot only
  * knows millimetres — tap the asked button using that map's Screen Locations (live mm crosshair). The
  * reveal overlays both maps so the 3.0 mm shift is obvious.
  */
@@ -70,7 +70,7 @@ export function View(props: DrillComponentProps) {
     <div className="dr07">
       <Prompt eyebrow={<>Receipt Map · {info.displayName} · <span className="dr07-code">{data.deviceType}</span></>}>
         {step === 1 && !reveal ? (
-          <>Which Orca screen map matches this receipt screen?</>
+          <>Which Orka screen map matches this receipt screen?</>
         ) : (
           <>
             Robot's eye: tap <b className="dr07-ask">{data.ask}</b> using <code>RECEIPT_OPTIONS_{chosen}</code>
@@ -96,7 +96,7 @@ export function View(props: DrillComponentProps) {
           ) : null}
           {step === 1 && !reveal ? (
             <div className="dr07-maps">
-              <div className="dr07-side__title">Orca · Screens · {data.deviceType}</div>
+              <div className="dr07-side__title">Orka · Screens · {data.deviceType}</div>
               {([4, 5] as const).map((m) => (
                 <button key={m} type="button" className={`dr07-map is-${m}${chosen === m ? ' is-chosen' : ''}`} onClick={() => pickMap(m)} disabled={!!d.staged}>
                   <Kbd k={String(m)} />

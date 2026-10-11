@@ -6,7 +6,7 @@
  * other static part of the same material), the live screen planes are returned as meshes.
  *
  * `rest` places the device naturally on a surface: device-local → "rest frame" (origin = centre of
- * the footprint on the surface, +Y up, +Z toward the viewer). Callers that stand a device on a
+ * the footprint on the surface, +Y up, +Z toward the viewer). Kallers that stand a device on a
  * shelf compose `surfaceFrame × rest`.
  */
 import type { Matrix4, Mesh, Object3D } from 'three';

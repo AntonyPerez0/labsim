@@ -16,11 +16,11 @@
         │ sim.tick(dt)              │ engine.frame(dt)           │
 ┌───────▼──────── sim (src/sim) ────┴───┐   ┌──── engine (src/engine) ────┐
 │ LabState types · seed · systems:      │   │ renderer + post-fx + quality │
-│ orca/health/checkout/xy_touch, rigs   │   │ FPS player + collision       │
+│ orka/health/checkout/xy_touch, rigs   │   │ FPS player + collision       │
 │ motion, devices OS + payments, power, │   │ interaction raycast/prompts  │
-│ hosts/network/adb, callus/collis,     │   │ camera focus · captureView   │
+│ hosts/network/adb, kallus/kollis,     │   │ camera focus · captureView   │
 │ git/GitHub, jenkins + runners         │   │ WebAudio synth · textures ·  │
-│ (uia-remote, pigeon), laz/ubi, ocr,   │   │ materials                    │
+│ (uia-relay, parrot), lazo/ubo, ocr,   │   │ materials                    │
 │ ollama, chat, faults, terminal shell  │   └──────────────▲───────────────┘
 └───────────────────────────────────────┘                  │
                      ▲  store.getState().lab (read each frame)
@@ -46,7 +46,7 @@
 5. **The 3D world is a view**: each frame world binders read `store.getState().lab` and update transforms,
    LEDs, screen textures (only when `display.rev` changed), banner colours. Player interactions call `sim.*`.
 6. **Layout truth**: the device firmware button layout (`src/sim/devices/layouts.ts`) is what screens draw and
-   what touches hit. Orca's `screenLocations` table is what automation *believes* — they can drift (the
+   what touches hit. Orka's `screenLocations` table is what automation *believes* — they can drift (the
    receipt-QR regression), which is how mis-taps happen.
 
 ## Module contracts
@@ -75,11 +75,11 @@
 
 ## Testing
 * `npm test` — vitest: sim behaviours (status machine, health check, checkout, xy_touch, power faults,
-  tethered runner, pigeon parser, terminal commands), content integrity (ids unique, every quiz references
+  tethered runner, parrot parser, terminal commands), content integrity (ids unique, every quiz references
   existing facts, every core fact is covered by ≥2 questions), mission scripts reference valid ids.
 * `npx playwright test` — `tests/e2e/smoke.spec.ts` builds and previews the game, then in Chromium (SwiftShader
   WebGL) checks: boot to the title with no console errors; Enter → new profile → main menu; Academy M01 starts
-  and Space advances the first line; sitting at the workstation (look at the chair, E) and opening Orca shows
+  and Space advances the first line; sitting at the workstation (look at the chair, E) and opening Orka shows
   the robot list; the Field Manual finds "5444"; a 5-minute Shift starts and a ticket arrives.
 
 ## Gameplay contract changes (stage 2: missions/UI contracts)
@@ -144,8 +144,8 @@ exceptions listed under "Type changes".
 
 ### Split of the sim (next stage)
 * **sim-core** (`src/sim/impl/**`, `src/sim/seed/*` except repos/jenkins/fixtures, `src/sim/systems/*`
-  physical + Orca + faults engine): lifecycle, `orca`, `rig`, `device`, `power`, `host`, `collis`,
-  `camera`, `laz`, `ocr`, `printer3d`, `chat`, `faults`; tick slots 1–8 and 13–16 (Sim §3.1.1).
+  physical + Orka + faults engine): lifecycle, `orka`, `rig`, `device`, `power`, `host`, `kollis`,
+  `camera`, `lazo`, `ocr`, `printer3d`, `chat`, `faults`; tick slots 1–8 and 13–16 (Sim §3.1.1).
 * **sim-devops** (`src/sim/devops/**`, repos/jenkins/fixture seeds, runners, terminal, git/NPC, ollama):
   `git`, `jenkins`, `runner`, `ollama`, `terminal`; tick slots 9–12 via `tickDevops()`; reaches the
   physical lab only through `CoreServices` (bound by `impl/index.ts`). Table at the top of
@@ -156,15 +156,15 @@ exceptions listed under "Type changes".
   answers `{ ok: false, error: 'not implemented' }` (or an empty pure read) until its half lands.
 
 ### Additions (selection; full list = Sim §0.4 + §1.15)
-* `LabState`: `rngStreams`, `config: SimConfig`, `network`, `local`, `ubi`, `printer3d`, `timers`, `seq`;
+* `LabState`: `rngStreams`, `config: SimConfig`, `network`, `local`, `ubo`, `printer3d`, `timers`, `seq`;
   `time.physMs` / `epochDate` / `healthAnchorMs` (two clocks, Sim §0.3). Constants `LAB_STATE_VERSION = 2`,
   `EPOCH_DATE`, `DEFAULT_SEED = 20261005`, `HEALTH_CHECK_INTERVAL_MS`, `SIM_SUBSTEP_MS`, `TIME_SCALES`,
   `RNG_STREAMS`, `DEVICE_TYPE_CODES`, `FAILURE_CODES`.
-* Orca: robot `preFailureStatus`, `statusChangedMs`, `statusHistory`, `reservedAtMs`, `lastReleasedMs`,
+* Orka: robot `preFailureStatus`, `statusChangedMs`, `statusHistory`, `reservedAtMs`, `lastReleasedMs`,
   `lastHealth`, checkout `statusAtCheckout`/`kind`; notes `kind`/`repeat`/`lastAtMs`; device `name`;
   capability `key`/`value` (+ lookup `'BOTH'`); merchant region/display/tax bp/tips/QR/signature/brands/apps;
   screen `deviceType`/`display`; card `pin`/`pan`/`expiry`; compare `usedBy`; health log, DB connection,
-  pending gort syncs.
+  pending gorth syncs.
 * Rigs: offscreen, probe display, limit switches, solenoid connector, dip-arm tooth offset, door, banner
   text, motion fault, lock owner, current command, motion host, cradle, assembly, webcam camera id/aim.
 * Devices: `firmwareInfo` (authoritative; `firmware: string` mirrors the version), `lastReceiptDoc`
@@ -179,7 +179,7 @@ exceptions listed under "Type changes".
   `RunnerState`, `LocalRunState`, views and next build numbers; executors **8**.
 * Faults: `ActiveFault.target`/`clearedBy`/`clearedByActor`/`undo`/`holdSincePhysMs`; `FaultInfo` metadata;
   `SetupOp`, `ScenarioItem`, `faults.injectAll`/`applySetup`/`setupCatalogue` (catalogue = Sim §4).
-* `SimApi`: `fastForward`, `setConfig`, `load`, `presets`; `orca.forceHealthCheck`/`matchPreview`/
+* `SimApi`: `fastForward`, `setConfig`, `load`, `presets`; `orka.forceHealthCheck`/`matchPreview`/
   `capabilityDocument`; `rig.dragCarriage`/`setDoor`/`reseat`/`replaceCradle`/`alignDipArm`/`moveMotorUsb`/
   `aimWebcam`/`setTabletTab`; `device.signStroke`/`pressKey`/`enterText`/`loadPaper`/`reseatHub`/`layout`;
   `power.removeFuse`/`insertFuse`/`toggleRegulator`/`resetBreaker`; `host.pressPowerButton`/`writeFile`/
@@ -194,21 +194,21 @@ exceptions listed under "Type changes".
   name moved to the new `osName`.
 * `WorkstationState.locallyRunningTest.robotId` widened to `number | null`.
 * Unions widened: `CapabilityLookup` (+`'BOTH'`), `RigMotionCommand.kind`, `ScreenName`, `OrderState.status`,
-  `LazRun.step`, `JenkinsJob.runner` (+`'vision'`), `rig.parkStarted.axes` (+`'all'`).
+  `LazoRun.step`, `JenkinsJob.runner` (+`'vision'`), `rig.parkStarted.axes` (+`'all'`).
 * Inputs widened: `CheckoutRequest.deviceType` (raw string), `.capabilities` (`string[] | Record`),
-  `orca.card` / `device.presentCard` profile (id **or** name), `power.measure(pointId, mode?)` now returns
+  `orka.card` / `device.presentCard` profile (id **or** name), `power.measure(pointId, mode?)` now returns
   `MultimeterReading` (superset; `kind` adds `'OHM'`).
-* `orca.card` returns `Result<CardActionResult | undefined>`; `RigMotionCommand.source` is required.
+* `orka.card` returns `Result<CardActionResult | undefined>`; `RigMotionCommand.source` is required.
 * New required fields inside existing objects break hand-written fixtures; use the builders exported from
   `@/sim` (`createDisplayState`, `createOrderState`, `createRigState`, `createTerminalDevice`, `createHost`,
-  `createOrcaRobot`, all with Sim §2 factory defaults + overrides). `Fuse.labelA/removed/stress` are optional
+  `createOrkaRobot`, all with Sim §2 factory defaults + overrides). `Fuse.labelA/removed/stress` are optional
   for the same reason. Currently affected: `src/render2d/render2d.test.ts` (DisplayState, OrderState,
   RigState gantry/solenoid/webcam/tablet literals).
 
 ### Requests to other owners
 * World (`30-world.md`, `src/world`): bind prop ids to sim ids per Sim Appendix C (power ids, tablet texts,
   API names `alignDipArm`/`moveMotorUsb`/`reseat`/`aimWebcam`/`device.reseatHub`, host `gpu-blade`); hit
-  tests and Orca seeds use the sim's firmware layouts (Sim §2.10.2), not the world's layout classes.
+  tests and Orka seeds use the sim's firmware layouts (Sim §2.10.2), not the world's layout classes.
 * Missions/content: scenarios per Sim §4.5 and Appendix A; Arcade reveal events per §4.1.9.
 * `core/game.ts`: unchanged contract (`sim.tick(dtGameMs)` per loop step); Free Play save/load should use
   `sim.snapshot()` / `sim.load()` (Sim §6.4).

@@ -99,7 +99,7 @@ export function SettingsPanel({ initialTab = 'graphics' }: { initialTab?: Tab })
         {tab === 'gameplay' ? <GameplaySettings /> : null}
         {tab === 'freeplay' ? (
           <>
-            <FieldRow label="Default time scale" hint="1 real second = N game seconds. Orca pings every 5 game minutes.">
+            <FieldRow label="Default time scale" hint="1 real second = N game seconds. Orka pings every 5 game minutes.">
               <Segmented value={st.freeplayTimeScale} options={[1, 2, 5, 10].map((v) => ({ value: v, label: `${v}×` }))} onChange={(v) => setSetting('freeplayTimeScale', v)} />
             </FieldRow>
             <Toggle label="Penalties" hint="Off by default; Teach Cards still fire." checked={st.freeplayPenalties} onChange={(v) => setSetting('freeplayPenalties', v)} />

@@ -7,8 +7,8 @@ import type { TxContext } from '@/core/store';
 import type { ActiveFault, FaultParamValue, LabState, RepoId } from '../types';
 import { DEVICE_TYPE_CODES } from '../types';
 import type { FaultInfo, FaultParamInfo, Result, SetupOpInfo } from '../api';
-import { UIA_PATHS } from '../seed/repos/uiaRemote';
-import { REGISTER_HOME_SCREEN_STUB } from '../seed/repos/uiaRemote';
+import { UIA_PATHS } from '../seed/repos/uiaRelay';
+import { REGISTER_HOME_SCREEN_STUB } from '../seed/repos/uiaRelay';
 import { core } from './coreRef';
 import type { FaultDef, SetupOpDef } from './index';
 import { hasIsScreenPresent, hasTeardown, hasWaitForScreen, methodBody, openDirection, screenSync } from './codefacts';
@@ -68,21 +68,21 @@ function actionsOf(text: string | undefined | null): string[] | null {
 }
 
 /* ── config.properties locations (local clone / Code With Me) ── */
-const LOCAL_CFG = '~/IdeaProjects/uia-remote/config.properties';
+const LOCAL_CFG = '~/IdeaProjects/uia-relay/config.properties';
 function cfgRead(lab: LabState, path: string): string | null {
   const p = tildify(path);
-  const local = lab.repos['uia-remote'].local;
+  const local = lab.repos['uia-relay'].local;
   if (local && (p === `${local.path}/config.properties` || p === LOCAL_CFG)) return local.files['config.properties'] ?? null;
   return lab.workstation.files[p] ?? null;
 }
 function cfgWrite(lab: LabState, ctx: TxContext, record: Rec, path: string, text: string): void {
   const p = tildify(path);
-  const local = lab.repos['uia-remote'].local;
+  const local = lab.repos['uia-relay'].local;
   if (local && (p === `${local.path}/config.properties` || p === LOCAL_CFG)) {
-    record(['repos', 'uia-remote', 'local', 'files', 'config.properties'], local.files['config.properties'] ?? null, text);
+    record(['repos', 'uia-relay', 'local', 'files', 'config.properties'], local.files['config.properties'] ?? null, text);
     local.files['config.properties'] = text;
     mirrorConfig(lab);
-    ctx.emit('git.fileEdited', { repo: 'uia-remote', path: 'config.properties' });
+    ctx.emit('git.fileEdited', { repo: 'uia-relay', path: 'config.properties' });
     return;
   }
   record(['workstation', 'files', p], lab.workstation.files[p] ?? null, text);
@@ -92,39 +92,39 @@ const cfgPathParam = param('path', 'repoPath', 'config.properties to edit (local
 
 /* ────────────────────────────── §4.3.8 Repositories ────────────────────────────── */
 
-const gortCapabilityDropped: FaultDef = {
-  info: info('gort.capabilityDropped', 'Test definition lost a capability', 'repos', [
-    param('path', 'repoPath', 'gort test definition', 'go-sdk/tests/sale_receipt.json', { default: 'go-sdk/tests/sale_receipt.json', target: true }),
+const gorthCapabilityDropped: FaultDef = {
+  info: info('gorth.capabilityDropped', 'Test definition lost a capability', 'repos', [
+    param('path', 'repoPath', 'gorth test definition', 'go-sdk/tests/sale_receipt.json', { default: 'go-sdk/tests/sale_receipt.json', target: true }),
     param('key', 'string', 'capability key to drop', 'printer', { default: 'printer' }),
     param('by', 'string', 'commit author', 'alex', { default: 'alex' }),
     param('message', 'string', 'commit message', 'go-sdk: tidy sale_receipt capabilities', { default: 'go-sdk: tidy sale_receipt capabilities' }),
   ], {
-    tags: ['orca.capabilities', 'hw.devices', 'go.sdk'],
+    tags: ['orka.capabilities', 'hw.devices', 'go.sdk'],
     clears: 'the file on main parses and capabilities[key] === true',
-    symptoms: ['[orca] checkout → vision (FLUX_POCKET) OK', '[go-sdk] PrintReceipt → PRINTER_NOT_AVAILABLE', 'Match preview lists vision'],
+    symptoms: ['[orka] checkout → vision (FLUX_POCKET) OK', '[go-sdk] PrintReceipt → PRINTER_NOT_AVAILABLE', 'Match preview lists vision'],
     usedBy: ['INC23', 'M08'],
   }),
   validate(lab, p) {
     const path = s(p, 'path');
-    const text = mainFile(lab, 'gort', path);
-    if (text === undefined) return err(`fault gort.capabilityDropped: invalid param path='${path}' (no such repoPath)`);
+    const text = mainFile(lab, 'gorth', path);
+    if (text === undefined) return err(`fault gorth.capabilityDropped: invalid param path='${path}' (no such repoPath)`);
     const r = parseStrictJson(text);
     const caps = r.ok ? (r.value as { capabilities?: Record<string, unknown> }).capabilities : undefined;
-    if (!caps || caps[s(p, 'key')] !== true) return err(`fault gort.capabilityDropped: nothing to break (capability '${s(p, 'key')}' already absent)`);
+    if (!caps || caps[s(p, 'key')] !== true) return err(`fault gorth.capabilityDropped: nothing to break (capability '${s(p, 'key')}' already absent)`);
     return ok({ target: path });
   },
   apply(lab, ctx, p, record) {
     const path = s(p, 'path');
     const key = s(p, 'key');
-    const text = mainFile(lab, 'gort', path)!;
+    const text = mainFile(lab, 'gorth', path)!;
     const k = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     let next = text.replace(new RegExp(`,\\s*"${k}"\\s*:\\s*true`), '');
     if (next === text) next = text.replace(new RegExp(`"${k}"\\s*:\\s*true\\s*,\\s*`), '');
-    commitFault(lab, record, 'gort', { [path]: next }, s(p, 'by'), s(p, 'message'));
+    commitFault(lab, record, 'gorth', { [path]: next }, s(p, 'by'), s(p, 'message'));
     void ctx;
   },
   isResolved(lab, f) {
-    const text = mainFile(lab, 'gort', String(f.params['path']));
+    const text = mainFile(lab, 'gorth', String(f.params['path']));
     const r = text ? parseStrictJson(text) : null;
     return !!r?.ok && (r.value as { capabilities?: Record<string, unknown> }).capabilities?.[String(f.params['key'])] === true;
   },
@@ -141,17 +141,17 @@ function lineEdit(text: string, line: number, ch: string): string | null {
   return lines.join('\n');
 }
 
-function pigeonEditFault(id: string, ch: ',' | '}', title: string, defLine: number | null, defMsg: string, o: Partial<FaultInfo>): FaultDef {
+function parrotEditFault(id: string, ch: ',' | '}', title: string, defLine: number | null, defMsg: string, o: Partial<FaultInfo>): FaultDef {
   return {
     info: info(id, title, 'repos', [
-      param('path', 'repoPath', 'Pigeon test file', 'tests/sale/tip_sale_print.json', { required: true, target: true, ...(id === 'pigeon.missingComma' ? { default: 'tests/sale/tip_sale_print.json' } : {}) }),
+      param('path', 'repoPath', 'Parrot test file', 'tests/sale/tip_sale_print.json', { required: true, target: true, ...(id === 'parrot.missingComma' ? { default: 'tests/sale/tip_sale_print.json' } : {}) }),
       param('line', 'number', `line whose last '${ch}' is deleted`, String(defLine ?? 9), defLine ? { default: defLine } : { required: true }),
       param('by', 'string', 'commit author', 'alex', { default: 'alex' }),
       param('message', 'string', 'commit message', defMsg, { default: defMsg }),
     ], o),
     validate(lab, p) {
       const path = s(p, 'path');
-      const text = mainFile(lab, 'pigeon', path);
+      const text = mainFile(lab, 'parrot', path);
       if (text === undefined) return err(`fault ${id}: invalid param path='${path}' (no such repoPath)`);
       const line = Number(p['line']);
       if (!Number.isFinite(line)) return err(`fault ${id}: invalid param line='${s(p, 'line')}' (not a number)`);
@@ -160,60 +160,60 @@ function pigeonEditFault(id: string, ch: ',' | '}', title: string, defLine: numb
     },
     apply(lab, ctx, p, record) {
       const path = s(p, 'path');
-      const next = lineEdit(mainFile(lab, 'pigeon', path)!, Number(p['line']), ch)!;
-      commitFault(lab, record, 'pigeon', { [path]: next }, s(p, 'by'), s(p, 'message'));
+      const next = lineEdit(mainFile(lab, 'parrot', path)!, Number(p['line']), ch)!;
+      commitFault(lab, record, 'parrot', { [path]: next }, s(p, 'by'), s(p, 'message'));
       void ctx;
     },
     isResolved(lab, f) {
       const path = String(f.params['path']);
-      const now = actionsOf(mainFile(lab, 'pigeon', path));
-      const before = actionsOf(undoBefore(f, ['repos', 'pigeon', 'files', path]) as string | null);
+      const now = actionsOf(mainFile(lab, 'parrot', path));
+      const before = actionsOf(undoBefore(f, ['repos', 'parrot', 'files', path]) as string | null);
       return !!now && !!before && JSON.stringify(now) === JSON.stringify(before);
     },
   };
 }
 
-const pigeonMissingComma = pigeonEditFault('pigeon.missingComma', ',', 'Missing comma in a Pigeon test', 8, 'Add tip step', {
-  tags: ['pigeon.json', 'pigeon.nolint', 'tools.github', 'pigeon.abstraction', 'arch.repos'],
+const parrotMissingComma = parrotEditFault('parrot.missingComma', ',', 'Missing comma in a Parrot test', 8, 'Add tip step', {
+  tags: ['parrot.json', 'parrot.nolint', 'tools.github', 'parrot.abstraction', 'arch.repos'],
   clears: "the file on main parses (strict JSON) and its actions[].action list equals the list before the fault",
   symptoms: ['LSTR ParseError: Unexpected token { in JSON at line 9 column 5', 'Finished: FAILURE (JSON_PARSE)'],
   usedBy: ['INC25', 'M15'],
 });
-const pigeonMissingBracket = pigeonEditFault('pigeon.missingBracket', '}', 'Missing closing brace', null, 'Tidy actions', {
-  tags: ['pigeon.json', 'pigeon.nolint'],
-  clears: 'as pigeon.missingComma',
+const parrotMissingBracket = parrotEditFault('parrot.missingBracket', '}', 'Missing closing brace', null, 'Tidy actions', {
+  tags: ['parrot.json', 'parrot.nolint'],
+  clears: 'as parrot.missingComma',
   symptoms: ['LSTR ParseError: Unexpected token { in JSON at line 10 column 5'],
   usedBy: ['P3-2', 'FP'],
 });
 
 const COMPARE_TRUTH = { x: 208, y: 512, w: 304, h: 40 };
-const pigeonScreenCompareEmpty: FaultDef = {
-  info: info('pigeon.screenCompareEmpty', 'Screen-compare region undefined', 'repos', [
-    param('path', 'repoPath', 'Pigeon test with a screenCompare action', 'tests/sale/payment_success_compare.json', { default: 'tests/sale/payment_success_compare.json', target: true }),
+const parrotScreenCompareEmpty: FaultDef = {
+  info: info('parrot.screenCompareEmpty', 'Screen-compare region undefined', 'repos', [
+    param('path', 'repoPath', 'Parrot test with a screenCompare action', 'tests/sale/payment_success_compare.json', { default: 'tests/sale/payment_success_compare.json', target: true }),
     param('by', 'string', 'commit author', 'morgan', { default: 'morgan' }),
     param('message', 'string', 'commit message', 'Scaffold payment success compare', { default: 'Scaffold payment success compare' }),
   ], {
-    tags: ['pigeon.gimp', 'pigeon.json', 'adb.usage'],
+    tags: ['parrot.gimp', 'parrot.json', 'adb.usage'],
     clears: 'x, y, w, h each within ±3 px of the APPROVED label (208, 512, 304, 40)',
     symptoms: ['LSTR screenCompare: empty region (0x0)'],
     usedBy: ['INC24'],
   }),
   validate(lab, p) {
     const path = s(p, 'path');
-    const text = mainFile(lab, 'pigeon', path);
-    if (text === undefined || !/"screenCompare"/.test(text)) return err(`fault pigeon.screenCompareEmpty: invalid param path='${path}' (no such repoPath)`);
-    if (/"x"\s*:\s*0\s*,\s*"y"\s*:\s*0\s*,\s*"w"\s*:\s*0\s*,\s*"h"\s*:\s*0/.test(text)) return err('fault pigeon.screenCompareEmpty: nothing to break (region already empty)');
+    const text = mainFile(lab, 'parrot', path);
+    if (text === undefined || !/"screenCompare"/.test(text)) return err(`fault parrot.screenCompareEmpty: invalid param path='${path}' (no such repoPath)`);
+    if (/"x"\s*:\s*0\s*,\s*"y"\s*:\s*0\s*,\s*"w"\s*:\s*0\s*,\s*"h"\s*:\s*0/.test(text)) return err('fault parrot.screenCompareEmpty: nothing to break (region already empty)');
     return ok({ target: path });
   },
   apply(lab, ctx, p, record) {
     const path = s(p, 'path');
-    const text = mainFile(lab, 'pigeon', path)!;
+    const text = mainFile(lab, 'parrot', path)!;
     const next = text.replace(/("action":\s*"screenCompare",\s*"params":\s*\{[^}]*)/, (m) => m.replace(/"(x|y|w|h)"\s*:\s*\d+/g, '"$1": 0'));
-    commitFault(lab, record, 'pigeon', { [path]: next }, s(p, 'by'), s(p, 'message'));
+    commitFault(lab, record, 'parrot', { [path]: next }, s(p, 'by'), s(p, 'message'));
     void ctx;
   },
   isResolved(lab, f) {
-    const text = mainFile(lab, 'pigeon', String(f.params['path']));
+    const text = mainFile(lab, 'parrot', String(f.params['path']));
     const r = text ? parseStrictJson(text) : null;
     if (!r?.ok) return false;
     const acts = ((r.value as { actions?: { action?: string; params?: Record<string, number> }[] }).actions ?? []).filter((a) => a.action === 'screenCompare');
@@ -221,7 +221,7 @@ const pigeonScreenCompareEmpty: FaultDef = {
   },
 };
 
-/* uia-remote code faults */
+/* uia-relay code faults */
 const poPath = (cls: string): string => UIA_PATHS.po(cls);
 
 function stubWaitForScreen(src: string): string {
@@ -262,20 +262,20 @@ const uiaWaitForScreenStub: FaultDef = {
   }),
   validate(lab, p) {
     const cls = s(p, 'class');
-    const src = mainFile(lab, 'uia-remote', poPath(cls));
+    const src = mainFile(lab, 'uia-relay', poPath(cls));
     if (src === undefined) return err(`fault uia.waitForScreenStub: invalid param class='${cls}' (no such repoPath)`);
     if (!hasWaitForScreen(src)) return err(`fault uia.waitForScreenStub: nothing to break (${cls}.waitForScreen() is already empty)`);
     return ok({ target: cls });
   },
   apply(lab, ctx, p, record) {
     const cls = s(p, 'class');
-    const src = mainFile(lab, 'uia-remote', poPath(cls))!;
+    const src = mainFile(lab, 'uia-relay', poPath(cls))!;
     const next = cls === 'RegisterHomeScreen' ? REGISTER_HOME_SCREEN_STUB : stubWaitForScreen(src);
-    commitFault(lab, record, 'uia-remote', { [poPath(cls)]: next }, s(p, 'by'), s(p, 'message'));
+    commitFault(lab, record, 'uia-relay', { [poPath(cls)]: next }, s(p, 'by'), s(p, 'message'));
     void ctx;
   },
   isResolved(lab, f) {
-    const src = mainFile(lab, 'uia-remote', poPath(String(f.params['class'])));
+    const src = mainFile(lab, 'uia-relay', poPath(String(f.params['class'])));
     if (!src) return false;
     const methods = [...src.matchAll(/public\s+void\s+(\w+)\s*\(\)\s*\{/g)].map((m) => m[1]!).filter((n) => n !== 'waitForScreen');
     return hasWaitForScreen(src) && methods.every((m) => screenSync(src, m).kind === 'wait');
@@ -305,17 +305,17 @@ const uiaScrollSwapped: FaultDef = {
   validate(lab, p) {
     const mode = s(p, 'mode');
     if (!['swapped', 'horizontal-only'].includes(mode)) return err(`fault uia.scrollSwapped: invalid param mode='${mode}' (not one of swapped, horizontal-only)`);
-    const src = mainFile(lab, 'uia-remote', poPath('HomeScreen'));
+    const src = mainFile(lab, 'uia-relay', poPath('HomeScreen'));
     if (!src || openDirection(src) !== 'correct') return err('fault uia.scrollSwapped: nothing to break (HomeScreen.open() is not correct)');
     return ok({ target: 'HomeScreen' });
   },
   apply(lab, ctx, p, record) {
-    const src = mainFile(lab, 'uia-remote', poPath('HomeScreen'))!;
-    commitFault(lab, record, 'uia-remote', { [poPath('HomeScreen')]: scrollEdit(src, s(p, 'mode')) }, s(p, 'by'), s(p, 'message'));
+    const src = mainFile(lab, 'uia-relay', poPath('HomeScreen'))!;
+    commitFault(lab, record, 'uia-relay', { [poPath('HomeScreen')]: scrollEdit(src, s(p, 'mode')) }, s(p, 'by'), s(p, 'message'));
     void ctx;
   },
   isResolved(lab) {
-    const src = mainFile(lab, 'uia-remote', poPath('HomeScreen'));
+    const src = mainFile(lab, 'uia-relay', poPath('HomeScreen'));
     return !!src && openDirection(src) === 'correct';
   },
 };
@@ -334,14 +334,14 @@ const uiaMissingScreenMethods: FaultDef = {
   }),
   validate(lab, p) {
     const cls = s(p, 'class');
-    const src = mainFile(lab, 'uia-remote', poPath(cls));
+    const src = mainFile(lab, 'uia-relay', poPath(cls));
     if (src === undefined) return err(`fault uia.missingScreenMethods: invalid param class='${cls}' (no such repoPath)`);
     if (!hasWaitForScreen(src) && !hasIsScreenPresent(src)) return err(`fault uia.missingScreenMethods: nothing to break (${cls} has no mandatory methods)`);
     return ok({ target: cls });
   },
   apply(lab, ctx, p, record) {
     const cls = s(p, 'class');
-    let src = mainFile(lab, 'uia-remote', poPath(cls))!;
+    let src = mainFile(lab, 'uia-relay', poPath(cls))!;
     const which = s(p, 'methods', 'both');
     if (which !== 'isScreenPresent') {
       src = removeMethod(src, 'waitForScreen');
@@ -351,11 +351,11 @@ const uiaMissingScreenMethods: FaultDef = {
       src = removeMethod(src, 'isScreenPresent');
       src = src.replace(/!?\s*isScreenPresent\(\)/g, 'true');
     }
-    commitFault(lab, record, 'uia-remote', { [poPath(cls)]: src }, s(p, 'by'), p['message'] === undefined ? `${cls}: remove boilerplate` : s(p, 'message'));
+    commitFault(lab, record, 'uia-relay', { [poPath(cls)]: src }, s(p, 'by'), p['message'] === undefined ? `${cls}: remove boilerplate` : s(p, 'message'));
     void ctx;
   },
   isResolved(lab, f) {
-    const src = mainFile(lab, 'uia-remote', poPath(String(f.params['class'])));
+    const src = mainFile(lab, 'uia-relay', poPath(String(f.params['class'])));
     return !!src && hasWaitForScreen(src) && hasIsScreenPresent(src);
   },
 };
@@ -373,20 +373,20 @@ const uiaTeardownMissing: FaultDef = {
   }),
   validate(lab, p) {
     const test = s(p, 'test');
-    const src = mainFile(lab, 'uia-remote', UIA_PATHS.test(test));
+    const src = mainFile(lab, 'uia-relay', UIA_PATHS.test(test));
     if (src === undefined) return err(`fault uia.teardownMissing: invalid param test='${test}' (no such repoPath)`);
     if (!hasTeardown(src)) return err(`fault uia.teardownMissing: nothing to break (${test} has no teardown)`);
     return ok({ target: test });
   },
   apply(lab, ctx, p, record) {
     const test = s(p, 'test');
-    const src = mainFile(lab, 'uia-remote', UIA_PATHS.test(test))!;
+    const src = mainFile(lab, 'uia-relay', UIA_PATHS.test(test))!;
     const next = src.replace(/\n[ \t]*@After\s*\n[ \t]*public\s+void\s+\w+\s*\(\)\s*\{[^}]*\}\n/, '\n');
-    commitFault(lab, record, 'uia-remote', { [UIA_PATHS.test(test)]: next }, s(p, 'by'), s(p, 'message'));
+    commitFault(lab, record, 'uia-relay', { [UIA_PATHS.test(test)]: next }, s(p, 'by'), s(p, 'message'));
     void ctx;
   },
   isResolved(lab, f) {
-    const src = mainFile(lab, 'uia-remote', UIA_PATHS.test(String(f.params['test'])));
+    const src = mainFile(lab, 'uia-relay', UIA_PATHS.test(String(f.params['test'])));
     return !!src && hasTeardown(src);
   },
 };
@@ -432,7 +432,7 @@ const configValue: FaultDef = {
     param('value', 'string', 'wrong value', '10.42.30.19', { required: true }),
     cfgPathParam,
   ], {
-    tags: ['uia.config', 'orca.tethered', 'uia.scroll'],
+    tags: ['uia.config', 'orka.tethered', 'uia.scroll'],
     clears: "the key equals the validator target for the file's robotName",
     symptoms: ['[runner] CFD handle 10.42.30.19:5444 → No route to host', "deviceType=Micro on TARS → App 'Register' not found"],
     usedBy: ['INC30', 'INC33'],
@@ -453,7 +453,7 @@ const configValue: FaultDef = {
   },
 };
 
-const CWM_ALEX = '~/CodeWithMe/alex/uia-remote/config.properties';
+const CWM_ALEX = '~/CodeWithMe/alex/uia-relay/config.properties';
 const configThemeKernel: FaultDef = {
   info: info('config.themeKernel', 'Stale wiki values', 'workstation', [{ ...cfgPathParam, default: CWM_ALEX, example: CWM_ALEX, target: true }], {
     tags: ['uia.config'],
@@ -491,14 +491,14 @@ function setSaved(lab: LabState, ctx: TxContext, record: Rec, jobId: string, k: 
 
 const jenkinsEnvCase: FaultDef = {
   info: info('jenkins.envCase', 'Enum value not ALL CAPS', 'jenkins', [
-    jobParam('Java/uia-remote-regression-flux'),
+    jobParam('Java/uia-relay-regression-flux'),
     param('param', 'string', 'parameter', 'DEVICE_TYPE', { default: 'DEVICE_TYPE' }),
     param('value', 'string', 'saved value', 'flux_3', { default: 'flux_3' }),
     param('by', 'string', 'who saved it', 'riley', { default: 'riley' }),
   ], {
-    tags: ['jenkins.envvars', 'orca.devicetype'],
+    tags: ['jenkins.envvars', 'orka.devicetype'],
     clears: 'savedParams[param] is exactly one of the 14 DeviceType constants',
-    symptoms: ['[orca] checkout request deviceType=flux_3', 'java.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.flux_3'],
+    symptoms: ['[orka] checkout request deviceType=flux_3', 'java.lang.IllegalArgumentException: No enum constant com.labsim.orka.domain.enumeration.DeviceType.flux_3'],
     usedBy: ['INC39', 'M11', 'M18'],
   }),
   validate(lab, p) {
@@ -517,10 +517,10 @@ const jenkinsEnvCase: FaultDef = {
 };
 
 const jenkinsJobMoved: FaultDef = {
-  info: info('jenkins.jobMoved', 'Job filed in the wrong folder', 'jenkins', [jobParam('Java/pigeon-windows-tender'), param('toFolder', 'string', 'folder', 'iOS', { default: 'iOS', values: ['Java', 'iOS'] }), param('by', 'string', 'who moved it', 'alex', { default: 'alex' })], {
-    tags: ['jenkins.folders', 'pigeon.lstr', 'go.sdk'],
+  info: info('jenkins.jobMoved', 'Job filed in the wrong folder', 'jenkins', [jobParam('Java/parrot-windows-tender'), param('toFolder', 'string', 'folder', 'iOS', { default: 'iOS', values: ['Java', 'iOS'] }), param('by', 'string', 'who moved it', 'alex', { default: 'alex' })], {
+    tags: ['jenkins.folders', 'parrot.lstr', 'go.sdk'],
     clears: "jobs['Java/<name>'].exists and no existing iOS/<name>",
-    symptoms: ['Java view lacks it', 'the nightly trigger skips it', 'search finds iOS/pigeon-windows-tender'],
+    symptoms: ['Java view lacks it', 'the nightly trigger skips it', 'search finds iOS/parrot-windows-tender'],
     usedBy: ['INC26'],
   }),
   validate(lab, p) {
@@ -551,7 +551,7 @@ function mergedConflict(lab: LabState, jobId: string): string | null {
   if (!job) return null;
   const parsed = parseScript(job.script, job.savedParams);
   if (!parsed.ok || !parsed.caps.nonDynamic || !parsed.caps.dynamicFile) return null;
-  const text = lab.repos['gort'].files[parsed.caps.dynamicFile] ?? lab.repos[job.testRef?.repo ?? 'gort']?.files[parsed.caps.dynamicFile];
+  const text = lab.repos['gorth'].files[parsed.caps.dynamicFile] ?? lab.repos[job.testRef?.repo ?? 'gorth']?.files[parsed.caps.dynamicFile];
   const r = text ? parseStrictJson(text) : null;
   const dyn = r?.ok ? ((r.value as { capabilities?: Record<string, unknown> }).capabilities ?? {}) : {};
   for (const [k, v] of Object.entries(parsed.caps.nonDynamic)) if (k in dyn && String(dyn[k]) !== String(v)) return k;
@@ -565,9 +565,9 @@ const jenkinsCapsConflict: FaultDef = {
     param('value', 'string', 'new value', 'MICRO_3', { default: 'MICRO_3' }),
     param('by', 'string', 'who edited the script', 'alex', { default: 'alex' }),
   ], {
-    tags: ['orca.capabilities', 'hw.devices', 'jenkins.envvars'],
+    tags: ['orka.capabilities', 'hw.devices', 'jenkins.envvars'],
     clears: "the script map merged with the job's dynamic file has no conflicting key",
-    symptoms: ['[orca] 409 Conflict: capability conflict (pipeline deviceType=MICRO_3, test deviceType=COMPASS)'],
+    symptoms: ['[orka] 409 Conflict: capability conflict (pipeline deviceType=MICRO_3, test deviceType=COMPASS)'],
     usedBy: ['INC49'],
   }),
   validate(lab, p) {
@@ -591,7 +591,7 @@ const jenkinsCapsConflict: FaultDef = {
 
 const jenkinsNamedRobot: FaultDef = {
   info: info('jenkins.namedRobot', 'Job pinned to the wrong robot', 'jenkins', [jobParam('Java/contact-canada-pin-sale'), param('robot', 'robot', 'robot Name', 'tars', { default: 'tars' }), param('by', 'string', 'who saved it', 'alex', { default: 'alex' })], {
-    tags: ['bots.pin', 'bots.types', 'orca.capabilities'],
+    tags: ['bots.pin', 'bots.types', 'orka.capabilities'],
     clears: "saved ROBOT_NAME is '' or names a robot whose capability document satisfies the job's merged requirements",
     symptoms: ['Checked out robot tars (named)', 'PIN entry requires physical touch'],
     usedBy: ['INC52', 'P2-4'],
@@ -599,7 +599,7 @@ const jenkinsNamedRobot: FaultDef = {
   validate(lab, p) {
     const job = lab.jenkins.jobs[s(p, 'job')];
     if (!job || !job.exists) return err(`fault jenkins.namedRobot: invalid param job='${s(p, 'job')}' (no such job)`);
-    if (!Object.values(lab.orca.robots).some((r) => r.name === s(p, 'robot'))) return err(`fault jenkins.namedRobot: invalid param robot='${s(p, 'robot')}' (no such robot)`);
+    if (!Object.values(lab.orka.robots).some((r) => r.name === s(p, 'robot'))) return err(`fault jenkins.namedRobot: invalid param robot='${s(p, 'robot')}' (no such robot)`);
     return ok({ target: job.id });
   },
   apply(lab, ctx, p, record) {
@@ -610,13 +610,13 @@ const jenkinsNamedRobot: FaultDef = {
     if (!job) return false;
     const name = job.savedParams['ROBOT_NAME'] ?? '';
     if (!name) return true;
-    const robot = Object.values(lab.orca.robots).find((r) => r.name === name);
+    const robot = Object.values(lab.orka.robots).find((r) => r.name === name);
     if (!robot) return false;
     const doc = core().capabilityDocument(lab, robot.id) ?? {};
     const parsed = parseScript(job.script, job.savedParams);
     const R: Record<string, unknown> = { ...(parsed.ok ? (parsed.caps.nonDynamic ?? {}) : {}) };
     if (parsed.ok && parsed.caps.dynamicFile) {
-      const r = parseStrictJson(lab.repos['gort'].files[parsed.caps.dynamicFile] ?? '');
+      const r = parseStrictJson(lab.repos['gorth'].files[parsed.caps.dynamicFile] ?? '');
       if (r.ok) Object.assign(R, (r.value as { capabilities?: Record<string, unknown> }).capabilities ?? {});
     }
     return Object.entries(R).every(([k, v]) => k === 'tethered' || String(doc[k] ?? false) === String(v));
@@ -626,26 +626,26 @@ const jenkinsNamedRobot: FaultDef = {
 const rigTestRunning: FaultDef = {
   info: info('rig.testRunning', 'A test holds the rig', 'jenkins', [
     param('rig', 'rig', 'robot Name', 'wall-e', { required: true, target: true }),
-    param('job', 'job', 'Jenkins job', 'Java/uia-remote-regression-flux', { default: 'Java/uia-remote-regression-flux' }),
+    param('job', 'job', 'Jenkins job', 'Java/uia-relay-regression-flux', { default: 'Java/uia-relay-regression-flux' }),
     param('number', 'number', 'build number', '4127'),
     param('durationMs', 'number', 'loop duration (physical ms); empty = until cleared', '30000'),
     param('by', 'string', 'trigger', 'jenkins', { default: 'jenkins' }),
   ], {
     tags: ['hw.lockout', 'hw.tablet'],
     clears: 'the build is finished',
-    symptoms: ['tablet overlay TEST IN PROGRESS — CONTROLS LOCKED', 'Orca: Available · in use by Jenkins #4127'],
+    symptoms: ['tablet overlay TEST IN PROGRESS — CONTROLS LOCKED', 'Orka: Available · in use by Jenkins #4127'],
     usedBy: ['M01', 'INC12', 'DR16'],
   }),
   validate(lab, p) {
-    const job = lab.jenkins.jobs[s(p, 'job', 'Java/uia-remote-regression-flux')];
+    const job = lab.jenkins.jobs[s(p, 'job', 'Java/uia-relay-regression-flux')];
     if (!job || !job.exists) return err(`fault rig.testRunning: invalid param job='${s(p, 'job')}' (no such job)`);
-    const robot = Object.values(lab.orca.robots).find((r) => r.name === s(p, 'rig'));
+    const robot = Object.values(lab.orka.robots).find((r) => r.name === s(p, 'rig'));
     if (!robot) return err(`fault rig.testRunning: invalid param rig='${s(p, 'rig')}' (no such rig)`);
     if (robot.checkout) return err(`fault rig.testRunning: nothing to break (${robot.name} is already in use by Jenkins #${robot.checkout.buildId.split('#')[1]})`);
     return ok({ target: robot.name });
   },
   apply(lab, ctx, p, record) {
-    const jobId = s(p, 'job', 'Java/uia-remote-regression-flux');
+    const jobId = s(p, 'job', 'Java/uia-relay-regression-flux');
     if (p['number'] !== undefined && p['number'] !== '' && p['number'] !== null) {
       record(['jenkins', 'nextBuildNumber', jobId], lab.jenkins.nextBuildNumber[jobId], Number(p['number']));
       lab.jenkins.nextBuildNumber[jobId] = Number(p['number']);
@@ -668,10 +668,10 @@ const rigTestRunning: FaultDef = {
 };
 
 export const DEVOPS_FAULT_DEFS: FaultDef[] = [
-  gortCapabilityDropped,
-  pigeonMissingComma,
-  pigeonMissingBracket,
-  pigeonScreenCompareEmpty,
+  gorthCapabilityDropped,
+  parrotMissingComma,
+  parrotMissingBracket,
+  parrotScreenCompareEmpty,
   uiaWaitForScreenStub,
   uiaScrollSwapped,
   uiaMissingScreenMethods,
@@ -696,7 +696,7 @@ function need(p: Record<string, unknown>, ...keys: string[]): string | null {
   for (const k of keys) if (p[k] === undefined || p[k] === null || p[k] === '') return `invalid param ${k}='' (missing)`;
   return null;
 }
-const repoCheck = (p: Record<string, unknown>): string | null => (isRepoId(str(p['repo'])) ? null : `invalid param repo='${str(p['repo'])}' (not one of gort, uia-remote, pigeon, orchestrator)`);
+const repoCheck = (p: Record<string, unknown>): string | null => (isRepoId(str(p['repo'])) ? null : `invalid param repo='${str(p['repo'])}' (not one of gorth, uia-relay, parrot, orchestrator)`);
 
 export const DEVOPS_SETUP_OP_DEFS: SetupOpDef[] = [
   {
@@ -710,7 +710,7 @@ export const DEVOPS_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('repo.clone', 'git.clone(repo) at main head (~/IdeaProjects/<repo>)', [R('repo', 'string', 'repo id', 'uia-remote')]),
+    info: sop('repo.clone', 'git.clone(repo) at main head (~/IdeaProjects/<repo>)', [R('repo', 'string', 'repo id', 'uia-relay')]),
     validate: (lab, p) => {
       const e = repoCheck(p);
       if (e) return err(e);
@@ -718,11 +718,11 @@ export const DEVOPS_SETUP_OP_DEFS: SetupOpDef[] = [
     },
     apply: (lab, ctx, p) => {
       gitClone(lab, ctx, str(p['repo']) as RepoId, 'system');
-      if (str(p['repo']) === 'uia-remote') mirrorConfig(lab);
+      if (str(p['repo']) === 'uia-relay') mirrorConfig(lab);
     },
   },
   {
-    info: sop('repo.commitFixture', 'Commit fixture text (Sim §4.4.4) at path', [R('repo', 'string', 'repo id', 'pigeon'), R('path', 'repoPath', 'path', 'tests/sale/swipe_sale_print.json'), R('fixture', 'string', 'fixture id', 'm15-expanded'), R('by', 'string', 'author', 'alex'), R('message', 'string', 'commit message', 'Expand swipe sale actions'), param('branch', 'string', 'branch', 'main', { default: 'main' })]),
+    info: sop('repo.commitFixture', 'Commit fixture text (Sim §4.4.4) at path', [R('repo', 'string', 'repo id', 'parrot'), R('path', 'repoPath', 'path', 'tests/sale/swipe_sale_print.json'), R('fixture', 'string', 'fixture id', 'm15-expanded'), R('by', 'string', 'author', 'alex'), R('message', 'string', 'commit message', 'Expand swipe sale actions'), param('branch', 'string', 'branch', 'main', { default: 'main' })]),
     validate: (lab, p) => {
       const e = need(p, 'repo', 'path', 'fixture', 'by', 'message') ?? repoCheck(p);
       if (e) return err(e);
@@ -740,7 +740,7 @@ export const DEVOPS_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('repo.deleteFile', 'Commit deleting path', [R('repo', 'string', 'repo id', 'gort'), R('path', 'repoPath', 'path', 'config/screen-locations/FLUX_4/RECEIPT_OPTIONS_5.json'), R('by', 'string', 'author', 'jared'), R('message', 'string', 'commit message', 'Remove unverified FLUX_4 5-option map')]),
+    info: sop('repo.deleteFile', 'Commit deleting path', [R('repo', 'string', 'repo id', 'gorth'), R('path', 'repoPath', 'path', 'config/screen-locations/FLUX_4/RECEIPT_OPTIONS_5.json'), R('by', 'string', 'author', 'jaden'), R('message', 'string', 'commit message', 'Remove unverified FLUX_4 5-option map')]),
     validate: (lab, p) => {
       const e = need(p, 'repo', 'path', 'by', 'message') ?? repoCheck(p);
       if (e) return err(e);
@@ -754,7 +754,7 @@ export const DEVOPS_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('github.seedPr', 'Branch <author>/<slug> with the fixture committed on main + an open PR (reviewer: the player)', [R('repo', 'string', 'repo id', 'uia-remote'), R('number', 'number', 'PR number', '431'), R('fixture', 'string', 'fixture id', 'uia-431-lockscreen'), R('author', 'string', 'author', 'alex'), R('title', 'string', 'title', 'Add LockScreen page object'), param('state', 'string', 'open | closed', 'open', { default: 'open' })]),
+    info: sop('github.seedPr', 'Branch <author>/<slug> with the fixture committed on main + an open PR (reviewer: the player)', [R('repo', 'string', 'repo id', 'uia-relay'), R('number', 'number', 'PR number', '431'), R('fixture', 'string', 'fixture id', 'uia-431-lockscreen'), R('author', 'string', 'author', 'alex'), R('title', 'string', 'title', 'Add LockScreen page object'), param('state', 'string', 'open | closed', 'open', { default: 'open' })]),
     validate: (lab, p) => {
       const e = need(p, 'repo', 'number', 'fixture', 'author', 'title') ?? repoCheck(p);
       if (e) return err(e);
@@ -766,7 +766,7 @@ export const DEVOPS_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('github.reopenPr', 'A closed PR → open (branch restored at its head)', [R('repo', 'string', 'repo id', 'uia-remote'), R('number', 'number', 'PR number', '212')]),
+    info: sop('github.reopenPr', 'A closed PR → open (branch restored at its head)', [R('repo', 'string', 'repo id', 'uia-relay'), R('number', 'number', 'PR number', '212')]),
     validate: (lab, p) => {
       const e = repoCheck(p);
       if (e) return err(e);
@@ -778,7 +778,7 @@ export const DEVOPS_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('github.unmergePr', "Rewrite history so the PR's merge commit is not on main (PR open again)", [R('repo', 'string', 'repo id', 'gort'), R('number', 'number', 'PR number', '418')], true),
+    info: sop('github.unmergePr', "Rewrite history so the PR's merge commit is not on main (PR open again)", [R('repo', 'string', 'repo id', 'gorth'), R('number', 'number', 'PR number', '418')], true),
     validate: (lab, p) => {
       const e = repoCheck(p);
       if (e) return err(e);
@@ -793,8 +793,8 @@ export const DEVOPS_SETUP_OP_DEFS: SetupOpDef[] = [
     info: sop('config.write', 'Write config.properties (git-ignored, not a commit)', [R('fixture', 'string', 'm14-broken | broken | target', 'm14-broken'), param('robot', 'robot', 'robot for generators', 'megatron', { default: 'megatron' }), cfgPathParam]),
     validate: (lab, p) => {
       const path = str(p['path'], LOCAL_CFG);
-      const isLocal = tildify(path) === LOCAL_CFG || path.endsWith('IdeaProjects/uia-remote/config.properties');
-      if (isLocal && !lab.repos['uia-remote'].local) return err('uia-remote is not cloned (repo.clone first)');
+      const isLocal = tildify(path) === LOCAL_CFG || path.endsWith('IdeaProjects/uia-relay/config.properties');
+      if (isLocal && !lab.repos['uia-relay'].local) return err('uia-relay is not cloned (repo.clone first)');
       return resolveFixture(lab, str(p['fixture']), { robot: str(p['robot'], 'megatron') }) ? ok(undefined) : err(`invalid param fixture='${str(p['fixture'])}' (no such fixture or robot)`);
     },
     apply: (lab, ctx, p) => {
@@ -803,14 +803,14 @@ export const DEVOPS_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('jenkins.setParam', 'savedParams[param] ≔ value (config history)', [R('job', 'job', 'job', 'Java/pigeon-android-sale-swipe'), R('param', 'string', 'parameter', 'ROBOT_NAME'), R('value', 'string', 'value', 'bumblebee'), param('by', 'string', 'who', 'morgan', { default: 'morgan' })]),
+    info: sop('jenkins.setParam', 'savedParams[param] ≔ value (config history)', [R('job', 'job', 'job', 'Java/parrot-android-sale-swipe'), R('param', 'string', 'parameter', 'ROBOT_NAME'), R('value', 'string', 'value', 'bumblebee'), param('by', 'string', 'who', 'morgan', { default: 'morgan' })]),
     validate: (lab, p) => (lab.jenkins.jobs[str(p['job'])]?.exists ? ok(undefined) : err(`invalid param job='${str(p['job'])}' (no such job)`)),
     apply: (lab, ctx, p) => {
       saveJob(lab, ctx, str(p['job']), { savedParams: { ...lab.jenkins.jobs[str(p['job'])]!.savedParams, [str(p['param'])]: str(p['value']) } }, str(p['by'], 'morgan'));
     },
   },
   {
-    info: sop('jenkins.startBuild', 'jenkins.build (a real build)', [R('job', 'job', 'job', 'Java/pigeon-android-tip-sale'), param('params', 'list', 'parameters', '{"ROBOT_NAME":"eve"}', { default: [] }), param('by', 'string', 'trigger', 'jenkins', { default: 'jenkins' }), param('number', 'number', 'build number', '')]),
+    info: sop('jenkins.startBuild', 'jenkins.build (a real build)', [R('job', 'job', 'job', 'Java/parrot-android-tip-sale'), param('params', 'list', 'parameters', '{"ROBOT_NAME":"eve"}', { default: [] }), param('by', 'string', 'trigger', 'jenkins', { default: 'jenkins' }), param('number', 'number', 'build number', '')]),
     validate: (lab, p) => (lab.jenkins.jobs[str(p['job'])]?.exists ? ok(undefined) : err(`invalid param job='${str(p['job'])}' (no such job)`)),
     apply: (lab, ctx, p) => {
       const jobId = str(p['job']);
@@ -820,7 +820,7 @@ export const DEVOPS_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('jenkins.seedBuild', 'A finished historical build (console from the engine formatter)', [R('job', 'job', 'job', 'Java/uia-remote-regression-flux'), param('params', 'list', 'parameters', '{}'), R('result', 'string', 'SUCCESS | FAILURE | UNSTABLE | ABORTED', 'FAILURE'), param('failureCode', 'string', 'failure code', 'ENUM_CASE'), param('robot', 'robot', 'robot', 'wall-e'), R('atMs', 'number', 'game ms', '-3600000'), R('by', 'string', 'trigger', 'riley')], true),
+    info: sop('jenkins.seedBuild', 'A finished historical build (console from the engine formatter)', [R('job', 'job', 'job', 'Java/uia-relay-regression-flux'), param('params', 'list', 'parameters', '{}'), R('result', 'string', 'SUCCESS | FAILURE | UNSTABLE | ABORTED', 'FAILURE'), param('failureCode', 'string', 'failure code', 'ENUM_CASE'), param('robot', 'robot', 'robot', 'wall-e'), R('atMs', 'number', 'game ms', '-3600000'), R('by', 'string', 'trigger', 'riley')], true),
     validate: (lab, p) => (lab.jenkins.jobs[str(p['job'])] ? ok(undefined) : err(`invalid param job='${str(p['job'])}' (no such job)`)),
     apply: (lab, _ctx, p) => {
       const job = lab.jenkins.jobs[str(p['job'])]!;
@@ -834,16 +834,16 @@ export const DEVOPS_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('runner.startLocal', 'runner.runLocal (a real IntelliJ run)', [param('repo', 'string', 'uia-remote | pigeon', 'uia-remote', { default: 'uia-remote' }), R('test', 'string', 'test class or Pigeon file', 'SaleTest'), param('configPath', 'repoPath', 'config.properties', LOCAL_CFG)]),
+    info: sop('runner.startLocal', 'runner.runLocal (a real IntelliJ run)', [param('repo', 'string', 'uia-relay | parrot', 'uia-relay', { default: 'uia-relay' }), R('test', 'string', 'test class or Parrot file', 'SaleTest'), param('configPath', 'repoPath', 'config.properties', LOCAL_CFG)]),
     validate: (lab, p) => {
-      const repo = str(p['repo'], 'uia-remote');
-      if (repo !== 'uia-remote' && repo !== 'pigeon') return err(`invalid param repo='${repo}' (not one of uia-remote, pigeon)`);
+      const repo = str(p['repo'], 'uia-relay');
+      if (repo !== 'uia-relay' && repo !== 'parrot') return err(`invalid param repo='${repo}' (not one of uia-relay, parrot)`);
       return lab.repos[repo].local ? ok(undefined) : err(`${repo} is not cloned (repo.clone first)`);
     },
     apply: (lab, ctx, p) => {
-      const repo = str(p['repo'], 'uia-remote') as 'uia-remote' | 'pigeon';
+      const repo = str(p['repo'], 'uia-relay') as 'uia-relay' | 'parrot';
       const test = str(p['test']);
-      const path = repo === 'uia-remote' && !test.includes('/') ? UIA_PATHS.test(test) : test;
+      const path = repo === 'uia-relay' && !test.includes('/') ? UIA_PATHS.test(test) : test;
       runLocal(lab, ctx, repo, path, 'player', p['configPath'] ? str(p['configPath']) : undefined);
     },
   },

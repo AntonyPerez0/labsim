@@ -1,7 +1,7 @@
 /**
  * LabChat desktop notifications (Apps §11.3, §1.5): a new message not from the player in a channel that is
- * not on screen → toast (+ taskbar badge from `lab.chat.unread`). `#orca-alerts` posts are mirrored with the
- * Orca icon while the Orca window is open. Started by `initComputer()`.
+ * not on screen → toast (+ taskbar badge from `lab.chat.unread`). `#orka-alerts` posts are mirrored with the
+ * Orka icon while the Orka window is open. Started by `initComputer()`.
  */
 import { bus } from '@/core/bus';
 import { getWindowManager } from '../../apps';
@@ -19,8 +19,8 @@ export function startChatNotifier(): () => void {
     const firstLine = plainText(m.text).split('\n')[0] ?? '';
     const route = m.channel.startsWith('dm:') ? `/dm/${m.channel.slice(3)}` : `/channel/${m.channel.replace(/^#/, '')}`;
     wm.notify({ app: 'chat', title: channelTitle(m.channel, m.author), body: firstLine, route });
-    if (m.channel === '#orca-alerts' && wins.some((w) => w.app === 'orca') && /:red_circle:|FAIL/.test(m.text)) {
-      wm.notify({ app: 'orca', title: 'Health check failure', body: firstLine, route: '/admin/health-check-log', kind: 'warning' });
+    if (m.channel === '#orka-alerts' && wins.some((w) => w.app === 'orka') && /:red_circle:|FAIL/.test(m.text)) {
+      wm.notify({ app: 'orka', title: 'Health check failure', body: firstLine, route: '/admin/health-check-log', kind: 'warning' });
     }
   });
 }

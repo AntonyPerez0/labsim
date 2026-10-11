@@ -446,7 +446,7 @@ function triggerKindOf(t: DeferredTrigger): string {
 /** Which deferred trigger kinds an event can be. */
 function eventTriggerKinds(type: string): string[] {
   switch (type) {
-    case 'orca.healthCheckRan':
+    case 'orka.healthCheckRan':
       return ['health-check', 'event'];
     case 'jenkins.buildFinished':
       return ['build', 'event'];
@@ -486,7 +486,7 @@ export function feedTrigger(scope: Scope, entry: LogEntry, state: RootState): Tr
     let hit = false;
     let resultOk = true;
     let robot: string | null = null;
-    if (t.kind === 'health-check') hit = entry.type === 'orca.healthCheckRan';
+    if (t.kind === 'health-check') hit = entry.type === 'orka.healthCheckRan';
     else if (t.kind === 'build' && entry.type === 'jenkins.buildFinished') {
       const p = entry.payload as { buildId: string; jobId: string; result: string; robotId: number | null };
       hit = buildMatches(t, state.lab, p);

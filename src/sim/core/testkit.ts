@@ -48,15 +48,15 @@ export function collect<K extends keyof EventMap>(type: K, fn: () => void): Even
   return out;
 }
 
-export const robot = (name: string) => Object.values(lab().orca.robots).find((r) => r.name === name)!;
+export const robot = (name: string) => Object.values(lab().orka.robots).find((r) => r.name === name)!;
 export const device = (id: string) => lab().devices[id]!;
 export const host = (id: string) => lab().hosts[id]!;
 export const rig = (id: string) => lab().rigs[id]!;
 
 /** Run the health check now (Sim §6.3 runHealthCheckNow) and return the newest log block. */
 export function healthCheck(): string[] {
-  sim.orca.runHealthCheckNow();
-  const log = lab().orca.healthCheck.log;
+  sim.orka.runHealthCheckNow();
+  const log = lab().orka.healthCheck.log;
   return log[log.length - 1]!.lines;
 }
 

@@ -29,7 +29,7 @@ import { bus } from '@/core/bus';
 import type { QualityPreset } from '@/core/state';
 import { render2d, screenCanvasSize, TABLET_CANVAS_BY_PRESET, SCREEN_BRIGHTNESS_SCALE, type TabletTab } from '@/render2d';
 import { createTerminalDevice, createDisplayState, createRigState } from '@/sim';
-import type { BannerColor, TerminalDevice, DeviceTypeCode, LabState, OrcaRobot, RigState, ScreenName } from '@/sim/types';
+import type { BannerColor, TerminalDevice, DeviceTypeCode, LabState, OrkaRobot, RigState, ScreenName } from '@/sim/types';
 
 const ANIMATED: ReadonlySet<string> = new Set(['processing', 'boot', 'printing', 'payment-prompt', 'customer-idle', 'deprovisioning']);
 /** Redraw interval (ms) of animated screens; the near-black screensaver leaf drifts 2 mm/s, so 1 Hz is plenty. */
@@ -292,13 +292,13 @@ export class ScreenManager {
     s.lastAnim = nowMs;
   }
 
-  private robotFor(lab: LabState, rigId: string, hrn: string): OrcaRobot {
-    const robots = lab.orca?.robots ?? {};
+  private robotFor(lab: LabState, rigId: string, hrn: string): OrkaRobot {
+    const robots = lab.orka?.robots ?? {};
     for (const k in robots) {
       const r = robots[k as unknown as number];
       if (r && r.name === rigId) return r;
     }
-    return { id: 0, name: rigId, humanReadableName: hrn, status: 'AVAILABLE' } as unknown as OrcaRobot;
+    return { id: 0, name: rigId, humanReadableName: hrn, status: 'AVAILABLE' } as unknown as OrkaRobot;
   }
 
   private updateTablets(lab: LabState, nowMs: number): void {

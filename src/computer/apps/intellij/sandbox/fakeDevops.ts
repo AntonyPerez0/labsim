@@ -4,12 +4,12 @@
  * never imported by app code. Every state change goes through `mutate()`.
  */
 import { getState, mutate } from '@/core/store';
-import { createOrcaRobot, sim } from '@/sim';
-import type { GitRepo, LabState, OrcaDevice, RepoId, TerminalLine, TerminalResult } from '@/sim';
-import { BROKEN_CONFIG, GORT_FILES, ORCA_FILES, PIGEON_FILES, SEED_HISTORY, UIA_FILES } from './seedRepos';
+import { createOrkaRobot, sim } from '@/sim';
+import type { GitRepo, LabState, OrkaDevice, RepoId, TerminalLine, TerminalResult } from '@/sim';
+import { BROKEN_CONFIG, GORTH_FILES, ORKA_FILES, PARROT_FILES, SEED_HISTORY, UIA_FILES } from './seedRepos';
 
 const DAY = 86_400_000;
-const FILES: Record<RepoId, Record<string, string>> = { 'uia-remote': UIA_FILES, pigeon: PIGEON_FILES, gort: GORT_FILES, orchestrator: ORCA_FILES };
+const FILES: Record<RepoId, Record<string, string>> = { 'uia-relay': UIA_FILES, parrot: PARROT_FILES, gorth: GORTH_FILES, orchestrator: ORKA_FILES };
 let shaSeq = 0x5a17;
 
 function fakeSha(seed: string): string {
@@ -22,7 +22,7 @@ function seedRepo(lab: LabState, id: RepoId, cloned: boolean) {
   const files = FILES[id];
   const hist = SEED_HISTORY[id];
   const repo = lab.repos[id];
-  repo.description = id === 'uia-remote' ? 'UI Automator 2.3 remote runner (POM)' : id === 'pigeon' ? 'Pigeon / LSTR legacy JSON tests' : id === 'gort' ? 'Cards, screen locations and suites' : 'Orca — the Orchestrator (JHipster)';
+  repo.description = id === 'uia-relay' ? 'UI Automator 2.3 remote runner (POM)' : id === 'parrot' ? 'Parrot / LSTR legacy JSON tests' : id === 'gorth' ? 'Cards, screen locations and suites' : 'Orka — the Orchestrator (JHipster)';
   repo.commits = {};
   let parent: string | null = null;
   hist.forEach((h, i) => {
@@ -40,35 +40,35 @@ function seedRepo(lab: LabState, id: RepoId, cloned: boolean) {
   });
   repo.files = { ...files };
   repo.branches = { main: parent! };
-  if (id === 'uia-remote') repo.branches['fix/flux4-receipt-qr'] = parent!;
+  if (id === 'uia-relay') repo.branches['fix/flux4-receipt-qr'] = parent!;
   repo.local = cloned
     ? { path: `~/IdeaProjects/${id}`, branch: 'main', headSha: parent!, files: { ...files }, dirty: [], staged: [], ahead: 0, behind: 0 }
     : null;
-  if (cloned && id === 'uia-remote') repo.local!.files['config.properties'] = BROKEN_CONFIG;
+  if (cloned && id === 'uia-relay') repo.local!.files['config.properties'] = BROKEN_CONFIG;
 }
 
-function seedOrca(lab: LabState) {
-  const dev = (id: number, name: string, deviceType: OrcaDevice['deviceType'], serial: string, ip: string): OrcaDevice => ({ id, name, deviceType, serial, ip, label: name, simDeviceId: null, retired: false });
-  lab.orca.devices[1] = dev(1, 'megatron-mfd', 'STAND_2', 'SIM-S2-000021', '10.42.30.21');
-  lab.orca.devices[2] = dev(2, 'megatron-cfd', 'MICRO_2', 'SIM-M2-000022', '10.42.30.22');
-  lab.orca.devices[3] = dev(3, 'r2-d2-duet', 'STAND_DUET_2', 'SIM-D2-000014', '10.42.30.14');
-  lab.orca.devices[4] = dev(4, 'wall-e-flux3', 'FLUX_3', 'SIM-F3-000011', '10.42.30.11');
-  lab.orca.robots[7] = createOrcaRobot(7, 'megatron', 'tethered', { deviceId: 1, mfdDeviceId: 1, cfdDeviceId: 2, environment: 'DEV1' });
-  lab.orca.robots[8] = createOrcaRobot(8, 'r2-d2', 'tethered', { deviceId: 3, mfdDeviceId: 3, cfdDeviceId: 3, environment: 'DEV2' });
-  lab.orca.robots[1] = createOrcaRobot(1, 'wall-e', 'touch', { deviceId: 4, environment: 'DEV1' });
+function seedOrka(lab: LabState) {
+  const dev = (id: number, name: string, deviceType: OrkaDevice['deviceType'], serial: string, ip: string): OrkaDevice => ({ id, name, deviceType, serial, ip, label: name, simDeviceId: null, retired: false });
+  lab.orka.devices[1] = dev(1, 'megatron-mfd', 'STAND_2', 'SIM-S2-000021', '10.42.30.21');
+  lab.orka.devices[2] = dev(2, 'megatron-cfd', 'MICRO_2', 'SIM-M2-000022', '10.42.30.22');
+  lab.orka.devices[3] = dev(3, 'r2-d2-duet', 'STAND_DUET_2', 'SIM-D2-000014', '10.42.30.14');
+  lab.orka.devices[4] = dev(4, 'wall-e-flux3', 'FLUX_3', 'SIM-F3-000011', '10.42.30.11');
+  lab.orka.robots[7] = createOrkaRobot(7, 'megatron', 'tethered', { deviceId: 1, mfdDeviceId: 1, cfdDeviceId: 2, environment: 'DEV1' });
+  lab.orka.robots[8] = createOrkaRobot(8, 'r2-d2', 'tethered', { deviceId: 3, mfdDeviceId: 3, cfdDeviceId: 3, environment: 'DEV2' });
+  lab.orka.robots[1] = createOrkaRobot(1, 'wall-e', 'touch', { deviceId: 4, environment: 'DEV1' });
 }
 
 export function seedFakeLab(opts: { cloned?: RepoId[] } = {}) {
-  const cloned = opts.cloned ?? ['pigeon', 'gort'];
+  const cloned = opts.cloned ?? ['parrot', 'gorth'];
   mutate((d) => {
     const lab = d.lab;
     for (const id of Object.keys(FILES) as RepoId[]) seedRepo(lab, id, cloned.includes(id));
-    seedOrca(lab);
+    seedOrka(lab);
     lab.time.nowMs = 9 * 3_600_000 + 41 * 60_000;
     lab.workstation.cwd = '~';
-    lab.workstation.shellHistory = ['ping -c 3 10.42.10.11', 'adb connect 10.42.30.32:5444', 'adb devices', 'cd ~/IdeaProjects/uia-remote'];
-    lab.workstation.files['~/CodeWithMe/alex/uia-remote/config.properties'] = BROKEN_CONFIG.replace('robotName=megatron', 'robotName=r2-d2');
-    lab.workstation.files['~/CodeWithMe/alex/uia-remote/app/src/androidTest/java/com/labsim/uia/testactions/TaxTestDuet.java'] = UIA_FILES['app/src/androidTest/java/com/labsim/uia/testactions/TaxTestDuet.java'];
+    lab.workstation.shellHistory = ['ping -c 3 10.42.10.11', 'adb connect 10.42.30.32:5444', 'adb devices', 'cd ~/IdeaProjects/uia-relay'];
+    lab.workstation.files['~/CodeWithMe/alex/uia-relay/config.properties'] = BROKEN_CONFIG.replace('robotName=megatron', 'robotName=r2-d2');
+    lab.workstation.files['~/CodeWithMe/alex/uia-relay/app/src/androidTest/java/com/labsim/uia/testactions/TaxTestDuet.java'] = UIA_FILES['app/src/androidTest/java/com/labsim/uia/testactions/TaxTestDuet.java'];
   });
 }
 
@@ -167,7 +167,7 @@ const fakeGit: Partial<typeof sim.git> = {
   push: (id) =>
     gitMut(id, (repo) => {
       const l = repo.local!;
-      if (l.branch === 'main' && (id === 'gort' || id === 'uia-remote')) return err(`! [remote rejected] main -> main (protected branch hook declined)\nerror: failed to push some refs to 'github.com:labsim-lab/${id}.git'`);
+      if (l.branch === 'main' && (id === 'gorth' || id === 'uia-relay')) return err(`! [remote rejected] main -> main (protected branch hook declined)\nerror: failed to push some refs to 'github.com:labsim-lab/${id}.git'`);
       repo.branches[l.branch] = l.headSha;
       if (l.branch === repo.defaultBranch) repo.files = headTree(repo, l.headSha);
       l.ahead = 0;
@@ -203,10 +203,10 @@ const fakeGit: Partial<typeof sim.git> = {
 const runs = new Map<string, { lines: string[]; done: boolean; passed: boolean | null; timer: ReturnType<typeof setInterval> | null }>();
 let runSeq = 0;
 
-function scriptFor(repo: 'uia-remote' | 'pigeon', testPath: string, lab: LabState): { lines: string[]; passed: boolean } {
+function scriptFor(repo: 'uia-relay' | 'parrot', testPath: string, lab: LabState): { lines: string[]; passed: boolean } {
   const name = testPath.split('/').pop()!.replace(/\.(java|json)$/, '');
   const files = lab.repos[repo].local?.files ?? {};
-  if (repo === 'pigeon') {
+  if (repo === 'parrot') {
     try {
       JSON.parse(files[testPath] ?? '');
     } catch (e) {
@@ -220,17 +220,17 @@ function scriptFor(repo: 'uia-remote' | 'pigeon', testPath: string, lab: LabStat
   const home = files['app/src/androidTest/java/com/labsim/uia/pageobjects/HomeScreen.java'] ?? '';
   if (name === 'HomeScreenTest' && /FLUX\) \{\s*scrollHorizontally/.test(home)) {
     return {
-      lines: [`[uia-remote] robot ${cfg.robotName} · deviceType=${cfg.deviceType}`, `connect ${cfg.merchantFacingDeviceIp}:${cfg.portNumber} … connected`, '[MFD] open Register', 'androidx.test.uiautomator.UiObjectNotFoundException: "Register" not found', '\tat com.labsim.uia.pageobjects.HomeScreen.open(HomeScreen.java:29)', '\tat com.labsim.uia.testactions.HomeScreenTest.testHomeScreen(HomeScreenTest.java:27)'],
+      lines: [`[uia-relay] robot ${cfg.robotName} · deviceType=${cfg.deviceType}`, `connect ${cfg.merchantFacingDeviceIp}:${cfg.portNumber} … connected`, '[MFD] open Register', 'androidx.test.uiautomator.UiObjectNotFoundException: "Register" not found', '\tat com.labsim.uia.pageobjects.HomeScreen.open(HomeScreen.java:29)', '\tat com.labsim.uia.testactions.HomeScreenTest.testHomeScreen(HomeScreenTest.java:27)'],
       passed: false,
     };
   }
   return {
     lines: [
-      `[uia-remote] robot ${cfg.robotName} · runType=${cfg.runType}`,
+      `[uia-relay] robot ${cfg.robotName} · runType=${cfg.runType}`,
       `connect ${cfg.merchantFacingDeviceIp}:${cfg.portNumber} … ${cfg.portNumber === '5444' ? 'connected' : 'refused'}`,
       ...(cfg.portNumber === '5444' ? [] : ['falling back to first known device: 10.42.60.4:5555']),
       '[MFD_O1] open Register',
-      '[MFD_O1] orca → callus: load swipe card VISA_STD_SWIPE … OK',
+      '[MFD_O1] orka → kallus: load swipe card VISA_STD_SWIPE … OK',
       '[CFD_O1] Subtotal $10.00 ✓  Tax $0.83 ✓  Total $10.83 ✓',
       '[MFD_O2] Pay → Charge',
       '[Step 4] CFD finalise payment',

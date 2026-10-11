@@ -153,7 +153,7 @@ export const LIGHTS = {
   t01Flicker: { minGapS: 6, maxGapS: 14, stepMs: 30, multipliers: [0.55, 0.92, 0.6, 1.0] as readonly number[] },
   hemisphere: { sky: '#ffffff', ground: '#8a8780', intensity: 0.5, lowIntensity: 0.9 },
   benchTask: { pos: [2.7, 1.1, -4.75] as Vec3, color: '#ffd9a8', intensity: 0.6, distance: 1.6, decay: 2, minPreset: 'medium' },
-  magnifierLamp: { propId: 'jared.magnifier-lamp', color: '#fff1e0', intensity: 0.4, distance: 0.8, minPreset: 'high' },
+  magnifierLamp: { propId: 'jaden.magnifier-lamp', color: '#fff1e0', intensity: 0.4, distance: 0.8, minPreset: 'high' },
   corridor: { pos: [5.9, 2.68, 6.15] as Vec3, intensity: 8, angle: 1.2, penumbra: 1 },
   flashlight: { angle: 0.35, penumbra: 0.5, intensity: 6, distance: 4, decay: 2, castShadow: false },
   /** Ultra: two RectAreaLights per rack front; Low–High: additive floor decal at each front post. */
@@ -214,7 +214,7 @@ export interface CableDropDef {
 /** Black braided bundles Ø 40 mm (`braidedSleeve`). */
 export const CABLE_DROPS: readonly CableDropDef[] = [
   { id: 'tray.drop.rack-a', target: 'rack.a', at: [-2.6, -2.1], fromY: 2.0, toY: 2.4 },
-  { id: 'tray.drop.callus', target: 'shelf.callus', at: [-2.0, -2.1], fromY: 1.95, toY: 2.4 },
+  { id: 'tray.drop.kallus', target: 'shelf.kallus', at: [-2.0, -2.1], fromY: 1.95, toY: 2.4 },
   { id: 'tray.drop.rack-b', target: 'rack.b', at: [-1.4, -2.1], fromY: 2.0, toY: 2.4 },
   { id: 'tray.drop.rack-t', target: 'rack.t', at: [2.4, -2.05], fromY: 1.8, toY: 2.4 },
   // Rear-right post of shelf.adb (shelf-local (+0.48, −0.28)).

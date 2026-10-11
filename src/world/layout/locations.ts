@@ -28,7 +28,7 @@ export const LOCATIONS: readonly LocationDef[] = [
   loc('loc.morgan-desk', `${personName('morgan')}'s desk`, [-0.9, 0, 3.85], 1.0, 'desk.morgan'),
   loc('loc.coworker-desks', 'Office desks', [-5.2, 0, 3.8], 1.8, 'Coworker desks + desk devices on ADB 5555'),
   loc('loc.rack-a', 'Touch Rack A', [-2.6, 0, -1.15], 1.0, 'WALL-E (bay 4), EVE (3), R2-D2 (2), BUMBLEBEE (1)'),
-  loc('loc.callus-shelf', 'Callus shelf', [-2.0, 0, -1.15], 0.6, 'Collis probes, MINIX-01/02, NUC-03'),
+  loc('loc.kallus-shelf', 'Kallus shelf', [-2.0, 0, -1.15], 0.6, 'Kollis probes, MINIX-01/02, NUC-03'),
   loc('loc.rack-b', 'Touch Rack B', [-1.4, 0, -1.15], 1.0, 'JOHNNY-5 (4), SETI (3), BAYMAX (2), ROSIE (1)'),
   loc('loc.rear-aisle', 'Rack row (rear)', [-1.7, 0, -3.5], 1.2, 'Pis, fuses, AC strips at rack rears'),
   loc('loc.adb-shelf', 'ADB bot shelf', [0.85, 0, -1.15], 0.9, 'DATA, TARS'),
@@ -36,7 +36,7 @@ export const LOCATIONS: readonly LocationDef[] = [
   loc('loc.power-wall', 'Power wall', [-0.7, 0, -3.9], 1.3, 'Mean Well, 24 V rail, regulators, fuses, AC strip, DC taps'),
   loc('loc.server-shelf', 'Server shelf', [-3.7, 0, -3.9], 1.0, 'GPU blade, switch, retired tower'),
   loc('loc.print-corner', '3D print corner', [-5.75, 0, -3.75], 1.3, 'Prusa, Bambu Lab, CAD laptop'),
-  loc('loc.jared-bench', `${personName(HARDWARE_LEAD)}'s bench`, [2.7, 0, -3.75], 1.3, 'Soldering, scope, bolt bins, red/blue bins, drawers'),
+  loc('loc.jaden-bench', `${personName(HARDWARE_LEAD)}'s bench`, [2.7, 0, -3.75], 1.3, 'Soldering, scope, bolt bins, red/blue bins, drawers'),
   loc('loc.husky', 'Husky chest', [4.8, 0, -4.0], 0.7, 'Spare devices (drawers 2, 3)'),
   loc('loc.storage', 'Storage cabinet', [6.42, 0, -4.0], 0.7, 'Locked spares, legacy Flux 1'),
   loc('loc.whiteboard', 'Whiteboard', [-6.1, 0, -1.8], 1.4, 'Architecture diagram + roadmap board'),
@@ -84,11 +84,11 @@ export interface NpcAnchorDef {
 export const NPC_ANCHORS: readonly NpcAnchorDef[] = [
   { id: 'npc.morgan.desk', pos: [-0.9, 0, 4.02], yawDeg: 180, use: 'seated', npc: 'npc.morgan', seated: true },
   { id: 'npc.morgan.door', pos: [5.45, 0, 4.3], yawDeg: 180, use: 'waving through the vision panel', npc: 'npc.morgan' },
-  { id: 'npc.jared.bench', pos: [2.7, 0, -4.05], yawDeg: 0, use: 'working at the bench', npc: 'npc.jared' },
-  { id: 'npc.jared.power-wall', pos: [-0.2, 0, -4.05], yawDeg: 0, use: 'M03', npc: 'npc.jared' },
+  { id: 'npc.jaden.bench', pos: [2.7, 0, -4.05], yawDeg: 0, use: 'working at the bench', npc: 'npc.jaden' },
+  { id: 'npc.jaden.power-wall', pos: [-0.2, 0, -4.05], yawDeg: 0, use: 'M03', npc: 'npc.jaden' },
   { id: 'npc.any.rack-a', pos: [-3.3, 0, -1.3], yawDeg: 270, use: 'beside the rack fronts', npc: 'any' },
   { id: 'npc.any.rack-b', pos: [-0.6, 0, -1.3], yawDeg: 90, use: 'beside the rack fronts', npc: 'any' },
-  { id: 'npc.any.callus', pos: [-2.0, 0, -1.05], yawDeg: 0, use: 'at the Callus shelf', npc: 'any' },
+  { id: 'npc.any.kallus', pos: [-2.0, 0, -1.05], yawDeg: 0, use: 'at the Kallus shelf', npc: 'any' },
   { id: 'npc.any.tethered', pos: [2.95, 0, -1.0], yawDeg: 30, use: 'at the tethered rack', npc: 'any' },
   { id: 'npc.any.server', pos: [-3.2, 0, -3.9], yawDeg: 10, use: 'at the server shelf', npc: 'any' },
   { id: 'npc.any.print', pos: [-5.2, 0, -3.7], yawDeg: 10, use: 'at the print corner', npc: 'any' },
@@ -97,8 +97,8 @@ export const NPC_ANCHORS: readonly NpcAnchorDef[] = [
   { id: 'npc.coworker.desk-1', pos: [-6.1, 0, 4.02], yawDeg: 180, use: 'Sam† seated', npc: 'npc.sam', seated: true },
   { id: 'npc.coworker.desk-2', pos: [-4.3, 0, 4.02], yawDeg: 180, use: 'Riley† seated', npc: 'npc.riley', seated: true },
   { id: 'npc.alex.build', pos: [-4.4, 0, 1.45], yawDeg: 0, use: 'Alex† at the build table', npc: 'npc.alex' },
-  { id: 'npc.tate.visit', pos: [0.1, 0, 3.3], yawDeg: 180, use: 'visitor near the desks', npc: 'npc.tate' },
-  { id: 'npc.david.visit', pos: [-0.2, 0, 2.9], yawDeg: 180, use: 'visitor near the desks', npc: 'npc.david' },
+  { id: 'npc.nate.visit', pos: [0.1, 0, 3.3], yawDeg: 180, use: 'visitor near the desks', npc: 'npc.nate' },
+  { id: 'npc.devin.visit', pos: [-0.2, 0, 2.9], yawDeg: 180, use: 'visitor near the desks', npc: 'npc.devin' },
 ];
 
 export const NPC_ANCHOR_BY_ID: Readonly<Record<string, NpcAnchorDef>> = Object.fromEntries(NPC_ANCHORS.map((a) => [a.id, a]));
@@ -107,14 +107,14 @@ export const NPC_ANCHOR_BY_ID: Readonly<Record<string, NpcAnchorDef>> = Object.f
  * NPC ids (Appendix A). Display names/roles come from `src/content/team.ts` (never hard-code real
  * names in world text); `npc.coworker` is the curriculum's generic alias for the desk coworker.
  */
-export const NPC_IDS = ['npc.morgan', 'npc.jared', 'npc.tate', 'npc.david', 'npc.riley', 'npc.sam', 'npc.alex'] as const;
+export const NPC_IDS = ['npc.morgan', 'npc.jaden', 'npc.nate', 'npc.devin', 'npc.riley', 'npc.sam', 'npc.alex'] as const;
 export type NpcId = (typeof NPC_IDS)[number];
 
 export const NPC_DEFAULT_ANCHOR: Readonly<Record<NpcId, string>> = {
   'npc.morgan': 'npc.morgan.desk',
-  'npc.jared': 'npc.jared.bench',
-  'npc.tate': 'npc.tate.visit',
-  'npc.david': 'npc.david.visit',
+  'npc.jaden': 'npc.jaden.bench',
+  'npc.nate': 'npc.nate.visit',
+  'npc.devin': 'npc.devin.visit',
   'npc.riley': 'npc.coworker.desk-2',
   'npc.sam': 'npc.coworker.desk-1',
   'npc.alex': 'npc.alex.build',

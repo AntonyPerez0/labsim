@@ -16,7 +16,7 @@ import {
   gw,
   hrn,
   hrnList,
-  orcaSave,
+  orkaSave,
   rig,
   boundRigCommand,
   boundRigSwitch,
@@ -42,7 +42,7 @@ export const INC08: IncidentDef = {
   rigs: { candidates: ['seti'], default: 'seti', scope: 'rack', describe: 'shared Rack B camera (JOHNNY-5, BAYMAX, SETI, ROSIE)' },
   escalatable: false,
   unlockedBy: 'M07',
-  tags: ['orca.urls', 'vision.camera', 'hw.pi'],
+  tags: ['orka.urls', 'vision.camera', 'hw.pi'],
   factIds: ['F124', 'F088', 'F065'],
   ticket: { title: 'contact-canada-pin-sale red: evidence capture failed', reporter: 'jenkins-bot', misleading: { title: "SETI's webcam is broken", reporter: 'riley' } },
   setup: () => ({ scenario: [F('camera.sharedHostDown', { host: 'pi-cam-rackb' })] }),
@@ -50,13 +50,13 @@ export const INC08: IncidentDef = {
   symptoms: [
     sym('Jenkins', `PL5 on SETI: [vision] GET ${RACKB_CAM} → Connection refused → Finished: FAILURE`),
     sym('Camera', (b) => `${hrnList(allRigs(b))} all show: Stream unavailable — ${RACKB_CAM}`),
-    sym('Orca', 'The four rigs stay Available (the health endpoint does not cover the camera [illus.]); their URL Mappings show the same Camera Stream URL.'),
+    sym('Orka', 'The four rigs stay Available (the health endpoint does not cover the camera [illus.]); their URL Mappings show the same Camera Stream URL.'),
     sym('Terminal', 'ssh pi@10.42.10.40 → systemctl status camera-stream → Active: failed'),
   ],
-  diagnosisPath: ['Four rigs, one symptom ⇒ a shared resource.', 'Orca URL Mappings: the four rigs share one Camera Stream URL.', 'ssh the camera host and check the service.', 'Call it, restart the service, rebuild PL5.'],
+  diagnosisPath: ['Four rigs, one symptom ⇒ a shared resource.', 'Orka URL Mappings: the four rigs share one Camera Stream URL.', 'ssh the camera host and check the service.', 'Call it, restart the service, rebuild PL5.'],
   hints: [
     'Four streams died together. What do those rigs share?',
-    'Orca → each Rack B robot → URL Mappings → Camera Stream URL. Which host serves it?',
+    'Orka → each Rack B robot → URL Mappings → Camera Stream URL. Which host serves it?',
     'ssh pi@10.42.10.40 → sudo systemctl restart camera-stream → check the Camera app → rebuild contact-canada-pin-sale.',
   ],
   fix: { handsOn: 'sudo systemctl restart camera-stream on 10.42.10.40; confirm in the Camera app; rebuild PL5.' },
@@ -68,7 +68,7 @@ export const INC08: IncidentDef = {
     ['Ollama down', 'The failing request is the MJPEG stream on port 8081, not the model server.'],
   ),
   wrongButTempting: [
-    wm('own-pi-url', "Point each rig's Camera URL at its own Pi", 100, orcaSave('robot', { fields: ['cameraStreamUrl'] }), teach('Those Pis have no camera.', 'A Camera Stream URL is dedicated per Pi or shared across 4 rigs; Rack B shares one camera host. (Ref §3)', 'Restore the shared URL and fix the camera service.'), { repeatable: true }),
+    wm('own-pi-url', "Point each rig's Camera URL at its own Pi", 100, orkaSave('robot', { fields: ['cameraStreamUrl'] }), teach('Those Pis have no camera.', 'A Camera Stream URL is dedicated per Pi or shared across 4 rigs; Rack B shares one camera host. (Ref §3)', 'Restore the shared URL and fix the camera service.'), { repeatable: true }),
     gw('cycle-pis', 'GW17', 'Power-cycle the four rig Pis'),
     wm('unplug-webcam', 'Unplug the webcam', 0, on('host.usbChanged', { hostId: 'pi-cam-rackb', attached: false }), teach('Now the service cannot open the camera at all.', 'The camera host serves the MJPEG stream from its USB webcam.', 'Re-plug the webcam, then restart camera-stream.')),
   ],
@@ -104,20 +104,20 @@ export const INC09: IncidentDef = {
   rigs: { candidates: ['r2-d2'], default: 'r2-d2', scope: 'rig', describe: 'dedicated-camera rigs (default R2-D2)' },
   escalatable: false,
   unlockedBy: 'M07',
-  tags: ['orca.urls', 'orca.screencompare', 'vision.camera'],
+  tags: ['orka.urls', 'orka.screencompare', 'vision.camera'],
   factIds: ['F124', 'F154', 'F123'],
   ticket: { title: 'Duet CFD suite red: OCR reads nonsense', reporter: 'jenkins-bot' },
-  setup: () => ({ scenario: [F('orca.urlWrong', { robot: '$R', field: 'camera', value: 'http://10.42.10.11:8081/stream.mjpg' })] }),
+  setup: () => ({ scenario: [F('orka.urlWrong', { robot: '$R', field: 'camera', value: 'http://10.42.10.11:8081/stream.mjpg' })] }),
   reveal: 'pipeline',
   symptoms: [
     sym('Jenkins', 'PL7: [ocr] capture webcam → crop 236x44@412,288 → tesseract → "Tap, insert or swipe" → match=false (the text belongs to another device)'),
     sym('Camera', (b) => `${hrn(b)}'s stream shows a Flux 3 under a solenoid — WALL-E's shelf.`),
     sym('Notes', P('CONFIG urls.camera changed ({{alex}}) [illus.]')),
   ],
-  diagnosisPath: ['The OCR text belongs to another device.', 'Open the rig\'s stream in the Camera app: wrong rig.', 'Orca → URL Mappings → Camera Stream URL.', 'Call it and fix the URL.'],
+  diagnosisPath: ['The OCR text belongs to another device.', 'Open the rig\'s stream in the Camera app: wrong rig.', 'Orka → URL Mappings → Camera Stream URL.', 'Call it and fix the URL.'],
   hints: [
     'The OCR read text that is not on the Duet\'s customer screen. Whose screen is it?',
-    (b) => `Camera app → ${hrn(b)}. Then Orca → ${hrn(b)} → URL Mappings → Camera Stream URL.`,
+    (b) => `Camera app → ${hrn(b)}. Then Orka → ${hrn(b)} → URL Mappings → Camera Stream URL.`,
     (b) => `Set ${hrn(b)}'s Camera Stream URL to ${cameraUrl(b)} and rebuild PL7.`,
   ],
   fix: { handsOn: (b) => `Camera Stream URL → ${cameraUrl(b)}.` },
@@ -129,8 +129,8 @@ export const INC09: IncidentDef = {
     ['Box shifted', 'A shifted box clips the right text; this is different text. Open the rig\'s stream.'],
   ),
   wrongButTempting: [
-    wm('expected-nonsense', 'Set the expected text to the nonsense', 150, orcaSave('screenCompareImage', { fields: ['expectedText'] }), teach('You made the check match the wrong screen.', 'The OCR workaround crops the webcam screenshot — here it is the wrong webcam. (Ref §3)', 'Fix the Camera Stream URL.')),
-    wm('move-box', 'Move the Screen Compare box', 0, orcaSave('screenCompareImage', { fields: ['bbox', 'x', 'y', 'w', 'h'] }), teach('Moving the box changed nothing.', 'The crop is taken from whatever camera Orca points at.', 'Check which stream the rig\'s Camera Stream URL shows.')),
+    wm('expected-nonsense', 'Set the expected text to the nonsense', 150, orkaSave('screenCompareImage', { fields: ['expectedText'] }), teach('You made the check match the wrong screen.', 'The OCR workaround crops the webcam screenshot — here it is the wrong webcam. (Ref §3)', 'Fix the Camera Stream URL.')),
+    wm('move-box', 'Move the Screen Compare box', 0, orkaSave('screenCompareImage', { fields: ['bbox', 'x', 'y', 'w', 'h'] }), teach('Moving the box changed nothing.', 'The crop is taken from whatever camera Orka points at.', 'Check which stream the rig\'s Camera Stream URL shows.')),
   ],
   teaches: 'Ref §3 URL Mappings; the OCR workaround crops the webcam screenshot.',
 };
@@ -154,11 +154,11 @@ export const INC10: IncidentDef = {
     sym('Jenkins', 'curl: (7) Failed to connect to 10.42.1.12 port 11434: Connection refused'),
     sym('Terminal', 'curl http://10.42.1.12:11434/api/tags → curl: (7) Failed to connect to 10.42.1.12 port 11434: Connection refused'),
     sym('Ollama', 'Model server unreachable'),
-    sym('World', 'GPU blade fans spinning; Orca and Jenkins work (same blade ⇒ the blade is fine).'),
+    sym('World', 'GPU blade fans spinning; Orka and Jenkins work (same blade ⇒ the blade is fine).'),
   ],
-  diagnosisPath: ['Orca and Jenkins are up ⇒ the blade is up.', 'Port refused ⇒ the service, not the machine.', 'ssh automation@10.42.1.12 → systemctl status ollama → inactive (dead).'],
+  diagnosisPath: ['Orka and Jenkins are up ⇒ the blade is up.', 'Port refused ⇒ the service, not the machine.', 'ssh automation@10.42.1.12 → systemctl status ollama → inactive (dead).'],
   hints: [
-    'Orca and Jenkins live on the same blade and still answer. What does that rule out?',
+    'Orka and Jenkins live on the same blade and still answer. What does that rule out?',
     'Terminal: ssh automation@10.42.1.12 → systemctl status ollama.',
     'sudo systemctl restart ollama → curl http://10.42.1.12:11434/api/tags → rebuild Java/vision-poc-receipt-check.',
   ],
@@ -166,12 +166,12 @@ export const INC10: IncidentDef = {
   success: () => c.all(c.eq(p.svc('ollama-vm', 'ollama'), 'UP'), c.nextBuild({ jobs: ['Java/vision-poc-receipt-check'] })),
   diagnosisCall: dc(
     'Ollama service stopped',
-    ['GPU blade off', 'Orca and Jenkins run on the same blade and still answer.'],
+    ['GPU blade off', 'Orka and Jenkins run on the same blade and still answer.'],
     ['Camera stream down', 'The failing request is to port 11434 on the Ollama VM, not a camera.'],
     ['llava model deleted', 'A missing model still lets the server answer /api/tags. Here the port refuses connections.'],
   ),
-  wrongButTempting: [gw('cycle-blade', 'GW13', 'Power-cycle the GPU blade (Orca, Jenkins and Ollama all live on it)')],
-  teaches: 'Ref §1: Ollama runs on the 4-GPU blade as a proof of concept; the blade also hosts the Orca and Jenkins VMs.',
+  wrongButTempting: [gw('cycle-blade', 'GW13', 'Power-cycle the GPU blade (Orka, Jenkins and Ollama all live on it)')],
+  teaches: 'Ref §1: Ollama runs on the 4-GPU blade as a proof of concept; the blade also hosts the Orka and Jenkins VMs.',
 };
 
 export const INC11: IncidentDef = {
@@ -196,7 +196,7 @@ export const INC11: IncidentDef = {
   onSpawn: () => [{ do: 'chat', author: 'riley', text: 'I just nudged the arm aside to wipe the screen.', delayS: 20 }],
   symptoms: [
     sym('Tablet', 'Yellow `Status: LOCK RELEASED — PARK REQUIRED`'),
-    sym('Jenkins', (b) => `[orca] xy_touch ${rig(b)} REGISTER_HOME/Register → 409 Conflict: LOCK_RELEASED (park required)`),
+    sym('Jenkins', (b) => `[orka] xy_touch ${rig(b)} REGISTER_HOME/Register → 409 Conflict: LOCK_RELEASED (park required)`),
     sym('Camera', 'The carriage is parked off to one side.'),
     sym('LabChat', P('{{riley}}: "I just nudged the arm aside to wipe the screen."')),
   ],
@@ -241,13 +241,13 @@ export const INC12: IncidentDef = {
   reveal: 'immediate',
   symptoms: [
     sym('Tablet', 'Overlay `TEST IN PROGRESS — CONTROLS LOCKED`'),
-    sym('Orca', 'Available · in use by Jenkins #4127'),
+    sym('Orka', 'Available · in use by Jenkins #4127'),
     sym('Camera', 'The solenoid is tapping normally.'),
   ],
-  diagnosisPath: ['Read the tablet overlay and the Orca row.', 'Recognise the dashboard lockout.', 'Reply; don\'t touch the rig.'],
+  diagnosisPath: ['Read the tablet overlay and the Orka row.', 'Recognise the dashboard lockout.', 'Reply; don\'t touch the rig.'],
   hints: [
     'Read exactly what the tablet overlay says.',
-    (b) => `Orca → ${hrn(b)}: is a build holding it?`,
+    (b) => `Orka → ${hrn(b)}: is a build holding it?`,
     P('Reply to {{riley}} that a test is running and the dashboard locks out during runs. Touch nothing.'),
   ],
   fix: { handsOn: 'Reply R_LOCKOUT and touch nothing until the build ends.' },
@@ -371,23 +371,23 @@ export const INC14: IncidentDef = {
   rigs: { candidates: [...TOUCH_RIGS], default: 'bumblebee', scope: 'rig', describe: 'any touch rig (default BUMBLEBEE)' },
   escalatable: false,
   unlockedBy: 'M07',
-  tags: ['orca.offsets', 'orca.screens', 'hw.motion'],
+  tags: ['orka.offsets', 'orka.screens', 'hw.motion'],
   factIds: ['F129', 'F130', 'F082'],
   ticket: { title: (b) => `${hrn(b)} misses 'Charge' by a hair — low on every screen`, reporter: 'morgan' },
-  setup: () => ({ scenario: [F('orca.offsets', { robot: '$R', yMm: 1.5 })] }),
+  setup: () => ({ scenario: [F('orka.offsets', { robot: '$R', yMm: 1.5 })] }),
   reveal: 'pipeline',
   symptoms: [
     sym('Camera', 'Every tap lands ~1.5 mm below its button on all screens.'),
     sym('Jenkins', (b) => {
       const ch = truthFor(deviceType(b), 'PAYMENT')?.Charge;
-      return ch ? `[orca] xy_touch ${rig(b)} PAYMENT/Charge → PHYSICAL_TAP (${ch.x.toFixed(1)}, ${(ch.y + 1.5).toFixed(1)}) (offsets +0.0/+1.5)` : `[orca] xy_touch ${rig(b)} … (offsets +0.0/+1.5)`;
+      return ch ? `[orka] xy_touch ${rig(b)} PAYMENT/Charge → PHYSICAL_TAP (${ch.x.toFixed(1)}, ${(ch.y + 1.5).toFixed(1)}) (offsets +0.0/+1.5)` : `[orka] xy_touch ${rig(b)} … (offsets +0.0/+1.5)`;
     }),
-    sym('Orca', 'Offset X 0.0 / Offset Y 1.5 (tooltip "Legacy").'),
+    sym('Orka', 'Offset X 0.0 / Offset Y 1.5 (tooltip "Legacy").'),
   ],
   diagnosisPath: ['The error is uniform across screens ⇒ robot-level, not one Screen Location.', 'The console prints the offsets.', 'Open the robot record.', 'Call it and zero the Offsets.'],
   hints: [
     'Is the miss the same on every screen? Then the cause is per robot, not per button.',
-    (b) => `Orca → ${hrn(b)} → Offset X / Offset Y.`,
+    (b) => `Orka → ${hrn(b)} → Offset X / Offset Y.`,
     (b) => `Set ${hrn(b)}'s Offset Y to 0.0, Test tap, and let the next build confirm.`,
   ],
   fix: { handsOn: 'Offset Y = 0.0 → Test tap hits the centre; optional Park All.' },
@@ -399,8 +399,8 @@ export const INC14: IncidentDef = {
     ['Receipt QR shift', 'The QR change moved receipt buttons only. These misses are on every screen.'],
   ),
   wrongButTempting: [
-    wm('edit-locations', 'Edit each Screen Location', 100, orcaSave('screenLocation'), teach('You moved shared coordinates.', 'Screen Locations are per Device Type — every rig of that type now misses. Offsets are legacy; the lab is calibrated to true (0,0). (Ref §3)', 'Zero the robot\'s Offsets.'), { repeatable: true }),
+    wm('edit-locations', 'Edit each Screen Location', 100, orkaSave('screenLocation'), teach('You moved shared coordinates.', 'Screen Locations are per Device Type — every rig of that type now misses. Offsets are legacy; the lab is calibrated to true (0,0). (Ref §3)', 'Zero the robot\'s Offsets.'), { repeatable: true }),
     gw('cancel-offset', 'GW18', 'Set Offset Y to −1.5 to cancel'),
   ],
-  teaches: P('Ref §3 Offsets: legacy mm adjustments for imprecise limit switches; {{jared}} calibrated the lab to true (0,0), so the field is mostly deprecated.'),
+  teaches: P('Ref §3 Offsets: legacy mm adjustments for imprecise limit switches; {{jaden}} calibrated the lab to true (0,0), so the field is mostly deprecated.'),
 };

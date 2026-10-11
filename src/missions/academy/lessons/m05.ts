@@ -1,6 +1,6 @@
 /**
- * M05 — The Robot Pi: Raspberry Pi, Linux & Wine (Cur §2 M05). Mentor {{jared}}, cameo {{morgan}}.
- * Setup (`academy:M05`): WALL-E's Pi `10.42.10.11` healthy; NUC-03 on the Callus shelf carries the
+ * M05 — The Robot Pi: Raspberry Pi, Linux & Wine (Cur §2 M05). Mentor {{jaden}}, cameo {{morgan}}.
+ * Setup (`academy:M05`): WALL-E's Pi `10.42.10.11` healthy; NUC-03 on the Kallus shelf carries the
  * corporate sticky note; Terminal unlocked. Sim: `terminal.exec` (Apps §5.4, Sim §2.5 / §3.14.1 / §3.3.3).
  */
 import { c, on, p } from '../../types';
@@ -11,7 +11,7 @@ const PI = ['pi-wall-e', 'wall-e'] as const;
 
 export const M05: LessonDef = {
   moduleId: 'M05',
-  mentor: 'jared',
+  mentor: 'jaden',
   setup: { preset: 'academy:M05', spawn: 'loc.rack-a', apps: { unlock: ['terminal', 'chat'] } },
   deck: 'deck.M05',
   manualChapters: ['Hardware'],
@@ -34,11 +34,11 @@ export const M05: LessonDef = {
     {
       id: 'M05.02',
       kind: 'dialogue',
-      speaker: 'jared',
+      speaker: 'jaden',
       text: "This fifty-dollar Raspberry Pi is WALL-E's brain, the Robot Controller. One per shelf. It routes ADB, serves the camera stream, drives the steppers and the solenoid, and runs the card-programming software under Wine.",
       factIds: ['F063', 'F064', 'F065', 'F021'],
     },
-    { id: 'M05.03', kind: 'walk-to', hud: 'Walk to the Callus shelf', location: 'loc.callus-shelf' },
+    { id: 'M05.03', kind: 'walk-to', hud: 'Walk to the Kallus shelf', location: 'loc.kallus-shelf' },
     {
       id: 'M05.04',
       kind: 'inspect',
@@ -51,7 +51,7 @@ export const M05: LessonDef = {
     {
       id: 'M05.05',
       kind: 'dialogue',
-      speaker: 'jared',
+      speaker: 'jaden',
       text: "We used to drive hardware from Windows boxes: Intel NUCs and Minix boxes. Then corporate's security-monitoring packages ate every byte of disk on the NUCs. So hardware control moved onto Raspberry Pis running Linux, isolated from the corporate Windows machines.",
       factIds: ['F066', 'F067', 'F068', 'F019', 'F020'],
     },
@@ -107,7 +107,7 @@ export const M05: LessonDef = {
         { afterS: 180, idle: true, effect: 'show-me-button' },
       ],
       showMe: [{ app: 'terminal', target: 'terminal.input', action: 'type', text: 'df -h /' }],
-      onComplete: [say('jared', 'Twenty-two percent used. Nothing like the NUCs. No corporate agent eating the disk here.')],
+      onComplete: [say('jaden', 'Twenty-two percent used. Nothing like the NUCs. No corporate agent eating the disk here.')],
       factIds: ['F067', 'F068'],
     },
     {
@@ -142,8 +142,8 @@ export const M05: LessonDef = {
     {
       id: 'M05.12',
       kind: 'dialogue',
-      speaker: 'jared',
-      text: 'That 200 is exactly what Orca checks every five minutes. Anything else and the robot goes Connection Failed. {{tate}} will show you.',
+      speaker: 'jaden',
+      text: 'That 200 is exactly what Orka checks every five minutes. Anything else and the robot goes Connection Failed. {{nate}} will show you.',
       factIds: ['F099', 'F107'],
     },
     { id: 'M05.13', kind: 'quiz-checkpoint', checkpointId: 'CP-M05.1', title: 'Robot Pi', questionIds: ['Q063', 'Q065', 'Q067', 'Q069', 'Q071'] },

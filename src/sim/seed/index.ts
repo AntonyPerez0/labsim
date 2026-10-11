@@ -1,14 +1,14 @@
 /**
  * sim-core factory seed (Sim §2 except §2.12 repos / §2.13 Jenkins, which `seedDevops` writes).
- * `seedCore(lab)` fills Orca, rigs, devices, hosts, power, probes, Callus, workstation and network on a
- * lab created by `createEmptyLabState` (before `seedDevops`, so the Jenkins history reads real Orca rows;
- * `createFactoryLab` re-mirrors the Callus card files once gort is seeded).
+ * `seedCore(lab)` fills Orka, rigs, devices, hosts, power, probes, Kallus, workstation and network on a
+ * lab created by `createEmptyLabState` (before `seedDevops`, so the Jenkins history reads real Orka rows;
+ * `createFactoryLab` re-mirrors the Kallus card files once gorth is seeded).
  */
-import type { TerminalDevice, CollisProbe, LabState, MerchantConfig, OrcaDevice, OrcaRobot, OrcaScreen, RigState, RobotNote, ScreenLocation } from '../types';
+import type { TerminalDevice, KollisProbe, LabState, MerchantConfig, OrkaDevice, OrkaRobot, OrkaScreen, RigState, RobotNote, ScreenLocation } from '../types';
 import { DEVICE_TYPE_CODES } from '../types';
-import { createTerminalDevice, createDisplayState, createOrcaRobot, createRigState } from '../builders';
+import { createTerminalDevice, createDisplayState, createOrkaRobot, createRigState } from '../builders';
 import { DEVICE_TYPES, isHandheld, layoutIdFor, screenOf } from './deviceTypes';
-import { CFD_ORCA_SCREENS, GENERIC_ORCA_SCREENS, LAYOUTS, ORCA_SCREEN_DESCRIPTIONS } from './layouts';
+import { CFD_ORKA_SCREENS, GENERIC_ORKA_SCREENS, LAYOUTS, ORKA_SCREEN_DESCRIPTIONS } from './layouts';
 import { BASE_APPS, seedMerchants } from './merchants';
 import { canonicalCardFile, FACTORY_CARD_FILES, seedCapabilities, seedCardProfiles, seedScreenCompareImages } from './cards';
 import { PAY_DISPLAY_APP, ROSTER, piDefs } from './robots';
@@ -48,13 +48,13 @@ export function seedCore(lab: LabState): void {
   const merchantByName = (n: string) => Object.values(merchants).find((m) => m.name === n)!;
   const caps = seedCapabilities();
   const capIdByName = (n: string) => Object.values(caps).find((c) => c.name === n)!.id;
-  lab.orca.merchants = merchants;
-  lab.orca.capabilities = caps;
-  lab.orca.cardProfiles = seedCardProfiles();
-  lab.orca.screenCompareImages = seedScreenCompareImages();
+  lab.orka.merchants = merchants;
+  lab.orka.capabilities = caps;
+  lab.orka.cardProfiles = seedCardProfiles();
+  lab.orka.screenCompareImages = seedScreenCompareImages();
 
-  /* ── Orca Device rows (roster order, MFD before CFD) + runtime devices ── */
-  const devRows: Record<number, OrcaDevice> = {};
+  /* ── Orka Device rows (roster order, MFD before CFD) + runtime devices ── */
+  const devRows: Record<number, OrkaDevice> = {};
   const devIdByName: Record<string, number> = {};
   let nextDev = 1;
   const addRow = (d: RosterDevice, label: string): number => {
@@ -69,11 +69,11 @@ export function seedCore(lab: LabState): void {
   }
   const retiredId = nextDev++;
   devRows[retiredId] = { id: retiredId, name: 'retired-flux1-legacy', deviceType: 'FLUX_1', serial: 'SIM-F1-000099', ip: '10.42.30.99', label: 'Flux 1 — retired 2025 (history)', simDeviceId: null, retired: true };
-  lab.orca.devices = devRows;
+  lab.orka.devices = devRows;
 
   /* ── Robots, rigs, runtime devices, probes ── */
   const deviceLoads: { loadId: string; deviceId: string; label: string }[] = [];
-  const collisLoads: { loadId: string; collisId: string; rigId: string }[] = [];
+  const kollisLoads: { loadId: string; kollisId: string; rigId: string }[] = [];
   const pis = piDefs();
   const piByRig: Record<string, string> = {};
   for (const p of pis) for (const r of p.robots) piByRig[r] = p.id;
@@ -96,7 +96,7 @@ export function seedCore(lab: LabState): void {
     const merchant = merchantByName(row.merchant);
     const piIp = `10.42.10.${row.pi}`;
     const cardUrl = (p: string) => `http://${piIp}:8000/${p}`;
-    const robot: OrcaRobot = createOrcaRobot(row.id, row.name, row.kind, {
+    const robot: OrkaRobot = createOrkaRobot(row.id, row.name, row.kind, {
       humanReadableName: row.hrn,
       status: row.status,
       environment: row.env,
@@ -116,7 +116,7 @@ export function seedCore(lab: LabState): void {
       statusChangedMs: -2 * DAY,
       lastReleasedMs: lastUsed[row.name] ?? null,
     });
-    lab.orca.robots[row.id] = robot;
+    lab.orka.robots[row.id] = robot;
 
     // Runtime devices.
     const deviceIds: string[] = [];
@@ -133,7 +133,7 @@ export function seedCore(lab: LabState): void {
       const dev = createTerminalDevice(id, type, {
         serial: serialFor(type, d.ip),
         ip: `10.42.30.${d.ip}`,
-        orcaDeviceName: d.name,
+        orkaDeviceName: d.name,
         rigId: row.name,
         role,
         tetheredTo,
@@ -165,17 +165,17 @@ export function seedCore(lab: LabState): void {
     }
 
     // Probe.
-    let collisId: string | null = null;
+    let kollisId: string | null = null;
     if (row.cards) {
       const smart = row.cards === 'S';
-      collisId = smart ? `smartstripe-${row.name}` : `collis-${row.name}`;
+      kollisId = smart ? `smartstripe-${row.name}` : `kollis-${row.name}`;
       const supply = smart ? { kind: 'usb' as const, targetId: piByRig[row.name] ?? null } : row.physical ? { kind: 'none' as const, targetId: null } : { kind: 'ac-strip' as const, targetId: 'offscreen' };
-      if (!smart && row.physical) collisLoads.push({ loadId: `psu-collis-${row.name}`, collisId, rigId: row.name });
-      const probe: CollisProbe = {
-        id: collisId,
-        kind: smart ? 'smartstripe' : 'collis',
+      if (!smart && row.physical) kollisLoads.push({ loadId: `psu-kollis-${row.name}`, kollisId, rigId: row.name });
+      const probe: KollisProbe = {
+        id: kollisId,
+        kind: smart ? 'smartstripe' : 'kollis',
         rigId: row.name,
-        callusHostId: row.callus!,
+        kallusHostId: row.kallus!,
         ribbonConnected: true,
         supply,
         powered: true,
@@ -186,7 +186,7 @@ export function seedCore(lab: LabState): void {
         lastAction: null,
         armed: null,
       };
-      lab.collis[collisId] = probe;
+      lab.kollis[kollisId] = probe;
     }
 
     // Rig.
@@ -198,8 +198,8 @@ export function seedCore(lab: LabState): void {
       offscreen: !row.physical,
       probeDisplay,
       piHostId: piByRig[row.name] ?? null,
-      callusHostId: row.callus,
-      collisId,
+      kallusHostId: row.kallus,
+      kollisId,
       deviceIds,
       webcam: { connected: row.cam != null, aimedOk: true, cameraId, aimOffsetDeg: { yaw: 0, pitch: 0 } },
       tablet: { tab: 'robot', statusText: 'Status: OK', brainbox: 'Brainbox v6', hrnShown: row.hrn, reachable: true },
@@ -216,39 +216,39 @@ export function seedCore(lab: LabState): void {
   /* ── Status seeds and notes (Sim §2.3 design notes) ── */
   let noteSeq = 1;
   const addNote = (rid: number, n: Omit<RobotNote, 'id'>) => {
-    lab.orca.robots[rid]!.notes.unshift({ ...n, id: noteSeq++ });
+    lab.orka.robots[rid]!.notes.unshift({ ...n, id: noteSeq++ });
   };
   const ts = (ms: number) => fmtStamp(lab.time, ms);
-  const hist = (rid: number, atMs: number, from: OrcaRobot['status'], to: OrcaRobot['status'], by: string) => {
-    const r = lab.orca.robots[rid]!;
+  const hist = (rid: number, atMs: number, from: OrkaRobot['status'], to: OrkaRobot['status'], by: string) => {
+    const r = lab.orka.robots[rid]!;
     r.statusHistory.push({ atMs, from, to, by });
     r.statusChangedMs = atMs;
   };
-  // ROSIE / BENDER / KRYTEN Unavailable (PayCore), set weeks ago.
+  // ROSIE / BENDER / KRYTEN Unavailable (PayCrest), set weeks ago.
   for (const [rid, at] of [
     [8, -14 * DAY + 11 * HOUR + 3 * MIN],
     [20, -21 * DAY + 15 * HOUR + 20 * MIN],
     [33, -9 * DAY + 10 * HOUR + 12 * MIN],
   ] as const) {
-    addNote(rid, note(0, at, 'jared', 'STATUS', `${ts(at)} STATUS Available → Unavailable (jared)`));
-    hist(rid, at, 'AVAILABLE', 'UNAVAILABLE', 'jared');
+    addNote(rid, note(0, at, 'jaden', 'STATUS', `${ts(at)} STATUS Available → Unavailable (jaden)`));
+    hist(rid, at, 'AVAILABLE', 'UNAVAILABLE', 'jaden');
   }
   // ROBBY / DALEK Offline (previous week).
   const robbyAt = -6 * DAY + 16 * HOUR + 40 * MIN;
-  addNote(22, note(0, robbyAt, 'jared', 'STATUS', `${ts(robbyAt)} STATUS Available → Offline (jared)`));
-  addNote(22, note(0, robbyAt + 65_000, 'jared', 'MANUAL', `${ts(robbyAt + 65_000)} Assembling data profiles — Jared`));
-  hist(22, robbyAt, 'AVAILABLE', 'OFFLINE', 'jared');
+  addNote(22, note(0, robbyAt, 'jaden', 'STATUS', `${ts(robbyAt)} STATUS Available → Offline (jaden)`));
+  addNote(22, note(0, robbyAt + 65_000, 'jaden', 'MANUAL', `${ts(robbyAt + 65_000)} Assembling data profiles — Jaden`));
+  hist(22, robbyAt, 'AVAILABLE', 'OFFLINE', 'jaden');
   const dalekAt = -4 * DAY + 9 * HOUR + 15 * MIN;
-  addNote(37, note(0, dalekAt, 'jared', 'STATUS', `${ts(dalekAt)} STATUS Available → Offline (jared)`));
-  addNote(37, note(0, dalekAt + 40_000, 'jared', 'MANUAL', `${ts(dalekAt + 40_000)} Flux 1 parked; rebuild queued — J`));
-  hist(37, dalekAt, 'AVAILABLE', 'OFFLINE', 'jared');
+  addNote(37, note(0, dalekAt, 'jaden', 'STATUS', `${ts(dalekAt)} STATUS Available → Offline (jaden)`));
+  addNote(37, note(0, dalekAt + 40_000, 'jaden', 'MANUAL', `${ts(dalekAt + 40_000)} Flux 1 parked; rebuild queued — J`));
+  hist(37, dalekAt, 'AVAILABLE', 'OFFLINE', 'jaden');
   // SONNY Connection Failed since 07:55 (off-screen Pi .74 hung), escalated at 08:02:11.
   const sonnyAt = 7 * HOUR + 55 * MIN;
   const sonnyEp = 'http://10.42.10.74:8000/health';
-  addNote(26, note(0, sonnyAt, 'orca-health-check', 'HEALTH', `${ts(sonnyAt)} GET ${sonnyEp} → connect timed out after 10000 ms`, sonnyEp));
-  addNote(26, note(0, 8 * HOUR + 2 * MIN + 11_000, 'tate', 'MANUAL', `${ts(8 * HOUR + 2 * MIN + 11_000)} Escalated to Jared — SD card reflash pending (tate)`));
-  hist(26, sonnyAt, 'AVAILABLE', 'CONNECTION_FAILED', 'orca-health-check');
-  const sonny = lab.orca.robots[26]!;
+  addNote(26, note(0, sonnyAt, 'orka-health-check', 'HEALTH', `${ts(sonnyAt)} GET ${sonnyEp} → connect timed out after 10000 ms`, sonnyEp));
+  addNote(26, note(0, 8 * HOUR + 2 * MIN + 11_000, 'nate', 'MANUAL', `${ts(8 * HOUR + 2 * MIN + 11_000)} Escalated to Jaden — SD card reflash pending (nate)`));
+  hist(26, sonnyAt, 'AVAILABLE', 'CONNECTION_FAILED', 'orka-health-check');
+  const sonny = lab.orka.robots[26]!;
   sonny.preFailureStatus = 'AVAILABLE';
   sonny.lastHealthCheckMs = sonnyAt;
   sonny.lastHealthCheckOk = false;
@@ -257,26 +257,26 @@ export function seedCore(lab: LabState): void {
   const motherAt = 7 * HOUR + 40 * MIN;
   addNote(40, note(0, motherAt, 'morgan', 'STATUS', `${ts(motherAt)} STATUS Available → Reserved (morgan)`));
   hist(40, motherAt, 'AVAILABLE', 'RESERVED', 'morgan');
-  lab.orca.robots[40]!.reservedBy = 'morgan';
-  lab.orca.robots[40]!.reservedAtMs = motherAt;
+  lab.orka.robots[40]!.reservedBy = 'morgan';
+  lab.orka.robots[40]!.reservedAtMs = motherAt;
 
   /* ── Screens and Screen Locations (Sim §2.10.1): enum order × table order ── */
   const typesInLab = new Set(Object.values(devRows).filter((d) => !d.retired).map((d) => d.deviceType));
-  const screens: Record<number, OrcaScreen> = {};
+  const screens: Record<number, OrkaScreen> = {};
   const locations: Record<number, ScreenLocation> = {};
   let sid = 1;
   let lid = 1;
   for (const type of DEVICE_TYPE_CODES) {
     if (!typesInLab.has(type)) continue;
     const info = DEVICE_TYPES[type];
-    const rowsFor: { name: string; display: 'primary' | 'secondary'; table: string }[] = GENERIC_ORCA_SCREENS.map((n) => ({ name: n, display: 'primary', table: n }));
+    const rowsFor: { name: string; display: 'primary' | 'secondary'; table: string }[] = GENERIC_ORKA_SCREENS.map((n) => ({ name: n, display: 'primary', table: n }));
     if (type === 'MICRO_2' || type === 'MICRO_3') rowsFor.push({ name: 'CUSTOMER_CART', display: 'primary', table: 'CUSTOMER_CART' });
-    if (type === 'STAND_DUET' || type === 'STAND_DUET_2') for (const [n, t] of Object.entries(CFD_ORCA_SCREENS)) rowsFor.push({ name: n, display: 'secondary', table: t });
+    if (type === 'STAND_DUET' || type === 'STAND_DUET_2') for (const [n, t] of Object.entries(CFD_ORKA_SCREENS)) rowsFor.push({ name: n, display: 'secondary', table: t });
     for (const s of rowsFor) {
       const layout = LAYOUTS[layoutIdFor(type, s.display)];
       const id = sid++;
       const optionCount = /RECEIPT_OPTIONS_4$/.test(s.name) ? 4 : /RECEIPT_OPTIONS_5$/.test(s.name) ? 5 : null;
-      screens[id] = { id, name: s.name, deviceType: type, testingProfile: info.testingProfile, display: s.display, description: ORCA_SCREEN_DESCRIPTIONS[s.name] ?? s.name, optionCount };
+      screens[id] = { id, name: s.name, deviceType: type, testingProfile: info.testingProfile, display: s.display, description: ORKA_SCREEN_DESCRIPTIONS[s.name] ?? s.name, optionCount };
       for (const el of layout.screens[s.table] ?? []) {
         if (el.kind !== 'button') continue;
         locations[lid] = { id: lid, screenId: id, button: el.id, xMm: el.x, yMm: el.y };
@@ -288,17 +288,17 @@ export function seedCore(lab: LabState): void {
       }
     }
   }
-  lab.orca.screens = screens;
-  lab.orca.screenLocations = locations;
-  lab.orca.seq = {
+  lab.orka.screens = screens;
+  lab.orka.screenLocations = locations;
+  lab.orka.seq = {
     robots: ROSTER.length + 1,
     devices: nextDev,
     capabilities: Object.keys(caps).length + 1,
     merchants: Object.keys(merchants).length + 1,
     screens: sid,
     screenLocations: lid,
-    cardProfiles: Object.keys(lab.orca.cardProfiles).length + 1,
-    screenCompareImages: Object.keys(lab.orca.screenCompareImages).length + 1,
+    cardProfiles: Object.keys(lab.orka.cardProfiles).length + 1,
+    screenCompareImages: Object.keys(lab.orka.screenCompareImages).length + 1,
     notes: noteSeq,
   };
   lab.seq.note = noteSeq - 1;
@@ -310,7 +310,7 @@ export function seedCore(lab: LabState): void {
     lab.devices[id] = createTerminalDevice(id, type, {
       serial,
       ip,
-      orcaDeviceName: '',
+      orkaDeviceName: '',
       rigId: desk,
       adbTcpPort: 5555,
       merchantConfigId: 1,
@@ -335,7 +335,7 @@ export function seedCore(lab: LabState): void {
     lab.devices[id] = createTerminalDevice(id, type, {
       serial,
       ip: '',
-      orcaDeviceName: '',
+      orkaDeviceName: '',
       rigId: drawer,
       power: 'off',
       bootProgress: 0,
@@ -356,7 +356,7 @@ export function seedCore(lab: LabState): void {
   spare('dev-spare-flux2', 'FLUX_2', 'SIM-F2-000015', 'husky-drawer-2');
   spare('dev-spare-micro3', 'MICRO_3', 'SIM-M3-000122', 'husky-drawer-3');
 
-  /* ── Hosts, power, Callus ── */
+  /* ── Hosts, power, Kallus ── */
   lab.hosts = seedHosts(lab.time.nowMs);
   // Running robot-controllers have read their controller.yaml at (re)start (Sim §2.5.3).
   for (const h of Object.values(lab.hosts)) {
@@ -369,12 +369,12 @@ export function seedCore(lab: LabState): void {
   }
   // Spare free-standing loads for the spares (unplugged PSU bricks).
   deviceLoads.push({ loadId: 'psu-spare-flux2', deviceId: 'dev-spare-flux2', label: 'Spare Flux 2 power brick' }, { loadId: 'psu-spare-micro3', deviceId: 'dev-spare-micro3', label: 'Spare Micro 3 power brick' });
-  lab.power = seedPower(deviceLoads, collisLoads);
+  lab.power = seedPower(deviceLoads, kollisLoads);
   // Supply mirrors (Sim §1.15): modelled loads are authoritative.
   for (const l of Object.values(lab.power.loads)) {
     if (l.deviceId && lab.devices[l.deviceId]) lab.devices[l.deviceId]!.supply = { ...l.supply };
     if (l.hostId && lab.hosts[l.hostId]) lab.hosts[l.hostId]!.supply = { ...l.supply };
-    if (l.collisId && lab.collis[l.collisId]) lab.collis[l.collisId]!.supply = { ...l.supply };
+    if (l.kollisId && lab.kollis[l.kollisId]) lab.kollis[l.kollisId]!.supply = { ...l.supply };
   }
   // SONNY's off-screen Pi has been hung since 07:55.
   const ps = lab.hosts['pi-sonny'];
@@ -392,9 +392,9 @@ export function seedCore(lab: LabState): void {
   }
 
   for (const box of ['minix-01', 'minix-02', 'minix-03', 'minix-04', 'minix-05']) {
-    lab.callus.localCardFiles[box] = { syncedCommit: 'c41d9e2', syncedAtMs: -31_180_000, files: [...FACTORY_CARD_FILES] };
-    lab.callus.log[box] = ['GortCardSync: pulled c41d9e2 (7 files)'];
-    mirrorCallusFiles(lab, box);
+    lab.kallus.localCardFiles[box] = { syncedCommit: 'c41d9e2', syncedAtMs: -31_180_000, files: [...FACTORY_CARD_FILES] };
+    lab.kallus.log[box] = ['GorthCardSync: pulled c41d9e2 (7 files)'];
+    mirrorKallusFiles(lab, box);
   }
 
   /* ── Workstation (Sim §2.14) ── */
@@ -414,27 +414,27 @@ export function seedCore(lab: LabState): void {
 }
 
 /**
- * Mirror `callus.localCardFiles[box].files` into the box's `C:\gort\…` files (Sim §2.5.3), using gort's
- * file text (sim-devops repo seed) or the canonical definition when gort has not been seeded.
+ * Mirror `kallus.localCardFiles[box].files` into the box's `C:\gorth\…` files (Sim §2.5.3), using gorth's
+ * file text (sim-devops repo seed) or the canonical definition when gorth has not been seeded.
  */
-export function mirrorCallusFiles(lab: LabState, boxId: string): void {
+export function mirrorKallusFiles(lab: LabState, boxId: string): void {
   const host = lab.hosts[boxId];
-  const local = lab.callus.localCardFiles[boxId];
+  const local = lab.kallus.localCardFiles[boxId];
   if (!host || !local) return;
-  for (const k of Object.keys(host.files)) if (k.startsWith('C:\\gort\\cards\\')) delete host.files[k];
+  for (const k of Object.keys(host.files)) if (k.startsWith('C:\\gorth\\cards\\')) delete host.files[k];
   for (const p of local.files) {
-    const win = `C:\\gort\\${p.replace(/\//g, '\\')}`;
-    host.files[win] = gortFileText(lab, p) ?? '';
+    const win = `C:\\gorth\\${p.replace(/\//g, '\\')}`;
+    host.files[win] = gorthFileText(lab, p) ?? '';
   }
 }
 
-/** Text of a gort file on `main` (sim-devops state), falling back to the canonical card definition. */
-export function gortFileText(lab: LabState, path: string): string | null {
-  const t = lab.repos?.gort?.files?.[path];
+/** Text of a gorth file on `main` (sim-devops state), falling back to the canonical card definition. */
+export function gorthFileText(lab: LabState, path: string): string | null {
+  const t = lab.repos?.gorth?.files?.[path];
   if (typeof t === 'string') return t;
-  const prof = Object.values(lab.orca.cardProfiles).find((c) => c.gortPath === path);
+  const prof = Object.values(lab.orka.cardProfiles).find((c) => c.gorthPath === path);
   if (prof) return canonicalCardFile(prof);
-  if (path === 'cards/README.md') return '# Card definitions\n\nDip (EMV contact) and Tap (NFC) virtual card files loaded by Callus.\n';
+  if (path === 'cards/README.md') return '# Card definitions\n\nDip (EMV contact) and Tap (NFC) virtual card files loaded by Kallus.\n';
   return null;
 }
 

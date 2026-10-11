@@ -78,7 +78,7 @@ export function ShiftBar() {
           <span className="hud-heat__label">H{shift.heat}</span>
         </span>
       </div>
-      <div className="hud-shiftbar__cell hud-shiftbar__hc" title="Orca pings every Pi every 5 game minutes. Fixes only show in Orca after the next health check.">
+      <div className="hud-shiftbar__cell hud-shiftbar__hc" title="Orka pings every Pi every 5 game minutes. Fixes only show in Orka after the next health check.">
         <span className="hud-shiftbar__label">Next health check</span>
         <span className={`hud-shiftbar__value tnum${hc <= 5 ? ' is-imminent' : ''}`}>
           <Icon name="refresh" size={12} /> {mmss(hc)}
@@ -126,7 +126,7 @@ const PIPE_LABEL: Record<string, string> = {
   PL5: 'canada-pin',
   PL6: 'go-sdk-smoke',
   PL7: 'duet-cfd',
-  PL8: 'paycore-matrix',
+  PL8: 'paycrest-matrix',
 };
 
 /** Bottom-left pipeline strip (GP §2.3.5). */

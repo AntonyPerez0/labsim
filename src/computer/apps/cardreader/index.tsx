@@ -161,7 +161,7 @@ export function CardReaderApp(props: AppProps) {
           data-hint="cardreader.copyTracks"
           disabled={!tracks.track1 && !tracks.track2}
           onClick={() => copy('tracks')}
-          title="Track 1 immediately followed by Track 2 (the format Orca stores) — Ctrl+Shift+C"
+          title="Track 1 immediately followed by Track 2 (the format Orka stores) — Ctrl+Shift+C"
         >
           {copied === 'tracks' ? 'Copied' : 'Copy Track 1 + 2'}
         </button>

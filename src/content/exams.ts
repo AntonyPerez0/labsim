@@ -31,7 +31,7 @@ export const EXAMS: ExamBlueprint[] = resolvePeople<ExamBlueprint[]>([
       moduleQuotas: { M01: 4, M02: 6, M03: 6, M04: 8, M05: 6 },
       tierMix: { core: 0.75, supporting: 0.25, trivia: 0 },
       criticalFactIds: R1_CRITICAL,
-      criticalNotes: 'F229 (terminals & Collis on AC strips) · F232 (Park All) · F086 (Pis on 5V 10A) · F231 (yellow banner)',
+      criticalNotes: 'F229 (terminals & Kollis on AC strips) · F232 (Park All) · F086 (Pis on 5V 10A) · F231 (yellow banner)',
     },
     practical: {
       summary: '3 tasks · 15 min total',
@@ -39,7 +39,7 @@ export const EXAMS: ExamBlueprint[] = resolvePeople<ExamBlueprint[]>([
       pass: 'All 3 tasks passed',
       tasks: [
         { id: 'P1-1', setup: "A random touch robot's arm is pushed (yellow banner).", playerMust: 'Walk to the right rig and press Park All.', pass: 'Banner green within 3 game-min; no other buttons pressed first.', factIds: ['F231', 'F232', 'F235'] },
-        { id: 'P1-2', setup: "A rack's 5V fuse is blown and a new LabSim + Collis probe await power.", playerMust: 'Find the dead Pis, test and replace the fuse, plug the LabSim and the probe into the AC strip.', pass: 'Pis powered; both devices on the AC strip; zero wrong-socket attempts.', factIds: ['F086', 'F087', 'F227', 'F228', 'F229'] },
+        { id: 'P1-2', setup: "A rack's 5V fuse is blown and a new LabSim + Kollis probe await power.", playerMust: 'Find the dead Pis, test and replace the fuse, plug the LabSim and the probe into the AC strip.', pass: 'Pis powered; both devices on the AC strip; zero wrong-socket attempts.', factIds: ['F086', 'F087', 'F227', 'F228', 'F229'] },
         { id: 'P1-3', setup: 'None.', playerMust: "SSH into a named Pi and report its health endpoint result.", pass: 'curl returns 200; the answer typed in the exam form = 200.', factIds: ['F064', 'F019', 'F099'] },
       ],
     },
@@ -59,14 +59,14 @@ export const EXAMS: ExamBlueprint[] = resolvePeople<ExamBlueprint[]>([
       moduleQuotas: { M06: 12, M07: 9, M08: 7, M09: 7, M10: 5 },
       tierMix: { core: 0.75, supporting: 0.25, trivia: 0 },
       criticalFactIds: R2_CRITICAL,
-      criticalNotes: 'F100 (5 statuses) · F102 (named Unavailable) · F107 + F111 (Connection Failed → {{jared}}) · F113 (Reserved) · F120 (device decoupling) · F218 (ADB bots: PIN-bypass merchants)',
+      criticalNotes: 'F100 (5 statuses) · F102 (named Unavailable) · F107 + F111 (Connection Failed → {{jaden}}) · F113 (Reserved) · F120 (device decoupling) · F218 (ADB bots: PIN-bypass merchants)',
     },
     practical: {
       summary: '4 tasks · 25 min',
       minutes: 25,
       pass: 'All 4 tasks passed',
       tasks: [
-        { id: 'P2-1', setup: "A random rig's Pi is unplugged.", playerMust: 'Detect Connection Failed, read the Notes, escalate to {{jared}} with the endpoint.', pass: 'Correct escalation choice; status never manually overridden.', factIds: ['F107', 'F108', 'F109', 'F110', 'F111'] },
+        { id: 'P2-1', setup: "A random rig's Pi is unplugged.", playerMust: 'Detect Connection Failed, read the Notes, escalate to {{jaden}} with the endpoint.', pass: 'Correct escalation choice; status never manually overridden.', factIds: ['F107', 'F108', 'F109', 'F110', 'F111'] },
         { id: 'P2-2', setup: 'JOHNNY-5-style hardware swap on a random rig.', playerMust: 'Create a Device, relink Robot Device, keep the old Device; fix the Human Readable Name.', pass: 'Old device untouched; robot linked; tablet shows the right Human Readable Name.', factIds: ['F117', 'F118', 'F119', 'F120'] },
         { id: 'P2-3', setup: 'A firmware drop adds a conditional receipt option on one device type.', playerMust: 'Measure, create the 5-option map, keep the 4-option map, PR → merge.', pass: 'Both maps exist, coordinates ±0.5 mm.', factIds: ['F213', 'F214', 'F215', 'F216', 'F142'] },
         { id: 'P2-4', setup: 'Canadian PIN job queued with an ADB bot selected.', playerMust: 'Re-target to the Compass touch robot and choose Interac.', pass: 'Job runs on a physical bot with INTERAC_CA_DIP.', factIds: ['F217', 'F218', 'F219', 'F220', 'F225'] },
@@ -96,7 +96,7 @@ export const EXAMS: ExamBlueprint[] = resolvePeople<ExamBlueprint[]>([
       pass: 'All 4 tasks passed',
       tasks: [
         { id: 'P3-1', setup: 'Broken config.properties (port 5555, wrong theme/kernel, empty CFD IP) for a tethered rig.', playerMust: 'Fix the file, reserve the rig, run TaxTest, release the rig.', pass: 'Validator 11/11; test passes; rig Reserved during the run and Available after; no coworker device touched.', factIds: ['F188', 'F189', 'F190', 'F191', 'F192', 'F193', 'F194', 'F195', 'F196', 'F197', 'F198', 'F199', 'F200', 'F201', 'F112', 'F183', 'F184', 'F185', 'F186', 'F187'] },
-        { id: 'P3-2', setup: 'Pigeon test with a missing bracket, then a "select print" timeout.', playerMust: 'Fix the JSON; diagnose stale coordinates via the camera; approve the coordinate PR.', pass: 'Build green; diagnosis choice correct.', factIds: ['F208', 'F209', 'F210', 'F211'] },
+        { id: 'P3-2', setup: 'Parrot test with a missing bracket, then a "select print" timeout.', playerMust: 'Fix the JSON; diagnose stale coordinates via the camera; approve the coordinate PR.', pass: 'Build green; diagnosis choice correct.', factIds: ['F208', 'F209', 'F210', 'F211'] },
         { id: 'P3-3', setup: 'Stand Duet test using Screen Compare fails after a 10 px shift.', playerMust: 'Replace it with a UIA 2.3 dual-screen assertion; both IPs equal in config.', pass: 'Run green with the layout shifted.', factIds: ['F151', 'F152', 'F153', 'F154', 'F155', 'F156', 'F193'] },
         { id: 'P3-4', setup: 'New screen class without mandatory methods + Flux scroll bug.', playerMust: 'Add waitForScreen() / isScreenPresent(); fix open().', pass: '3 consecutive green runs on a Flux and a Micro.', factIds: ['F177', 'F178', 'F179', 'F180'] },
       ],
@@ -125,7 +125,7 @@ export const EXAMS: ExamBlueprint[] = resolvePeople<ExamBlueprint[]>([
       minutes: 20,
       pass: 'All 5 incidents resolved in 20 game-min with ≤ 1 strike (wrong fix, fried hardware, status override, coworker device touched)',
       tasks: [
-        { id: 'P4', setup: '5 incidents drawn from the Arcade catalogue (≥ 1 hardware, ≥ 1 Orca, ≥ 1 code/config).', playerMust: 'Resolve all.', pass: 'All resolved in 20 game-min, ≤ 1 strike.', factIds: [] },
+        { id: 'P4', setup: '5 incidents drawn from the Arcade catalogue (≥ 1 hardware, ≥ 1 Orka, ≥ 1 code/config).', playerMust: 'Resolve all.', pass: 'All resolved in 20 game-min, ≤ 1 strike.', factIds: [] },
       ],
     },
     xp: 1000,

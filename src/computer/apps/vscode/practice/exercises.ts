@@ -1,6 +1,6 @@
 /**
- * Pigeon Practice — repeatable JSON exercises for the VS Code app. Each `start()` generates a fresh variant
- * (random test, random mistake), written to `~/pigeon-practice/<id>.json`. `Check` = the LSTR dry run
+ * Parrot Practice — repeatable JSON exercises for the VS Code app. Each `start()` generates a fresh variant
+ * (random test, random mistake), written to `~/parrot-practice/<id>.json`. `Check` = the LSTR dry run
  * (`lstrCheck.ts`) plus the exercise's own goals. UI-level randomness (Math.random) is fine here: nothing
  * in the simulation depends on it.
  */
@@ -55,7 +55,7 @@ function renderAction(a: Act): string {
   return `{ "action": ${JSON.stringify(a.action)}, "params": ${params ? `{ ${params} }` : '{}'}${a.store ? `, "store": ${JSON.stringify(a.store)}` : ''} }`;
 }
 
-/** Pigeon house style: header fields one per line, one action per line. */
+/** Parrot house style: header fields one per line, one action per line. */
 export function renderTest(t: { name: string; connectionType: string; platforms: string[]; actions: Act[] }): string {
   const acts = t.actions.map((a, i) => `    ${renderAction(a)}${i < t.actions.length - 1 ? ',' : ''}`);
   return [
@@ -133,7 +133,7 @@ export const EXERCISES: Exercise[] = [
     title: 'Comma Hunt',
     level: 1,
     topic: 'Syntax',
-    lesson: 'Missing commas are the #1 Pigeon time sink. The parser (and VS Code) complain at the token AFTER the gap — the fix is at the end of the previous line.',
+    lesson: 'Missing commas are the #1 Parrot time sink. The parser (and VS Code) complain at the token AFTER the gap — the fix is at the end of the previous line.',
     hints: ['Open the Problems panel (Ctrl+Shift+M) and click the error.', 'The red squiggle sits on the line AFTER the mistake. Look at the end of the line above it.', 'Each action object except the last ends with "},".'],
     make() {
       const t = baseTest('Swipe sale with printed receipt', saleActions());
@@ -207,7 +207,7 @@ export const EXERCISES: Exercise[] = [
     title: 'The QR Shift',
     level: 2,
     topic: 'Receipt map',
-    lesson: 'The QR "scan" option moved the receipt buttons and only appears on some layouts, so Orca keeps RECEIPT_OPTIONS_4 and _5 maps. Let the runner pick: ${RECEIPT_SCREEN}.',
+    lesson: 'The QR "scan" option moved the receipt buttons and only appears on some layouts, so Orka keeps RECEIPT_OPTIONS_4 and _5 maps. Let the runner pick: ${RECEIPT_SCREEN}.',
     hints: ['Search the file (Ctrl+F) for RECEIPT_OPTIONS.', 'The Android runner sets ${RECEIPT_SCREEN} after counting the options on screen.', '"select scan" really is 5-option only — leave that one alone if it is there.'],
     make() {
       const t = baseTest('Swipe sale with printed receipt', saleActions({ receipt: 'RECEIPT_OPTIONS_4' }));
@@ -228,7 +228,7 @@ export const EXERCISES: Exercise[] = [
     level: 2,
     topic: 'Variables',
     lesson: '"store" saves an action\'s output under a name; later actions read it as ${name}. A typo is NOT a syntax error — VS Code shows nothing; only the run fails.',
-    hints: ['VS Code has no Pigeon schema: Problems will be empty. Press Check to see the runner error.', 'Compare the "store" names with every ${...} used later — spelling and capitals matter.'],
+    hints: ['VS Code has no Parrot schema: Problems will be empty. Press Check to see the runner error.', 'Compare the "store" names with every ${...} used later — spelling and capitals matter.'],
     make() {
       const t = baseTest('Swipe sale with printed receipt', saleActions());
       let text = renderTest(t);
@@ -249,7 +249,7 @@ export const EXERCISES: Exercise[] = [
     level: 1,
     topic: 'Actions',
     lesson: 'LSTR only knows its own action names. Copy action lines from tests/_templates/known_good_actions.json instead of typing them.',
-    hints: ['Problems is empty: it is valid JSON. Press Check.', 'Compare with tests/_templates/known_good_actions.json in the PIGEON folder (or the list in this panel).'],
+    hints: ['Problems is empty: it is valid JSON. Press Check.', 'Compare with tests/_templates/known_good_actions.json in the PARROT folder (or the list in this panel).'],
     make() {
       const t = baseTest('Swipe sale with printed receipt', saleActions());
       const typos: Record<string, string[]> = { 'select print': ['select prnt', 'Select Print', 'select_print'], 'assert approved': ['asert approved', 'assert aproved'], 'review order': ['review  order', 'reveiw order'], pay: ['Pay', 'pay '] };
@@ -266,7 +266,7 @@ export const EXERCISES: Exercise[] = [
     level: 2,
     topic: 'Cards',
     lesson: 'Chip suites need a dip-capable robot and a DIP card profile. The team standardises on one baseline Visa profile per entry mode.',
-    hints: ['Change both the action ("card swipe" → "card dip") and the profile.', 'DIP profiles in Orca: VISA_STD_DIP, INTERAC_CA_DIP …', 'Rename the test so the Jenkins log tells the two apart.'],
+    hints: ['Change both the action ("card swipe" → "card dip") and the profile.', 'DIP profiles in Orka: VISA_STD_DIP, INTERAC_CA_DIP …', 'Rename the test so the Jenkins log tells the two apart.'],
     make() {
       const t = baseTest('Swipe sale with printed receipt', saleActions({ entry: 'swipe' }));
       return { text: renderTest(t), brief: ['Copy of the swipe sale. Turn it into a **chip (dip)** sale with the baseline Visa dip profile.', 'Rename it so the name mentions **dip**.', 'No swipe may remain. **Check** when done.'], ctx: { solution: renderTest(t), count: t.actions.length } };
@@ -303,7 +303,7 @@ export const EXERCISES: Exercise[] = [
     title: 'Run It Everywhere',
     level: 1,
     topic: 'Platforms',
-    lesson: 'Versatile Pigeon tests list 4–5 platforms; each LSTR runner (REST, Android, Windows, iOS) abstracts the same actions its own way.',
+    lesson: 'Versatile Parrot tests list 4–5 platforms; each LSTR runner (REST, Android, Windows, iOS) abstracts the same actions its own way.',
     hints: ['"platforms" is an array of strings: ["REST", "ANDROID", …].', `Valid values: ${PLATFORMS.join(', ')}.`],
     make() {
       const t = baseTest('Tap sale, no tip', saleActions({ entry: 'tap' }), ['ANDROID']);
@@ -371,8 +371,8 @@ export const EXERCISES: Exercise[] = [
     title: 'Build a Tip Sale',
     level: 3,
     topic: 'Write a test',
-    lesson: 'Real Pigeon work: assemble a new test from known-good lines, store outputs, pass them on, and let the runner choose the receipt map.',
-    hints: ['Open PIGEON › tests › _templates › known_good_actions.json, copy whole lines (Shift+Alt+Down duplicates, Alt+↑/↓ moves).', 'Order: create order → card swipe → add tip → select print → assert home.', 'Separate actions with commas; no comma after the last one.'],
+    lesson: 'Real Parrot work: assemble a new test from known-good lines, store outputs, pass them on, and let the runner choose the receipt map.',
+    hints: ['Open PARROT › tests › _templates › known_good_actions.json, copy whole lines (Shift+Alt+Down duplicates, Alt+↑/↓ moves).', 'Order: create order → card swipe → add tip → select print → assert home.', 'Separate actions with commas; no comma after the last one.'],
     make() {
       const pct = pick([15, 18, 20, 25]);
       const text = renderTest({ name: `Swipe sale with ${pct}% tip`, connectionType: 'USB', platforms: ['REST', 'ANDROID', 'WINDOWS', 'IOS'], actions: [] }).replace('  "actions": [\n  ]', '  "actions": [\n\n  ]');

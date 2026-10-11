@@ -84,7 +84,7 @@ export function ProjectView(props: ProjectViewProps) {
       for (const v of visibleNodes(tree, expanded, 1)) out.push(v);
       const libs: TreeNode = { path: '\u0000libs', name: 'External Libraries', kind: 'dir', role: null, children: [] };
       out.push({ node: libs, depth: 0, decor: 'libs' });
-      if (expanded.has('\u0000libs')) for (const l of repo === 'uia-remote' ? LIBS : LIBS.slice(0, 1)) out.push({ node: { path: `\u0000lib:${l}`, name: l, kind: 'file', role: null, children: [] }, depth: 1, decor: 'lib' });
+      if (expanded.has('\u0000libs')) for (const l of repo === 'uia-relay' ? LIBS : LIBS.slice(0, 1)) out.push({ node: { path: `\u0000lib:${l}`, name: l, kind: 'file', role: null, children: [] }, depth: 1, decor: 'lib' });
       out.push({ node: { path: '\u0000scratch', name: 'Scratches and Consoles', kind: 'dir', role: null, children: [] }, depth: 0, decor: 'scratch' });
     }
     return out;

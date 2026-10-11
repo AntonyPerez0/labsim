@@ -2,7 +2,7 @@
  * DR07 Receipt Map (GP §2.4.3, Cur M09): a receipt-options render for a random Device Type.
  * Step 1 — map it: `RECEIPT_OPTIONS_4` or `RECEIPT_OPTIONS_5` (the 5th option "Scan for receipt" appears when
  * the QR feature is on, and every button sits 3.0 mm lower — S10). Step 2 — the robot is blind: with only
- * Orca's Screen Locations (mm from the top-left (0,0)), tap where the asked button sits. Tapping where it
+ * Orka's Screen Locations (mm from the top-left (0,0)), tap where the asked button sits. Tapping where it
  * sits on the *other* map = wrong, and the Teach Card shows both overlays.
  *
  * Layout truth = the sim's firmware tables (`src/sim/seed/layouts`, Sim §2.10.2), so the drill and the lab
@@ -36,7 +36,7 @@ export interface ReceiptData {
   hMm: number;
   /** The map that matches the render. */
   map: ReceiptMap;
-  /** Both maps (Orca keeps separate 4- and 5-option maps per device profile). */
+  /** Both maps (Orka keeps separate 4- and 5-option maps per device profile). */
   maps: Record<ReceiptMap, ReceiptButton[]>;
   /** QR block of the 5-option screen (mm, centre). */
   qr: { x: number; y: number; w: number; h: number } | null;
@@ -89,11 +89,11 @@ export function receiptItem(type: DeviceTypeCode, map: ReceiptMap, ask: string):
   const where = right ? `(${right.x.toFixed(1)}, ${right.y.toFixed(1)}) mm` : '';
   const why =
     map === 5
-      ? `The "Scan for receipt" QR feature adds a conditional 5th option and pushes the buttons ${shift.toFixed(1)} mm lower, so Orca keeps a separate RECEIPT_OPTIONS_5 map${b4 ? ` (${ask} ${b4.y.toFixed(1)} → ${b5?.y.toFixed(1)} mm)` : ''}.`
-      : 'No QR block and four options: the original RECEIPT_OPTIONS_4 map. Orca keeps 4- and 5-option maps side by side for every device profile.';
+      ? `The "Scan for receipt" QR feature adds a conditional 5th option and pushes the buttons ${shift.toFixed(1)} mm lower, so Orka keeps a separate RECEIPT_OPTIONS_5 map${b4 ? ` (${ask} ${b4.y.toFixed(1)} → ${b5?.y.toFixed(1)} mm)` : ''}.`
+      : 'No QR block and four options: the original RECEIPT_OPTIONS_4 map. Orka keeps 4- and 5-option maps side by side for every device profile.';
   return {
     id: `DR07:${type}:${map}:${ask}`,
-    tags: ['receipt.maps', 'receipt.qr', 'orca.screens'],
+    tags: ['receipt.maps', 'receipt.qr', 'orka.screens'],
     factIds: map === 5 ? [...FACTS, 'F214'] : FACTS,
     teach: teach(`RECEIPT_OPTIONS_${map}: ${ask} at ${where}`, why, { ref: 'Ref §5, §3.2', factIds: map === 5 ? [...FACTS, 'F214'] : FACTS, doInstead: 'Count the options (QR = 5-option map), then tap the row from that map.', illustrative: true, tag: 'receipt.maps' }),
     data: { deviceType: type, layoutId: m.layoutId, wMm: m.wMm, hMm: m.hMm, map, maps: m.maps, qr: m.qr, ask },
@@ -118,7 +118,7 @@ export const DR07: DrillDef<ReceiptData> = {
   id: 'DR07',
   name: 'Receipt Map',
   format: 'Receipt render: choose RECEIPT_OPTIONS_4/_5, then tap the asked button',
-  tags: ['receipt.maps', 'receipt.qr', 'orca.screens'],
+  tags: ['receipt.maps', 'receipt.qr', 'orka.screens'],
   unlockedBy: ['M09'],
   durationS: 60,
   itemCount: null,

@@ -190,11 +190,11 @@ export function hasTeardown(src: string): boolean {
   return /goHome/.test(body);
 }
 
-/** CF07 — `orca.screenCompare("NAME")` occurrences (code only). */
+/** CF07 — `orka.screenCompare("NAME")` occurrences (code only). */
 export function screenCompareNames(src: string): string[] {
   const out: string[] = [];
   const noComments = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
-  const re = /orca\.screenCompare\(\s*"([^"]+)"\s*\)/g;
+  const re = /orka\.screenCompare\(\s*"([^"]+)"\s*\)/g;
   let m: RegExpExecArray | null;
   while ((m = re.exec(noComments))) out.push(m[1]!);
   return out;

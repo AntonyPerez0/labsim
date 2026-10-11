@@ -58,7 +58,7 @@ export function HomeScreen() {
         <div className="home__greet">
           <div className="caps">{greeting}</div>
           <h1>{progress.playerName}</h1>
-          <p className="muted">Forty-two rigs in Orca, twelve of them here in the lab. Let’s keep them green.</p>
+          <p className="muted">Forty-two rigs in Orka, twelve of them here in the lab. Let’s keep them green.</p>
         </div>
         {target && meta ? (
           <Card className="home__next">

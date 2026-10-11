@@ -2,7 +2,7 @@
  * Chromium-like browser chrome (Apps §1.4) — tab strip (= title bar), toolbar with back/forward/reload and the
  * address bar, bookmarks bar, loading bar, and the page slot.
  *
- * FOR APP BUILDERS (Orca, Jenkins, GitHub, Ollama, Browser): inside the desktop the SHELL draws this frame around
+ * FOR APP BUILDERS (Orka, Jenkins, GitHub, Ollama, Browser): inside the desktop the SHELL draws this frame around
  * every `chrome: 'browser'` app automatically (`WindowFrame` → `BrowserFrame`). Your app renders ONLY the page:
  * a pure function of `props.route`, moving with `props.navigate(route)`; set the tab title with `props.onTitle()`.
  * Do not render your own address bar or tabs.
@@ -24,7 +24,7 @@ import './browser.css';
 
 /* ─────────────────────────────── URL helpers ─────────────────────────────── */
 
-/** Full URL for a browser-hosted app route ("http://orca.lab.local:8080/robot?status.in=AVAILABLE"). */
+/** Full URL for a browser-hosted app route ("http://orka.lab.local:8080/robot?status.in=AVAILABLE"). */
 export function displayUrl(app: AppId, route: string): string {
   if (app === 'browser') return route === '/newtab' ? '' : route;
   const origin = APP_META[app]?.origin;
@@ -38,7 +38,7 @@ function splitUrl(url: string): { scheme: string; host: string; rest: string } {
 }
 
 export const BOOKMARKS: { label: string; url: string; app: AppId }[] = [
-  { label: 'Orchestrator', url: 'http://orca.lab.local:8080/', app: 'orca' },
+  { label: 'Orchestrator', url: 'http://orka.lab.local:8080/', app: 'orka' },
   { label: 'Jenkins', url: 'http://jenkins.lab.local:8080/', app: 'jenkins' },
   { label: 'labsim-lab', url: 'https://github.com/labsim-lab', app: 'github' },
   { label: 'Vision PoC', url: 'http://10.42.1.12:3000/', app: 'ollama' },

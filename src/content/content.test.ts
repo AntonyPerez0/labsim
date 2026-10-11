@@ -386,8 +386,8 @@ describe('people rules', () => {
   });
 
   it('resolved data does name the mentors', () => {
-    expect(factById('F111')!.text).toContain(TEAM.jared.name);
-    expect(questionById('Q108')!.options).toContain(TEAM.tate.name);
+    expect(factById('F111')!.text).toContain(TEAM.jaden.name);
+    expect(questionById('Q108')!.options).toContain(TEAM.nate.name);
   });
 });
 
@@ -450,9 +450,9 @@ describe('helpers', () => {
     const top = (q: string) => searchManual(q)[0]?.article.id;
     expect(top('Park All')).toBe('maglock-and-park-all');
     expect(top('config.properties')).toBe('config-properties');
-    expect(top('Connection Failed')).toMatch(/connection-failed|orca-statuses|orca-health-check/);
-    expect(top('Callers')).toBe('callus');
-    expect(top('select print')).toBe('pigeon-bottlenecks');
+    expect(top('Connection Failed')).toMatch(/connection-failed|orka-statuses|orka-health-check/);
+    expect(top('Kallers')).toBe('kallus');
+    expect(top('select print')).toBe('parrot-bottlenecks');
     const ids5444 = searchManual('5444').map((h) => h.article.id);
     expect(ids5444.slice(0, 5)).toContain('adb-port-5444');
     expect(ids5444).toContain('config-properties');
@@ -462,21 +462,21 @@ describe('helpers', () => {
   });
 
   it('glossary lookup works by term and alias', () => {
-    expect(glossaryLookup('Orca')?.term).toBe('Orchestrator');
-    expect(glossaryLookup('callers')?.term).toBe('Callus');
+    expect(glossaryLookup('Orka')?.term).toBe('Orchestrator');
+    expect(glossaryLookup('kallers')?.term).toBe('Kallus');
     expect(glossaryLookup('LSTR')).toBeDefined();
     expect(glossaryLookup('nope')).toBeUndefined();
   });
 
   it('questionsForTags expands module tags to their fine tags', () => {
-    const reserved = questionsForTags(['orca.status.reserved']);
+    const reserved = questionsForTags(['orka.status.reserved']);
     expect(reserved.length).toBeGreaterThan(0);
-    expect(questionsForTags(['orca.status']).length).toBeGreaterThan(reserved.length);
-    expect(questionsForTags(['orca.status'], { includeIllustrative: false }).some((q) => q.illustrative)).toBe(false);
+    expect(questionsForTags(['orka.status']).length).toBeGreaterThan(reserved.length);
+    expect(questionsForTags(['orka.status'], { includeIllustrative: false }).some((q) => q.illustrative)).toBe(false);
   });
 
   it('articleById / factById / questionById', () => {
-    expect(articleById('orca-statuses')?.title).toMatch(/Statuses/);
+    expect(articleById('orka-statuses')?.title).toMatch(/Statuses/);
     expect(factById('S19')?.illustrative).toBe(true);
     expect(questionById('Q382')?.moduleId).toBe('M18');
   });

@@ -62,23 +62,23 @@ export function commandItems(model: VsModel): PaletteItem[] {
     { id: 'sync', label: 'Git: Sync', run: () => sync(model) },
     {
       id: 'runLstr',
-      label: 'Pigeon: Run LSTR Test (Current File)',
-      detail: b?.root === 'repo' && b.path.endsWith('.json') ? b.path : 'open a test from pigeon/tests first',
+      label: 'Parrot: Run LSTR Test (Current File)',
+      detail: b?.root === 'repo' && b.path.endsWith('.json') ? b.path : 'open a test from parrot/tests first',
       run: () => {
         const cur = model.activeBuffer();
         if (cur?.root === 'repo' && cur.path.startsWith('tests/') && cur.path.endsWith('.json')) runLocal(model, cur.path);
-        else model.toast('warning', 'Open a Pigeon test (tests/…/*.json) first.');
+        else model.toast('warning', 'Open a Parrot test (tests/…/*.json) first.');
       },
     },
     {
       id: 'practice',
-      label: 'Pigeon Practice: Show Exercises',
+      label: 'Parrot Practice: Show Exercises',
       run: () => {
         model.side = 'practice';
         model.changed();
       },
     },
-    { id: 'practiceCheck', label: 'Pigeon Practice: Check Exercise', run: () => checkPractice(model) },
+    { id: 'practiceCheck', label: 'Parrot Practice: Check Exercise', run: () => checkPractice(model) },
   ];
   return items;
 }
@@ -114,7 +114,7 @@ export function quickOpen(model: VsModel): void {
   const items: PaletteItem[] = [...files, ...prac].map(({ root, p }) => ({
     id: `${root}:${p}`,
     label: p.split('/').pop()!,
-    detail: root === 'repo' ? `${model.repo}/${p}` : `pigeon-practice/${p}`,
+    detail: root === 'repo' ? `${model.repo}/${p}` : `parrot-practice/${p}`,
     run: () => openFile(model, root, p),
   }));
   model.openPalette({ placeholder: 'Search files by name', mode: 'files', input: '', items });

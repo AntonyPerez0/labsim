@@ -1,6 +1,6 @@
 /**
  * Inspections (Apps §4.6–§4.7): Java sanity rules (Sim CF12: unbalanced brackets, missing `;`), strict JSON for
- * gort/orchestrator (IntelliJ wording), the "mandatory screen methods" inspection + intention. Pigeon JSON is
+ * gorth/orchestrator (IntelliJ wording), the "mandatory screen methods" inspection + intention. Parrot JSON is
  * deliberately NOT inspected (legacy project settings, Cur §7, M15 s6).
  */
 import { stripJavaNoise } from './lang';
@@ -97,7 +97,7 @@ export function inspectJava(text: string): Problem[] {
   return problems;
 }
 
-/* ───────────────────────────── Strict JSON (gort, orchestrator) ───────────────────────────── */
+/* ───────────────────────────── Strict JSON (gorth, orchestrator) ───────────────────────────── */
 
 class JsonErr extends Error {
   constructor(
@@ -281,7 +281,7 @@ export type InspectionMode = 'java' | 'json-strict' | 'none';
 
 export function inspectionModeFor(repo: string, path: string): InspectionMode {
   if (path.endsWith('.java')) return 'java';
-  if (path.endsWith('.json') && repo !== 'pigeon') return 'json-strict';
+  if (path.endsWith('.json') && repo !== 'parrot') return 'json-strict';
   return 'none';
 }
 

@@ -1,5 +1,5 @@
 /**
- * Orca `DeviceType` enum metrics (Sim §2.2): "device dimensions, layout metrics, and internal string
+ * Orka `DeviceType` enum metrics (Sim §2.2): "device dimensions, layout metrics, and internal string
  * definitions" (Ref §3). Static code, not state. Screen sizes/resolutions are [illus.]; family, profile
  * sharing, printers, dual-screen ADB blindness, upcoming models and markets follow the reference/canon.
  */
@@ -146,7 +146,7 @@ export const DEVICE_TYPES: Record<DeviceTypeCode, DeviceTypeInfo> = {
     serialPrefix: 'CP',
     hasPrinter: false,
     market: 'CA',
-    notes: 'Canadian-market terminal used on Westers test beds.',
+    notes: 'Canadian-market terminal used on Westerly test beds.',
   }),
 };
 

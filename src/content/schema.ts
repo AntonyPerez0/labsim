@@ -10,17 +10,17 @@
  * (or marked with `†` inside Field Manual markdown) so the UI can show the "Illustrative (sim only)" badge.
  */
 
-/** Topic tag, e.g. "orca.status", "adb.port", "power.rails". The canonical list is `TOPIC_TAGS` in ./tags.ts. */
+/** Topic tag, e.g. "orka.status", "adb.port", "power.rails". The canonical list is `TOPIC_TAGS` in ./tags.ts. */
 export type TopicTag = string;
 
 /** Field Manual chapters / mastery-radar groups (GP §2.6, §4.8.1). */
 export type TagGroup =
   | 'Lab Basics'
   | 'Architecture'
-  | 'Orca'
+  | 'Orka'
   | 'Jenkins'
-  | 'uia-remote'
-  | 'Pigeon & Receipts'
+  | 'uia-relay'
+  | 'Parrot & Receipts'
   | 'ADB'
   | 'Power'
   | 'Hardware'
@@ -117,7 +117,7 @@ export interface Flashcard {
 
 export interface GlossaryTerm {
   term: string;
-  /** Aliases/abbreviations, e.g. ["Orca", "Orchestrator"]. */
+  /** Aliases/abbreviations, e.g. ["Orka", "Orchestrator"]. */
   aliases: string[];
   definition: string;
   tags: TopicTag[];
@@ -166,7 +166,7 @@ export type ManualCategory =
  *                                         **illustrative (sim-only)** detail; renderers show the badge.
  */
 export interface ManualArticle {
-  id: string; // "orca-statuses"
+  id: string; // "orka-statuses"
   title: string;
   category: ManualCategory;
   summary: string;
@@ -187,7 +187,7 @@ export interface ModuleMeta {
   /** "M01" … */
   id: string;
   title: string;
-  /** Mentor key from team.ts, e.g. "morgan", "jared", "tate", "david". */
+  /** Mentor key from team.ts, e.g. "morgan", "jaden", "nate", "devin". */
   mentor: string;
   summary: string;
   objectives: string[];
@@ -223,7 +223,7 @@ export interface TeamMember {
   blurb: string;
   /** Portrait colour for the dialogue box. */
   color: string;
-  /** World/lesson NPC id, e.g. "npc.jared", "npc.coworker". */
+  /** World/lesson NPC id, e.g. "npc.jaden", "npc.coworker". */
   npcId?: string;
   kind?: 'mentor' | 'coworker' | 'system';
   /** True if the person appears in the reference (a real colleague's first name). */
@@ -325,7 +325,7 @@ export interface PracticalTask {
 export type QuipTrigger = 'idle' | 'pass' | 'yellow' | 'fail' | 'recovered' | 'park' | 'reserved';
 export interface QuipDef {
   key: string;
-  /** Orca system name, e.g. "wall-e". */
+  /** Orka system name, e.g. "wall-e". */
   rig: string;
   trigger: QuipTrigger;
   text: string;

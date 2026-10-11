@@ -99,7 +99,7 @@ function autoEvidence(d: RootState, ctx: TxContext, e: LogEntry): void {
       captureEvidence(d, ctx, 'meter', `Meter ${p.pointId}: ${p.display}`);
       break;
     }
-    case 'orca.checkoutRejected': {
+    case 'orka.checkoutRejected': {
       const p = e.payload as { jobId: string; reason: string; robotName?: string };
       captureEvidence(d, ctx, 'jenkins', `${p.jobId}: ${p.reason}`, p.robotName ?? null);
       break;

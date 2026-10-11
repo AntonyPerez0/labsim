@@ -116,7 +116,7 @@ function misaim(lab: LabState, cam: CameraDef): { dx: number; dy: number } {
 /** Devices to show on a placeholder frame (cameras without modelled views). */
 function placeholderDevices(lab: LabState, cam: CameraDef | null, url: string): { dev: TerminalDevice; tag: string }[] {
   const out: { dev: TerminalDevice; tag: string }[] = [];
-  const robots = Object.values(lab.orca.robots).filter((r) => (cam?.rigId ? r.name === cam.rigId : r.cameraStreamUrl === url));
+  const robots = Object.values(lab.orka.robots).filter((r) => (cam?.rigId ? r.name === cam.rigId : r.cameraStreamUrl === url));
   for (const r of robots.slice(0, 4)) {
     const rig = lab.rigs[r.name];
     const devId = rig?.deviceIds?.[0];

@@ -1,5 +1,5 @@
 /**
- * GP §3.5 INC51–INC58: Go SDK credentials, the Canadian PIN on an ADB bot, Dip/Tap Gort paths and the
+ * GP §3.5 INC51–INC58: Go SDK credentials, the Canadian PIN on an ADB bot, Dip/Tap Gorth paths and the
  * stale scheduled clone, corrupted swipe Track Data, Wine card programming, the Ollama tip-math check
  * and the card-philosophy judgement.
  */
@@ -15,7 +15,7 @@ import {
   dcWithCorrect,
   dev,
   hrn,
-  orcaSave,
+  orkaSave,
   pi,
   piIp,
   reply,
@@ -27,7 +27,7 @@ import {
 } from './helpers';
 
 const PIN_JOB = 'Java/contact-canada-pin-sale';
-const FLUX_JOB = 'Java/uia-remote-regression-flux';
+const FLUX_JOB = 'Java/uia-relay-regression-flux';
 const GO_MERCHANT = 'GO-SDK-US-01';
 const PL3_RIGS = ['wall-e', 'eve', 'bumblebee', 'johnny-5', 'baymax'];
 /** Canonical Visa test-card tracks (Cur M10) — what the card-reader utility prints. */
@@ -43,19 +43,19 @@ export const INC51: IncidentDef = {
   rigs: { candidates: ['data'], default: 'data', scope: 'shared-pi', describe: 'PL6 (DATA / TARS)' },
   escalatable: false,
   unlockedBy: 'M08',
-  tags: ['go.sdk', 'orca.merchant', 'jenkins.envvars'],
+  tags: ['go.sdk', 'orka.merchant', 'jenkins.envvars'],
   factIds: ['F136', 'F137', 'F138', 'F139', 'F008', 'F009'],
   ticket: { title: 'go-sdk-sale-smoke red: missing credential', reporter: 'jenkins-bot', summary: 'Attachment LAB-2231: API Key key_sim_19c0e2', misleading: { title: 'The Go SDK is broken', reporter: 'alex' } },
   setup: () => ({ scenario: [F('merchant.credentialBlank', { merchant: GO_MERCHANT, field: 'apiKey' })] }),
   reveal: 'pipeline',
   symptoms: [
     sym('Jenkins', 'env APP_ID=app_sim_7f3a APP_SECRET=**** API_KEY= then panic: Terminal SDK: missing credential API_KEY (env var empty)'),
-    sym('Orca', 'The Merchant Config table has no App columns; Edit shows App ID app_sim_7f3a, App Secret ••••••, API Key (blank).'),
+    sym('Orka', 'The Merchant Config table has no App columns; Edit shows App ID app_sim_7f3a, App Secret ••••••, API Key (blank).'),
   ],
   diagnosisPath: ['The SDK panicked on an empty env var.', 'The pipeline exports it from Merchant Config.', 'The table hides those columns — click Edit.', 'Fill the blank field from the ticket attachment.'],
   hints: [
     'Which env var is empty, and where does the pipeline get it from?',
-    `Orca → Merchant Config → ${GO_MERCHANT} → Edit (the table does not show every field).`,
+    `Orka → Merchant Config → ${GO_MERCHANT} → Edit (the table does not show every field).`,
     'Edit → paste the API Key from the ticket attachment (key_sim_19c0e2) → Save → rebuild go-sdk-sale-smoke.',
   ],
   fix: { handsOn: 'Edit → paste key_sim_19c0e2 → Save → rebuild → env shows all three set.' },
@@ -70,13 +70,13 @@ export const INC51: IncidentDef = {
     'A credential is missing in Merchant Config (Edit view)',
     ['Go SDK bug', 'The SDK told you exactly which env var is empty. Where does it come from?'],
     ['Wrong device type', 'The checkout worked; the SDK failed on credentials.'],
-    ['Ubi route', 'No merchant switch was involved.'],
+    ['Ubo route', 'No merchant switch was involved.'],
   ),
   wrongButTempting: [
-    wm('hardcode', 'Hardcode the key in the Jenkins job', 150, on('jenkins.jobSaved', { jobId: 'Java/go-sdk-sale-smoke' }), teach('Secrets in plain text.', P('{{tate}} added App ID, App Secret and API Key to Merchant Config so pipelines export them as env vars for the Go SDK. (Ref §3)'), 'Fill the field in Merchant Config → Edit.')),
-    wm('ask-tate', P('Ask {{tate}} to "add the column"'), 50, undefined, teach(P('{{tate}}: "The fields exist — click Edit."'), 'Merchant Config hides fields in the table; click Edit to see all of them. (Ref §3)', 'Merchant Config → Edit.')),
+    wm('hardcode', 'Hardcode the key in the Jenkins job', 150, on('jenkins.jobSaved', { jobId: 'Java/go-sdk-sale-smoke' }), teach('Secrets in plain text.', P('{{nate}} added App ID, App Secret and API Key to Merchant Config so pipelines export them as env vars for the Go SDK. (Ref §3)'), 'Fill the field in Merchant Config → Edit.')),
+    wm('ask-nate', P('Ask {{nate}} to "add the column"'), 50, undefined, teach(P('{{nate}}: "The fields exist — click Edit."'), 'Merchant Config hides fields in the table; click Edit to see all of them. (Ref §3)', 'Merchant Config → Edit.')),
   ],
-  teaches: P('Ref §3 Merchant Config: {{tate}} added App ID, App Secret and API Key so pipelines export them as runtime env vars for the Go SDK; click Edit to see every field.'),
+  teaches: P('Ref §3 Merchant Config: {{nate}} added App ID, App Secret and API Key so pipelines export them as runtime env vars for the Go SDK; click Edit to see every field.'),
   variants: [
     {
       id: 'B',
@@ -85,7 +85,7 @@ export const INC51: IncidentDef = {
         setup: () => ({ scenario: [F('merchant.credentialBlank', { merchant: GO_MERCHANT, field: 'appSecret' })] }),
         ticket: { title: 'go-sdk-sale-smoke red: missing credential', reporter: 'jenkins-bot', summary: 'Attachment LAB-2231: App Secret app_secret_sim_5d21 [illus.]' },
         symptoms: [sym('Jenkins', 'env APP_ID=app_sim_7f3a APP_SECRET= API_KEY=**** then panic: Terminal SDK: missing credential APP_SECRET (env var empty)')],
-        hints: ['Which env var is empty, and where does the pipeline get it from?', `Orca → Merchant Config → ${GO_MERCHANT} → Edit.`, 'Paste the App Secret from the ticket attachment → Save → rebuild.'],
+        hints: ['Which env var is empty, and where does the pipeline get it from?', `Orka → Merchant Config → ${GO_MERCHANT} → Edit.`, 'Paste the App Secret from the ticket attachment → Save → rebuild.'],
       },
     },
     {
@@ -95,7 +95,7 @@ export const INC51: IncidentDef = {
         setup: () => ({ scenario: [F('merchant.credentialBlank', { merchant: GO_MERCHANT, field: 'appId' })] }),
         ticket: { title: 'go-sdk-sale-smoke red: missing credential', reporter: 'jenkins-bot', summary: 'Attachment LAB-2231: App ID app_sim_7f3a' },
         symptoms: [sym('Jenkins', 'env APP_ID= APP_SECRET=**** API_KEY=**** then panic: Terminal SDK: missing credential APP_ID (env var empty)')],
-        hints: ['Which env var is empty, and where does the pipeline get it from?', `Orca → Merchant Config → ${GO_MERCHANT} → Edit.`, 'Paste the App ID from the ticket attachment → Save → rebuild.'],
+        hints: ['Which env var is empty, and where does the pipeline get it from?', `Orka → Merchant Config → ${GO_MERCHANT} → Edit.`, 'Paste the App ID from the ticket attachment → Save → rebuild.'],
       },
     },
   ],
@@ -111,14 +111,14 @@ export const INC52: IncidentDef = {
   rigs: { candidates: ['tars'], default: 'tars', scope: 'rig', describe: 'PL5 (pinned to an ADB bot)' },
   escalatable: false,
   unlockedBy: 'M09',
-  tags: ['bots.pin', 'bots.types', 'orca.capabilities', 'cards.philosophy'],
+  tags: ['bots.pin', 'bots.types', 'orka.capabilities', 'cards.philosophy'],
   factIds: ['F217', 'F218', 'F219', 'F220', 'F222', 'F223', 'F225'],
   ticket: { title: 'contact-canada-pin-sale times out at PIN entry', reporter: 'jenkins-bot' },
   setup: () => ({ scenario: [F('jenkins.namedRobot', { job: PIN_JOB, robot: '$R' }), OP('jenkins.startBuild', { job: PIN_JOB, by: 'jenkins' })] }),
   reveal: 'pipeline',
   symptoms: [
     sym('Jenkins', (b) => `Checked out robot ${rig(b)} (named) · PIN entry requires physical touch · FAILURE`),
-    sym('Orca', 'TARS and DATA are ADB bots; SETI is the Compass touch robot on WESTERS-CA-01 (PIN required).'),
+    sym('Orka', 'TARS and DATA are ADB bots; SETI is the Compass touch robot on WESTERLY-CA-01 (PIN required).'),
   ],
   diagnosisPath: ['The job was pinned to an ADB bot.', 'ADB bots cannot physically enter a PIN; Canada mandates physical PIN entry.', 'Target the physical Compass bot.'],
   hints: [
@@ -137,14 +137,14 @@ export const INC52: IncidentDef = {
   wrongButTempting: [
     wm('bypass-merchant', 'Switch to a PIN-bypass merchant', 200, buildWith(PIN_JOB, (pp) => /^AUTO-US-NOPIN/.test(pp.MERCHANT ?? '')), teach("You'd stop testing the Canadian PIN flow.", 'ADB bots only get PIN-bypass merchants, but Canadian workflows mandate physical PIN entry. (Ref §6)', 'Run it on the physical Compass bot.')),
     wm('gen2', 'Use the Gen 2 software PIN bypass', 100, undefined, teach("It doesn't exist yet.", 'Gen 2 Software PIN Bypass is still being built with the Core OS Team. (Ref §6)', 'Use the physical bot.')),
-    wm('wall-e', 'ROBOT_NAME=wall-e', 50, buildWith(PIN_JOB, (pp) => pp.ROBOT_NAME === 'wall-e'), teach('capability mismatch: deviceType COMPASS required', 'The Compass is the Canadian-market terminal on the Westers beds. (Ref §1)', 'ROBOT_NAME=seti.')),
+    wm('wall-e', 'ROBOT_NAME=wall-e', 50, buildWith(PIN_JOB, (pp) => pp.ROBOT_NAME === 'wall-e'), teach('capability mismatch: deviceType COMPASS required', 'The Compass is the Canadian-market terminal on the Westerly beds. (Ref §1)', 'ROBOT_NAME=seti.')),
   ],
   teaches: 'Ref §6: ADB vs physical bots; Canadian payment flows mandate physical PIN entry; the Gen 2 Software PIN Bypass is future work (physical robotics kept for card dipping); card philosophy (Visa + Canadian Interac).',
 };
 
 export const INC53: IncidentDef = {
   id: 'INC53',
-  name: 'Dip/Tap card profile: wrong Gort path',
+  name: 'Dip/Tap card profile: wrong Gorth path',
   difficulty: 3,
   base: 400,
   parS: 240,
@@ -152,46 +152,46 @@ export const INC53: IncidentDef = {
   rigs: { candidates: ['wall-e', 'eve'], default: 'wall-e', scope: 'rig', describe: 'Rack A card rigs (default WALL-E)' },
   escalatable: false,
   unlockedBy: 'M10',
-  tags: ['cards.diptap', 'cards.callus', 'tools.github', 'arch.repos'],
+  tags: ['cards.diptap', 'cards.kallus', 'tools.github', 'arch.repos'],
   factIds: ['F145', 'F147', 'F148', 'F149', 'F035'],
   ticket: { title: (b) => `EMV dips fail on ${hrn(b)}: card not loaded`, reporter: 'jenkins-bot' },
-  setup: () => ({ scenario: [F('card.gortPathWrong', { profile: 'VISA_STD_DIP' }), OP('jenkins.startBuild', { job: FLUX_JOB, params: { ROBOT_NAME: '$R', CARD_PROFILE: 'VISA_STD_DIP' } })] }),
+  setup: () => ({ scenario: [F('card.gorthPathWrong', { profile: 'VISA_STD_DIP' }), OP('jenkins.startBuild', { job: FLUX_JOB, params: { ROBOT_NAME: '$R', CARD_PROFILE: 'VISA_STD_DIP' } })] }),
   reveal: 'pipeline',
   symptoms: [
-    sym('Jenkins', '[callus] map cards/visa/visa_std_dip.json → C:\\gort\\cards\\visa\\visa_std_dip.json · FileNotFoundException (The system cannot find the path specified)'),
-    sym('GitHub', 'gort history: "Reorganise card definitions under cards/emv/ and cards/nfc/"'),
-    sym('Terminal', 'ssh automation@10.42.20.1 → dir C:\\gort\\cards\\emv lists visa_std_dip.json, interac_ca_dip.json'),
+    sym('Jenkins', '[kallus] map cards/visa/visa_std_dip.json → C:\\gorth\\cards\\visa\\visa_std_dip.json · FileNotFoundException (The system cannot find the path specified)'),
+    sym('GitHub', 'gorth history: "Reorganise card definitions under cards/emv/ and cards/nfc/"'),
+    sym('Terminal', 'ssh automation@10.42.20.1 → dir C:\\gorth\\cards\\emv lists visa_std_dip.json, interac_ca_dip.json'),
   ],
-  diagnosisPath: ['Callus could not find the file the profile names.', 'Gort moved the card files last week.', 'Point the profile at the new path.'],
+  diagnosisPath: ['Kallus could not find the file the profile names.', 'Gorth moved the card files last week.', 'Point the profile at the new path.'],
   hints: [
-    'Callus tried to load a specific file. Does it exist?',
-    'GitHub → gort → cards/ history; Orca → Card Profiles → VISA_STD_DIP → Path.',
+    'Kallus tried to load a specific file. Does it exist?',
+    'GitHub → gorth → cards/ history; Orka → Card Profiles → VISA_STD_DIP → Path.',
     'Set VISA_STD_DIP\'s Path to cards/emv/visa_std_dip.json, then dip once (curl POST /api/card/dip) or rebuild.',
   ],
   fix: {
     handsOn: (b) =>
-      `Orca → Card Profiles → VISA_STD_DIP → Path cards/emv/visa_std_dip.json; then curl -X POST http://orca.lab.local:8080/api/card/dip -H "Content-Type: application/json" -d '{"robot":"${rig(b)}","profile":"VISA_STD_DIP"}' → map cards/emv/visa_std_dip.json → C:\\gort\\cards\\emv\\visa_std_dip.json · load virtual card OK · probe ${rig(b)}: DIP.`,
+      `Orka → Card Profiles → VISA_STD_DIP → Path cards/emv/visa_std_dip.json; then curl -X POST http://orka.lab.local:8080/api/card/dip -H "Content-Type: application/json" -d '{"robot":"${rig(b)}","profile":"VISA_STD_DIP"}' → map cards/emv/visa_std_dip.json → C:\\gorth\\cards\\emv\\visa_std_dip.json · load virtual card OK · probe ${rig(b)}: DIP.`,
   },
   success: (b) =>
     c.all(
-      c.eq(p.cardProfile('VISA_STD_DIP').gortPath, 'cards/emv/visa_std_dip.json'),
+      c.eq(p.cardProfile('VISA_STD_DIP').gorthPath, 'cards/emv/visa_std_dip.json'),
       c.any(
         c.nextBuild({ robots: [rig(b)], params: { CARD_PROFILE: 'VISA_STD_DIP' } }),
-        c.verify({ kind: 'event', match: on('orca.cardAction', { robotName: rig(b), profile: 'VISA_STD_DIP', ok: true }) }),
+        c.verify({ kind: 'event', match: on('orka.cardAction', { robotName: rig(b), profile: 'VISA_STD_DIP', ok: true }) }),
       ),
     ),
   diagnosisCall: dc(
-    'The Card Profile points to an old Gort path',
-    ['Clone stale', 'The box has the file — under cards/emv. Which path did Callus try?'],
-    ['Collis unpowered', 'The failure is a missing file before the probe acts.'],
-    ['Track data corrupted', 'Dip profiles store a Gort file path, not Track Data.'],
+    'The Card Profile points to an old Gorth path',
+    ['Clone stale', 'The box has the file — under cards/emv. Which path did Kallus try?'],
+    ['Kollis unpowered', 'The failure is a missing file before the probe acts.'],
+    ['Track data corrupted', 'Dip profiles store a Gorth file path, not Track Data.'],
   ),
   wrongButTempting: [
-    wm('track-into-dip', 'Paste Track Data into the dip profile', 100, orcaSave('cardProfile', { fields: ['trackData'] }), teach('Dip profiles do not use Track Data.', 'Swipe profiles store raw Track Data in MySQL; Dip and Tap profiles store file paths into Gort. (Ref §3)', 'Fix the Gort path.')),
-    wm('copy-old-path', 'Copy the file back to the old path on the box', 100, on('host.fileWritten', {}, (pl) => /cards\\visa/i.test(pl.path)), teach('The next sync removes it.', 'A scheduled job clones the Gort card files onto the Windows boxes. (Ref §3)', 'Fix the profile path.')),
-    wm('revert-gort', "Revert Gort's reorganisation", 150, on('git.committed', { repo: 'gort' }, (pl) => /^Revert/i.test(pl.message)), teach('Everyone else moved on.', 'The profile is the thing pointing at the old path. (Ref §3)', 'Fix the profile path.')),
+    wm('track-into-dip', 'Paste Track Data into the dip profile', 100, orkaSave('cardProfile', { fields: ['trackData'] }), teach('Dip profiles do not use Track Data.', 'Swipe profiles store raw Track Data in MySQL; Dip and Tap profiles store file paths into Gorth. (Ref §3)', 'Fix the Gorth path.')),
+    wm('copy-old-path', 'Copy the file back to the old path on the box', 100, on('host.fileWritten', {}, (pl) => /cards\\visa/i.test(pl.path)), teach('The next sync removes it.', 'A scheduled job clones the Gorth card files onto the Windows boxes. (Ref §3)', 'Fix the profile path.')),
+    wm('revert-gorth', "Revert Gorth's reorganisation", 150, on('git.committed', { repo: 'gorth' }, (pl) => /^Revert/i.test(pl.message)), teach('Everyone else moved on.', 'The profile is the thing pointing at the old path. (Ref §3)', 'Fix the profile path.')),
   ],
-  teaches: 'Ref §3: Dip & Tap profiles store file paths into Gort; Callus maps the path and loads the virtual card.',
+  teaches: 'Ref §3: Dip & Tap profiles store file paths into Gorth; Kallus maps the path and loads the virtual card.',
 };
 
 export const INC54: IncidentDef = {
@@ -204,35 +204,35 @@ export const INC54: IncidentDef = {
   rigs: { candidates: ['seti'], default: 'seti', scope: 'rig', describe: 'rigs on MINIX-02 (default SETI)' },
   escalatable: false,
   unlockedBy: 'M10',
-  tags: ['cards.callus', 'cards.diptap', 'tools.terminal'],
+  tags: ['cards.kallus', 'cards.diptap', 'tools.terminal'],
   factIds: ['F148', 'F149', 'F147'],
   ticket: { title: (b) => `New Interac tap profile fails on ${hrn(b)}, path looks right`, reporter: 'riley' },
-  setup: () => ({ scenario: [F('callus.syncStale', { host: '$BOX' }), OP('jenkins.startBuild', { job: PIN_JOB, params: { CARD_PROFILE: 'INTERAC_CA_TAP' } })] }),
+  setup: () => ({ scenario: [F('kallus.syncStale', { host: '$BOX' }), OP('jenkins.startBuild', { job: PIN_JOB, params: { CARD_PROFILE: 'INTERAC_CA_TAP' } })] }),
   reveal: 'pipeline',
   symptoms: [
-    sym('Jenkins', '[callus] map cards/nfc/interac_ca_tap.json → C:\\gort\\cards\\nfc\\interac_ca_tap.json · FileNotFoundException (The system cannot find the path specified)'),
-    sym('GitHub', 'The file exists on gort main.'),
-    sym('Terminal', (b) => `ssh automation@${v(b, 'boxIp')} → schtasks /query /tn GortCardSync → GortCardSync  10/06/2026 10:00:00  Ready; dir C:\\gort\\cards\\nfc lacks the file`),
+    sym('Jenkins', '[kallus] map cards/nfc/interac_ca_tap.json → C:\\gorth\\cards\\nfc\\interac_ca_tap.json · FileNotFoundException (The system cannot find the path specified)'),
+    sym('GitHub', 'The file exists on gorth main.'),
+    sym('Terminal', (b) => `ssh automation@${v(b, 'boxIp')} → schtasks /query /tn GorthCardSync → GorthCardSync  10/06/2026 10:00:00  Ready; dir C:\\gorth\\cards\\nfc lacks the file`),
   ],
-  diagnosisPath: ['The path is right and the file is on Gort.', 'Callus loads from the box\'s local clone.', 'The box missed its scheduled sync — run it now.'],
+  diagnosisPath: ['The path is right and the file is on Gorth.', 'Kallus loads from the box\'s local clone.', 'The box missed its scheduled sync — run it now.'],
   hints: [
-    'The path is right. Where does Callus actually read the file from?',
-    (b) => `ssh automation@${v(b, 'boxIp')} → schtasks /query /tn GortCardSync; dir C:\\gort\\cards\\nfc.`,
-    'schtasks /run /tn GortCardSync → 20 s later dir lists the file → rebuild.',
+    'The path is right. Where does Kallus actually read the file from?',
+    (b) => `ssh automation@${v(b, 'boxIp')} → schtasks /query /tn GorthCardSync; dir C:\\gorth\\cards\\nfc.`,
+    'schtasks /run /tn GorthCardSync → 20 s later dir lists the file → rebuild.',
   ],
-  fix: { handsOn: 'schtasks /run /tn GortCardSync → SUCCESS: Attempted to run the scheduled task "GortCardSync". → 20 s later dir lists the file → rebuild.' },
+  fix: { handsOn: 'schtasks /run /tn GorthCardSync → SUCCESS: Attempted to run the scheduled task "GorthCardSync". → 20 s later dir lists the file → rebuild.' },
   success: (b) =>
-    c.all(c.truthy(p.fs(String(b.vars.box), 'C:\\gort\\cards\\nfc\\interac_ca_tap.json').exists), c.nextBuild({ robots: [rig(b)], params: { CARD_PROFILE: 'INTERAC_CA_TAP' } })),
+    c.all(c.truthy(p.fs(String(b.vars.box), 'C:\\gorth\\cards\\nfc\\interac_ca_tap.json').exists), c.nextBuild({ robots: [rig(b)], params: { CARD_PROFILE: 'INTERAC_CA_TAP' } })),
   diagnosisCall: dc(
     "Path is right; the box's scheduled clone is stale",
-    ['Gort path wrong', 'The file is on Gort main at exactly that path. Check the box.'],
-    ['Collis dead', 'The failure is a missing file before the probe acts.'],
-    ['Merchant wrong', 'Callus never found the card file. Look at the Windows box.'],
+    ['Gorth path wrong', 'The file is on Gorth main at exactly that path. Check the box.'],
+    ['Kollis dead', 'The failure is a missing file before the probe acts.'],
+    ['Merchant wrong', 'Kallus never found the card file. Look at the Windows box.'],
   ),
   wrongButTempting: [
-    wm('older-file', 'Point the profile at an older Interac file', 100, orcaSave('cardProfile', { fields: ['gortPath'] }), teach('That tests the wrong card.', 'A scheduled job clones Gort card files onto the Windows boxes; Callus loads the local copy. (Ref §3)', 'Run the sync on the box.')),
+    wm('older-file', 'Point the profile at an older Interac file', 100, orkaSave('cardProfile', { fields: ['gorthPath'] }), teach('That tests the wrong card.', 'A scheduled job clones Gorth card files onto the Windows boxes; Kallus loads the local copy. (Ref §3)', 'Run the sync on the box.')),
   ],
-  teaches: 'Ref §3: a scheduled job clones Gort card files onto the local Windows boxes; Callus loads from the local copy.',
+  teaches: 'Ref §3: a scheduled job clones Gorth card files onto the local Windows boxes; Kallus loads from the local copy.',
 };
 
 export const INC55: IncidentDef = {
@@ -248,32 +248,32 @@ export const INC55: IncidentDef = {
   unlockedBy: 'M10',
   tags: ['cards.swipe', 'cards.philosophy'],
   factIds: ['F145', 'F146', 'F224'],
-  ticket: { title: "Swipe step: 'Invalid track data'", reporter: 'jenkins-bot', misleading: { title: 'Collis probe broken?', reporter: 'alex' } },
-  truth: (_b, lab) => ({ tracks: Object.values(lab.orca.cardProfiles).find((x) => x.name === 'VISA_STD_SWIPE')?.trackData ?? CANONICAL_VISA_TRACKS }),
+  ticket: { title: "Swipe step: 'Invalid track data'", reporter: 'jenkins-bot', misleading: { title: 'Kollis probe broken?', reporter: 'alex' } },
+  truth: (_b, lab) => ({ tracks: Object.values(lab.orka.cardProfiles).find((x) => x.name === 'VISA_STD_SWIPE')?.trackData ?? CANONICAL_VISA_TRACKS }),
   setup: () => ({ scenario: [F('card.trackDataCorrupt', { profile: 'VISA_STD_SWIPE' })] }),
   reveal: 'pipeline',
   symptoms: [
-    sym('Jenkins', '[callus] swipe VISA_STD_SWIPE → probe collis-wall-e OK · [device] SWIPE_ERROR: invalid track data'),
-    sym('Orca', 'Card Profile VISA_STD_SWIPE shows %B4111111111111111^SIM/VISA^301210 (truncated; Track 2 missing).'),
+    sym('Jenkins', '[kallus] swipe VISA_STD_SWIPE → probe kollis-wall-e OK · [device] SWIPE_ERROR: invalid track data'),
+    sym('Orka', 'Card Profile VISA_STD_SWIPE shows %B4111111111111111^SIM/VISA^301210 (truncated; Track 2 missing).'),
     sym('LED', 'Probe LED green (hardware fine).'),
   ],
   diagnosisPath: ['The probe swiped fine; the device rejected the data.', 'The profile\'s raw Track Data is truncated.', 'Re-extract it with the card reader and paste it.'],
   hints: [
     'The probe worked. What did it swipe?',
-    'Orca → Card Profiles → VISA_STD_SWIPE → Track Data.',
+    'Orka → Card Profiles → VISA_STD_SWIPE → Track Data.',
     'At your desk, swipe the Visa test card (hotbar 5) through the USB card-reader utility and paste both tracks into the profile; rebuild.',
   ],
   fix: { handsOn: `Swipe the Visa test card through the USB card-reader utility → paste ${CANONICAL_VISA_TRACKS} → rebuild.` },
   success: () => c.all(c.eq(p.cardProfile('VISA_STD_SWIPE').trackData, c.ref(p.truth('tracks')) as never), c.nextBuild({ pipeline: 'PL3' })),
   diagnosisCall: dc(
     "The swipe profile's raw Track Data is corrupted",
-    ['Collis offline', 'Callus reported the probe swipe OK and the LED is green.'],
-    ['Gort path wrong', 'Swipe profiles store Track Data in MySQL, not a Gort path.'],
-    ['Callus offline', 'Callus answered and swiped. Read the device error.'],
+    ['Kollis offline', 'Kallus reported the probe swipe OK and the LED is green.'],
+    ['Gorth path wrong', 'Swipe profiles store Track Data in MySQL, not a Gorth path.'],
+    ['Kallus offline', 'Kallus answered and swiped. Read the device error.'],
   ),
   wrongButTempting: [
-    wm('gort-path', 'Give the swipe profile a Gort path', 100, orcaSave('cardProfile', { fields: ['gortPath'] }), teach('Swipe profiles do not use Gort paths.', 'Swipe profiles store raw Track Data strings directly in the MySQL table. (Ref §3)', 'Paste the extracted Track Data.')),
-    wm('amex', 'Switch to AMEX_MATRIX_DIP', 100, buildWith(null, (pp) => pp.CARD_PROFILE === 'AMEX_MATRIX_DIP'), teach("That's PayCore's matrix card.", 'Your team standardises on one reliable Visa profile; PayCore runs the Visa/Discover/AmEx matrix. (Ref §6)', 'Fix VISA_STD_SWIPE.')),
+    wm('gorth-path', 'Give the swipe profile a Gorth path', 100, orkaSave('cardProfile', { fields: ['gorthPath'] }), teach('Swipe profiles do not use Gorth paths.', 'Swipe profiles store raw Track Data strings directly in the MySQL table. (Ref §3)', 'Paste the extracted Track Data.')),
+    wm('amex', 'Switch to AMEX_MATRIX_DIP', 100, buildWith(null, (pp) => pp.CARD_PROFILE === 'AMEX_MATRIX_DIP'), teach("That's PayCrest's matrix card.", 'Your team standardises on one reliable Visa profile; PayCrest runs the Visa/Discover/AmEx matrix. (Ref §6)', 'Fix VISA_STD_SWIPE.')),
   ],
   teaches: 'Ref §3: swipe profiles store raw Track Data strings in MySQL, extracted with a hardware card-reader utility. Ref §6: card philosophy.',
 };
@@ -285,7 +285,7 @@ export const INC56: IncidentDef = {
   base: 550,
   parS: 360,
   severity: 'P1',
-  rigs: { candidates: ['johnny-5', 'wall-e', 'eve', 'bumblebee', 'baymax', 'seti'], default: 'johnny-5', scope: 'rig', describe: 'touch + collis rigs (default JOHNNY-5)' },
+  rigs: { candidates: ['johnny-5', 'wall-e', 'eve', 'bumblebee', 'baymax', 'seti'], default: 'johnny-5', scope: 'rig', describe: 'touch + kollis rigs (default JOHNNY-5)' },
   escalatable: false,
   unlockedBy: 'M05',
   tags: ['cards.wine', 'hw.pi', 'tools.terminal'],
@@ -309,9 +309,9 @@ export const INC56: IncidentDef = {
   success: (b) => c.all(c.eq(p.svc(pi(b), 'cardprog'), 'UP'), c.nextBuild({ robots: [rig(b)], params: { CARD_PROFILE: 'VISA_STD_DIP' } })),
   diagnosisCall: dc(
     'The Wine environment for the Windows-only card tool broke',
-    ['Collis offline', 'The failure is on the Pi (503 from cardprog), before any probe acts.'],
-    ['Callus offline', 'Callus runs on the Minix box; this error comes from the Pi.'],
-    ['Gort path', 'The card file was never loaded: the programmer itself is unavailable.'],
+    ['Kollis offline', 'The failure is on the Pi (503 from cardprog), before any probe acts.'],
+    ['Kallus offline', 'Kallus runs on the Minix box; this error comes from the Pi.'],
+    ['Gorth path', 'The card file was never loaded: the programmer itself is unavailable.'],
   ),
   wrongButTempting: [
     wm('to-nuc', 'Move card programming to NUC-03', 150, undefined, teach("That's the security-monitored Windows box we moved off.", 'Hardware control moved onto the Pis; Wine runs the Windows-only card software there. (Ref §1)', 'Repair the Wine prefix on the Pi.')),
@@ -464,7 +464,7 @@ export const INC58: IncidentDef = {
   diagnosisPath: ['Recall the team\'s card philosophy and who runs the full matrix.'],
   hints: [
     'Which team runs exhaustive card matrices?',
-    'Your team: one reliable Visa profile plus Canadian Interac. PayCore: back-to-back Visa/Discover/AmEx.',
+    'Your team: one reliable Visa profile plus Canadian Interac. PayCrest: back-to-back Visa/Discover/AmEx.',
     'Reply R1.',
   ],
   fix: { handsOn: 'Reply R1.' },
@@ -472,8 +472,8 @@ export const INC58: IncidentDef = {
     wrongPenalty: 50,
     retryAtHalfPoints: true,
     options: [
-      reply('R1', 'No — our team standardises on one reliable Visa profile (plus Canadian Interac for regional flows); PayCore runs the back-to-back Visa/Discover/AmEx matrix.', true),
-      reply('R2', 'Yes, add all three.', false, { teach: teach('That duplicates PayCore\'s job.', 'Your team standardises on a single reliable Visa profile; PayCore runs exhaustive Visa/Discover/AmEx matrices. (Ref §6)', 'Reply R1.') }),
+      reply('R1', 'No — our team standardises on one reliable Visa profile (plus Canadian Interac for regional flows); PayCrest runs the back-to-back Visa/Discover/AmEx matrix.', true),
+      reply('R2', 'Yes, add all three.', false, { teach: teach('That duplicates PayCrest\'s job.', 'Your team standardises on a single reliable Visa profile; PayCrest runs exhaustive Visa/Discover/AmEx matrices. (Ref §6)', 'Reply R1.') }),
       reply('R3', 'Replace Visa with AmEx.', false, { teach: teach('Visa is the team standard.', 'Your team standardises on a single reliable Visa profile. (Ref §6)', 'Reply R1.') }),
       reply('R4', 'Use Interac everywhere.', false, { teach: teach('Interac is for regional (Canadian) flows.', 'The team adds Canadian Interac for regional flows only. (Ref §6)', 'Reply R1.') }),
     ],

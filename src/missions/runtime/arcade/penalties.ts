@@ -140,7 +140,7 @@ export function raiseGw(d: RootState, ctx: TxContext, gwId: string, opts: RaiseO
   toast(d, 'penalty', points ? `${points} ${def.name}` : def.name, def.teach.whatHappened);
   const barkId = GW_BARKS[gwId];
   if (barkId) barkById(d, ctx, barkId, 'safety');
-  if (gwId === 'GW05') GWS.paycoreOpenedAtS = now;
+  if (gwId === 'GW05') GWS.paycrestOpenedAtS = now;
 
   if (strike && sh) {
     if (addStrike(d, ctx, def.name, gwId, ticket?.id ?? null)) penaltyHooks.endShift?.(d, ctx, 'strikes');
@@ -224,12 +224,12 @@ export function detectWrongActions(d: RootState, ctx: TxContext, e: LogEntry): v
       }
     }
   }
-  // PayCore overwrite after GW05 → strike (GP §2.3.9).
-  if (GWS.paycoreOpenedAtS !== null && (e.type === 'laz.runFinished' || e.type === 'device.provisioned')) {
+  // PayCrest overwrite after GW05 → strike (GP §2.3.9).
+  if (GWS.paycrestOpenedAtS !== null && (e.type === 'lazo.runFinished' || e.type === 'device.provisioned')) {
     const dev = String((e.payload as { deviceId?: string }).deviceId ?? '');
     if (/rosie/.test(dev) && shiftOf(d)) {
-      GWS.paycoreOpenedAtS = null;
-      if (addStrike(d, ctx, 'PayCore merchant overwritten', 'GW05', null)) penaltyHooks.endShift?.(d, ctx, 'strikes');
+      GWS.paycrestOpenedAtS = null;
+      if (addStrike(d, ctx, 'PayCrest merchant overwritten', 'GW05', null)) penaltyHooks.endShift?.(d, ctx, 'strikes');
     }
   }
   // Incident-local wrong moves of open tickets — only for actions on that ticket's rigs when the event
@@ -250,12 +250,12 @@ export function detectWrongActions(d: RootState, ctx: TxContext, e: LogEntry): v
 
 export { hostById };
 
-/** The rig (Orca robot name) an event is about, when its payload says so; null otherwise. */
+/** The rig (Orka robot name) an event is about, when its payload says so; null otherwise. */
 function eventRig(d: RootState, type: string, payload: unknown): string | null {
   const p = (payload ?? {}) as Record<string, unknown>;
-  if (type === 'orca.entitySaved') {
+  if (type === 'orka.entitySaved') {
     if (p.entity !== 'robot') return null;
-    return Object.values(d.lab.orca?.robots ?? {}).find((r) => r.id === p.id)?.name ?? null;
+    return Object.values(d.lab.orka?.robots ?? {}).find((r) => r.id === p.id)?.name ?? null;
   }
   for (const k of ['rigId', 'robotName', 'robot'] as const) if (typeof p[k] === 'string' && p[k]) return p[k] as string;
   if (type.startsWith('robot.') && typeof p.name === 'string') return p.name;

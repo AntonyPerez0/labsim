@@ -48,7 +48,7 @@ export function applyFlag<K extends keyof LabFlags>(lab: LabState, ctx: Ctx, fla
   if (lab.flags[flag] === value) return false;
   lab.flags[flag] = value;
   if (flag === 'receiptQrFeature') {
-    // Lab-wide firmware rollout: every non-FLUX_1 device (Orca rows never change).
+    // Lab-wide firmware rollout: every non-FLUX_1 device (Orka rows never change).
     for (const id of Object.keys(lab.devices).sort()) setDeviceQrFirmware(lab, lab.devices[id]!, value === true);
   } else if (flag === 'cfdLayoutV2Toggle') {
     // Cur M16 tutorial toggle: v2 copy + 10 px label shift on R2-D2's CFD (both, §2.10.2).

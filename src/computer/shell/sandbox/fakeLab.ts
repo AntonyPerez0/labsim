@@ -1,11 +1,11 @@
 /**
  * SANDBOX ONLY — a plausible lab seeded through `mutate()` from the Sim §2 tables, for the computer
  * sandbox page and unit tests while the real sim seed (src/sim/seed) has not landed. Never imported by
- * production code. Skips seeding when the real sim already populated Orca.
+ * production code. Skips seeding when the real sim already populated Orka.
  */
 import { getState, mutate } from '@/core/store';
-import { createTerminalDevice, createHost, createOrcaRobot, createRigState } from '@/sim/initialState';
-import type { DeviceTypeCode, LabState, MerchantConfig, OrcaDevice, RigKind, RobotStatus } from '@/sim/types';
+import { createTerminalDevice, createHost, createOrkaRobot, createRigState } from '@/sim/initialState';
+import type { DeviceTypeCode, LabState, MerchantConfig, OrkaDevice, RigKind, RobotStatus } from '@/sim/types';
 import { UI_DEVICE_TYPES } from '../deviceTypes';
 
 const H = 3_600_000;
@@ -32,7 +32,7 @@ const ROSTER = `
 17|ratchet|touch|QA|Rack C|AVAILABLE|ratchet-micro3:MICRO_3@54||54|60|DTS|2|1,2,3
 18|c-3po|touch|QA|Rack C|AVAILABLE|c-3po-duet:STAND_DUET@55|=|55|60|DTS|2|1,2,3,7
 19|bb-8|tethered|DEV2|Rack D|AVAILABLE|bb-8-mfd:MICRO_3@61|bb-8-cfd:MICRO_3@62|61|61|S|2|3
-20|bender|standalone|STG|PayCore bench|UNAVAILABLE|bender-st2:STAND_2@63||63|63|DTS|5|1,2,3,8,9
+20|bender|standalone|STG|PayCrest bench|UNAVAILABLE|bender-st2:STAND_2@63||63|63|DTS|5|1,2,3,8,9
 21|marvin|tethered|QA|Rack D|AVAILABLE|marvin-mfd:STAND_2@64|marvin-cfd:MICRO_3@65|64|64|S|2|3
 22|robby|tethered|DEV2|Rack D|OFFLINE|robby-mfd:MICRO_3@66|robby-cfd:MICRO_3@67|64|64|S|2|3
 23|hal|adb|QA|ADB rack 2|AVAILABLE|hal-st2:STAND_2@70||70||-|2|
@@ -45,14 +45,14 @@ const ROSTER = `
 30|astro|touch|QA|Rack E|AVAILABLE|astro-flux4:FLUX_4@78||78|79|DTS|3|1,2,3,4,6
 31|iron-giant|touch|QA|Rack F|AVAILABLE|iron-giant-duet2:STAND_DUET_2@80|=|80|80|DTS|2|1,2,3,7
 32|voltron|tethered|INT|Rack D|AVAILABLE|voltron-mfd:STAND_2@81|voltron-cfd:MICRO_2@82|81|81|S|2|3
-33|kryten|standalone|STG|PayCore bench|UNAVAILABLE|kryten-flux3:FLUX_3@83||83|83|DTS|4|1,2,3,9
+33|kryten|standalone|STG|PayCrest bench|UNAVAILABLE|kryten-flux3:FLUX_3@83||83|83|DTS|4|1,2,3,9
 34|mazinger|touch|DEV2|Rack F|AVAILABLE|mazinger-micro2:MICRO_2@84||84|84|DTS|2|1,2,3
 35|jarvis|adb|DEV2|ADB rack 2|AVAILABLE|jarvis-micro3:MICRO_3@85||85||-|2|
 36|ultron|adb|DEV2|ADB rack 2|AVAILABLE|ultron-pocket:FLUX_POCKET@86||85||-|2|
 37|dalek|touch|QA|Rack F|OFFLINE|dalek-flux1:FLUX_1@87||87|87|DTS|2|1,2,3
 38|number-5|touch|QA|Rack F|AVAILABLE|number-5-flux2:FLUX_2@88||88|88|DTS|2|1,2,3
-39|gerty|touch|QA|Westers bench|AVAILABLE|gerty-compass:COMPASS@89||89|89|DTS|7|1,2,3,5
-40|mother|touch|QA|Westers bench|RESERVED|mother-compass:COMPASS@90||90|89|DTS|6|1,2,3,5
+39|gerty|touch|QA|Westerly bench|AVAILABLE|gerty-compass:COMPASS@89||89|89|DTS|7|1,2,3,5
+40|mother|touch|QA|Westerly bench|RESERVED|mother-compass:COMPASS@90||90|89|DTS|6|1,2,3,5
 41|brainiac|adb|DEV2|ADB rack 2|AVAILABLE|brainiac-duet:STAND_DUET@91||91||-|2|
 42|zorg|tethered|QA|Rack D|AVAILABLE|zorg-mfd:MICRO_3@92|zorg-cfd:MICRO_2@93|92|92|S|2|3
 `;
@@ -66,7 +66,7 @@ function merchant(id: number, name: string, displayName: string, env: string, re
   return {
     id, name, merchantId: `SIMMID0000${id}0${id}`.slice(0, 13), environment: env, country, currency: country === 'US' ? 'USD' : 'CAD',
     taxRatePct: taxBp / 100, tipsEnabled: tips.length > 0, pinBypass, cashDiscountEnabled: cash, owner,
-    appId: creds?.[0] ?? null, appSecret: creds?.[1] ?? null, apiKey: creds?.[2] ?? null, ubiRoute: region === 'US-EAST' ? 'us-east' : 'ca-central',
+    appId: creds?.[0] ?? null, appSecret: creds?.[1] ?? null, apiKey: creds?.[2] ?? null, uboRoute: region === 'US-EAST' ? 'us-east' : 'ca-central',
     notes: '', displayName, address: '100 Automation Way, Lab 4', region, taxRateBp: taxBp, tipPercents: tips, cardAdjustBp: cash ? 400 : 0,
     qrReceiptsEnabled: qr, signatureThresholdCents: sig, acceptedBrands: country === 'US' ? ['VISA', 'MASTERCARD', 'AMEX', 'DISCOVER'] : ['VISA', 'MASTERCARD', 'INTERAC'], apps,
   };
@@ -86,15 +86,15 @@ const FLUX3_LOCATIONS: [string, [string, number, number][]][] = [
   ['RECEIPT_OPTIONS_5', [['Print', 34, 74], ['Email', 34, 86], ['Text', 34, 98], ['No Receipt', 34, 110], ['Scan for receipt', 34, 122]]],
 ];
 
-/** Seed the sandbox lab (idempotent; skipped when Orca already has robots). */
+/** Seed the sandbox lab (idempotent; skipped when Orka already has robots). */
 export function seedFakeLab(opts: { force?: boolean } = {}): void {
-  if (!opts.force && Object.keys(getState().lab.orca.robots).length > 0) return;
+  if (!opts.force && Object.keys(getState().lab.orka.robots).length > 0) return;
   mutate((root) => {
     const lab = root.lab as LabState;
     const now = 9 * H + 41 * M + 7000;
     lab.time.nowMs = now;
-    lab.orca.robots = {};
-    lab.orca.devices = {};
+    lab.orka.robots = {};
+    lab.orka.devices = {};
     lab.rigs = {};
     lab.devices = {};
     lab.hosts = {};
@@ -103,9 +103,9 @@ export function seedFakeLab(opts: { force?: boolean } = {}): void {
       const [name, rest] = spec.split(':') as [string, string];
       const [type, ip] = rest.split('@') as [DeviceTypeCode, string];
       const serial = `SIM-${SERIAL_CODE[type]}-0000${ip.padStart(2, '0')}`;
-      const row: OrcaDevice = { id: devId, name, deviceType: type, serial, ip: `10.42.30.${ip}`, label: name.toUpperCase(), simDeviceId: `dev-${name}`, retired: false };
-      lab.orca.devices[devId] = row;
-      lab.devices[`dev-${name}`] = createTerminalDevice(`dev-${name}`, type, { serial, ip: `10.42.30.${ip}`, orcaDeviceName: name, adbTcpPort: 5444 });
+      const row: OrkaDevice = { id: devId, name, deviceType: type, serial, ip: `10.42.30.${ip}`, label: name.toUpperCase(), simDeviceId: `dev-${name}`, retired: false };
+      lab.orka.devices[devId] = row;
+      lab.devices[`dev-${name}`] = createTerminalDevice(`dev-${name}`, type, { serial, ip: `10.42.30.${ip}`, orkaDeviceName: name, adbTcpPort: 5444 });
       return devId++;
     };
     for (const line of ROSTER.trim().split('\n')) {
@@ -115,7 +115,7 @@ export function seedFakeLab(opts: { force?: boolean } = {}): void {
       const cfdId = cfd === '=' ? deviceId : cfd ? addDevice(cfd) : null;
       const piUrl = `http://10.42.10.${pi}:8000`;
       const st = status as RobotStatus;
-      lab.orca.robots[rid] = createOrcaRobot(rid, name!, kind as RigKind, {
+      lab.orka.robots[rid] = createOrkaRobot(rid, name!, kind as RigKind, {
         environment: env!,
         location: location!,
         status: st,
@@ -163,50 +163,50 @@ export function seedFakeLab(opts: { force?: boolean } = {}): void {
       }
     }
     // Retired legacy device row.
-    lab.orca.devices[devId] = { id: devId, name: 'retired-flux1-legacy', deviceType: 'FLUX_1', serial: 'SIM-F1-000099', ip: '10.42.30.99', label: 'OLD FLUX 1', simDeviceId: null, retired: true };
+    lab.orka.devices[devId] = { id: devId, name: 'retired-flux1-legacy', deviceType: 'FLUX_1', serial: 'SIM-F1-000099', ip: '10.42.30.99', label: 'OLD FLUX 1', simDeviceId: null, retired: true };
     devId++;
-    lab.orca.seq.devices = devId;
-    lab.orca.seq.robots = 43;
+    lab.orka.seq.devices = devId;
+    lab.orka.seq.robots = 43;
     // Notes.
-    const sonny = lab.orca.robots[26]!;
+    const sonny = lab.orka.robots[26]!;
     sonny.notes = [
-      { id: 1, atMs: 7 * H + 55 * M, author: 'orca-health-check', endpoint: 'GET http://10.42.10.74:8000/health', text: '2026-10-05 07:55:00 GET http://10.42.10.74:8000/health → connect timed out after 10000 ms (×19, last 09:35:00)', resolved: false, kind: 'HEALTH', repeat: 19, lastAtMs: 9 * H + 35 * M },
-      { id: 2, atMs: 8 * H + 2 * M + 11000, author: 'tate', text: '2026-10-05 08:02:11 Escalated to Jared — SD card reflash pending (tate)', resolved: false, kind: 'MANUAL', repeat: 1, lastAtMs: 8 * H + 2 * M + 11000 },
+      { id: 1, atMs: 7 * H + 55 * M, author: 'orka-health-check', endpoint: 'GET http://10.42.10.74:8000/health', text: '2026-10-05 07:55:00 GET http://10.42.10.74:8000/health → connect timed out after 10000 ms (×19, last 09:35:00)', resolved: false, kind: 'HEALTH', repeat: 19, lastAtMs: 9 * H + 35 * M },
+      { id: 2, atMs: 8 * H + 2 * M + 11000, author: 'nate', text: '2026-10-05 08:02:11 Escalated to Jaden — SD card reflash pending (nate)', resolved: false, kind: 'MANUAL', repeat: 1, lastAtMs: 8 * H + 2 * M + 11000 },
     ];
-    lab.orca.robots[22]!.notes = [{ id: 3, atMs: -4 * 24 * H + 14 * H, author: 'jared', text: '2026-10-01 14:00:00 STATUS Available → Offline (jared): Assembling data profiles — Jared', resolved: false, kind: 'STATUS', repeat: 1, lastAtMs: -4 * 24 * H + 14 * H }];
-    lab.orca.robots[37]!.notes = [{ id: 4, atMs: -3 * 24 * H + 11 * H, author: 'jared', text: '2026-10-02 11:00:00 STATUS Available → Offline (jared): Flux 1 parked; rebuild queued — J', resolved: false, kind: 'STATUS', repeat: 1, lastAtMs: -3 * 24 * H + 11 * H }];
-    lab.orca.robots[1]!.notes = [{ id: 5, atMs: 8 * H + 15 * M, author: 'orca-health-check', text: '2026-10-05 08:15:00 GET http://10.42.10.11:8000/health → 200 OK (recovered after 1 failure)', resolved: true, kind: 'HEALTH', repeat: 1, lastAtMs: 8 * H + 15 * M }];
-    lab.orca.seq.notes = 6;
+    lab.orka.robots[22]!.notes = [{ id: 3, atMs: -4 * 24 * H + 14 * H, author: 'jaden', text: '2026-10-01 14:00:00 STATUS Available → Offline (jaden): Assembling data profiles — Jaden', resolved: false, kind: 'STATUS', repeat: 1, lastAtMs: -4 * 24 * H + 14 * H }];
+    lab.orka.robots[37]!.notes = [{ id: 4, atMs: -3 * 24 * H + 11 * H, author: 'jaden', text: '2026-10-02 11:00:00 STATUS Available → Offline (jaden): Flux 1 parked; rebuild queued — J', resolved: false, kind: 'STATUS', repeat: 1, lastAtMs: -3 * 24 * H + 11 * H }];
+    lab.orka.robots[1]!.notes = [{ id: 5, atMs: 8 * H + 15 * M, author: 'orka-health-check', text: '2026-10-05 08:15:00 GET http://10.42.10.11:8000/health → 200 OK (recovered after 1 failure)', resolved: true, kind: 'HEALTH', repeat: 1, lastAtMs: 8 * H + 15 * M }];
+    lab.orka.seq.notes = 6;
     // Capabilities.
     const caps: [string, string, 'BOTH' | 'DYNAMIC_JSON' | 'NON_DYNAMIC', string][] = [
-      ['DIP', 'dip', 'BOTH', 'Dip arm + Collis probe present'],
-      ['TAP', 'tap', 'BOTH', 'Tap paddle + Collis NFC'],
-      ['SWIPE', 'swipe', 'BOTH', 'Collis or SmartStripe swipe'],
-      ['GO_SDK', 'goSdk', 'DYNAMIC_JSON', 'Terminal SDK runner target (David)'],
-      ['INTERAC', 'interac', 'BOTH', 'Canadian Interac flows (Westers beds)'],
+      ['DIP', 'dip', 'BOTH', 'Dip arm + Kollis probe present'],
+      ['TAP', 'tap', 'BOTH', 'Tap paddle + Kollis NFC'],
+      ['SWIPE', 'swipe', 'BOTH', 'Kollis or SmartStripe swipe'],
+      ['GO_SDK', 'goSdk', 'DYNAMIC_JSON', 'Terminal SDK runner target (Devin)'],
+      ['INTERAC', 'interac', 'BOTH', 'Canadian Interac flows (Westerly beds)'],
       ['PHONE', 'phone', 'DYNAMIC_JSON', 'Phone carriage with a mounted phone (mobile runners)'],
       ['OCR_CAMERA', 'ocrCamera', 'NON_DYNAMIC', 'Webcam aimed for Screen Compare (legacy Duet)'],
-      ['lab_dining', 'lab_dining', 'BOTH', 'LabSim Dining app provisioned (PayCore)'],
-      ['CARD_MATRIX', 'cardMatrix', 'NON_DYNAMIC', 'PayCore back-to-back card matrix rig'],
+      ['lab_dining', 'lab_dining', 'BOTH', 'LabSim Dining app provisioned (PayCrest)'],
+      ['CARD_MATRIX', 'cardMatrix', 'NON_DYNAMIC', 'PayCrest back-to-back card matrix rig'],
     ];
-    lab.orca.capabilities = {};
+    lab.orka.capabilities = {};
     caps.forEach(([name, key, lookup, description], i) => {
-      lab.orca.capabilities[i + 1] = { id: i + 1, name, key, lookup, description, json: `{"${key}": true}`, value: true };
+      lab.orka.capabilities[i + 1] = { id: i + 1, name, key, lookup, description, json: `{"${key}": true}`, value: true };
     });
-    lab.orca.seq.capabilities = 10;
+    lab.orka.seq.capabilities = 10;
     // Merchants.
     const ms = [
       merchant(1, 'AUTO-US-NOPIN-01', 'LabSim Automation Lab — US 01', 'dev1', 'US-EAST', 'US', 825, [15, 18, 20, 22], true, false, true, 2500, 'Automation', null),
       merchant(2, 'AUTO-US-NOPIN-02', 'LabSim Automation Lab — US 02', 'dev2', 'US-EAST', 'US', 825, [15, 18, 20, 22], true, true, false, 2500, 'Automation', null),
       merchant(3, 'GO-SDK-US-01', 'Go SDK Smoke Merchant', 'dev1', 'US-EAST', 'US', 825, [15, 18, 20, 22], true, false, true, 2500, 'SDK', ['app_sim_7f3a', 'app_secret_sim_5d21', 'key_sim_19c0e2']),
-      merchant(4, 'PAYCORE-STANDALONE-01', 'PayCore Standalone 01', 'stg', 'US-EAST', 'US', 825, [], false, false, false, 0, 'PayCore', null),
-      merchant(5, 'PAYCORE-DINING-01', 'PayCore Dining Room', 'stg', 'US-EAST', 'US', 825, [15, 18, 20], false, false, true, 2500, 'PayCore', null, ['LabSim Dining']),
-      merchant(6, 'WESTERS-CA-01', 'Westers Test Bed — CA 01', 'dev1', 'CA-CENTRAL', 'CA', 1300, [15, 18, 20], false, false, false, null, 'Westers', null),
-      merchant(7, 'WESTERS-CA-02', 'Westers Test Bed — CA 02', 'qa', 'CA-CENTRAL', 'CA', 1300, [15, 18, 20], false, false, false, null, 'Westers', null),
+      merchant(4, 'PAYCREST-STANDALONE-01', 'PayCrest Standalone 01', 'stg', 'US-EAST', 'US', 825, [], false, false, false, 0, 'PayCrest', null),
+      merchant(5, 'PAYCREST-DINING-01', 'PayCrest Dining Room', 'stg', 'US-EAST', 'US', 825, [15, 18, 20], false, false, true, 2500, 'PayCrest', null, ['LabSim Dining']),
+      merchant(6, 'WESTERLY-CA-01', 'Westerly Test Bed — CA 01', 'dev1', 'CA-CENTRAL', 'CA', 1300, [15, 18, 20], false, false, false, null, 'Westerly', null),
+      merchant(7, 'WESTERLY-CA-02', 'Westerly Test Bed — CA 02', 'qa', 'CA-CENTRAL', 'CA', 1300, [15, 18, 20], false, false, false, null, 'Westerly', null),
     ];
     ms.forEach((m, i) => (m.merchantId = `SIMMID0000${[101, 102, 301, 401, 501, 601, 602][i]}`));
-    lab.orca.merchants = Object.fromEntries(ms.map((m) => [m.id, m]));
-    lab.orca.seq.merchants = 8;
+    lab.orka.merchants = Object.fromEntries(ms.map((m) => [m.id, m]));
+    lab.orka.seq.merchants = 8;
     // Card profiles.
     const cards: [string, 'VISA' | 'INTERAC' | 'AMEX' | 'DISCOVER', 'SWIPE' | 'DIP' | 'TAP', string, string, string | null, 'US' | 'CA', string][] = [
       ['VISA_STD_SWIPE', 'VISA', 'SWIPE', '%B4111111111111111^SIM/VISA^30121010000000000000?;4111111111111111=3012101000000000?', '4111111111111111', null, 'US', 'Automation'],
@@ -214,52 +214,52 @@ export function seedFakeLab(opts: { force?: boolean } = {}): void {
       ['VISA_STD_TAP', 'VISA', 'TAP', 'cards/nfc/visa_std_tap.json', '4111111111111111', null, 'US', 'Automation'],
       ['INTERAC_CA_DIP', 'INTERAC', 'DIP', 'cards/emv/interac_ca_dip.json', '4506440000000017', '1234', 'CA', 'Automation'],
       ['INTERAC_CA_TAP', 'INTERAC', 'TAP', 'cards/nfc/interac_ca_tap.json', '4506440000000017', '1234', 'CA', 'Automation'],
-      ['AMEX_MATRIX_DIP', 'AMEX', 'DIP', 'cards/emv/amex_matrix_dip.json', '378282246310005', null, 'US', 'PayCore'],
-      ['DISCOVER_MATRIX_DIP', 'DISCOVER', 'DIP', 'cards/emv/discover_matrix_dip.json', '6011111111111117', null, 'US', 'PayCore'],
-      ['AMEX_MATRIX_SWIPE', 'AMEX', 'SWIPE', '%B378282246310005^SIM/AMEX^30121010000000000000?;378282246310005=301210100000000?', '378282246310005', null, 'US', 'PayCore'],
-      ['DISCOVER_MATRIX_SWIPE', 'DISCOVER', 'SWIPE', '%B6011111111111117^SIM/DISCOVER^30121010000000000000?;6011111111111117=3012101000000000?', '6011111111111117', null, 'US', 'PayCore'],
+      ['AMEX_MATRIX_DIP', 'AMEX', 'DIP', 'cards/emv/amex_matrix_dip.json', '378282246310005', null, 'US', 'PayCrest'],
+      ['DISCOVER_MATRIX_DIP', 'DISCOVER', 'DIP', 'cards/emv/discover_matrix_dip.json', '6011111111111117', null, 'US', 'PayCrest'],
+      ['AMEX_MATRIX_SWIPE', 'AMEX', 'SWIPE', '%B378282246310005^SIM/AMEX^30121010000000000000?;378282246310005=301210100000000?', '378282246310005', null, 'US', 'PayCrest'],
+      ['DISCOVER_MATRIX_SWIPE', 'DISCOVER', 'SWIPE', '%B6011111111111117^SIM/DISCOVER^30121010000000000000?;6011111111111117=3012101000000000?', '6011111111111117', null, 'US', 'PayCrest'],
     ];
-    lab.orca.cardProfiles = {};
+    lab.orka.cardProfiles = {};
     cards.forEach(([name, brand, entry, data, pan, pin, country, owner], i) => {
-      lab.orca.cardProfiles[i + 1] = { id: i + 1, name, brand, entry, trackData: entry === 'SWIPE' ? data : null, gortPath: entry === 'SWIPE' ? null : data, country, requiresPin: !!pin, owner, pin, pan, expiry: '3012' };
+      lab.orka.cardProfiles[i + 1] = { id: i + 1, name, brand, entry, trackData: entry === 'SWIPE' ? data : null, gorthPath: entry === 'SWIPE' ? null : data, country, requiresPin: !!pin, owner, pin, pan, expiry: '3012' };
     });
-    lab.orca.seq.cardProfiles = 10;
+    lab.orka.seq.cardProfiles = 10;
     // Screens + locations (FLUX_3 and FLUX_4 full; others HOME only).
-    lab.orca.screens = {};
-    lab.orca.screenLocations = {};
+    lab.orka.screens = {};
+    lab.orka.screenLocations = {};
     let sid = 1;
     let lid = 1;
     for (const type of ['FLUX_3', 'FLUX_4', 'MICRO_3', 'FLUX_1', 'FLUX_2', 'STAND_DUET'] as DeviceTypeCode[]) {
       const list = type === 'FLUX_3' || type === 'FLUX_4' ? FLUX3_LOCATIONS : FLUX3_LOCATIONS.slice(0, 2);
       for (const [screen, locs] of list) {
         const optionCount = screen === 'RECEIPT_OPTIONS_4' ? 4 : screen === 'RECEIPT_OPTIONS_5' ? 5 : null;
-        lab.orca.screens[sid] = { id: sid, name: screen, testingProfile: UI_DEVICE_TYPES[type].profile, description: screen === 'TENDER_CASH_DISCOUNT' ? 'Cash discount tender selection prompt' : '', optionCount, deviceType: type, display: 'primary' };
+        lab.orka.screens[sid] = { id: sid, name: screen, testingProfile: UI_DEVICE_TYPES[type].profile, description: screen === 'TENDER_CASH_DISCOUNT' ? 'Cash discount tender selection prompt' : '', optionCount, deviceType: type, display: 'primary' };
         for (const [button, x, y] of locs) {
-          lab.orca.screenLocations[lid] = { id: lid, screenId: sid, button, xMm: x, yMm: y };
+          lab.orka.screenLocations[lid] = { id: lid, screenId: sid, button, xMm: x, yMm: y };
           lid++;
         }
         sid++;
       }
     }
-    lab.orca.screens[sid] = { id: sid, name: 'CFD_CART', testingProfile: 'STAND_DUET', description: 'Duet CFD cart (OCR)', optionCount: null, deviceType: 'STAND_DUET', display: 'secondary' };
+    lab.orka.screens[sid] = { id: sid, name: 'CFD_CART', testingProfile: 'STAND_DUET', description: 'Duet CFD cart (OCR)', optionCount: null, deviceType: 'STAND_DUET', display: 'secondary' };
     sid++;
-    lab.orca.seq.screens = sid;
-    lab.orca.seq.screenLocations = lid;
+    lab.orka.seq.screens = sid;
+    lab.orka.seq.screenLocations = lid;
     // Screen compare images.
-    lab.orca.screenCompareImages = {
-      1: { id: 1, name: 'CFD_TOTAL', robotId: 4, screenName: 'CFD_CART', bbox: { x: 412, y: 288, w: 236, h: 44 }, expectedText: 'TOTAL $10.83', deprecated: false, usedBy: ['uia-remote:DuetCfdSuite'] },
-      2: { id: 2, name: 'CFD_THANK_YOU', robotId: 4, screenName: 'CFD_THANK_YOU', bbox: { x: 514, y: 336, w: 252, h: 48 }, expectedText: 'Thank you', deprecated: false, usedBy: ['uia-remote:DuetCheckoutTest'] },
+    lab.orka.screenCompareImages = {
+      1: { id: 1, name: 'CFD_TOTAL', robotId: 4, screenName: 'CFD_CART', bbox: { x: 412, y: 288, w: 236, h: 44 }, expectedText: 'TOTAL $10.83', deprecated: false, usedBy: ['uia-relay:DuetCfdSuite'] },
+      2: { id: 2, name: 'CFD_THANK_YOU', robotId: 4, screenName: 'CFD_THANK_YOU', bbox: { x: 514, y: 336, w: 252, h: 48 }, expectedText: 'Thank you', deprecated: false, usedBy: ['uia-relay:DuetCheckoutTest'] },
       3: { id: 3, name: 'CFD_TOTAL_C3PO', robotId: 18, screenName: 'CFD_CART', bbox: { x: 985, y: 472, w: 96, h: 18 }, expectedText: 'TOTAL $10.83', deprecated: true, usedBy: [] },
     };
-    lab.orca.seq.screenCompareImages = 4;
+    lab.orka.seq.screenCompareImages = 4;
     // Health check.
     const runLines = (run: number) => [
       `2026-10-05 ${String(9).padStart(2, '0')}:${String(35 - (7 - run) * 5).padStart(2, '0')}:00  health-check run #${run} — 37 pinged, 3 skipped, 1 failed, 0 recovered`,
     ];
-    lab.orca.healthCheck.runCount = 7;
-    lab.orca.healthCheck.lastRunMs = 9 * H + 35 * M;
-    lab.orca.healthCheck.nextRunMs = 9 * H + 40 * M;
-    lab.orca.healthCheck.log = [7, 6, 5].map((run) => ({
+    lab.orka.healthCheck.runCount = 7;
+    lab.orka.healthCheck.lastRunMs = 9 * H + 35 * M;
+    lab.orka.healthCheck.nextRunMs = 9 * H + 40 * M;
+    lab.orka.healthCheck.log = [7, 6, 5].map((run) => ({
       run,
       atMs: 9 * H + 35 * M - (7 - run) * 5 * M,
       pinged: 37,
@@ -277,23 +277,23 @@ export function seedFakeLab(opts: { force?: boolean } = {}): void {
         'mother  RESERVED — not overridden',
       ],
     }));
-    lab.orca.audit = [
-      { atMs: 8 * H + 2 * M + 11000, who: 'tate', action: 'NOTE_ADDED', entity: 'Robot', entityId: 26 },
+    lab.orka.audit = [
+      { atMs: 8 * H + 2 * M + 11000, who: 'nate', action: 'NOTE_ADDED', entity: 'Robot', entityId: 26 },
       { atMs: 7 * H + 40 * M, who: 'morgan', action: 'UPDATED', entity: 'Robot', entityId: 40, diff: { status: ['AVAILABLE', 'RESERVED'] } },
       { atMs: -24 * H + 16 * H + 2 * M, who: 'bulk-import', action: 'UPDATED', entity: 'ScreenLocation', entityId: 30, diff: { xMm: [22.5, 22.0] } },
-      { atMs: -3 * 24 * H + 11 * H + 20 * M, who: 'jared', action: 'UPDATED', entity: 'ScreenLocation', entityId: 31, diff: { yMm: [58.0, 58.5] } },
+      { atMs: -3 * 24 * H + 11 * H + 20 * M, who: 'jaden', action: 'UPDATED', entity: 'ScreenLocation', entityId: 31, diff: { yMm: [58.0, 58.5] } },
     ];
     // Hosts (VMs).
-    lab.hosts['orca-vm'] = createHost('orca-vm', 'vm', 'orca', '10.42.1.10', { aliases: ['orca.lab.local'], services: { orca: { name: 'orca', running: true, port: 8080 } as never, mysql: { name: 'mysql', running: true, port: 3306 } as never } });
+    lab.hosts['orka-vm'] = createHost('orka-vm', 'vm', 'orka', '10.42.1.10', { aliases: ['orka.lab.local'], services: { orka: { name: 'orka', running: true, port: 8080 } as never, mysql: { name: 'mysql', running: true, port: 3306 } as never } });
     lab.hosts['jenkins-vm'] = createHost('jenkins-vm', 'vm', 'jenkins', '10.42.1.11', { aliases: ['jenkins.lab.local'], services: { jenkins: { name: 'jenkins', running: true, port: 8080 } as never } });
     lab.hosts['ollama-vm'] = createHost('ollama-vm', 'vm', 'ollama', '10.42.1.12', { services: { ollama: { name: 'ollama', running: true, port: 11434 } as never, 'open-webui': { name: 'open-webui', running: true, port: 3000 } as never } });
     lab.hosts['pi-40'] = createHost('pi-40', 'pi', 'cam-rackb', '10.42.10.40', { services: { 'camera-stream': { name: 'camera-stream', running: true, port: 8081 } as never } });
     lab.hosts['ws-17'] = createHost('ws-17', 'workstation', 'ws-17', '10.42.50.17');
     // A Jenkins checkout on WALL-E (lockout demo).
-    lab.orca.robots[1]!.checkout = { buildId: 'Java/uia-remote-regression-flux#4127', jobId: 'Java/uia-remote-regression-flux', byName: false, startedMs: 9 * H + 41 * M + 7000, statusAtCheckout: 'AVAILABLE', kind: 'jenkins' };
+    lab.orka.robots[1]!.checkout = { buildId: 'Java/uia-relay-regression-flux#4127', jobId: 'Java/uia-relay-regression-flux', byName: false, startedMs: 9 * H + 41 * M + 7000, statusAtCheckout: 'AVAILABLE', kind: 'jenkins' };
     const walle = lab.rigs['wall-e']!;
     walle.dashboardLocked = true;
-    walle.lockedBy = { kind: 'jenkins', ref: 'Java/uia-remote-regression-flux#4127' };
+    walle.lockedBy = { kind: 'jenkins', ref: 'Java/uia-relay-regression-flux#4127' };
     // EVE: lock released, yellow.
     const eve = lab.rigs.eve!;
     eve.banner = 'yellow';

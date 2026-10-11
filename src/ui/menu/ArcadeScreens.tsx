@@ -36,7 +36,7 @@ export function ArcadeHub() {
             <Icon name="ticket" size={26} />
           </div>
           <div className="arcade-card__title">Shift</div>
-          <div className="arcade-card__sub">5 or 10 real minutes. Tickets arrive, pipelines need rigs, Orca’s 5-minute health check comes round every real minute at 5×.</div>
+          <div className="arcade-card__sub">5 or 10 real minutes. Tickets arrive, pipelines need rigs, Orka’s 5-minute health check comes round every real minute at 5×.</div>
           <div className="arcade-card__foot">
             {short?.unlock.unlocked ? <span className="tnum">Best {num(Math.max(0, ...shifts.map((s) => s.best)))}</span> : <Chip size="sm" icon="lock">{short?.unlock.reason}</Chip>}
           </div>

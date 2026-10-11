@@ -6,7 +6,7 @@ import type { ComponentType } from 'react';
 import { APP_IDS, APP_META, type AppDefinition, type AppId, type AppProps } from '../apps';
 
 const LOADERS: Record<AppId, () => Promise<ComponentType<AppProps>>> = {
-  orca: () => import('../apps/orca').then((m) => m.OrcaApp),
+  orka: () => import('../apps/orka').then((m) => m.OrkaApp),
   jenkins: () => import('../apps/jenkins').then((m) => m.JenkinsApp),
   github: () => import('../apps/github').then((m) => m.GitHubApp),
   ollama: () => import('../apps/ollama').then((m) => m.OllamaApp),

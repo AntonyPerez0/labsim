@@ -11,10 +11,10 @@ import type { Ctx } from '../util';
 import { addTimer, postChat } from '../util';
 import { p } from './helpers';
 import { applyFlag } from '../flags';
-import { robotByName, setRobotStatus, STATUSES } from '../orca/status';
-import { deleteEntity, saveDevice, saveRobot } from '../orca/entities';
-import type { EntityName } from '../orca/entities';
-import { syncAllFromGort } from '../orca/sync';
+import { robotByName, setRobotStatus, STATUSES } from '../orka/status';
+import { deleteEntity, saveDevice, saveRobot } from '../orka/entities';
+import type { EntityName } from '../orka/entities';
+import { syncAllFromGorth } from '../orka/sync';
 import { customerSide, dispOf, pressKey, press, provisionDevice, setScreen, stageApproved, swapHardware, autoAdvanceNow } from '../devices';
 import { plug } from '../power';
 import { reach } from '../network';
@@ -89,12 +89,12 @@ export function stageDevice(lab: LabState, ctx: Ctx, deviceId: string, stage: st
   return OK;
 }
 
-/* ────────────────────────────── entity names for orca.deleteEntity ────────────────────────────── */
+/* ────────────────────────────── entity names for orka.deleteEntity ────────────────────────────── */
 
 const ENTITIES: EntityName[] = ['robot', 'device', 'capability', 'merchant', 'screen', 'screenLocation', 'cardProfile', 'screenCompareImage'];
 
 function entityIdByName(lab: LabState, entity: EntityName, name: string): number | null {
-  const o = lab.orca;
+  const o = lab.orka;
   const byName = <T extends { id: number; name: string }>(t: Record<number, T>) => Object.values(t).find((r) => r.name === name)?.id ?? null;
   switch (entity) {
     case 'robot':
@@ -179,11 +179,11 @@ export const CORE_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('orca.setStatus', 'The §3.2.1 manual status transition at atMs (STATUS note, reservation fields). CONNECTION_FAILED is rejected.', [R('robot', 'robot', 'Robot Name', 'baymax'), R('status', 'string', 'Status', 'OFFLINE'), p('by', 'string', 'Who', { default: 'jared' }), p('atMs', 'number', 'Game ms (default now)')]),
+    info: sop('orka.setStatus', 'The §3.2.1 manual status transition at atMs (STATUS note, reservation fields). CONNECTION_FAILED is rejected.', [R('robot', 'robot', 'Robot Name', 'baymax'), R('status', 'string', 'Status', 'OFFLINE'), p('by', 'string', 'Who', { default: 'jaden' }), p('atMs', 'number', 'Game ms (default now)')]),
     validate(lab, ps) {
-      const e = need('orca.setStatus', ps, 'robot', 'status');
+      const e = need('orka.setStatus', ps, 'robot', 'status');
       if (e) return e;
-      if (!robotByName(lab, s(ps.robot))) return bad('orca.setStatus', 'robot', ps.robot, 'no such robot');
+      if (!robotByName(lab, s(ps.robot))) return bad('orka.setStatus', 'robot', ps.robot, 'no such robot');
       if (s(ps.status) === 'CONNECTION_FAILED') return err('400 Bad Request: Connection Failed is set by the health check only');
       if (!STATUSES.includes(s(ps.status) as RobotStatus)) return err(`400 Bad Request: Invalid value for status: '${s(ps.status)}'`);
       return OK;
@@ -191,59 +191,59 @@ export const CORE_SETUP_OP_DEFS: SetupOpDef[] = [
     apply(lab, ctx, ps) {
       const robot = robotByName(lab, s(ps.robot))!;
       const when = ps.atMs === undefined || ps.atMs === '' ? lab.time.nowMs : Number(ps.atMs);
-      setRobotStatus(lab, ctx, robot.id, s(ps.status), s(ps.by, 'jared'), undefined, when, true);
+      setRobotStatus(lab, ctx, robot.id, s(ps.status), s(ps.by, 'jaden'), undefined, when, true);
     },
   },
   {
-    info: sop('orca.createDevice', 'orca.saveDevice (binds simDeviceId by serial, §1.15)', [R('name', 'string', 'Device row name', 'johnny-5-flux2'), R('deviceType', 'deviceType', 'Device Type', 'FLUX_2'), R('serial', 'string', 'Serial', 'SIM-F2-000015'), R('ip', 'string', 'IP', '10.42.30.15'), p('label', 'string', 'Label', { default: '' }), p('by', 'string', 'Who', { default: 'jared' })]),
+    info: sop('orka.createDevice', 'orka.saveDevice (binds simDeviceId by serial, §1.15)', [R('name', 'string', 'Device row name', 'johnny-5-flux2'), R('deviceType', 'deviceType', 'Device Type', 'FLUX_2'), R('serial', 'string', 'Serial', 'SIM-F2-000015'), R('ip', 'string', 'IP', '10.42.30.15'), p('label', 'string', 'Label', { default: '' }), p('by', 'string', 'Who', { default: 'jaden' })]),
     validate(lab, ps) {
-      const e = need('orca.createDevice', ps, 'name', 'deviceType', 'serial', 'ip');
+      const e = need('orka.createDevice', ps, 'name', 'deviceType', 'serial', 'ip');
       if (e) return e;
-      if (!(DEVICE_TYPE_CODES as readonly string[]).includes(s(ps.deviceType))) return bad('orca.createDevice', 'deviceType', ps.deviceType, `not one of ${DEVICE_TYPE_CODES.join(', ')}`);
-      if (Object.values(lab.orca.devices).some((d) => d.name === s(ps.name))) return err(`400 Bad Request: name '${s(ps.name)}' already exists`);
+      if (!(DEVICE_TYPE_CODES as readonly string[]).includes(s(ps.deviceType))) return bad('orka.createDevice', 'deviceType', ps.deviceType, `not one of ${DEVICE_TYPE_CODES.join(', ')}`);
+      if (Object.values(lab.orka.devices).some((d) => d.name === s(ps.name))) return err(`400 Bad Request: name '${s(ps.name)}' already exists`);
       return OK;
     },
     apply(lab, ctx, ps) {
-      saveDevice(lab, ctx, { name: s(ps.name), deviceType: s(ps.deviceType) as DeviceTypeCode, serial: s(ps.serial), ip: s(ps.ip), label: s(ps.label) }, s(ps.by, 'jared'), { force: true });
+      saveDevice(lab, ctx, { name: s(ps.name), deviceType: s(ps.deviceType) as DeviceTypeCode, serial: s(ps.serial), ip: s(ps.ip), label: s(ps.label) }, s(ps.by, 'jaden'), { force: true });
     },
   },
   {
-    info: sop('orca.linkDevice', 'orca.saveRobot with that relation (CONFIG note)', [R('robot', 'robot', 'Robot Name', 'johnny-5'), p('field', 'string', 'Relation', { default: 'deviceId', values: ['deviceId', 'mfdDeviceId', 'cfdDeviceId'] }), R('device', 'string', "Device row name or ''", 'johnny-5-flux2'), p('by', 'string', 'Who', { default: 'jared' })]),
+    info: sop('orka.linkDevice', 'orka.saveRobot with that relation (CONFIG note)', [R('robot', 'robot', 'Robot Name', 'johnny-5'), p('field', 'string', 'Relation', { default: 'deviceId', values: ['deviceId', 'mfdDeviceId', 'cfdDeviceId'] }), R('device', 'string', "Device row name or ''", 'johnny-5-flux2'), p('by', 'string', 'Who', { default: 'jaden' })]),
     validate(lab, ps) {
-      const e = need('orca.linkDevice', ps, 'robot');
+      const e = need('orka.linkDevice', ps, 'robot');
       if (e) return e;
-      if (ps.device === undefined) return bad('orca.linkDevice', 'device', '', 'missing');
-      if (!robotByName(lab, s(ps.robot))) return bad('orca.linkDevice', 'robot', ps.robot, 'no such robot');
+      if (ps.device === undefined) return bad('orka.linkDevice', 'device', '', 'missing');
+      if (!robotByName(lab, s(ps.robot))) return bad('orka.linkDevice', 'robot', ps.robot, 'no such robot');
       const f = s(ps.field, 'deviceId');
-      if (!['deviceId', 'mfdDeviceId', 'cfdDeviceId'].includes(f)) return bad('orca.linkDevice', 'field', f, 'not one of deviceId, mfdDeviceId, cfdDeviceId');
-      if (s(ps.device) && !Object.values(lab.orca.devices).some((d) => d.name === s(ps.device))) return bad('orca.linkDevice', 'device', ps.device, 'no such device');
+      if (!['deviceId', 'mfdDeviceId', 'cfdDeviceId'].includes(f)) return bad('orka.linkDevice', 'field', f, 'not one of deviceId, mfdDeviceId, cfdDeviceId');
+      if (s(ps.device) && !Object.values(lab.orka.devices).some((d) => d.name === s(ps.device))) return bad('orka.linkDevice', 'device', ps.device, 'no such device');
       return OK;
     },
     apply(lab, ctx, ps) {
       const robot = robotByName(lab, s(ps.robot))!;
-      const row = s(ps.device) ? Object.values(lab.orca.devices).find((d) => d.name === s(ps.device))! : null;
-      saveRobot(lab, ctx, { id: robot.id, [s(ps.field, 'deviceId')]: row ? row.id : null }, s(ps.by, 'jared'), { force: true });
+      const row = s(ps.device) ? Object.values(lab.orka.devices).find((d) => d.name === s(ps.device))! : null;
+      saveRobot(lab, ctx, { id: robot.id, [s(ps.field, 'deviceId')]: row ? row.id : null }, s(ps.by, 'jaden'), { force: true });
     },
   },
   {
-    info: sop('orca.deleteEntity', 'orca.deleteEntity (audit DELETE); screens as TYPE/SCREEN, locations as TYPE/SCREEN/BUTTON', [R('entity', 'string', 'Entity', 'screenCompareImage'), R('name', 'string', 'Row name', 'CFD_TOTAL'), p('by', 'string', 'Who', { default: 'jared' })]),
+    info: sop('orka.deleteEntity', 'orka.deleteEntity (audit DELETE); screens as TYPE/SCREEN, locations as TYPE/SCREEN/BUTTON', [R('entity', 'string', 'Entity', 'screenCompareImage'), R('name', 'string', 'Row name', 'CFD_TOTAL'), p('by', 'string', 'Who', { default: 'jaden' })]),
     validate(lab, ps) {
-      const e = need('orca.deleteEntity', ps, 'entity', 'name');
+      const e = need('orka.deleteEntity', ps, 'entity', 'name');
       if (e) return e;
       const ent = s(ps.entity) as EntityName;
-      if (!ENTITIES.includes(ent)) return bad('orca.deleteEntity', 'entity', ps.entity, `not one of ${ENTITIES.join(', ')}`);
-      return entityIdByName(lab, ent, s(ps.name)) == null ? bad('orca.deleteEntity', 'name', ps.name, `no such ${ent}`) : OK;
+      if (!ENTITIES.includes(ent)) return bad('orka.deleteEntity', 'entity', ps.entity, `not one of ${ENTITIES.join(', ')}`);
+      return entityIdByName(lab, ent, s(ps.name)) == null ? bad('orka.deleteEntity', 'name', ps.name, `no such ${ent}`) : OK;
     },
     apply(lab, ctx, ps) {
       const ent = s(ps.entity) as EntityName;
-      deleteEntity(lab, ctx, ent, entityIdByName(lab, ent, s(ps.name))!, s(ps.by, 'jared'), { force: true });
+      deleteEntity(lab, ctx, ent, entityIdByName(lab, ent, s(ps.name))!, s(ps.by, 'jaden'), { force: true });
     },
   },
   {
-    info: sop('orca.syncFromGort', 'Upsert every config/screen-locations/** file on gort main into Orca now (§3.22.3 without the 10 s delay)', []),
+    info: sop('orka.syncFromGorth', 'Upsert every config/screen-locations/** file on gorth main into Orka now (§3.22.3 without the 10 s delay)', []),
     validate: () => OK,
     apply(lab, ctx) {
-      syncAllFromGort(lab, ctx);
+      syncAllFromGorth(lab, ctx);
     },
   },
   {
@@ -264,7 +264,7 @@ export const CORE_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('device.swap', 'device.swapHardware path: old device → storage (unplugged), new device seated, hub connected, PSU on the rig strip socket, boots 30 s; Orca untouched', [R('rig', 'rig', 'Rig', 'johnny-5'), R('deviceId', 'device', 'Stored device to install', 'dev-spare-flux2'), p('storeAt', 'string', 'Where the old device goes', { default: 'storage-shelf' })]),
+    info: sop('device.swap', 'device.swapHardware path: old device → storage (unplugged), new device seated, hub connected, PSU on the rig strip socket, boots 30 s; Orka untouched', [R('rig', 'rig', 'Rig', 'johnny-5'), R('deviceId', 'device', 'Stored device to install', 'dev-spare-flux2'), p('storeAt', 'string', 'Where the old device goes', { default: 'storage-shelf' })]),
     validate(lab, ps) {
       const e = need('device.swap', ps, 'rig', 'deviceId');
       if (e) return e;
@@ -280,15 +280,15 @@ export const CORE_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('device.provision', 'The end state of a completed Laz swap (§3.17.2) without running it; resetAdb leaves adbTcpPort = null', [R('device', 'device', 'Runtime device', 'dev-data-micro3'), R('merchant', 'merchant', 'Merchant Config name', 'AUTO-US-NOPIN-02'), p('resetAdb', 'boolean', 'Leave ADB over TCP off', { default: false })]),
+    info: sop('device.provision', 'The end state of a completed Lazo swap (§3.17.2) without running it; resetAdb leaves adbTcpPort = null', [R('device', 'device', 'Runtime device', 'dev-data-micro3'), R('merchant', 'merchant', 'Merchant Config name', 'AUTO-US-NOPIN-02'), p('resetAdb', 'boolean', 'Leave ADB over TCP off', { default: false })]),
     validate(lab, ps) {
       const e = need('device.provision', ps, 'device', 'merchant');
       if (e) return e;
       if (!lab.devices[s(ps.device)]) return bad('device.provision', 'device', ps.device, 'no such device');
-      return Object.values(lab.orca.merchants).some((m) => m.name === s(ps.merchant)) ? OK : bad('device.provision', 'merchant', ps.merchant, 'no such merchant');
+      return Object.values(lab.orka.merchants).some((m) => m.name === s(ps.merchant)) ? OK : bad('device.provision', 'merchant', ps.merchant, 'no such merchant');
     },
     apply(lab, ctx, ps) {
-      const m = Object.values(lab.orca.merchants).find((x) => x.name === s(ps.merchant))!;
+      const m = Object.values(lab.orka.merchants).find((x) => x.name === s(ps.merchant))!;
       const d = lab.devices[s(ps.device)]!;
       provisionDevice(lab, ctx, d, m.id, bool(ps.resetAdb));
       if (!bool(ps.resetAdb) && d.adbTcpPort == null) {
@@ -358,7 +358,7 @@ export const CORE_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('chat.post', 'chat.post / chat.schedule', [R('channel', 'string', 'Channel', '#lab-automation'), R('author', 'string', 'Author key', 'jared'), R('text', 'string', 'Text', 'Morning — Rack B is dark.'), p('delayMs', 'number', 'Delay (physical ms; 0 = now)', { default: 0 })]),
+    info: sop('chat.post', 'chat.post / chat.schedule', [R('channel', 'string', 'Channel', '#lab-automation'), R('author', 'string', 'Author key', 'jaden'), R('text', 'string', 'Text', 'Morning — Rack B is dark.'), p('delayMs', 'number', 'Delay (physical ms; 0 = now)', { default: 0 })]),
     validate(_lab, ps) {
       const e = need('chat.post', ps, 'channel', 'author', 'text');
       if (e) return e;

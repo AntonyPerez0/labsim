@@ -1,13 +1,13 @@
-/** The five Orca robot statuses (Ref §3, F100) in drill key order 1–5. */
+/** The five Orka robot statuses (Ref §3, F100) in drill key order 1–5. */
 export const STATUSES = ['Available', 'Unavailable', 'Offline', 'Connection Failed', 'Reserved'] as const;
 export type StatusName = (typeof STATUSES)[number];
 
 export const STATUS_TAG: Record<StatusName, string> = {
-  Available: 'orca.status',
-  Unavailable: 'orca.status.unavailable',
-  Offline: 'orca.status.offline',
-  'Connection Failed': 'orca.status.connfailed',
-  Reserved: 'orca.status.reserved',
+  Available: 'orka.status',
+  Unavailable: 'orka.status.unavailable',
+  Offline: 'orka.status.offline',
+  'Connection Failed': 'orka.status.connfailed',
+  Reserved: 'orka.status.reserved',
 };
 
 /** One-line meaning (assist captions under the buttons). */

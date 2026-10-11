@@ -183,7 +183,7 @@ function drawFakeDesktop(ctx: CanvasRenderingContext2D, w: number, h: number, t:
   ctx.fillRect(40, 40, w - 80, 46);
   ctx.fillStyle = '#04140a';
   ctx.font = '600 26px system-ui, sans-serif';
-  ctx.fillText('Orca — Robots', 60, 72);
+  ctx.fillText('Orka — Robots', 60, 72);
   const robots = ['WALL-E', 'EVE', 'BUMBLEBEE', 'R2-D2', 'JOHNNY-5', 'BAYMAX', 'SETI', 'ROSIE'];
   ctx.font = '22px ui-monospace, monospace';
   robots.forEach((r, i) => {

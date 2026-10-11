@@ -1,5 +1,5 @@
 /**
- * Predicates the GW detectors (`./gw.ts`) use: load kinds, DC hookups, coworker devices, PayCore rigs,
+ * Predicates the GW detectors (`./gw.ts`) use: load kinds, DC hookups, coworker devices, PayCrest rigs,
  * persisting Connection Failed causes, port 5555, legacy device rows, config transitions, LabChat asks.
  */
 import type { LabState } from '@/sim/types';
@@ -21,7 +21,7 @@ export const byPlayer = (x: unknown): boolean => {
  * path (Pi, its lead, MAIN, the power wall, the host itself) or a terminal / workstation-app action within
  * a couple of seconds. Power
  * changes that the sim produces later on its own tick (a fault taking a rail down, a boot finishing,
- * {{jared}}'s fix) carry no actor, so they must not count as the player's.
+ * {{jaden}}'s fix) carry no actor, so they must not count as the player's.
  */
 export function playerTouchedPower(nowS: number, hostId: string, withinS = 2): boolean {
   const rig = hostId.replace(/^pi-/, '');
@@ -60,13 +60,13 @@ function load(lab: LabState, loadId: string) {
   return lab.power?.loads?.[loadId];
 }
 
-export function isCollisLoad(lab: LabState, loadId: string): boolean {
+export function isKollisLoad(lab: LabState, loadId: string): boolean {
   const l = load(lab, loadId);
-  return !!l?.collisId || /collis|smartstripe/i.test(loadId);
+  return !!l?.kollisId || /kollis|smartstripe/i.test(loadId);
 }
 
 export function islabload(lab: LabState, loadId: string): boolean {
-  if (isCollisLoad(lab, loadId)) return false;
+  if (isKollisLoad(lab, loadId)) return false;
   const l = load(lab, loadId);
   if (l) return !!l.deviceId || l.expects === 'AC-BRICK-18V';
   return loadId.startsWith('dev-') || loadId.startsWith('psu-dev') || /flux|micro|stand|compass|duet|pocket/i.test(loadId);
@@ -83,17 +83,17 @@ export function isCoworkerDevice(lab: LabState, id: string): boolean {
   return !!host && (host.ip?.startsWith('10.42.60.') || host.owner === 'riley');
 }
 
-export const INFRA_HOSTS = new Set(['orca-vm', 'jenkins-vm', 'ollama-vm', 'gpu-blade']);
+export const INFRA_HOSTS = new Set(['orka-vm', 'jenkins-vm', 'ollama-vm', 'gpu-blade']);
 
-export function paycoreRig(name: string): boolean {
-  return ROSTER[name]?.roles.includes('paycore') ?? name === 'rosie';
+export function paycrestRig(name: string): boolean {
+  return ROSTER[name]?.roles.includes('paycrest') ?? name === 'rosie';
 }
 
 /** A fault that keeps a robot from passing its next health check is still active. */
 export function connFailedCausePersists(lab: LabState, robot: string): boolean {
   const rig = lab.rigs?.[robot];
   const ro = ROSTER[robot];
-  const targets = new Set<string>([robot, rig?.piHostId ?? ro?.pi ?? '', rig?.callusHostId ?? ro?.box ?? '', ro?.fuse ?? ''].filter(Boolean));
+  const targets = new Set<string>([robot, rig?.piHostId ?? ro?.pi ?? '', rig?.kallusHostId ?? ro?.box ?? '', ro?.fuse ?? ''].filter(Boolean));
   if ((lab.faults ?? []).some((f) => !f.cleared && ((f.target && targets.has(f.target)) || Object.values(f.params ?? {}).some((v) => typeof v === 'string' && targets.has(v))))) return true;
   const pi = rig?.piHostId ?? ro?.pi;
   if (pi) {
@@ -108,7 +108,7 @@ export const has5555 = (s: unknown): boolean => typeof s === 'string' && /(^|[^0
 /* ───────────────────────────── detector helpers needing the log ───────────────────────────── */
 
 export function robotUrl(lab: LabState, id: number): string {
-  const r = Object.values(lab.orca?.robots ?? {}).find((x) => x.id === id);
+  const r = Object.values(lab.orka?.robots ?? {}).find((x) => x.id === id);
   return r ? [r.adbServiceUrl, r.cameraStreamUrl, r.dipUrl, r.tapUrl, r.swipeUrl].filter(Boolean).join(' ') : '';
 }
 
@@ -130,7 +130,7 @@ export function configTurnedBad(lab: LabState): boolean {
 const asked = new Set<string>();
 export function noteChatAsk(text: string): void {
   const t = text.toLowerCase();
-  for (const k of ['riley', 'sam', 'alex', 'jared', 'tate', 'david', 'morgan']) {
+  for (const k of ['riley', 'sam', 'alex', 'jaden', 'nate', 'devin', 'morgan']) {
     if (t.includes(k) || t.includes(personName(k).toLowerCase())) asked.add(k);
   }
 }

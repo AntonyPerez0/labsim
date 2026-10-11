@@ -26,15 +26,15 @@ describe('INC01–INC04 Connection Failed causes', () => {
     expect(sh('ping -c 3 10.42.10.11').join('\n')).toMatch(/3 packets transmitted, 0 received, \+3 errors, 100% packet loss/);
     expect(sh('ssh pi@10.42.10.11')).toContain('ssh: connect to host 10.42.10.11 port 22: Connection timed out');
     expect(sim.camera.probe('http://10.42.10.11:8081/stream.mjpg').ok).toBe(false);
-    // Orca UI check out is blocked (Sim §3.2.2).
-    const co = sim.orca.checkout({ buildId: 'manual-1', jobId: 'manual', robotName: 'wall-e', environment: 'DEV1', kind: 'manual' });
+    // Orka UI check out is blocked (Sim §3.2.2).
+    const co = sim.orka.checkout({ buildId: 'manual-1', jobId: 'manual', robotName: 'wall-e', environment: 'DEV1', kind: 'manual' });
     expect(co.ok).toBe(false);
     // PL1 FLUX_3 waits in queue.
-    const r = sim.jenkins.build('Java/uia-remote-regression-flux', { DEVICE_TYPE: 'FLUX_3' }, 'player');
+    const r = sim.jenkins.build('Java/uia-relay-regression-flux', { DEVICE_TYPE: 'FLUX_3' }, 'player');
     run(15_000);
     const b = lab().jenkins.builds[r.ok ? r.value.buildId : '']!;
-    expect(b.console).toContain('[orca] candidate wall-e: Connection Failed — skipped');
-    expect(b.console).toContain('[orca] no Available FLUX_3 robot — build waiting in queue');
+    expect(b.console).toContain('[orka] candidate wall-e: Connection Failed — skipped');
+    expect(b.console).toContain('[orka] no Available FLUX_3 robot — build waiting in queue');
     sim.jenkins.abort(b.id, 'player');
     run(3_000);
     // Hands-on fix: MAIN off/on (power cycle), 40 s boot, next check.
@@ -80,23 +80,23 @@ describe('INC01–INC04 Connection Failed causes', () => {
 
   it('INC02 MINIX-01 off: four Rack A rigs 502 at the same time, Pis/tablets fine; power button + boot + check recovers', () => {
     start();
-    const ids = scenario({ faultId: 'callus.down', params: { host: 'minix-01', mode: 'box-off' } });
+    const ids = scenario({ faultId: 'kallus.down', params: { host: 'minix-01', mode: 'box-off' } });
     const log = nextHealthCheck();
     for (const r of ['wall-e', 'eve', 'bumblebee', 'r2-d2']) {
       expect(status(r), r).toBe('CONNECTION_FAILED');
-      expect(log).toContain(`${r}  FAIL 502 Bad Gateway {"error":"callus upstream 10.42.20.1:9000 unreachable"} → CONNECTION_FAILED`);
+      expect(log).toContain(`${r}  FAIL 502 Bad Gateway {"error":"kallus upstream 10.42.20.1:9000 unreachable"} → CONNECTION_FAILED`);
       expect(lab().rigs[r]!.banner, r).toBe('green');
     }
-    expect(notes('bumblebee')[0]).toMatch(/GET http:\/\/10\.42\.10\.13:8000\/health → 502 Bad Gateway \{"error":"callus upstream 10\.42\.20\.1:9000 unreachable"\}$/);
+    expect(notes('bumblebee')[0]).toMatch(/GET http:\/\/10\.42\.10\.13:8000\/health → 502 Bad Gateway \{"error":"kallus upstream 10\.42\.20\.1:9000 unreachable"\}$/);
     const ts = ['wall-e', 'eve', 'bumblebee', 'r2-d2'].map((r) => robot(r).notes.at(-1)!.atMs);
     expect(new Set(ts).size).toBe(1);
     const curl = sh('curl -i http://10.42.10.13:8000/health');
     expect(curl[0]).toBe('HTTP/1.1 502 Bad Gateway');
-    expect(curl.join('\n')).toContain('{"error":"callus upstream 10.42.20.1:9000 unreachable"}');
+    expect(curl.join('\n')).toContain('{"error":"kallus upstream 10.42.20.1:9000 unreachable"}');
     expect(sh('ping -c 3 10.42.20.1').join('\n')).toMatch(/3 packets transmitted, 0 received, \+3 errors, 100% packet loss/);
     // Hands-on: press the power button, Windows boots 50 s.
     sim.host.pressPowerButton('minix-01', false, 'player');
-    expect(runUntil(() => lab().hosts['minix-01']!.services['callus']?.running === true, 90_000)).toBeGreaterThan(45_000);
+    expect(runUntil(() => lab().hosts['minix-01']!.services['kallus']?.running === true, 90_000)).toBeGreaterThan(45_000);
     nextHealthCheck();
     for (const r of ['wall-e', 'eve', 'bumblebee', 'r2-d2']) expect(status(r), r).toBe('AVAILABLE');
     expect(resolved(ids)).toBe(true);
@@ -104,28 +104,28 @@ describe('INC01–INC04 Connection Failed causes', () => {
 
   it('INC02-B MINIX-02 off: ROSIE returns to Unavailable after the recovery', () => {
     start();
-    scenario({ faultId: 'callus.down', params: { host: 'minix-02', mode: 'box-off' } });
+    scenario({ faultId: 'kallus.down', params: { host: 'minix-02', mode: 'box-off' } });
     nextHealthCheck();
     for (const r of ['johnny-5', 'baymax', 'seti', 'rosie', 'megatron', 'optimus']) expect(status(r), r).toBe('CONNECTION_FAILED');
     expect(robot('rosie').preFailureStatus).toBe('UNAVAILABLE');
     sim.host.pressPowerButton('minix-02', false, 'player');
-    runUntil(() => lab().hosts['minix-02']!.services['callus']?.running === true, 90_000);
+    runUntil(() => lab().hosts['minix-02']!.services['kallus']?.running === true, 90_000);
     nextHealthCheck();
     expect(status('rosie')).toBe('UNAVAILABLE');
     expect(notes('rosie')[0]).toMatch(/→ 200 OK · status restored to Unavailable$/);
     expect(status('johnny-5')).toBe('AVAILABLE');
   });
 
-  it('INC02-C Callus stopped: ping OK, :9000 refused, sc query STOPPED, sc start recovers', () => {
+  it('INC02-C Kallus stopped: ping OK, :9000 refused, sc query STOPPED, sc start recovers', () => {
     start();
-    scenario({ faultId: 'callus.down', params: { host: 'minix-01', mode: 'service-stopped' } });
-    expect(healthNow()).toContain('wall-e  FAIL 502 Bad Gateway {"error":"callus upstream 10.42.20.1:9000 error: Connection refused"} → CONNECTION_FAILED');
+    scenario({ faultId: 'kallus.down', params: { host: 'minix-01', mode: 'service-stopped' } });
+    expect(healthNow()).toContain('wall-e  FAIL 502 Bad Gateway {"error":"kallus upstream 10.42.20.1:9000 error: Connection refused"} → CONNECTION_FAILED');
     expect(sh('ping -c 1 10.42.20.1').join('\n')).toContain('1 received');
     expect(sh('curl http://10.42.20.1:9000/status')).toContain('curl: (7) Failed to connect to 10.42.20.1 port 9000: Connection refused');
-    expect(sh('ssh automation@10.42.20.1 sc query Callus').join('\n')).toMatch(/STATE\s+: 1 {2}STOPPED/);
-    sh('ssh automation@10.42.20.1 sc start Callus');
+    expect(sh('ssh automation@10.42.20.1 sc query Kallus').join('\n')).toMatch(/STATE\s+: 1 {2}STOPPED/);
+    sh('ssh automation@10.42.20.1 sc start Kallus');
     run(6_000);
-    expect(sh('ssh automation@10.42.20.1 sc query Callus').join('\n')).toMatch(/STATE\s+: 4 {2}RUNNING/);
+    expect(sh('ssh automation@10.42.20.1 sc query Kallus').join('\n')).toMatch(/STATE\s+: 4 {2}RUNNING/);
     healthNow();
     expect(status('wall-e')).toBe('AVAILABLE');
   });
@@ -243,7 +243,7 @@ describe('INC05–INC07 health-check rules', () => {
 
   it('INC05-B Offline bypass: BAYMAX unplugged but SKIPPED (Offline), no note', () => {
     start();
-    scenario({ op: 'orca.setStatus', params: { robot: 'baymax', status: 'OFFLINE', by: 'jared' } }, { faultId: 'pi.off', params: { host: 'pi-baymax' } });
+    scenario({ op: 'orka.setStatus', params: { robot: 'baymax', status: 'OFFLINE', by: 'jaden' } }, { faultId: 'pi.off', params: { host: 'pi-baymax' } });
     const n = robot('baymax').notes.length;
     const log = nextHealthCheck();
     expect(log).toContain('baymax  SKIPPED (Offline)');
@@ -255,7 +255,7 @@ describe('INC05–INC07 health-check rules', () => {
 
   it('INC06 Reserved hides a dead Pi: not overridden, no new notes; fixing the Pi leaves the reservation', () => {
     start();
-    const ids = scenario({ op: 'orca.setStatus', params: { robot: 'eve', status: 'RESERVED', by: 'riley' } }, { faultId: 'pi.hung', params: { host: 'pi-eve' } });
+    const ids = scenario({ op: 'orka.setStatus', params: { robot: 'eve', status: 'RESERVED', by: 'riley' } }, { faultId: 'pi.hung', params: { host: 'pi-eve' } });
     const n = robot('eve').notes.length;
     const log = nextHealthCheck();
     expect(log).toContain('eve  RESERVED — not overridden');
@@ -273,18 +273,18 @@ describe('INC05–INC07 health-check rules', () => {
   it('INC07 rebuild rig set Available: grabbed by PL3 (refused ADB), Connection Failed; Offline is the fix', () => {
     start();
     scenario(
-      { op: 'orca.setStatus', params: { robot: 'baymax', status: 'OFFLINE', by: 'jared', atMs: -1_800_000 } },
+      { op: 'orka.setStatus', params: { robot: 'baymax', status: 'OFFLINE', by: 'jaden', atMs: -1_800_000 } },
       { faultId: 'rig.rebuild', params: { rig: 'baymax' } },
-      { faultId: 'orca.statusOverride', params: { robot: 'baymax', status: 'AVAILABLE', by: 'alex' } },
+      { faultId: 'orka.statusOverride', params: { robot: 'baymax', status: 'AVAILABLE', by: 'alex' } },
     );
     expect(notes('baymax')[0]).toMatch(/STATUS Offline → Available \(alex\)$/);
-    const b = build('Java/pigeon-android-sale-swipe', { ROBOT_NAME: 'baymax' });
+    const b = build('Java/parrot-android-sale-swipe', { ROBOT_NAME: 'baymax' });
     expect(b.result).toBe('FAILURE');
     expect(consoleOf(b)).toContain("adb: failed to connect to '10.42.30.16:5444': Connection refused");
     nextHealthCheck();
     expect(status('baymax')).toBe('CONNECTION_FAILED');
     expect(notes('baymax')[0]).toMatch(/→ connect timed out after 10000 ms$/);
-    expect(sim.orca.setRobotStatus(robot('baymax').id, 'OFFLINE', 'player').ok).toBe(true);
+    expect(sim.orka.setRobotStatus(robot('baymax').id, 'OFFLINE', 'player').ok).toBe(true);
     expect(nextHealthCheck()).toContain('baymax  SKIPPED (Offline)');
     expect(status('baymax')).toBe('OFFLINE');
   });
@@ -325,15 +325,15 @@ describe('INC08–INC10 cameras and Ollama', () => {
 
   it('INC09 R2-D2 camera URL copied from WALL-E: OCR reads WALL-E\'s screen; fixing the URL turns PL7 green', () => {
     start();
-    scenario({ faultId: 'orca.urlWrong', params: { robot: 'r2-d2', field: 'camera', value: 'http://10.42.10.11:8081/stream.mjpg' } });
+    scenario({ faultId: 'orka.urlWrong', params: { robot: 'r2-d2', field: 'camera', value: 'http://10.42.10.11:8081/stream.mjpg' } });
     expect(notes('r2-d2')[0]).toMatch(/CONFIG urls\.camera changed \(alex\)$/);
     sim.faults.applySetup({ op: 'device.stage', params: { device: 'dev-wall-e-flux3', stage: 'payment-prompt' } });
-    const b = build('Java/uia-remote-duet-cfd');
+    const b = build('Java/uia-relay-duet-cfd');
     expect(b.result).toBe('FAILURE');
     expect(b.console).toContain('[ocr] capture webcam → crop 236x44@412,288 → tesseract → "Tap, insert or swipe" → match=false');
     const r = robot('r2-d2');
-    expect(sim.orca.saveRobot({ id: r.id, cameraStreamUrl: 'http://10.42.10.14:8081/stream.mjpg' }, 'player').ok).toBe(true);
-    expect(build('Java/uia-remote-duet-cfd').result).toBe('SUCCESS');
+    expect(sim.orka.saveRobot({ id: r.id, cameraStreamUrl: 'http://10.42.10.14:8081/stream.mjpg' }, 'player').ok).toBe(true);
+    expect(build('Java/uia-relay-duet-cfd').result).toBe('SUCCESS');
   });
 
   it('INC10 Ollama stopped: refused on 11434; restart, tags list llava, vision job green', () => {
@@ -359,9 +359,9 @@ describe('INC11–INC12 motion and lockout', () => {
     const ids = scenario({ faultId: 'rig.lockReleased', params: { rig: 'wall-e' } });
     run(500);
     expect(lab().rigs['wall-e']!.tablet.statusText).toBe('Status: LOCK RELEASED — PARK REQUIRED');
-    const b = build('Java/uia-remote-regression-flux', { ROBOT_NAME: 'wall-e', DEVICE_TYPE: 'FLUX_3' });
+    const b = build('Java/uia-relay-regression-flux', { ROBOT_NAME: 'wall-e', DEVICE_TYPE: 'FLUX_3' });
     expect(b.result).toBe('FAILURE');
-    expect(b.console).toContain('[orca] xy_touch wall-e HOME/Register → 409 Conflict: LOCK_RELEASED (park required)');
+    expect(b.console).toContain('[orka] xy_touch wall-e HOME/Register → 409 Conflict: LOCK_RELEASED (park required)');
     sim.rig.command('wall-e', 'park.xy', 'player');
     run(3_000);
     expect(lab().rigs['wall-e']!.banner).toBe('yellow');
@@ -369,10 +369,10 @@ describe('INC11–INC12 motion and lockout', () => {
     run(3_000);
     expect(lab().rigs['wall-e']!).toMatchObject({ banner: 'green', gantry: { homed: true }, magneticLock: { engaged: true } });
     expect(resolved(ids)).toBe(true);
-    expect(build('Java/uia-remote-regression-flux', { ROBOT_NAME: 'wall-e', DEVICE_TYPE: 'FLUX_3' }).result).toBe('SUCCESS');
+    expect(build('Java/uia-relay-regression-flux', { ROBOT_NAME: 'wall-e', DEVICE_TYPE: 'FLUX_3' }).result).toBe('SUCCESS');
   });
 
-  it('INC12 lockout: overlay while #4127 runs, motion commands ignored, Orca says in use; unlocks after the build', () => {
+  it('INC12 lockout: overlay while #4127 runs, motion commands ignored, Orka says in use; unlocks after the build', () => {
     start();
     scenario({ faultId: 'rig.testRunning', params: { rig: 'wall-e', number: 4127, durationMs: 60_000 } });
     run(20_000);

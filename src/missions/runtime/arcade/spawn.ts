@@ -190,7 +190,7 @@ export function openTicket(d: RootState, ctx: TxContext, ps: PendingSpawn, opts:
   for (const name of Object.keys(counters)) ticket.counters[name] = 0;
   d.session.tickets.push(ticket);
   const scope = createScope({ id: `ticket:${id}`, kind: 'ticket', ownerId: id, cond: def.success(b), state: d, ticketId: id, binding: b, counterMatchers: { ...counters } });
-  TR.tickets.set(id, { ticketId: id, def, binding: b, scope, spawnSeq: RT.seq, charged: new Set(), jaredFixRun: false, cueIndex: 0 });
+  TR.tickets.set(id, { ticketId: id, def, binding: b, scope, spawnSeq: RT.seq, charged: new Set(), jadenFixRun: false, cueIndex: 0 });
 
   // Compound partner (GP §2.3.3): two faults on one rig.
   if (ps.compoundKey) {
@@ -226,7 +226,7 @@ export function openTicket(d: RootState, ctx: TxContext, ps: PendingSpawn, opts:
 }
 
 /** GP §5.4 barks on spawn. */
-const SPAWN_BARKS: Readonly<Record<string, string>> = { INC20: 'BARK_JARED_06', INC39: 'BARK_DAVID_01' };
+const SPAWN_BARKS: Readonly<Record<string, string>> = { INC20: 'BARK_JADEN_06', INC39: 'BARK_DEVIN_01' };
 
 const compoundKeys = new Map<string, string>();
 onActivityReset(() => compoundKeys.clear());
@@ -255,7 +255,7 @@ export function checkReveals(d: RootState, ctx: TxContext, e: { type: string; pa
     let reporter: string | undefined;
     if (!reveal && e) {
       const robotIds = new Set(ps.binding.rigs.concat(ps.binding.rig ? [ps.binding.rig] : []).map((r) => robotByName(d.lab, r)?.id).filter((x): x is number => x !== undefined));
-      if (ps.def.reveal === 'healthCheck' && e.type === 'orca.healthCheckRan') {
+      if (ps.def.reveal === 'healthCheck' && e.type === 'orka.healthCheckRan') {
         const p = e.payload as { failedRobotIds?: number[]; newlyFailedRobotIds?: number[] };
         const failed = [...(p.failedRobotIds ?? []), ...(p.newlyFailedRobotIds ?? [])];
         reveal = failed.some((id) => robotIds.has(id)) || (!robotIds.size && failed.length > 0);

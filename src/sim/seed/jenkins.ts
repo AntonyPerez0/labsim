@@ -11,16 +11,16 @@ export const JENKINS_VIEWS: Record<string, { name: string; include: string }> = 
   All: { name: 'All', include: '.*' },
   Java: { name: 'Java', include: '^Java/' },
   iOS: { name: 'iOS', include: '^iOS/' },
-  'uia-remote': { name: 'uia-remote', include: 'uia-remote-|contact-canada|paycore-standalone' },
+  'uia-relay': { name: 'uia-relay', include: 'uia-relay-|contact-canada|paycrest-standalone' },
   'SDK-Go': { name: 'SDK-Go', include: 'go-sdk' },
-  'Pigeon-LSTR': { name: 'Pigeon-LSTR', include: '/pigeon-' },
-  Laz: { name: 'Laz', include: 'laz-' },
+  'Parrot-LSTR': { name: 'Parrot-LSTR', include: '/parrot-' },
+  Lazo: { name: 'Lazo', include: 'lazo-' },
   'Vision-PoC': { name: 'Vision-PoC', include: 'vision-poc' },
 };
 
 const PARAM_DESC: Record<string, string> = {
-  ROBOT_NAME: 'Exact Orca robot Name (lowercase). Blank = any matching Available robot.',
-  DEVICE_TYPE: 'Orca DeviceType enum value, ALL CAPS (e.g. FLUX_3). Blank = any.',
+  ROBOT_NAME: 'Exact Orka robot Name (lowercase). Blank = any matching Available robot.',
+  DEVICE_TYPE: 'Orka DeviceType enum value, ALL CAPS (e.g. FLUX_3). Blank = any.',
   MERCHANT: 'Merchant Config name',
   CARD_PROFILE: 'Card profile name(s), comma separated',
   BACKEND_ENV: 'Backend environment (DEV1, DEV2, STG, QA, INT)',
@@ -40,7 +40,7 @@ export interface JobSeed {
   capLines: string[];
   lookup: CapabilityLookup;
   testRef: { repo: RepoId; path: string } | null;
-  /** uia-remote test classes (run in order). */
+  /** uia-relay test classes (run in order). */
   tests?: string[];
   nextNumber: number;
   merchantPolicy: JenkinsJob['merchantPolicy'];
@@ -54,13 +54,13 @@ export interface JobSeed {
 }
 
 const COMMON = ['ROBOT_NAME', 'DEVICE_TYPE', 'MERCHANT', 'CARD_PROFILE', 'BACKEND_ENV', 'BRANCH'];
-const UIA = (cls: string): { repo: RepoId; path: string } => ({ repo: 'uia-remote', path: `app/src/androidTest/java/com/labsim/uia/testactions/${cls}.java` });
+const UIA = (cls: string): { repo: RepoId; path: string } => ({ repo: 'uia-relay', path: `app/src/androidTest/java/com/labsim/uia/testactions/${cls}.java` });
 
 export const JOB_SEEDS: JobSeed[] = [
   {
-    id: 'Java/uia-remote-regression-flux',
-    description: 'uia-remote regression on Flux touch robots (FLUX_3 / FLUX_4). Non-dynamic capabilities in the script.',
-    runner: 'uia-remote',
+    id: 'Java/uia-relay-regression-flux',
+    description: 'uia-relay regression on Flux touch robots (FLUX_3 / FLUX_4). Non-dynamic capabilities in the script.',
+    runner: 'uia-relay',
     platform: 'android',
     params: COMMON,
     saved: { ROBOT_NAME: '', DEVICE_TYPE: 'FLUX_3', MERCHANT: 'AUTO-US-NOPIN-01', CARD_PROFILE: 'VISA_STD_SWIPE', BACKEND_ENV: 'DEV1', BRANCH: 'main' },
@@ -73,9 +73,9 @@ export const JOB_SEEDS: JobSeed[] = [
     historyRobots: ['wall-e', 'eve'],
   },
   {
-    id: 'Java/uia-remote-regression-micro',
-    description: 'uia-remote regression on Micro touch robots.',
-    runner: 'uia-remote',
+    id: 'Java/uia-relay-regression-micro',
+    description: 'uia-relay regression on Micro touch robots.',
+    runner: 'uia-relay',
     platform: 'android',
     params: COMMON,
     saved: { ROBOT_NAME: '', DEVICE_TYPE: 'MICRO_3', MERCHANT: 'AUTO-US-NOPIN-01', CARD_PROFILE: 'VISA_STD_SWIPE', BACKEND_ENV: 'DEV1', BRANCH: 'main' },
@@ -88,9 +88,9 @@ export const JOB_SEEDS: JobSeed[] = [
     historyRobots: ['bumblebee'],
   },
   {
-    id: 'Java/uia-remote-tethered-tax',
-    description: 'Tethered MFD/CFD Tax test (TaxTest, then RefundTest). Tethered = MFD populated in Orca.',
-    runner: 'uia-remote',
+    id: 'Java/uia-relay-tethered-tax',
+    description: 'Tethered MFD/CFD Tax test (TaxTest, then RefundTest). Tethered = MFD populated in Orka.',
+    runner: 'uia-relay',
     platform: 'android',
     params: ['ROBOT_NAME', 'MERCHANT', 'CARD_PROFILE', 'BACKEND_ENV', 'BRANCH'],
     saved: { ROBOT_NAME: '', MERCHANT: 'AUTO-US-NOPIN-01', CARD_PROFILE: 'VISA_STD_SWIPE', BACKEND_ENV: 'DEV1', BRANCH: 'main' },
@@ -104,9 +104,9 @@ export const JOB_SEEDS: JobSeed[] = [
     historyEnvs: ['DEV1', 'STG'],
   },
   {
-    id: 'Java/uia-remote-duet-cfd',
+    id: 'Java/uia-relay-duet-cfd',
     description: 'Stand Duet customer display suite (legacy OCR checks being migrated to UIA 2.3).',
-    runner: 'uia-remote',
+    runner: 'uia-relay',
     platform: 'android',
     params: ['ROBOT_NAME', 'MERCHANT', 'BACKEND_ENV', 'BRANCH'],
     saved: { ROBOT_NAME: '', MERCHANT: 'AUTO-US-NOPIN-01', BACKEND_ENV: 'DEV1', BRANCH: 'main' },
@@ -119,9 +119,9 @@ export const JOB_SEEDS: JobSeed[] = [
     historyRobots: ['r2-d2'],
   },
   {
-    id: 'Java/uia-remote-printerless-smoke',
+    id: 'Java/uia-relay-printerless-smoke',
     description: 'Smoke sale on printerless devices (Stand Duet 2 / its Micro 3 hot-swap).',
-    runner: 'uia-remote',
+    runner: 'uia-relay',
     platform: 'android',
     params: ['ROBOT_NAME', 'DEVICE_TYPE', 'MERCHANT', 'BACKEND_ENV', 'BRANCH'],
     saved: { ROBOT_NAME: '', DEVICE_TYPE: 'STAND_DUET_2', MERCHANT: '', BACKEND_ENV: 'DEV1', BRANCH: 'main' },
@@ -134,57 +134,57 @@ export const JOB_SEEDS: JobSeed[] = [
     historyRobots: ['k-9'],
   },
   {
-    id: 'Java/pigeon-android-sale-swipe',
-    description: 'Pigeon LSTR Android: swipe sale with printed receipt.',
-    runner: 'pigeon',
+    id: 'Java/parrot-android-sale-swipe',
+    description: 'Parrot LSTR Android: swipe sale with printed receipt.',
+    runner: 'parrot',
     platform: 'android',
     params: ['ROBOT_NAME', 'MERCHANT', 'BACKEND_ENV', 'BRANCH'],
     saved: { ROBOT_NAME: '', MERCHANT: '', BACKEND_ENV: 'DEV1', BRANCH: 'main' },
     capLines: ['def capabilities = [physicalTouch: true, printer: true, tethered: false]'],
     lookup: 'NON_DYNAMIC',
-    testRef: { repo: 'pigeon', path: 'tests/sale/swipe_sale_print.json' },
+    testRef: { repo: 'parrot', path: 'tests/sale/swipe_sale_print.json' },
     nextNumber: 5402,
     merchantPolicy: 'swap',
     historyRobots: ['wall-e', 'eve', 'bumblebee', 'johnny-5', 'baymax'],
   },
   {
-    id: 'Java/pigeon-android-tip-sale',
-    description: 'Pigeon LSTR Android: swipe sale with an 18% tip and printed receipt (4-option rig).',
-    runner: 'pigeon',
+    id: 'Java/parrot-android-tip-sale',
+    description: 'Parrot LSTR Android: swipe sale with an 18% tip and printed receipt (4-option rig).',
+    runner: 'parrot',
     platform: 'android',
     params: ['ROBOT_NAME', 'MERCHANT', 'BACKEND_ENV', 'BRANCH'],
     saved: { ROBOT_NAME: 'johnny-5', MERCHANT: '', BACKEND_ENV: 'DEV1', BRANCH: 'main' },
     capLines: ['def capabilities = [physicalTouch: true, printer: true, tethered: false]'],
     lookup: 'NON_DYNAMIC',
-    testRef: { repo: 'pigeon', path: 'tests/sale/tip_sale_print.json' },
+    testRef: { repo: 'parrot', path: 'tests/sale/tip_sale_print.json' },
     nextNumber: 880,
     merchantPolicy: 'swap',
     historyRobots: ['johnny-5'],
   },
   {
-    id: 'Java/pigeon-android-payment-compare',
-    description: 'Pigeon LSTR Android: "Payment Successful" screen compare (GIMP coordinates).',
-    runner: 'pigeon',
+    id: 'Java/parrot-android-payment-compare',
+    description: 'Parrot LSTR Android: "Payment Successful" screen compare (GIMP coordinates).',
+    runner: 'parrot',
     platform: 'android',
     params: ['ROBOT_NAME', 'MERCHANT', 'BACKEND_ENV', 'BRANCH'],
     saved: { ROBOT_NAME: 'eve', MERCHANT: '', BACKEND_ENV: 'DEV1', BRANCH: 'main' },
     capLines: ['def capabilities = [physicalTouch: true]'],
     lookup: 'NON_DYNAMIC',
-    testRef: { repo: 'pigeon', path: 'tests/sale/payment_success_compare.json' },
+    testRef: { repo: 'parrot', path: 'tests/sale/payment_success_compare.json' },
     nextNumber: 45,
     merchantPolicy: 'swap',
     historyRobots: ['eve'],
   },
   {
-    id: 'Java/pigeon-windows-tender',
-    description: 'Pigeon LSTR Windows: cash tender on the Windows POS (no robot).',
-    runner: 'pigeon',
+    id: 'Java/parrot-windows-tender',
+    description: 'Parrot LSTR Windows: cash tender on the Windows POS (no robot).',
+    runner: 'parrot',
     platform: 'windows',
     params: ['BACKEND_ENV', 'BRANCH'],
     saved: { BACKEND_ENV: 'DEV1', BRANCH: 'main' },
     capLines: [],
     lookup: 'NON_DYNAMIC',
-    testRef: { repo: 'pigeon', path: 'tests/tender/windows_tender.json' },
+    testRef: { repo: 'parrot', path: 'tests/tender/windows_tender.json' },
     nextNumber: 212,
     merchantPolicy: 'none',
     historyRobots: [],
@@ -192,25 +192,25 @@ export const JOB_SEEDS: JobSeed[] = [
   },
   {
     id: 'Java/go-sdk-sale-smoke',
-    description: 'Go SDK smoke: sale + printed receipt on an ADB bot. Dynamic JSON capabilities from the test definition (gort).',
+    description: 'Go SDK smoke: sale + printed receipt on an ADB bot. Dynamic JSON capabilities from the test definition (gorth).',
     runner: 'go-sdk',
     platform: 'go',
     params: ['ROBOT_NAME', 'MERCHANT', 'CARD_PROFILE', 'BACKEND_ENV', 'BRANCH'],
     saved: { ROBOT_NAME: '', MERCHANT: 'GO-SDK-US-01', CARD_PROFILE: 'VISA_STD_DIP', BACKEND_ENV: 'DEV1', BRANCH: 'main' },
     capLines: ["def capabilities = readJSON(file: 'go-sdk/tests/sale_receipt.json').capabilities"],
     lookup: 'DYNAMIC_JSON',
-    testRef: { repo: 'gort', path: 'go-sdk/tests/sale_receipt.json' },
+    testRef: { repo: 'gorth', path: 'go-sdk/tests/sale_receipt.json' },
     nextNumber: 1290,
     merchantPolicy: 'swap',
     historyRobots: ['data', 'tars'],
   },
   {
     id: 'Java/contact-canada-pin-sale',
-    description: 'Contact Canada (Westers): Interac PIN sale on a Compass touch robot. Uses BOTH capability lookups.',
-    runner: 'uia-remote',
+    description: 'Contact Canada (Westerly): Interac PIN sale on a Compass touch robot. Uses BOTH capability lookups.',
+    runner: 'uia-relay',
     platform: 'android',
     params: ['ROBOT_NAME', 'MERCHANT', 'CARD_PROFILE', 'BACKEND_ENV', 'BRANCH'],
-    saved: { ROBOT_NAME: '', MERCHANT: 'WESTERS-CA-01', CARD_PROFILE: 'INTERAC_CA_DIP', BACKEND_ENV: 'DEV1', BRANCH: 'main' },
+    saved: { ROBOT_NAME: '', MERCHANT: 'WESTERLY-CA-01', CARD_PROFILE: 'INTERAC_CA_DIP', BACKEND_ENV: 'DEV1', BRANCH: 'main' },
     capLines: ["def capabilities = [deviceType: 'COMPASS', physicalTouch: true]", "def dynamicCaps = readJSON(file: 'suites/contact-canada/pin_sale.json').capabilities"],
     lookup: 'BOTH',
     testRef: UIA('ContactCanadaPinSaleTest'),
@@ -220,9 +220,9 @@ export const JOB_SEEDS: JobSeed[] = [
     historyRobots: ['seti'],
   },
   {
-    id: 'Java/laz-oobe-merchant-swap',
-    description: 'Laz Automation: zero-touch OOBE merchant switch (de-provision, wipe caches, setup wizard, assign merchant). Named robots only.',
-    runner: 'laz',
+    id: 'Java/lazo-oobe-merchant-swap',
+    description: 'Lazo Automation: zero-touch OOBE merchant switch (de-provision, wipe caches, setup wizard, assign merchant). Named robots only.',
+    runner: 'lazo',
     platform: 'android',
     params: ['ROBOT_NAME', 'MERCHANT', 'BACKEND_ENV'],
     saved: { ROBOT_NAME: '', MERCHANT: '', BACKEND_ENV: 'DEV1' },
@@ -234,16 +234,16 @@ export const JOB_SEEDS: JobSeed[] = [
     historyRobots: ['data'],
   },
   {
-    id: 'Java/paycore-standalone-matrix',
-    description: "PayCore's back-to-back card matrix on ROSIE (Unavailable — named only). Asserts the merchant, never swaps it.",
-    runner: 'uia-remote',
+    id: 'Java/paycrest-standalone-matrix',
+    description: "PayCrest's back-to-back card matrix on ROSIE (Unavailable — named only). Asserts the merchant, never swaps it.",
+    runner: 'uia-relay',
     platform: 'android',
     params: ['ROBOT_NAME', 'MERCHANT', 'CARD_PROFILE', 'BACKEND_ENV', 'BRANCH'],
-    saved: { ROBOT_NAME: 'rosie', MERCHANT: 'PAYCORE-STANDALONE-01', CARD_PROFILE: 'VISA_STD_DIP,DISCOVER_MATRIX_DIP,AMEX_MATRIX_DIP', BACKEND_ENV: 'DEV1', BRANCH: 'main' },
+    saved: { ROBOT_NAME: 'rosie', MERCHANT: 'PAYCREST-STANDALONE-01', CARD_PROFILE: 'VISA_STD_DIP,DISCOVER_MATRIX_DIP,AMEX_MATRIX_DIP', BACKEND_ENV: 'DEV1', BRANCH: 'main' },
     capLines: ["def capabilities = [deviceType: 'FLUX_POCKET', physicalTouch: true]"],
     lookup: 'NON_DYNAMIC',
-    testRef: UIA('PaycoreMatrixTest'),
-    tests: ['PaycoreMatrixTest'],
+    testRef: UIA('PaycrestMatrixTest'),
+    tests: ['PaycrestMatrixTest'],
     nextNumber: 2077,
     merchantPolicy: 'assert',
     historyRobots: ['rosie'],
@@ -265,7 +265,7 @@ export const JOB_SEEDS: JobSeed[] = [
   {
     id: 'Java/nightly-java-regression',
     description: 'Nightly trigger (02:00): builds every job in the Java folder. iOS jobs are not triggered.',
-    runner: 'uia-remote',
+    runner: 'uia-relay',
     platform: 'java',
     params: [],
     saved: {},
@@ -279,7 +279,7 @@ export const JOB_SEEDS: JobSeed[] = [
     lastRun: '2026-10-05 02:00',
   },
   {
-    id: 'iOS/pigeon-ios-go-sdk-smoke',
+    id: 'iOS/parrot-ios-go-sdk-smoke',
     description: 'iOS Go SDK smoke on the phone carriage (ASTRO). iOS Go testing is active.',
     runner: 'ios',
     platform: 'ios',
@@ -287,14 +287,14 @@ export const JOB_SEEDS: JobSeed[] = [
     saved: { ROBOT_NAME: 'astro', BACKEND_ENV: 'QA', BRANCH: 'main' },
     capLines: ['def capabilities = [phone: true]'],
     lookup: 'NON_DYNAMIC',
-    testRef: { repo: 'pigeon', path: 'tests/go/ios_go_smoke.json' },
+    testRef: { repo: 'parrot', path: 'tests/go/ios_go_smoke.json' },
     nextNumber: 377,
     merchantPolicy: 'none',
     historyRobots: ['astro'],
     lastRun: '2026-10-05 06:12',
   },
   {
-    id: 'iOS/pigeon-ios-lstr-legacy',
+    id: 'iOS/parrot-ios-lstr-legacy',
     description: 'Legacy LSTR iOS runner (rarely touched).',
     runner: 'ios',
     platform: 'ios',
@@ -302,7 +302,7 @@ export const JOB_SEEDS: JobSeed[] = [
     saved: { BACKEND_ENV: 'QA', BRANCH: 'main' },
     capLines: [],
     lookup: 'NON_DYNAMIC',
-    testRef: { repo: 'pigeon', path: 'tests/ios/legacy_smoke.json' },
+    testRef: { repo: 'parrot', path: 'tests/ios/legacy_smoke.json' },
     nextNumber: 19,
     merchantPolicy: 'none',
     historyRobots: [],
@@ -314,9 +314,9 @@ export const JOB_SEEDS: JobSeed[] = [
 export const TRIGGER_JOBS = new Set(['Java/nightly-java-regression']);
 
 const REPO_URL: Record<RepoId, string> = {
-  gort: 'git@github.com:labsim-lab/gort.git',
-  'uia-remote': 'git@github.com:labsim-lab/uia-remote.git',
-  pigeon: 'git@github.com:labsim-lab/pigeon.git',
+  gorth: 'git@github.com:labsim-lab/gorth.git',
+  'uia-relay': 'git@github.com:labsim-lab/uia-relay.git',
+  parrot: 'git@github.com:labsim-lab/parrot.git',
   orchestrator: 'git@github.com:labsim-lab/orchestrator.git',
 };
 
@@ -325,7 +325,7 @@ export function jenkinsfile(s: JobSeed): string {
   const L: string[] = [`// ${s.id} — Jenkinsfile`];
   for (const c of s.capLines) L.push(c);
   if (s.tests) L.push(`def tests = [${s.tests.map((t) => `'${t}'`).join(', ')}]`);
-  if (s.runner === 'pigeon' || s.runner === 'ios') L.push(`def testFile = '${s.testRef?.path ?? 'tests/ios/legacy_smoke.json'}'`);
+  if (s.runner === 'parrot' || s.runner === 'ios') L.push(`def testFile = '${s.testRef?.path ?? 'tests/ios/legacy_smoke.json'}'`);
   L.push('');
   if (TRIGGER_JOBS.has(s.id)) {
     L.push(
@@ -345,24 +345,24 @@ export function jenkinsfile(s: JobSeed): string {
     );
     return `${L.join('\n')}\n`;
   }
-  const repo = s.testRef?.repo ?? (s.runner === 'go-sdk' ? 'gort' : 'uia-remote');
+  const repo = s.testRef?.repo ?? (s.runner === 'go-sdk' ? 'gorth' : 'uia-relay');
   const hasRobot = s.historyRobots.length > 0 || s.capLines.some((c) => c.includes('capabilities'));
   L.push('pipeline {', "  agent { label 'lab-executor' }", '  stages {');
-  if (s.runner !== 'laz') L.push(`    stage('Checkout SCM')      { steps { git url: '${REPO_URL[repo]}', branch: params.BRANCH } }`);
+  if (s.runner !== 'lazo') L.push(`    stage('Checkout SCM')      { steps { git url: '${REPO_URL[repo]}', branch: params.BRANCH } }`);
   if (hasRobot) {
     const caps = s.capLines.length ? ', capabilities: capabilities' : '';
     const dyn = s.capLines.some((c) => c.startsWith('def dynamicCaps')) ? ', dynamicCapabilities: dynamicCaps' : '';
-    L.push(`    stage('Checkout robot')    { steps { script { robot = orca.checkout(name: params.ROBOT_NAME, env: params.BACKEND_ENV${caps}${dyn}) } } }`);
+    L.push(`    stage('Checkout robot')    { steps { script { robot = orka.checkout(name: params.ROBOT_NAME, env: params.BACKEND_ENV${caps}${dyn}) } } }`);
   }
-  if (s.runner === 'laz') {
-    L.push("    stage('Laz OOBE')          { steps { script { laz.swapMerchant(robot, params.MERCHANT) } } }");
+  if (s.runner === 'lazo') {
+    L.push("    stage('Lazo OOBE')          { steps { script { lazo.swapMerchant(robot, params.MERCHANT) } } }");
   } else {
-    if (hasRobot && s.merchantPolicy !== 'none') L.push(`    stage('Merchant')          { steps { script { orca.${s.merchantPolicy === 'assert' ? 'assertMerchant' : 'ensureMerchant'}(robot, params.MERCHANT) } } }`);
-    if (hasRobot) L.push("    stage('Inject environment'){ steps { script { env.putAll(orca.runtimeEnv(robot, params)) } } }");
+    if (hasRobot && s.merchantPolicy !== 'none') L.push(`    stage('Merchant')          { steps { script { orka.${s.merchantPolicy === 'assert' ? 'assertMerchant' : 'ensureMerchant'}(robot, params.MERCHANT) } } }`);
+    if (hasRobot) L.push("    stage('Inject environment'){ steps { script { env.putAll(orka.runtimeEnv(robot, params)) } } }");
     const run =
-      s.runner === 'uia-remote'
+      s.runner === 'uia-relay'
         ? "sh \"./gradlew connectedAndroidTest -Pclasses=${tests.join(',')}\""
-        : s.runner === 'pigeon'
+        : s.runner === 'parrot'
           ? `sh "lstr run --platform ${s.platform.toUpperCase()} \${testFile}"`
           : s.runner === 'go-sdk'
             ? "sh 'go run ./go-sdk/cmd/gosdk-run go-sdk/tests/sale_receipt.json'"
@@ -372,7 +372,7 @@ export function jenkinsfile(s: JobSeed): string {
     L.push(`    stage('Run tests')         { steps { ${run} } }`);
   }
   L.push('  }');
-  if (hasRobot) L.push('  post { always { script { orca.release(robot) } } }');
+  if (hasRobot) L.push('  post { always { script { orka.release(robot) } } }');
   L.push('}');
   return `${L.join('\n')}\n`;
 }

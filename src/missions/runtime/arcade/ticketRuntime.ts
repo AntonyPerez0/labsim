@@ -17,8 +17,8 @@ export interface TicketRt {
   spawnSeq: number;
   /** Local wrong-move ids already charged. */
   charged: Set<string>;
-  /** Escalation: Jared's fix actions already run. */
-  jaredFixRun: boolean;
+  /** Escalation: Jaden's fix actions already run. */
+  jadenFixRun: boolean;
   /** Walkthrough cue index reached. */
   cueIndex: number;
   /** Session clock of the last Jenkins Bot verification re-run (see `kickVerificationBuild`). */

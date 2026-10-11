@@ -1,7 +1,7 @@
 /**
  * GIMP 2.10 (single-window mode, Dark theme) — GIMP-lite for coordinate extraction (docs/design/50-computer-apps.md §6).
  * Opens workstation images (webcam snapshots, ADB screencaps, receipts) through the image store / materializer,
- * rectangle selection with Position/Size read-out, Pointer dialog with device mm, Pigeon JSON copy.
+ * rectangle selection with Position/Size read-out, Pointer dialog with device mm, Parrot JSON copy.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getState, useGame } from '@/core/store';
@@ -137,7 +137,7 @@ export function GimpApp(props: AppProps) {
     if (cur.sel) emitSel(cur);
   };
 
-  const copyPigeon = () => {
+  const copyParrot = () => {
     const s = cur?.sel;
     if (!s) {
       setMessage('There is no selection to copy.');
@@ -145,7 +145,7 @@ export function GimpApp(props: AppProps) {
     }
     const text = `"x": ${s.x}, "y": ${s.y}, "w": ${s.w}, "h": ${s.h}`;
     wm?.clipboard.write(text, 'gimp');
-    emitAppAction('gimp', 'gimp.selection.copied', { x: s.x, y: s.y, w: s.w, h: s.h, format: 'pigeon-json', text });
+    emitAppAction('gimp', 'gimp.selection.copied', { x: s.x, y: s.y, w: s.w, h: s.h, format: 'parrot-json', text });
     setMessage(`Copied selection bounds: x ${s.x}, y ${s.y}, w ${s.w}, h ${s.h}`);
   };
 
@@ -271,7 +271,7 @@ export function GimpApp(props: AppProps) {
     { label: '4:1  (400%)', shortcut: '3', onClick: () => zoomTo(4), disabled: !hasImg },
     { label: '8:1  (800%)', shortcut: '4', onClick: () => zoomTo(8), disabled: !hasImg },
   ];
-  const copyItem: MenuItem = { label: 'Copy selection as Pigeon JSON', onClick: copyPigeon, disabled: !cur?.sel };
+  const copyItem: MenuItem = { label: 'Copy selection as Parrot JSON', onClick: copyParrot, disabled: !cur?.sel };
   const menus: MenuDef[] = [
     {
       label: 'File',

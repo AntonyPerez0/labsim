@@ -1,5 +1,5 @@
 /**
- * M02 — Know Your terminals: Device Families (Cur §2 M02). Mentor {{morgan}}, cameo {{jared}}.
+ * M02 — Know Your terminals: Device Families (Cur §2 M02). Mentor {{morgan}}, cameo {{jaden}}.
  * Setup: the device library (`loc.device-library`) holds one of every LabSim plus the sealed
  * "STAND DUET 3 — UPCOMING" and "MICRO 4 — UPCOMING" boxes (props only, Sim §4.4.2).
  */
@@ -45,7 +45,7 @@ export const M02: LessonDef = {
     'Remember Flux 3, Flux 4 and Flux Pocket share one testing profile; the Pocket simply has no printer block.',
     'When a printerless Stand Duet 2 is down, a Micro 3 is the hot-swap stand-in.',
     'Read tethered test-bed labels as rig · role (MFD = merchant, CFD = customer) · environment, e.g. MEGATRON MFD DEV1.',
-    'The LabSim Compass is the Canadian-market terminal used on the Westers test beds.',
+    'The LabSim Compass is the Canadian-market terminal used on the Westerly test beds.',
   ],
   steps: [
     { id: 'M02.01', kind: 'walk-to', hud: 'Meet {{morgan}} at the device library', location: 'loc.device-library' },
@@ -113,8 +113,8 @@ export const M02: LessonDef = {
     {
       id: 'M02.07',
       kind: 'dialogue',
-      speaker: 'jared',
-      text: "{{jared}} here. The Stand Duet 2 has no printer either. When one is down, we hot-swap a Micro 3 in its place.",
+      speaker: 'jaden',
+      text: "{{jaden}} here. The Stand Duet 2 has no printer either. When one is down, we hot-swap a Micro 3 in its place.",
       factIds: ['F057'],
     },
     { id: 'M02.08', kind: 'walk-to', hud: 'Walk to the tethered rack (MEGATRON / OPTIMUS)', location: 'loc.rack-tethered' },
@@ -162,7 +162,7 @@ export const M02: LessonDef = {
       id: 'M02.12',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: 'Last one: the LabSim Compass is our Canadian-market terminal. It runs on the Westers test beds, and SETI carries one in this room. Remember Canada: it matters later for PINs.',
+      text: 'Last one: the LabSim Compass is our Canadian-market terminal. It runs on the Westerly test beds, and SETI carries one in this room. Remember Canada: it matters later for PINs.',
       factIds: ['F061'],
     },
     { id: 'M02.13', kind: 'quiz-checkpoint', checkpointId: 'CP-M02.1', title: 'Device Families', questionIds: ['Q012', 'Q013', 'Q014', 'Q015', 'Q017'] },

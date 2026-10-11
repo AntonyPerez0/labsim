@@ -24,24 +24,24 @@ afterEach(() => {
 describe('GitHub', () => {
   it('parses repo routes', () => {
     expect(parseRoute('/labsim-lab')).toMatchObject({ kind: 'org' });
-    expect(parseRoute('/labsim-lab/gort/pull/418/files')).toMatchObject({ repo: 'gort' });
-    expect(parseRoute('/labsim-lab/gort/actions')).toMatchObject({ kind: 'actions', repo: 'gort' });
-    expect(parseRoute('/labsim-lab/gort/actions/runs/12345/job/987')).toMatchObject({ kind: 'actions', repo: 'gort' });
+    expect(parseRoute('/labsim-lab/gorth/pull/418/files')).toMatchObject({ repo: 'gorth' });
+    expect(parseRoute('/labsim-lab/gorth/actions')).toMatchObject({ kind: 'actions', repo: 'gorth' });
+    expect(parseRoute('/labsim-lab/gorth/actions/runs/12345/job/987')).toMatchObject({ kind: 'actions', repo: 'gorth' });
   });
 
   it('views a blob and reports github.file.viewed', async () => {
-    const host = makeRoutedHost(GitHubApp, '/labsim-lab/gort/blob/main/cards/emv/visa_std_dip.json');
+    const host = makeRoutedHost(GitHubApp, '/labsim-lab/gorth/blob/main/cards/emv/visa_std_dip.json');
     m = await mount(<host.Host />);
-    expect(cap.of('github.file.viewed')[0]).toEqual({ repo: 'gort', ref: 'main', path: 'cards/emv/visa_std_dip.json' });
+    expect(cap.of('github.file.viewed')[0]).toEqual({ repo: 'gorth', ref: 'main', path: 'cards/emv/visa_std_dip.json' });
     expect(m.container.textContent).toContain('visa_std_dip.json');
   });
 
   it('shows the SSH clone URL in the Code popover', async () => {
-    const host = makeRoutedHost(GitHubApp, '/labsim-lab/uia-remote');
+    const host = makeRoutedHost(GitHubApp, '/labsim-lab/uia-relay');
     m = await mount(<host.Host />);
     await click(byText(m.container, 'button', /Code/) ?? m.container.querySelector('.gh-btn-primary'));
-    const field = [...m.container.querySelectorAll<HTMLInputElement>('input')].find((i) => i.value.includes('labsim-lab/uia-remote'));
-    expect(field?.value).toBe('git@github.com:labsim-lab/uia-remote.git');
+    const field = [...m.container.querySelectorAll<HTMLInputElement>('input')].find((i) => i.value.includes('labsim-lab/uia-relay'));
+    expect(field?.value).toBe('git@github.com:labsim-lab/uia-relay.git');
   });
 
   it('blocks merging an unapproved PR on a protected repo', async () => {

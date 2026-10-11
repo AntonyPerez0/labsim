@@ -6,10 +6,10 @@
 import { bus } from '@/core/bus';
 import type { RepoId } from '@/sim';
 
-/** Workspace roots: the cloned repo (PIGEON) and the practice folder (~/pigeon-practice). */
+/** Workspace roots: the cloned repo (PARROT) and the practice folder (~/parrot-practice). */
 export type Root = 'repo' | 'practice';
 
-export const PRACTICE_DIR = '~/pigeon-practice';
+export const PRACTICE_DIR = '~/parrot-practice';
 
 export interface Buffer {
   /** "repo:tests/sale/swipe_sale_print.json" or "practice:comma-hunt.json". */
@@ -69,7 +69,7 @@ export interface PracticeSession {
 }
 
 export class VsModel {
-  repo: RepoId = 'pigeon';
+  repo: RepoId = 'parrot';
   buffers = new Map<string, Buffer>();
   /** Open tabs: buffer ids, or "diff:<path>" for a working-tree diff. */
   tabs: string[] = [];

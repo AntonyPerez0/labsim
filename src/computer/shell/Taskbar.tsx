@@ -21,7 +21,7 @@ function StartGlyph() {
   );
 }
 
-const PIN_ORDER: AppId[] = ['files', 'browser', 'orca', 'jenkins', 'github', 'intellij', 'vscode', 'terminal', 'chat', ...APP_IDS.filter((id) => !['files', 'browser', 'orca', 'jenkins', 'github', 'intellij', 'vscode', 'terminal', 'chat'].includes(id))];
+const PIN_ORDER: AppId[] = ['files', 'browser', 'orka', 'jenkins', 'github', 'intellij', 'vscode', 'terminal', 'chat', ...APP_IDS.filter((id) => !['files', 'browser', 'orka', 'jenkins', 'github', 'intellij', 'vscode', 'terminal', 'chat'].includes(id))];
 
 function useChatUnread(): number {
   return useGame((s) => {

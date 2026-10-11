@@ -90,7 +90,7 @@ export function ObjectiveTracker() {
             </Button>
           ) : null}
           {academy.fastForwardOffered ? (
-            <Button size="sm" variant="game" icon="fast-forward" onClick={() => ma('fastForward', 'next-health-check')} title="Tutorial affordance: jump to Orca's next 5-minute health check">
+            <Button size="sm" variant="game" icon="fast-forward" onClick={() => ma('fastForward', 'next-health-check')} title="Tutorial affordance: jump to Orka's next 5-minute health check">
               Force health check
             </Button>
           ) : null}

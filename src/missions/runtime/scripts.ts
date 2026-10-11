@@ -1,6 +1,6 @@
 /**
  * Executors for the authoring vocabulary of `contract/common.ts`: `SetupSpec` (initial state recipes)
- * and `ScriptAction` (side effects at step boundaries, incident spawn, Jared's fix). Everything runs
+ * and `ScriptAction` (side effects at step boundaries, incident spawn, Jaden's fix). Everything runs
  * inside the caller's `transact()`; sim calls go through `simRun` (runtime-driven, no GW detection).
  */
 import type { TxContext } from '@/core/store';
@@ -181,7 +181,7 @@ function personTextSafe(t: string): string {
 
 /**
  * Run one script action. `blocking` = `say` lines wait for acknowledgement (Academy step scripts);
- * otherwise they become non-blocking barks (Arcade spawn scripts, Jared's narrated fixes).
+ * otherwise they become non-blocking barks (Arcade spawn scripts, Jaden's narrated fixes).
  */
 export function runAction(d: RootState, ctx: TxContext, a: ScriptAction, env: ScriptEnv, blocking: boolean): ActionOutcome {
   switch (a.do) {

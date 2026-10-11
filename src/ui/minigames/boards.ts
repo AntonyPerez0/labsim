@@ -1,7 +1,7 @@
 /**
  * Board minigames (Cur §0 props, World §9 "drag-and-drop boards"): the data and grading for the
  * overlays the world opens on `wall.whiteboard` (M06 architecture diagram), `wall.roadmap` (M17
- * roadmap sort), `wall.history.match` (M18 team match) and `jared.bolt-bins` (M04 bolt sort).
+ * roadmap sort), `wall.history.match` (M18 team match) and `jaden.bolt-bins` (M04 bolt sort).
  *
  * On a fully correct board the UI emits
  *   `app.action { app: 'world', action: 'minigame.completed', data: { id, correct, total, mistakes } }`
@@ -95,14 +95,14 @@ export const ROADMAP_SORT: SortBoardDef = {
     { id: 'retired', label: 'RETIRED / PHASING OUT' },
   ],
   items: [
-    { id: 'orca-vm', label: 'Orca on an on-prem lab VM', answer: 'today', why: 'Orca runs today on a local, on-premise laboratory virtual machine.' },
-    { id: 'orca-gcp', label: 'Orca containerised in Docker on GCP', answer: 'planned', why: 'Docker and Google Cloud Platform are the planned migration targets. It has not happened yet.' },
+    { id: 'orka-vm', label: 'Orka on an on-prem lab VM', answer: 'today', why: 'Orka runs today on a local, on-premise laboratory virtual machine.' },
+    { id: 'orka-gcp', label: 'Orka containerised in Docker on GCP', answer: 'planned', why: 'Docker and Google Cloud Platform are the planned migration targets. It has not happened yet.' },
     { id: 'pi-control', label: 'Hardware control on Linux Raspberry Pis', answer: 'today', why: 'Hardware control already moved to the Raspberry Pis. That is how the lab runs today.' },
     { id: 'nuc-control', label: 'Hardware control on Windows Intel NUCs', answer: 'retired', why: 'corporate security monitoring filled the NUC disks, so hardware control was moved off the NUCs onto Pis.' },
     { id: 'ollama-poc', label: 'Ollama vision PoC on webcam streams', answer: 'progress', why: 'Ollama currently runs proof-of-concept Vision LLM checks of receipt layouts and tip math.' },
     { id: 'pin-bypass', label: 'Gen 2 Software PIN Bypass (with Core OS Team)', answer: 'progress', why: 'The team is partnering with the Core OS Team to build it. It is in progress, not shipped.' },
     { id: 'duet-ocr', label: 'Stand Duet Screen Compare / OCR', answer: 'retired', why: 'OCR is brittle and is being phased out, because UI Automator 2.3 tracks elements on both screens natively.' },
-    { id: 'github', label: 'Repos on GitHub (Gort, uia-remote, pigeon)', answer: 'today', why: 'GitHub hosts the team repositories today.' },
+    { id: 'github', label: 'Repos on GitHub (Gorth, uia-relay, parrot)', answer: 'today', why: 'GitHub hosts the team repositories today.' },
   ],
   factIds: ['F023', 'F022', 'F031', 'F032', 'F222', 'F156'],
 };
@@ -118,14 +118,14 @@ export const HISTORY_MATCH: SortBoardDef = {
     { id: 'semi', label: 'Semi Team', capacity: 1 },
     { id: 'sedi', label: 'Sedi (QA) Team', capacity: 1 },
     { id: 'ipx', label: 'IPX Team', sub: 'Integrated Payment Experience', capacity: 1 },
-    { id: 'paycore', label: 'PayCore Team', capacity: 1 },
+    { id: 'paycrest', label: 'PayCrest Team', capacity: 1 },
     { id: 'coreos', label: 'Core OS Team', capacity: 1 },
   ],
   items: [
     { id: 'sdk', label: 'POS SDKs and the remote pay display apps', sub: 'USB Pay Display · Secure Network Pay Display', answer: 'semi', why: 'The Semi Team built the third-party POS SDKs and the pay display apps.' },
-    { id: 'lester', label: 'QA with the Lester framework', answer: 'sedi', why: 'The Sedi (QA) Team tested the Semi apps with Lester, the ancestor of Pigeon.' },
-    { id: 'native', label: 'Native apps: Register, Orders, Authorizations, Sale, Transactions, Setup', answer: 'ipx', why: 'uia-remote now tests these native apps with the IPX Team.' },
-    { id: 'dining', label: 'LabSim Dining and the full card matrix', sub: 'Visa · Discover · AmEx', answer: 'paycore', why: 'PayCore adopted uia-remote for LabSim Dining and runs exhaustive card-matrix validations.' },
+    { id: 'lister', label: 'QA with the Lister framework', answer: 'sedi', why: 'The Sedi (QA) Team tested the Semi apps with Lister, the ancestor of Parrot.' },
+    { id: 'native', label: 'Native apps: Register, Orders, Authorizations, Sale, Transactions, Setup', answer: 'ipx', why: 'uia-relay now tests these native apps with the IPX Team.' },
+    { id: 'dining', label: 'LabSim Dining and the full card matrix', sub: 'Visa · Discover · AmEx', answer: 'paycrest', why: 'PayCrest adopted uia-relay for LabSim Dining and runs exhaustive card-matrix validations.' },
     { id: 'pin', label: 'Gen 2 Software PIN Bypass partner', answer: 'coreos', why: 'The team is partnering with Core OS on the software PIN bypass.' },
   ],
   factIds: ['F157', 'F158', 'F161', 'F162', 'F226', 'F222'],
@@ -180,41 +180,41 @@ export const ARCHITECTURE_DIAGRAM: DiagramBoardDef = {
   intro: 'Rebuild the lab diagram. Put the 8 cards into the boxes, then name the 6 arrows.',
   cards: [
     { id: 'jenkins', label: 'Jenkins (Executor)' },
-    { id: 'runner', label: 'Test runner (uia-remote / Pigeon)' },
-    { id: 'orca', label: 'Orca (Controller)' },
+    { id: 'runner', label: 'Test runner (uia-relay / Parrot)' },
+    { id: 'orka', label: 'Orka (Controller)' },
     { id: 'mysql', label: 'MySQL' },
     { id: 'pi', label: 'Raspberry Pi Robot Controller' },
     { id: 'lab', label: 'LabSim device (MFD / CFD)' },
-    { id: 'callus', label: 'Windows/Minix box (Callus)' },
-    { id: 'collis', label: 'Collis probe' },
+    { id: 'kallus', label: 'Windows/Minix box (Kallus)' },
+    { id: 'kollis', label: 'Kollis probe' },
   ],
   slots: [
     { id: 's-jenkins', answer: 'jenkins', col: 0, row: 0 },
     { id: 's-runner', answer: 'runner', col: 2, row: 0 },
-    { id: 's-orca', answer: 'orca', col: 1, row: 1 },
+    { id: 's-orka', answer: 'orka', col: 1, row: 1 },
     { id: 's-mysql', answer: 'mysql', col: 3, row: 1 },
     { id: 's-pi', answer: 'pi', col: 1, row: 2 },
     { id: 's-lab', answer: 'lab', col: 1, row: 3 },
-    { id: 's-callus', answer: 'callus', col: 3, row: 2 },
-    { id: 's-collis', answer: 'collis', col: 3, row: 3 },
+    { id: 's-kallus', answer: 'kallus', col: 3, row: 2 },
+    { id: 's-kollis', answer: 'kollis', col: 3, row: 3 },
   ],
   edges: [
     { id: 'e-trigger', from: 's-jenkins', to: 's-runner', answer: 'l-trigger' },
-    { id: 'e-checkout', from: 's-jenkins', to: 's-orca', answer: 'l-checkout' },
-    { id: 'e-rest', from: 's-runner', to: 's-orca', answer: 'l-rest' },
-    { id: 'e-mysql', from: 's-orca', to: 's-mysql', answer: null },
-    { id: 'e-ping', from: 's-orca', to: 's-pi', answer: 'l-ping' },
+    { id: 'e-checkout', from: 's-jenkins', to: 's-orka', answer: 'l-checkout' },
+    { id: 'e-rest', from: 's-runner', to: 's-orka', answer: 'l-rest' },
+    { id: 'e-mysql', from: 's-orka', to: 's-mysql', answer: null },
+    { id: 'e-ping', from: 's-orka', to: 's-pi', answer: 'l-ping' },
     { id: 'e-adb', from: 's-pi', to: 's-lab', answer: 'l-adb' },
-    { id: 'e-ribbon', from: 's-callus', to: 's-collis', answer: 'l-ribbon' },
-    { id: 'e-reader', from: 's-collis', to: 's-lab', answer: null },
+    { id: 'e-ribbon', from: 's-kallus', to: 's-kollis', answer: 'l-ribbon' },
+    { id: 'e-reader', from: 's-kollis', to: 's-lab', answer: null },
   ],
   labels: [
     { id: 'l-trigger', text: 'triggers pipeline + injects env vars', why: 'Jenkins (the Executor) triggers the pipeline and injects the runtime environment variables into the test runner.' },
-    { id: 'l-checkout', text: 'checkout robot', why: 'Jenkins checks out a robot from Orca (the Controller) before the run.' },
-    { id: 'l-rest', text: 'REST: xy_touch, card swipe/dip/tap', why: 'The test runner calls Orca over REST for taps (xy_touch) and card actions.' },
-    { id: 'l-ping', text: '5-minute health-check ping', why: 'Every 5 minutes Orca pings the Robot Controller on every Pi.' },
+    { id: 'l-checkout', text: 'checkout robot', why: 'Jenkins checks out a robot from Orka (the Controller) before the run.' },
+    { id: 'l-rest', text: 'REST: xy_touch, card swipe/dip/tap', why: 'The test runner calls Orka over REST for taps (xy_touch) and card actions.' },
+    { id: 'l-ping', text: '5-minute health-check ping', why: 'Every 5 minutes Orka pings the Robot Controller on every Pi.' },
     { id: 'l-adb', text: 'ADB service (port 5444)', why: 'The Pi routes ADB to the LabSim device on port 5444, not the default 5555.' },
-    { id: 'l-ribbon', text: 'ribbon cable', why: 'The Windows/Minix box running Callus drives the Collis probe over a ribbon cable.' },
+    { id: 'l-ribbon', text: 'ribbon cable', why: 'The Windows/Minix box running Kallus drives the Kollis probe over a ribbon cable.' },
   ],
   factIds: [],
 };
@@ -236,7 +236,7 @@ const PROP_TO_BOARD: Record<string, MinigameId> = {
   'prop.roadmap-board': 'roadmap-sort',
   'wall.history.match': 'history-match',
   'prop.history.match': 'history-match',
-  'jared.bolt-bins': 'bolt-sort',
+  'jaden.bolt-bins': 'bolt-sort',
   'prop.bolt-bins': 'bolt-sort',
 };
 
@@ -251,7 +251,7 @@ export function boardById(id: string): BoardDef | null {
 
 /** The interactable that hosts a board (for the inspect overlay when a board is opened by id). */
 export function propForBoard(id: MinigameId): string {
-  return { 'architecture-diagram': 'wall.whiteboard', 'roadmap-sort': 'wall.roadmap', 'history-match': 'wall.history.match', 'bolt-sort': 'jared.bolt-bins' }[id];
+  return { 'architecture-diagram': 'wall.whiteboard', 'roadmap-sort': 'wall.roadmap', 'history-match': 'wall.history.match', 'bolt-sort': 'jaden.bolt-bins' }[id];
 }
 
 /* ───────────────────────────── grading ───────────────────────────── */

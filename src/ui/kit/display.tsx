@@ -113,7 +113,7 @@ export function IllustrativeBadge({ compact }: { compact?: boolean }) {
   );
 }
 
-/** Orca robot status pill with colour-blind glyphs (GP §6.1). */
+/** Orka robot status pill with colour-blind glyphs (GP §6.1). */
 export function StatusPill({ status, size = 'md' }: { status: string; size?: 'sm' | 'md' }) {
   const key = status.toUpperCase().replace(/\s+/g, '_');
   const meta: Record<string, { label: string; glyph: string; cls: string }> = {

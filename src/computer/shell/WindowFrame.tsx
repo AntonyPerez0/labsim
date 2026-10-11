@@ -34,7 +34,7 @@ import { FileDialog } from './FileDialog';
 /** Desktop root element (pointer → desktop coordinates). */
 export const DesktopRootContext = createContext<RefObject<HTMLDivElement | null> | null>(null);
 
-const LIGHT_TITLE: ReadonlySet<AppId> = new Set<AppId>(['orca', 'jenkins', 'github', 'files', 'cardreader']);
+const LIGHT_TITLE: ReadonlySet<AppId> = new Set<AppId>(['orka', 'jenkins', 'github', 'files', 'cardreader']);
 
 function useLocalPoint() {
   const root = useContext(DesktopRootContext);

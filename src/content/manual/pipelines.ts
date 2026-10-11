@@ -10,20 +10,20 @@ export const PIPELINES_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]
     id: "jenkins-executor",
     title: "Jenkins: The Executor",
     category: "Pipelines",
-    summary: "Jenkins triggers test pipelines, injects runtime environment variables into the test runner and checks robots out of Orca. Legacy jobs are split by platform into Java and iOS.",
+    summary: "Jenkins triggers test pipelines, injects runtime environment variables into the test runner and checks robots out of Orka. Legacy jobs are split by platform into Java and iOS.",
     factIds: ["F015", "F016", "F017", "F094", "F095", "F098", "F102", "F189", "F203", "F256", "F249"],
     tags: ["jenkins", "jenkins.envvars", "jenkins.folders", "jenkins.checkout", "arch.roles", "tools.github"],
-    related: ["jenkins-env-vars", "orca-statuses", "orca-overview", "ts-pipeline-failures", "pigeon-lstr"],
+    related: ["jenkins-env-vars", "orka-statuses", "orka-overview", "ts-pipeline-failures", "parrot-lstr"],
     keywords: ["Jenkins", "Executor", "pipeline", "build with parameters", "checkout", "Java view", "iOS view", "ROBOT_NAME", "console", "legacy jobs"],
     practice: ["INC26", "INC39", "INC41", "DR11"],
     body: `## Role
 
-**Jenkins** is the CI/CD execution engine — the **Executor** {F015}. Orca is the Controller {F098}.
+**Jenkins** is the CI/CD execution engine — the **Executor** {F015}. Orka is the Controller {F098}.
 
 For every test pipeline Jenkins:
 
-1. **Triggers** the pipeline and **injects runtime environment variables** {F016} into the test runner (uia-remote or Pigeon) {F094}.
-2. **Checks out a robot** from Orca before the test runs {F095}. Requesting a robot is the pipeline's first action: it uploads the test cases and parameters, and Orca matches environment, device profile and capabilities (touch, dip, tap, swipe) {F256}.
+1. **Triggers** the pipeline and **injects runtime environment variables** {F016} into the test runner (uia-relay or Parrot) {F094}.
+2. **Checks out a robot** from Orka before the test runs {F095}. Requesting a robot is the pipeline's first action: it uploads the test cases and parameters, and Orka matches environment, device profile and capabilities (touch, dip, tap, swipe) {F256}.
 3. Releases it when the build ends.
 
 In CI nobody hand-edits \`config.properties\`: Jenkins injects the values dynamically {F189}.
@@ -34,14 +34,14 @@ Legacy jobs are organised **by platform**, separating **Java jobs** from **iOS j
 
 | View† | Example jobs† |
 |---|---|
-| \`Java\` | \`uia-remote-regression-flux\`, \`uia-remote-tethered-tax\`, \`go-sdk-sale-smoke\`, \`laz-oobe-merchant-swap\`, \`contact-canada-pin-sale\`, \`pigeon-android-sale-swipe\` |
-| \`iOS\` | \`pigeon-ios-go-sdk-smoke\` |
+| \`Java\` | \`uia-relay-regression-flux\`, \`uia-relay-tethered-tax\`, \`go-sdk-sale-smoke\`, \`lazo-oobe-merchant-swap\`, \`contact-canada-pin-sale\`, \`parrot-android-sale-swipe\` |
+| \`iOS\` | \`parrot-ios-go-sdk-smoke\` |
 
 A Java job filed under the iOS view is still a Java job — "the job that disappeared" is usually in the other view.
 
 ### Running your own branch
 
-To test a change before it is merged, push your branch to GitHub, open the job, point it at **your branch** (the \`BRANCH\`† parameter) and pick the suite, e.g. US Go Dip {F249}. See [[pigeon-bottlenecks]].
+To test a change before it is merged, push your branch to GitHub, open the job, point it at **your branch** (the \`BRANCH\`† parameter) and pick the suite, e.g. US Go Dip {F249}. See [[parrot-bottlenecks]].
 
 ## How checkout picks a robot
 
@@ -54,9 +54,9 @@ To test a change before it is merged, push your branch to GitHub, open the job, 
 If no matching robot is Available (all Reserved, Offline, Connection Failed or Unavailable), the build waits in the queue.
 
 \`\`\`log
-[orca] candidate wall-e: Reserved — skipped†
-[orca] no Available FLUX_3 robot — build waiting in queue†
-[orca] checkout → wall-e (FLUX_3) OK†
+[orka] candidate wall-e: Reserved — skipped†
+[orka] no Available FLUX_3 robot — build waiting in queue†
+[orka] checkout → wall-e (FLUX_3) OK†
 \`\`\`
 
 > **Illustrative (sim only):** View names, job names, parameter names and console lines are the sim's†.
@@ -68,8 +68,8 @@ If no matching robot is Available (all Reserved, Offline, Connection Failed or U
     category: "Pipelines",
     summary: "What Jenkins injects into a run, why Device Type values must be ALL CAPS, and how to read the console's environment block.",
     factIds: ["F016", "F121", "F122", "F139", "F189", "F198", "F196", "F197"],
-    tags: ["jenkins", "jenkins.envvars", "orca.devicetype", "go.sdk"],
-    related: ["jenkins-executor", "orca-robot-device", "config-properties", "orca-merchant-config"],
+    tags: ["jenkins", "jenkins.envvars", "orka.devicetype", "go.sdk"],
+    related: ["jenkins-executor", "orka-robot-device", "config-properties", "orka-merchant-config"],
     keywords: ["environment variables", "env vars", "ALL CAPS", "DEVICE_TYPE", "enum", "flux_3", "FLUX_3", "IllegalArgumentException", "No enum constant", "PORT_NUMBER", "APP_ID", "API_KEY"],
     practice: ["INC39", "INC51", "DR11"],
     body: `## Injection
@@ -78,21 +78,21 @@ Jenkins injects **runtime environment variables** into each pipeline {F016}; dur
 
 ## The ALL-CAPS rule
 
-Orca's **Device Type** is an enum of device dimensions, layout metrics and internal string definitions {F121}. Enum strings must match exactly, which is why **Jenkins pipeline environment variables must be in ALL CAPS** {F122}.
+Orka's **Device Type** is an enum of device dimensions, layout metrics and internal string definitions {F121}. Enum strings must match exactly, which is why **Jenkins pipeline environment variables must be in ALL CAPS** {F122}.
 
 \`\`\`log
-[orca] checkout request deviceType=flux_3
-java.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.flux_3†
+[orka] checkout request deviceType=flux_3
+java.lang.IllegalArgumentException: No enum constant com.labsim.orka.domain.enumeration.DeviceType.flux_3†
 FAILURE
 \`\`\`
 
-Fix: \`DEVICE_TYPE=FLUX_3\`. Don't "fix" it by editing the enum in Orca.
+Fix: \`DEVICE_TYPE=FLUX_3\`. Don't "fix" it by editing the enum in Orka.
 
 ## What gets injected
 
 | Variable† | Source | Must be |
 |---|---|---|
-| \`DEVICE_TYPE\` | Job parameter → Orca Device Type | The exact ALL-CAPS enum value |
+| \`DEVICE_TYPE\` | Job parameter → Orka Device Type | The exact ALL-CAPS enum value |
 | \`ROBOT_NAME\` | Job parameter (blank = any matching Available robot) | The robot's exact **Name** (not its Human Readable Name) |
 | \`MERCHANT\`, \`CARD_PROFILE\` | Job parameters | Existing Merchant Config / Card Profile names |
 | \`APP_ID\`, \`APP_SECRET\`, \`API_KEY\` | Merchant Config (Edit view) | Filled in for Go SDK merchants {F139} |
@@ -117,44 +117,44 @@ The values mirror the locked \`config.properties\` settings: port **5444** {F198
 `,
   },
   {
-    id: "laz-and-ubi",
-    title: "Laz Automation & the Ubi Platform",
+    id: "lazo-and-ubo",
+    title: "Lazo Automation & the Ubo Platform",
     category: "Test Frameworks",
-    summary: "Laz runs a zero-touch Out-of-Box Experience routine that de-provisions a device, wipes caches, walks the setup wizard and swaps merchants mid-suite; Ubi routes jobs that switch merchant configurations.",
+    summary: "Lazo runs a zero-touch Out-of-Box Experience routine that de-provisions a device, wipes caches, walks the setup wizard and swaps merchants mid-suite; Ubo routes jobs that switch merchant configurations.",
     factIds: ["F046", "F047", "F051", "F140", "F136"],
-    tags: ["orca.capabilities", "laz.oobe", "ubi.routing", "orca.merchant"],
-    related: ["orca-merchant-config", "jenkins-executor", "orca-statuses"],
-    keywords: ["Laz", "OOBE", "Out-of-Box Experience", "zero-touch", "provisioning", "de-provision", "wipe caches", "setup wizard", "merchant swap", "Ubi", "routing"],
+    tags: ["orka.capabilities", "lazo.oobe", "ubo.routing", "orka.merchant"],
+    related: ["orka-merchant-config", "jenkins-executor", "orka-statuses"],
+    keywords: ["Lazo", "OOBE", "Out-of-Box Experience", "zero-touch", "provisioning", "de-provision", "wipe caches", "setup wizard", "merchant swap", "Ubo", "routing"],
     practice: ["INC50", "INC28", "INC40"],
-    body: `## Laz Automation
+    body: `## Lazo Automation
 
-**Laz Automation** is an automated provisioning framework that runs a **zero-touch OOBE (Out-of-Box Experience)** routine {F046}. The routine {F047}:
+**Lazo Automation** is an automated provisioning framework that runs a **zero-touch OOBE (Out-of-Box Experience)** routine {F046}. The routine {F047}:
 
 1. **De-provisions** the hardware.
 2. **Wipes local caches**.
 3. **Steps through the setup wizard**.
 4. **Swaps merchants mid-suite** — the device comes up on the new merchant.
 
-Merchant Config (merchant account parameters {F136}) works alongside Laz for dynamic OOBE merchant switching {F140}.
+Merchant Config (merchant account parameters {F136}) works alongside Lazo for dynamic OOBE merchant switching {F140}.
 
-## Ubi Platform
+## Ubo Platform
 
-The **Ubi Platform** is the internal routing platform used when test jobs **dynamically switch merchant configurations** {F051}.
+The **Ubo Platform** is the internal routing platform used when test jobs **dynamically switch merchant configurations** {F051}.
 
 \`\`\`log
-ubi: routing merchant switch → AUTO-US-NOPIN-02†
-laz: de-provision
-laz: wipe caches
-laz: setup wizard 1/6 … 6/6
-laz: merchant active
+ubo: routing merchant switch → AUTO-US-NOPIN-02†
+lazo: de-provision
+lazo: wipe caches
+lazo: setup wizard 1/6 … 6/6
+lazo: merchant active
 \`\`\`
 
 ## Things to watch
 
 - A device that has just been through OOBE may need its lab ADB settings re-applied before it answers on port 5444 again†.
-- A merchant swap on a PayCore rig is exactly what Unavailable exists to prevent ([[orca-statuses]]).
+- A merchant swap on a PayCrest rig is exactly what Unavailable exists to prevent ([[orka-statuses]]).
 
-> **Illustrative (sim only):** The job \`Java/laz-oobe-merchant-swap\`†, the console lines and the six wizard pages are the sim's.
+> **Illustrative (sim only):** The job \`Java/lazo-oobe-merchant-swap\`†, the console lines and the six wizard pages are the sim's.
 `,
   },
 ]);

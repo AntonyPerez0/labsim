@@ -1,6 +1,6 @@
 /**
  * DR04 Power Path — click an output terminal (right side of a part), then an input terminal (left side) to
- * run a lead. Click a lead to pull it. A LabSim/Collis lead on DC (or an over-voltage) sparks instantly.
+ * run a lead. Click a lead to pull it. A LabSim/Kollis lead on DC (or an over-voltage) sparks instantly.
  * Enter = power on: every input is checked, missing inline fuses cost −100.
  */
 import { useMemo, useRef, useState } from 'react';

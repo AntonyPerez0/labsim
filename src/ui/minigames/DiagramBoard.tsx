@@ -104,7 +104,7 @@ export function DiagramBoard({ def, onSolved }: { def: DiagramBoardDef; onSolved
             </button>
           ))
         ) : (
-          <span className="muted">{solved ? 'Diagram complete: Jenkins executes, Orca controls, the Pi drives the hardware.' : "All cards placed. Click an arrow's “?” to name it."}</span>
+          <span className="muted">{solved ? 'Diagram complete: Jenkins executes, Orka controls, the Pi drives the hardware.' : "All cards placed. Click an arrow's “?” to name it."}</span>
         )}
       </div>
       <div className="mg-diagram__canvas" style={{ width: W, height: H }}>

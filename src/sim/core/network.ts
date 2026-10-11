@@ -114,7 +114,7 @@ export function reach(lab: LabState, fromHostId: string, target: string, port: n
   if (!r.hostId && !r.deviceId) return fail('no-route', 'No route to host', 0);
   const L = ro(lab);
   const hosts = ro(L.hosts);
-  const timeoutMs = ro(ro(L.orca).healthCheck).timeoutMs;
+  const timeoutMs = ro(ro(L.orka).healthCheck).timeoutMs;
   const from = ro(hosts[fromHostId]);
   const sameHost = r.hostId === fromHostId;
   if (!sameHost) {

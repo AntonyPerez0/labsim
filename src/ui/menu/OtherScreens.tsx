@@ -19,7 +19,7 @@ export function FreePlayScreen() {
   return (
     <div className="menu__page fp">
       <h1 className="menu__h1">Free Play</h1>
-      <p className="muted menu__lead">The whole lab, live: all twelve modelled rigs, every app, all 42 rigs in Orca and pipelines PL1–PL8. Break things on purpose with the Fault Injector, then fix them by the book.</p>
+      <p className="muted menu__lead">The whole lab, live: all twelve modelled rigs, every app, all 42 rigs in Orka and pipelines PL1–PL8. Break things on purpose with the Fault Injector, then fix them by the book.</p>
       {!unlock.unlocked ? (
         <EmptyState icon="lock" title="Free Play unlocks after M04" action={<Button onClick={() => startFreeplayRun({ fresh: true })}>Walk the lab anyway</Button>}>
           {unlock.reason} (Touch Robot Mechanics) to open the sandbox and Fault Injector.

@@ -2,7 +2,7 @@
  * SANDBOX ONLY — `sandbox-computer-web.html`: the real desktop shell over the REAL sim (factory preset) for the
  * web/pro apps of builder "computer-web" (Jenkins, GitHub, Lab Cameras, Ollama WebUI, GIMP).
  * Query: `?open=jenkins:/job/Java/,camera` opens apps (app[:route]); `?preset=academy:M16` picks a sim preset;
- * `?tick=0` freezes time; `?build=Java/uia-remote-regression-flux` starts a build at load.
+ * `?tick=0` freezes time; `?build=Java/uia-relay-regression-flux` starts a build at load.
  */
 import { createRoot } from 'react-dom/client';
 import { StrictMode } from 'react';

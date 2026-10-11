@@ -3,7 +3,7 @@
  * mini-map (device screen outline to scale, crosshair + dot at the gantry position).
  */
 import { FONTS, TABLET_ROBOT_TAB as RT, LAYOUT_CLASS_SIZE_MM, layoutClassFor } from './api';
-import type { LabState, OrcaRobot, RigState } from '@/sim/types';
+import type { LabState, OrkaRobot, RigState } from '@/sim/types';
 import { roundRectPath } from './shared/theme';
 
 type Ctx = CanvasRenderingContext2D;
@@ -28,13 +28,13 @@ const STATUS_LABEL: Readonly<Record<string, string>> = {
   RESERVED: 'Reserved',
 };
 
-export function drawRobotTab(c: Ctx, lab: LabState, rig: RigState, robot: OrcaRobot | null): void {
+export function drawRobotTab(c: Ctx, lab: LabState, rig: RigState, robot: OrkaRobot | null): void {
   const dev = rig.deviceIds?.map((id) => lab.devices?.[id]).find(Boolean) ?? null;
   const pi = rig.piHostId ? lab.hosts?.[rig.piHostId] : undefined;
   const rows: [string, string | { chip: string; color: string }][] = [
     ['Name', robot?.name ?? rig.id],
     ['Human Readable Name', robot?.humanReadableName ?? rig.id.toUpperCase()],
-    ['Orca status', { chip: STATUS_LABEL[robot?.status ?? 'AVAILABLE'] ?? String(robot?.status ?? '—'), color: RT.statusChips[robot?.status ?? 'AVAILABLE'] ?? '#6b7280' }],
+    ['Orka status', { chip: STATUS_LABEL[robot?.status ?? 'AVAILABLE'] ?? String(robot?.status ?? '—'), color: RT.statusChips[robot?.status ?? 'AVAILABLE'] ?? '#6b7280' }],
     ['Device', dev ? `${dev.type} · ${dev.serial}` : '—'],
     ['Device IP', dev ? `${dev.ip}:${dev.adbPort ?? 5444}` : '—'],
     ['Robot Pi', pi?.ip ?? '—'],

@@ -131,7 +131,7 @@ export function Desktop(props: { onExit?: () => void }) {
   );
 
   // Native text fields share the in-game clipboard (Apps §1.6): Ctrl+C/X in any input, address bar or page
-  // text lands in it, and Ctrl+V into a native field pastes it — so "copy the URL in Orca → paste in the
+  // text lands in it, and Ctrl+V into a native field pastes it — so "copy the URL in Orka → paste in the
   // Terminal" works even where the system clipboard is unavailable. Apps that own copy/paste
   // (IntelliJ editor, Terminal) preventDefault and are left alone. Document-level bubble listeners run after
   // React's handlers, so `defaultPrevented` is final here.

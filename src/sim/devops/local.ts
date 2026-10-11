@@ -5,19 +5,19 @@
  */
 import type { TxContext } from '@/core/store';
 import type { LabState, LocalRun } from '../types';
-import { UIA_PATHS } from '../seed/repos/uiaRemote';
+import { UIA_PATHS } from '../seed/repos/uiaRelay';
 import { parseRunConfig, robotByName, deviceRow } from './config';
 import { advanceRunner, newRunner, runnerDone, runnerPassed, stopRunner } from './runners/engine';
 import type { RC, RunnerHost } from './runners/engine';
-import { compilePigeonPlan } from './runners/pigeon';
+import { compileParrotPlan } from './runners/parrot';
 import { compileUiaPlan } from './runners/uia';
 import { HOME, tildify } from './util';
 
-const CWM = /^~\/CodeWithMe\/([^/]+)\/uia-remote\/(.+)$/;
+const CWM = /^~\/CodeWithMe\/([^/]+)\/uia-relay\/(.+)$/;
 
 /** Read a file the run uses: the local clone (by repo path) or a workstation path (Code With Me). */
 function readConfig(lab: LabState, configPath: string): string | null {
-  const local = lab.repos['uia-remote'].local;
+  const local = lab.repos['uia-relay'].local;
   const p = tildify(configPath.replace(/^\/home\/engineer/, HOME));
   if (local && (p === `${local.path}/config.properties` || p === 'config.properties')) return local.files['config.properties'] ?? null;
   const ws = lab.workstation.files[p];
@@ -25,11 +25,11 @@ function readConfig(lab: LabState, configPath: string): string | null {
 }
 
 function codeTree(lab: LabState, configPath: string): Record<string, string> {
-  const local = lab.repos['uia-remote'].local;
-  const base: Record<string, string> = { ...(local?.files ?? lab.repos['uia-remote'].files) };
+  const local = lab.repos['uia-relay'].local;
+  const base: Record<string, string> = { ...(local?.files ?? lab.repos['uia-relay'].files) };
   const m = CWM.exec(configPath);
   if (m) {
-    const prefix = `~/CodeWithMe/${m[1]}/uia-remote/`;
+    const prefix = `~/CodeWithMe/${m[1]}/uia-relay/`;
     for (const [k, v] of Object.entries(lab.workstation.files)) if (k.startsWith(prefix)) base[k.slice(prefix.length)] = v;
   }
   return base;
@@ -53,7 +53,7 @@ function envFromConfig(lab: LabState, values: Record<string, string>): Record<st
   };
 }
 
-export function runLocal(lab: LabState, ctx: TxContext, repo: 'uia-remote' | 'pigeon', testPath: string, actor: string, configPath?: string): { ok: true; runId: string } | { ok: false; error: string } {
+export function runLocal(lab: LabState, ctx: TxContext, repo: 'uia-relay' | 'parrot', testPath: string, actor: string, configPath?: string): { ok: true; runId: string } | { ok: false; error: string } {
   const r = lab.repos[repo];
   const local = r?.local;
   if (!local) return { ok: false, error: `Project '${repo}' is not open — clone it first` };
@@ -74,7 +74,7 @@ export function runLocal(lab: LabState, ctx: TxContext, repo: 'uia-remote' | 'pi
     passed: null,
     failureCode: null,
     output: [],
-    runner: newRunner(repo === 'pigeon' ? 'pigeon' : 'uia-remote', []),
+    runner: newRunner(repo === 'parrot' ? 'parrot' : 'uia-relay', []),
     overlappedJenkins: false,
     configPath: cfgPath,
   };
@@ -86,15 +86,15 @@ export function runLocal(lab: LabState, ctx: TxContext, repo: 'uia-remote' | 'pi
     run.failureCode = code;
     run.finishedMs = lab.time.nowMs;
   };
-  const tree = repo === 'uia-remote' ? codeTree(lab, cfgPath) : { ...local.files };
+  const tree = repo === 'uia-relay' ? codeTree(lab, cfgPath) : { ...local.files };
   if (tree[path] === undefined) {
     ctx.emit('test.localRunStarted', { runId: id, testName, robotName: null });
-    finishNow('SCRIPT', [repo === 'uia-remote' ? `No tests found for given includes: [com.labsim.uia.testactions.${testName}]` : `LSTR ParseError: file not found ${path}`]);
+    finishNow('SCRIPT', [repo === 'uia-relay' ? `No tests found for given includes: [com.labsim.uia.testactions.${testName}]` : `LSTR ParseError: file not found ${path}`]);
     ctx.emit('test.localRunFinished', { runId: id, testName, passed: false, failureCode: run.failureCode, robotName: null, overlappedJenkins: false });
     return { ok: true, runId: id };
   }
   let env: Record<string, string>;
-  if (repo === 'uia-remote') {
+  if (repo === 'uia-relay') {
     const cfg = parseRunConfig(readConfig(lab, cfgPath));
     const robotName = cfg.ok ? cfg.config.robotName : null;
     run.robotName = robotName || null;
@@ -105,7 +105,7 @@ export function runLocal(lab: LabState, ctx: TxContext, repo: 'uia-remote' | 'pi
       return { ok: true, runId: id };
     }
     env = envFromConfig(lab, cfg.values);
-    run.runner = newRunner('uia-remote', compileUiaPlan({ tests: [testName], env, tree, local: true }), { 'l.env': JSON.stringify(env) });
+    run.runner = newRunner('uia-relay', compileUiaPlan({ tests: [testName], env, tree, local: true }), { 'l.env': JSON.stringify(env) });
   } else {
     const robotName = lab.workstation.configProperties['robotName'] || '';
     const robot = robotByName(lab, robotName);
@@ -115,7 +115,7 @@ export function runLocal(lab: LabState, ctx: TxContext, repo: 'uia-remote' | 'pi
     testName = `LSTR: ${path.slice(path.lastIndexOf('/') + 1)}`;
     run.testName = testName;
     ctx.emit('test.localRunStarted', { runId: id, testName, robotName: run.robotName });
-    run.runner = newRunner('pigeon', compilePigeonPlan(local.files[path]!, path, 'ANDROID', env, true), { 'l.env': JSON.stringify(env) });
+    run.runner = newRunner('parrot', compileParrotPlan(local.files[path]!, path, 'ANDROID', env, true), { 'l.env': JSON.stringify(env) });
   }
   const robot = run.robotName ? robotByName(lab, run.robotName) : null;
   lab.workstation.locallyRunningTest = { robotId: robot?.id ?? null, testName, startedMs: lab.time.nowMs };
@@ -132,7 +132,7 @@ function host(lab: LabState, run: LocalRun): RunnerHost {
     fromHost: 'ws-17',
     robot: run.robotName ? robotByName(lab, run.robotName) : null,
     env,
-    tree: run.repo === 'uia-remote' ? codeTree(lab, run.configPath) : { ...(lab.repos['pigeon'].local?.files ?? {}) },
+    tree: run.repo === 'uia-relay' ? codeTree(lab, run.configPath) : { ...(lab.repos['parrot'].local?.files ?? {}) },
     actor: 'player',
   };
 }

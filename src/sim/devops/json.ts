@@ -2,7 +2,7 @@
  * Strict JSON parser with the LSTR error messages of Sim §3.20.1 — it reports the FIRST unexpected
  * token, which for a missing comma is the token *after* the gap (the lesson: look at the end of the
  * previous line). Line/column are 1-based, tabs count as one column. Also used by Jenkins
- * `readJSON` (§3.18.3 #2) and Jared's review (§3.22.2).
+ * `readJSON` (§3.18.3 #2) and Jaden's review (§3.22.2).
  */
 
 export type JsonValue = null | boolean | number | string | JsonValue[] | { [k: string]: JsonValue };

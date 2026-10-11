@@ -26,64 +26,64 @@ export const PRESET_TABLE: Record<PresetKind, { config: Omit<SimConfig, 'logCap'
 export const ACADEMY_MODULES = Array.from({ length: 18 }, (_, i) => `M${String(i + 1).padStart(2, '0')}`);
 export const PRESET_NAMES = ['factory', 'arcade', 'freeplay', 'cert', 'test', ...ACADEMY_MODULES.map((m) => `academy:${m}`)];
 
-const PIGEON_SWIPE = 'tests/sale/swipe_sale_print.json';
+const PARROT_SWIPE = 'tests/sale/swipe_sale_print.json';
 
 /** Sim §4.4.2 "At reset (in order)" per Academy module. */
 export const ACADEMY_SCENARIOS: Record<string, ScenarioItem[]> = {
-  M01: [{ faultId: 'rig.testRunning', params: { rig: 'wall-e', job: 'Java/uia-remote-regression-flux', number: 4120 } }],
+  M01: [{ faultId: 'rig.testRunning', params: { rig: 'wall-e', job: 'Java/uia-relay-regression-flux', number: 4120 } }],
   M02: [],
   M03: [
     { faultId: 'fuse.blown', params: { fuse: 'F-RACKB-5V' } },
     { op: 'power.addLoad', params: { id: 'psu-flux4-new', label: 'New Flux 4 power brick', expects: 'AC-BRICK-18V', drawA: 0.5 } },
-    { op: 'power.addLoad', params: { id: 'psu-collis-spare', label: 'Spare Collis probe PSU', expects: 'AC-BRICK-18V', drawA: 0.3 } },
+    { op: 'power.addLoad', params: { id: 'psu-kollis-spare', label: 'Spare Kollis probe PSU', expects: 'AC-BRICK-18V', drawA: 0.3 } },
   ],
   M04: [],
   M05: [],
   M06: [],
   M07: [
-    { faultId: 'orca.hrnTypo', params: { robot: 'johnny-5' } },
+    { faultId: 'orka.hrnTypo', params: { robot: 'johnny-5' } },
     { op: 'device.swap', params: { rig: 'johnny-5', deviceId: 'dev-spare-flux2' } },
-    { faultId: 'orca.urlWrong', params: { robot: 'johnny-5', field: 'tap', value: '' } },
-    { faultId: 'orca.tetherCleared', params: { robot: 'optimus' } },
-    { faultId: 'orca.offsets', params: { robot: 'bumblebee', yMm: 1.5 } },
+    { faultId: 'orka.urlWrong', params: { robot: 'johnny-5', field: 'tap', value: '' } },
+    { faultId: 'orka.tetherCleared', params: { robot: 'optimus' } },
+    { faultId: 'orka.offsets', params: { robot: 'bumblebee', yMm: 1.5 } },
   ],
   M08: [
     { faultId: 'merchant.credentialBlank', params: { merchant: 'GO-SDK-US-01', field: 'apiKey' } },
-    { faultId: 'gort.capabilityDropped', params: { path: 'go-sdk/tests/sale_receipt.json', key: 'printer' } },
+    { faultId: 'gorth.capabilityDropped', params: { path: 'go-sdk/tests/sale_receipt.json', key: 'printer' } },
   ],
   M09: [
     { op: 'flag.set', params: { flag: 'receiptQrFeature', value: false } },
     { faultId: 'receipt.qrRollout', params: { devices: ['dev-eve-flux4'] } },
-    { faultId: 'orca.missingReceiptMap', params: { deviceType: 'FLUX_4' } },
-    { op: 'repo.deleteFile', params: { repo: 'gort', path: 'config/screen-locations/FLUX_4/RECEIPT_OPTIONS_5.json', by: 'jared', message: 'Remove unverified FLUX_4 5-option map' } },
+    { faultId: 'orka.missingReceiptMap', params: { deviceType: 'FLUX_4' } },
+    { op: 'repo.deleteFile', params: { repo: 'gorth', path: 'config/screen-locations/FLUX_4/RECEIPT_OPTIONS_5.json', by: 'jaden', message: 'Remove unverified FLUX_4 5-option map' } },
   ],
   M10: [],
-  M11: [{ faultId: 'jenkins.envCase', params: { job: 'Java/uia-remote-regression-flux', value: 'flux_3' } }],
+  M11: [{ faultId: 'jenkins.envCase', params: { job: 'Java/uia-relay-regression-flux', value: 'flux_3' } }],
   M12: [],
   M13: [
     { faultId: 'uia.scrollSwapped', params: { mode: 'swapped' } },
     { faultId: 'uia.missingScreenMethods', params: { class: 'ReceiptScreen' } },
   ],
   M14: [
-    { op: 'repo.clone', params: { repo: 'uia-remote' } },
+    { op: 'repo.clone', params: { repo: 'uia-relay' } },
     { op: 'config.write', params: { fixture: 'm14-broken' } },
     { op: 'ws.adbKnows', params: { target: '10.42.60.4:5555' } },
   ],
   M15: [
-    { op: 'github.unmergePr', params: { repo: 'gort', number: 418 } },
-    { op: 'repo.commitFixture', params: { repo: 'pigeon', path: PIGEON_SWIPE, fixture: 'm15-expanded', by: 'alex', message: 'Expand swipe sale actions' } },
-    { faultId: 'pigeon.missingComma', params: { path: PIGEON_SWIPE, line: 22 } },
-    { op: 'jenkins.setParam', params: { job: 'Java/pigeon-android-sale-swipe', param: 'ROBOT_NAME', value: 'bumblebee' } },
+    { op: 'github.unmergePr', params: { repo: 'gorth', number: 418 } },
+    { op: 'repo.commitFixture', params: { repo: 'parrot', path: PARROT_SWIPE, fixture: 'm15-expanded', by: 'alex', message: 'Expand swipe sale actions' } },
+    { faultId: 'parrot.missingComma', params: { path: PARROT_SWIPE, line: 22 } },
+    { op: 'jenkins.setParam', params: { job: 'Java/parrot-android-sale-swipe', param: 'ROBOT_NAME', value: 'bumblebee' } },
   ],
   M16: [
-    { op: 'github.unmergePr', params: { repo: 'uia-remote', number: 398 } },
-    { op: 'orca.deleteEntity', params: { entity: 'screenCompareImage', name: 'CFD_TOTAL' } },
+    { op: 'github.unmergePr', params: { repo: 'uia-relay', number: 398 } },
+    { op: 'orka.deleteEntity', params: { entity: 'screenCompareImage', name: 'CFD_TOTAL' } },
     { op: 'device.stage', params: { device: 'dev-r2-d2-duet', stage: 'review-order' } },
-    { op: 'repo.clone', params: { repo: 'uia-remote' } },
+    { op: 'repo.clone', params: { repo: 'uia-relay' } },
     { op: 'config.write', params: { fixture: 'target', robot: 'megatron' } },
-    { op: 'repo.commitFixture', params: { repo: 'pigeon', path: PIGEON_SWIPE, fixture: 'm16-with-compare', by: 'morgan', message: 'Add CFD total screen compare' } },
+    { op: 'repo.commitFixture', params: { repo: 'parrot', path: PARROT_SWIPE, fixture: 'm16-with-compare', by: 'morgan', message: 'Add CFD total screen compare' } },
   ],
-  M17: [{ op: 'github.reopenPr', params: { repo: 'uia-remote', number: 212 } }],
+  M17: [{ op: 'github.reopenPr', params: { repo: 'uia-relay', number: 212 } }],
   M18: [],
 };
 

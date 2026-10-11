@@ -9,7 +9,7 @@ import { sim } from '@/sim';
 import type { RepoId } from '@/sim';
 import { Dialog } from './Dialog';
 
-const REPOS: RepoId[] = ['gort', 'uia-remote', 'pigeon', 'orchestrator'];
+const REPOS: RepoId[] = ['gorth', 'uia-relay', 'parrot', 'orchestrator'];
 
 export function parseRepoUrl(url: string): {
   repo: RepoId | null;

@@ -77,22 +77,22 @@ function MicroRender({ r }: { r: TriageRender }) {
       </div>
     );
   }
-  if (r.kind === 'orca') {
+  if (r.kind === 'orka') {
     return (
-      <div className="dr01-orca">
-        <div className="dr01-orca__bar">Orca · Robots</div>
-        <div className="dr01-orca__row">
+      <div className="dr01-orka">
+        <div className="dr01-orka__bar">Orka · Robots</div>
+        <div className="dr01-orka__row">
           {r.lines.map((l, i) => (
-            <span key={i} className="dr01-orca__cell">
+            <span key={i} className="dr01-orka__cell">
               {l}
             </span>
           ))}
-          <span className="dr01-orca__cell dr01-orca__status">status ?</span>
+          <span className="dr01-orka__cell dr01-orka__status">status ?</span>
         </div>
       </div>
     );
   }
-  const title = { notes: 'Orca · Notes', health: 'Orca · Health log', terminal: 'Terminal', jenkins: 'Jenkins · Console' }[r.kind];
+  const title = { notes: 'Orka · Notes', health: 'Orka · Health log', terminal: 'Terminal', jenkins: 'Jenkins · Console' }[r.kind];
   return (
     <div className={`dr01-log is-${r.kind}`}>
       <div className="dr01-log__title">{title}</div>

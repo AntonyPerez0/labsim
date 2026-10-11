@@ -42,7 +42,7 @@ function solve(id: string, text: string, ctx: Record<string, unknown>): string {
   }
 }
 
-describe('Pigeon Practice exercises', () => {
+describe('Parrot Practice exercises', () => {
   for (const ex of EXERCISES) {
     it(`${ex.id}: every variant starts failing and the fix passes`, () => {
       for (let i = 0; i < 40; i++) {

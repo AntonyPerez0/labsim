@@ -1,10 +1,10 @@
 /**
- * Rig-side interactables (World §9.2 "Touch rigs" and "Callus shelf, tethered bench, ADB shelf"):
- * rack rails, rack distribution, the 8 touch rigs (every part id), Collis probes, the tethered
+ * Rig-side interactables (World §9.2 "Touch rigs" and "Kallus shelf, tethered bench, ADB shelf"):
+ * rack rails, rack distribution, the 8 touch rigs (every part id), Kollis probes, the tethered
  * faces/docks/probes and the ADB bots. Built by the world-rigs team.
  */
 import { DEVICE_MODELS } from './devices';
-import { SHELF_IDS, collisId, rigPartId, touchRigPartList } from './ids';
+import { SHELF_IDS, kollisId, rigPartId, touchRigPartList } from './ids';
 import { E, G, R, REACH, ia, deviceVerbs, fuseVerbs, piVerbs, webcamVerbs, SCREWDRIVER, MULTIMETER, type InteractableSpec } from './interactionSpec';
 import { RACK_DISTRIBUTION } from './power';
 import { RACKS, railUnitId, RACK_FRAME } from './racks';
@@ -104,7 +104,7 @@ function touchRigEntries(rig: TouchRigDef): InteractableSpec[] {
         ], ['Dip arm', 'Sector gear "63"', 'White card insert → chip slot'], z, b, inBay));
         break;
       case 'tap-paddle':
-        out.push(ia(pid, 'Tap paddle', [], ['Tap paddle — Collis NFC antenna'], z, b, inBay));
+        out.push(ia(pid, 'Tap paddle', [], ['Tap paddle — Kollis NFC antenna'], z, b, inBay));
         break;
       case 'phone-sled':
         out.push(ia(pid, 'Phone carriage', [], ['Phone carriage & power-button pusher'], z, b, inBay));
@@ -159,9 +159,9 @@ function touchRigEntries(rig: TouchRigDef): InteractableSpec[] {
   }
 
   out.push(
-    ia(collisId(id), `Collis probe — ${hrn}`, [
-      E('Re-seat rear ribbon', { sim: `sim.collis.reseatRibbon('${sim.collisId}', 'player')` }),
-      R('Unplug / Plug PSU', { sim: `sim.power.unplug('${sim.collisLoadId}') / sim.power.plug('${sim.collisLoadId}', hookup)`, effect: 'socket picker' }),
+    ia(kollisId(id), `Kollis probe — ${hrn}`, [
+      E('Re-seat rear ribbon', { sim: `sim.kollis.reseatRibbon('${sim.kollisId}', 'player')` }),
+      R('Unplug / Plug PSU', { sim: `sim.power.unplug('${sim.kollisLoadId}') / sim.power.plug('${sim.kollisLoadId}', hookup)`, effect: 'socket picker' }),
     ], ['UL Transaction Security', `Rear ribbon cable → ${hrn}'s card reader`, 'Power: AC strip'], z, b),
   );
   return out;

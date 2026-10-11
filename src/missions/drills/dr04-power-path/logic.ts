@@ -3,8 +3,8 @@
  *
  * Correct graph (Ref §6.3, F227–F229; F074, F085–F087): wall → Mean Well; wall → AC strip; Mean Well 24 V →
  * step-down inputs (and the motor PCB [illus.]); 12 V → inline fuse → NUC; 5 V 10 A → inline fuse → Pis;
- * LabSim PSUs → AC strip; Collis PSU → AC strip.
- * - A LabSim or Collis lead on any DC terminal = instant spark, −300 and a Teach Card (the 18 V exception).
+ * LabSim PSUs → AC strip; Kollis PSU → AC strip.
+ * - A LabSim or Kollis lead on any DC terminal = instant spark, −300 and a Teach Card (the 18 V exception).
  *   Over-voltage on a Pi/NUC (or AC into a DC input) fries it the same way.
  * - A DC load wired straight to its regulator (no inline fuse) works but costs −100 at submit.
  * Scoring (custom): +50 per correct input, −100 per missing fuse, −300 per spark; a perfect board adds +150
@@ -17,7 +17,7 @@ import { chance, shuffle, type RngState } from '../common/rng';
 import { streakMultiplier } from '../common/scoring';
 import { teach } from '../common/teach';
 
-export type NodeId = 'wall' | 'strip' | 'meanwell' | 'reg12' | 'reg5' | 'fuseA' | 'fuseB' | 'pi' | 'nuc' | 'flux4' | 'micro3' | 'collis' | 'motor';
+export type NodeId = 'wall' | 'strip' | 'meanwell' | 'reg12' | 'reg5' | 'fuseA' | 'fuseB' | 'pi' | 'nuc' | 'flux4' | 'micro3' | 'kollis' | 'motor';
 
 export type Volt = 'AC' | '24V' | '12V' | '5V';
 
@@ -43,7 +43,7 @@ export const NODES: Record<NodeId, PowerNode> = {
   nuc: { id: 'nuc', label: 'Intel NUC', sub: 'needs 12 V DC', col: 4, hasIn: true, hasOut: false },
   flux4: { id: 'flux4', label: 'Flux 4 PSU', sub: 'LabSim device (18 V)', col: 4, hasIn: true, hasOut: false },
   micro3: { id: 'micro3', label: 'Micro 3 PSU', sub: 'LabSim device (18 V)', col: 4, hasIn: true, hasOut: false },
-  collis: { id: 'collis', label: 'Collis probe PSU', sub: 'UL Transaction Security', col: 4, hasIn: true, hasOut: false },
+  kollis: { id: 'kollis', label: 'Kollis probe PSU', sub: 'UL Transaction Security', col: 4, hasIn: true, hasOut: false },
   motor: { id: 'motor', label: 'Motor controller PCB', sub: '25-pin · 24 V [illus.]', col: 4, hasIn: true, hasOut: false },
 };
 
@@ -60,7 +60,7 @@ export interface BoardData {
   columns: NodeId[][];
 }
 
-const terminalish: NodeId[] = ['flux4', 'micro3', 'collis'];
+const terminalish: NodeId[] = ['flux4', 'micro3', 'kollis'];
 const DC_LOADS: Partial<Record<NodeId, { reg: NodeId; volt: Volt }>> = { pi: { reg: 'reg5', volt: '5V' }, nuc: { reg: 'reg12', volt: '12V' } };
 
 /** Voltage present at a node's output, following wires upstream (null = unpowered). */
@@ -104,7 +104,7 @@ export function nominal(id: NodeId, wires: readonly Wire[]): Volt | null {
 export function sparkFor(from: NodeId, to: NodeId, wires: readonly Wire[]): string | null {
   const v = nominal(from, wires);
   if (!v) return null;
-  if (terminalish.includes(to) && v !== 'AC') return `${NODES[to].label} on a ${v === '24V' ? '24 V' : v === '12V' ? '12 V' : '5 V'} DC terminal — LabSim devices draw an irregular 18 V; they and the Collis probes bypass the DC rails and plug into commercial AC strips.`;
+  if (terminalish.includes(to) && v !== 'AC') return `${NODES[to].label} on a ${v === '24V' ? '24 V' : v === '12V' ? '12 V' : '5 V'} DC terminal — LabSim devices draw an irregular 18 V; they and the Kollis probes bypass the DC rails and plug into commercial AC strips.`;
   const load = DC_LOADS[to];
   if (load && v === 'AC') return `120 V AC straight into the ${NODES[to].label} — it needs ${load.volt === '5V' ? '5 V' : '12 V'} DC from its step-down regulator.`;
   if (to === 'pi' && (v === '12V' || v === '24V')) return `${v === '12V' ? '12 V' : '24 V'} into a Pi — the Pis run on the 5 V DC 10 A line.`;
@@ -162,9 +162,9 @@ function boardSpec(rng: RngState, index: number): BoardSpec {
   if (slot === 0) return { key: 'shelf', title: 'Board 1 — the Pi & NUC shelf', nodes: ['wall', 'meanwell', 'reg12', 'reg5', 'fuseA', 'fuseB', 'pi', 'nuc'] };
   if (slot === 1) {
     const lab: NodeId = chance(rng, 0.5) ? 'flux4' : 'micro3';
-    return { key: `arrivals-${lab}`, title: 'Board 2 — new arrivals on the bench', nodes: ['wall', 'strip', 'meanwell', 'reg5', 'fuseA', 'pi', lab, 'collis'] };
+    return { key: `arrivals-${lab}`, title: 'Board 2 — new arrivals on the bench', nodes: ['wall', 'strip', 'meanwell', 'reg5', 'fuseA', 'pi', lab, 'kollis'] };
   }
-  return { key: 'full', title: 'Board 3 — the whole power wall', nodes: ['wall', 'strip', 'meanwell', 'reg12', 'reg5', 'fuseA', 'fuseB', 'pi', 'nuc', 'flux4', 'micro3', 'collis', 'motor'] };
+  return { key: 'full', title: 'Board 3 — the whole power wall', nodes: ['wall', 'strip', 'meanwell', 'reg12', 'reg5', 'fuseA', 'fuseB', 'pi', 'nuc', 'flux4', 'micro3', 'kollis', 'motor'] };
 }
 
 export function powerItem(spec: BoardSpec, rng: RngState): DrillItem<BoardData> {
@@ -175,8 +175,8 @@ export function powerItem(spec: BoardSpec, rng: RngState): DrillItem<BoardData> 
     tags: ['power.rails', 'power.fuses', 'power.18v'],
     factIds: facts,
     teach: teach(
-      'Wall → Mean Well → 24 V rail → step-downs → inline fuses → NUC (12 V) / Pis (5 V 10 A); LabSim + Collis → AC strip',
-      '120 V AC enters a Mean Well and drops to a central 24 V DC rail; step-down regulators split it into 12 V DC (NUCs) and 5 V DC 10 A (Pis), protected by inline fuses. LabSim devices draw an irregular 18 V, so they and the Collis probes plug into commercial AC power strips.',
+      'Wall → Mean Well → 24 V rail → step-downs → inline fuses → NUC (12 V) / Pis (5 V 10 A); LabSim + Kollis → AC strip',
+      '120 V AC enters a Mean Well and drops to a central 24 V DC rail; step-down regulators split it into 12 V DC (NUCs) and 5 V DC 10 A (Pis), protected by inline fuses. LabSim devices draw an irregular 18 V, so they and the Kollis probes plug into commercial AC power strips.',
       { ref: 'Ref §6.3', factIds: facts, tag: 'power.rails' },
     ),
     data: { title: spec.title, nodes: spec.nodes, columns },

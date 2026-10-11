@@ -18,7 +18,7 @@ function fuseOk(lab: LabState, id: string): boolean {
 export const POWER_FAULTS: CoreFaultDef[] = [
   {
     info: info('fuse.blown', 'Inline fuse blown', 'power', [p('fuse', 'fuse', 'F-RACKA-5V, F-RACKB-5V, F-BENCH-5V or F-NUC-12V; @random = the three 5 V fuses', { required: true, target: true, values: FUSES, example: 'F-RACKB-5V' })], {
-      tags: ['power.fuses', 'power.rails', 'hw.pi', 'orca.status.connfailed'],
+      tags: ['power.fuses', 'power.rails', 'hw.pi', 'orka.status.connfailed'],
       clears: '!blown && !removed, hold 20 000 ms',
       symptoms: ['its rail reads 0 V: every load on the branch unpowered (Rack B: Pis .15–.18 and camera Pi .40 dark)', 'all their rigs connect timed out with the same timestamp', 'tablets grey', 'F-RACKB-5V.load 0.00 V DC, fuse removed Ω OL', 'ROSIE returns to Unavailable on recovery'],
       usedBy: ['INC03', 'M03', 'P1-2', 'FP'],

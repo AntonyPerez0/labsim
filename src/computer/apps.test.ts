@@ -48,38 +48,38 @@ describe('APP_META / APP_REGISTRY', () => {
   }, 60_000);
 
   it('IntelliJ windows are keyed by repo', () => {
-    expect(APP_META.intellij.instanceKey?.({ repo: 'pigeon' })).toBe('pigeon');
+    expect(APP_META.intellij.instanceKey?.({ repo: 'parrot' })).toBe('parrot');
     expect(APP_META.intellij.instanceKey?.({})).toBe('welcome');
   });
 });
 
 describe('routes', () => {
   it('builds and matches parametrised routes', () => {
-    const route = buildRoute(APP_ROUTES.orca.robotEdit, { id: 5 });
+    const route = buildRoute(APP_ROUTES.orka.robotEdit, { id: 5 });
     expect(route).toBe('/robot/5/edit');
-    expect(matchRoute(APP_ROUTES.orca.robotEdit, route)?.params).toEqual({ id: '5' });
-    expect(matchRoute(APP_ROUTES.orca.robotView, route)).toBeNull();
+    expect(matchRoute(APP_ROUTES.orka.robotEdit, route)?.params).toEqual({ id: '5' });
+    expect(matchRoute(APP_ROUTES.orka.robotView, route)).toBeNull();
   });
 
   it('keeps query strings out of the template and ignores their order', () => {
-    const route = buildRoute(APP_ROUTES.orca.robots, {}, { 'status.in': 'AVAILABLE,RESERVED', page: 1, 'name.contains': '' });
+    const route = buildRoute(APP_ROUTES.orka.robots, {}, { 'status.in': 'AVAILABLE,RESERVED', page: 1, 'name.contains': '' });
     expect(route).toBe('/robot?status.in=AVAILABLE,RESERVED&page=1');
-    const m = matchRoute(APP_ROUTES.orca.robots, '/robot?page=1&status.in=AVAILABLE');
+    const m = matchRoute(APP_ROUTES.orka.robots, '/robot?page=1&status.in=AVAILABLE');
     expect(m?.query).toEqual({ page: '1', 'status.in': 'AVAILABLE' });
   });
 
   it('ignores trailing slashes (Jenkins) and decodes params', () => {
-    const m = matchRoute(APP_ROUTES.jenkins.console, '/job/Java/job/uia-remote-regression-flux/4127/console/');
-    expect(m?.params).toEqual({ folder: 'Java', job: 'uia-remote-regression-flux', number: '4127' });
+    const m = matchRoute(APP_ROUTES.jenkins.console, '/job/Java/job/uia-relay-regression-flux/4127/console/');
+    expect(m?.params).toEqual({ folder: 'Java', job: 'uia-relay-regression-flux', number: '4127' });
     expect(matchRoute(APP_ROUTES.jenkins.view, '/view/Java')?.params.view).toBe('Java');
   });
 
   it('captures *rest params including slashes (GitHub branches with "/")', () => {
-    const route = buildRoute(APP_ROUTES.github.blob, { repo: 'gort', ref: 'fix/flux4-receipt-qr/config/screen-locations/FLUX_4/RECEIPT_OPTIONS_5.json' });
-    expect(route).toBe('/labsim-lab/gort/blob/fix/flux4-receipt-qr/config/screen-locations/FLUX_4/RECEIPT_OPTIONS_5.json');
+    const route = buildRoute(APP_ROUTES.github.blob, { repo: 'gorth', ref: 'fix/flux4-receipt-qr/config/screen-locations/FLUX_4/RECEIPT_OPTIONS_5.json' });
+    expect(route).toBe('/labsim-lab/gorth/blob/fix/flux4-receipt-qr/config/screen-locations/FLUX_4/RECEIPT_OPTIONS_5.json');
     expect(matchRoute(APP_ROUTES.github.blob, route)?.params.ref).toBe('fix/flux4-receipt-qr/config/screen-locations/FLUX_4/RECEIPT_OPTIONS_5.json');
-    const file = buildRoute(APP_ROUTES.intellij.file, { repo: 'uia-remote', path: 'app/src/main/java/com/labsim/uia/AppRegistration.java' });
-    expect(matchRoute(APP_ROUTES.intellij.file, file)?.params).toEqual({ repo: 'uia-remote', path: 'app/src/main/java/com/labsim/uia/AppRegistration.java' });
+    const file = buildRoute(APP_ROUTES.intellij.file, { repo: 'uia-relay', path: 'app/src/main/java/com/labsim/uia/AppRegistration.java' });
+    expect(matchRoute(APP_ROUTES.intellij.file, file)?.params).toEqual({ repo: 'uia-relay', path: 'app/src/main/java/com/labsim/uia/AppRegistration.java' });
   });
 
   it('browser raw route is the full URL', () => {
@@ -89,10 +89,10 @@ describe('routes', () => {
 
 describe('resolveUrl (browser host table)', () => {
   it('maps lab hosts to apps', () => {
-    expect(resolveUrl('http://orca.lab.local:8080/robot/5/view')).toEqual({ app: 'orca', route: '/robot/5/view', origin: 'http://orca.lab.local:8080' });
-    expect(resolveUrl('10.42.1.10:8080').app).toBe('orca');
+    expect(resolveUrl('http://orka.lab.local:8080/robot/5/view')).toEqual({ app: 'orka', route: '/robot/5/view', origin: 'http://orka.lab.local:8080' });
+    expect(resolveUrl('10.42.1.10:8080').app).toBe('orka');
     expect(resolveUrl('http://jenkins.lab.local:8080/view/Java/')).toMatchObject({ app: 'jenkins', route: '/view/Java/' });
-    expect(resolveUrl('https://github.com/labsim-lab/gort')).toMatchObject({ app: 'github', route: '/labsim-lab/gort' });
+    expect(resolveUrl('https://github.com/labsim-lab/gorth')).toMatchObject({ app: 'github', route: '/labsim-lab/gorth' });
     expect(resolveUrl('http://10.42.1.12:3000/')).toMatchObject({ app: 'ollama', route: '/' });
     expect(resolveUrl('http://10.42.10.40:8081/stream.mjpg')).toMatchObject({ app: 'camera', route: '/stream/10.42.10.40' });
     expect(resolveUrl('http://10.42.10.11:8000/health')).toMatchObject({ app: 'browser', route: 'http://10.42.10.11:8000/health' });
@@ -113,11 +113,11 @@ describe('actions', () => {
 
   it('emitAppAction delivers a typed payload to onAppAction', () => {
     const seen: unknown[] = [];
-    const off = onAppAction('orca.merchant.editOpened', (data, app) => seen.push({ data, app }));
-    emitAppAction('orca', 'orca.merchant.editOpened', { merchantId: 3, name: 'GO-SDK-US-01' });
-    emitAppAction('orca', 'orca.merchant.saved', { merchantId: 3, name: 'GO-SDK-US-01', changed: ['apiKey'] });
+    const off = onAppAction('orka.merchant.editOpened', (data, app) => seen.push({ data, app }));
+    emitAppAction('orka', 'orka.merchant.editOpened', { merchantId: 3, name: 'GO-SDK-US-01' });
+    emitAppAction('orka', 'orka.merchant.saved', { merchantId: 3, name: 'GO-SDK-US-01', changed: ['apiKey'] });
     off();
-    expect(seen).toEqual([{ data: { merchantId: 3, name: 'GO-SDK-US-01' }, app: 'orca' }]);
+    expect(seen).toEqual([{ data: { merchantId: 3, name: 'GO-SDK-US-01' }, app: 'orka' }]);
   });
 });
 
@@ -126,17 +126,17 @@ describe('mission bridge', () => {
     drainOpenRequests();
     const seen: string[] = [];
     const off = bus.on('computer.openAppRequested', (e) => seen.push(e.app));
-    requestOpenApp('orca', { route: '/robot' });
+    requestOpenApp('orka', { route: '/robot' });
     off();
-    expect(seen).toEqual(['orca']);
-    expect(drainOpenRequests()).toEqual([{ app: 'orca', params: { route: '/robot' } }]);
+    expect(seen).toEqual(['orka']);
+    expect(drainOpenRequests()).toEqual([{ app: 'orka', params: { route: '/robot' } }]);
     expect(drainOpenRequests()).toEqual([]);
   });
 
   it('chat reply provider is optional and fault-tolerant', () => {
     const ctx = { channel: '#lab-automation', lastMessage: null };
     expect(getChatReplies(ctx)).toEqual([]);
-    setChatReplyProvider(() => [{ id: 'R_WAIT_PING', label: 'Wait for the ping', text: "Orca hasn't re-pinged yet." }]);
+    setChatReplyProvider(() => [{ id: 'R_WAIT_PING', label: 'Wait for the ping', text: "Orka hasn't re-pinged yet." }]);
     expect(getChatReplies(ctx).map((o) => o.id)).toEqual(['R_WAIT_PING']);
     setChatReplyProvider(() => {
       throw new Error('boom');

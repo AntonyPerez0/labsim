@@ -1,9 +1,9 @@
 /**
- * uia-remote `config.properties`: the runner's validation (Sim §3.19.1, exact messages), the Cur M14
+ * uia-relay `config.properties`: the runner's validation (Sim §3.19.1, exact messages), the Cur M14
  * validator target generator (Sim §4.4.4 `target`/`broken`) and the IntelliJ "Config Assistant" 11-key
  * check (Apps §4.8 — contract delta D8, exported as `validateConfigProperties`).
  */
-import type { DeviceFamily, DeviceTypeCode, LabState, OrcaDevice, OrcaRobot } from '../types';
+import type { DeviceFamily, DeviceTypeCode, LabState, OrkaDevice, OrkaRobot } from '../types';
 import { parseProperties } from './util';
 
 export const CONFIG_KEYS = ['runType', 'merchantFacingDeviceIp', 'customerFacingDeviceIp', 'serial', 'deviceType', 'theme', 'kernelType', 'portNumber', 'unlockPasscode', 'backendEnv', 'robotName'] as const;
@@ -61,11 +61,11 @@ export function parseRunConfig(text: string | null): { ok: true; config: RunConf
   };
 }
 
-export function robotByName(lab: LabState, name: string): OrcaRobot | null {
-  return Object.values(lab.orca.robots).find((r) => r.name === name) ?? null;
+export function robotByName(lab: LabState, name: string): OrkaRobot | null {
+  return Object.values(lab.orka.robots).find((r) => r.name === name) ?? null;
 }
-export function deviceRow(lab: LabState, id: number | null): OrcaDevice | null {
-  return id == null ? null : (lab.orca.devices[id] ?? null);
+export function deviceRow(lab: LabState, id: number | null): OrkaDevice | null {
+  return id == null ? null : (lab.orka.devices[id] ?? null);
 }
 
 /** Cur M14 validator target for robot `r` (Sim §4.4.4 `target`). */
@@ -111,7 +111,7 @@ export interface ConfigCheckRow {
   message: string | null;
 }
 
-/** Apps §4.8 — the "uia-remote Config Assistant" 11-key check (D8). Pure. */
+/** Apps §4.8 — the "uia-relay Config Assistant" 11-key check (D8). Pure. */
 export function validateConfigProperties(lab: LabState, text: string): { passed: number; total: number; rows: ConfigCheckRow[]; banner: string } {
   const { values } = parseProperties(text);
   const v = (k: string): string => values[k] ?? '';
@@ -126,7 +126,7 @@ export function validateConfigProperties(lab: LabState, text: string): { passed:
   const add = (key: string, ok: boolean, message: string): void => {
     rows.push({ key, value: v(key), ok, message: ok ? null : message });
   };
-  add('robotName', !!r, `no robot named '${name}' in Orca`);
+  add('robotName', !!r, `no robot named '${name}' in Orka`);
   add('runType', !!t && v('runType') === t.runType, t?.runType === 'tethered' ? `must be "tethered" for ${name} (${duo ? 'Stand Duet' : 'MFD populated'})` : 'must be "standalone"');
   add('merchantFacingDeviceIp', !!t && v('merchantFacingDeviceIp') === t.merchantFacingDeviceIp, `expected ${t?.merchantFacingDeviceIp ?? '?'} (${dev?.name ?? '?'})`);
   const cfdOk = !!t && (duo ? v('customerFacingDeviceIp') === t.merchantFacingDeviceIp : t.runType === 'tethered' ? v('customerFacingDeviceIp') === t.customerFacingDeviceIp : v('customerFacingDeviceIp') === '' || v('customerFacingDeviceIp') === t.merchantFacingDeviceIp);

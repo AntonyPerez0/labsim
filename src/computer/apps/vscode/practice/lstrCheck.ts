@@ -1,8 +1,8 @@
 /**
- * "LSTR dry run" for the Pigeon Practice panel: everything the Android LSTR runner would reject before or
+ * "LSTR dry run" for the Parrot Practice panel: everything the Android LSTR runner would reject before or
  * while it runs, without a robot — strict JSON parse (same message as the runner), schema, platforms,
  * known actions, `${variable}` plumbing, card profile vs entry, receipt-screen maps. The checks mirror
- * `src/sim/devops/runners/pigeon.ts`; the output is styled like the runner's console.
+ * `src/sim/devops/runners/parrot.ts`; the output is styled like the runner's console.
  */
 import { parseStrictJson, type JsonValue } from '@/sim/devops/json';
 
@@ -106,13 +106,13 @@ export function dryRun(text: string, profiles: ProfileInfo[], platform = 'ANDROI
       const entry = a.action.slice(5).toUpperCase();
       const profName = str(a.params['profile']);
       const prof = profiles.find((p) => p.name === profName);
-      if (!prof) return stepFail('PROFILE', `[callus] card profile "${profName}" not found`);
-      if (prof.entry !== entry) return stepFail('PROFILE', `[callus] ${profName} is a ${prof.entry} profile — cannot ${entry.toLowerCase()}`);
+      if (!prof) return stepFail('PROFILE', `[kallus] card profile "${profName}" not found`);
+      if (prof.entry !== entry) return stepFail('PROFILE', `[kallus] ${profName} is a ${prof.entry} profile — cannot ${entry.toLowerCase()}`);
       if (prof.requiresPin) warnings.push(`${profName} needs PIN entry: only a physical touch robot can type the PIN (an ADB bot cannot).`);
     }
     if (RECEIPT_ACTIONS.has(a.action)) {
       const screen = str(a.params['screen']);
-      if (screen && screen !== '${RECEIPT_SCREEN}' && !/^RECEIPT_OPTIONS_[45]$/.test(screen)) return stepFail('SCREEN', `[orca] xy_touch: unknown screen "${screen}"`);
+      if (screen && screen !== '${RECEIPT_SCREEN}' && !/^RECEIPT_OPTIONS_[45]$/.test(screen)) return stepFail('SCREEN', `[orka] xy_touch: unknown screen "${screen}"`);
       if (/^RECEIPT_OPTIONS_[45]$/.test(screen)) warnings.push(`Step ${i + 1} hard-codes ${screen}: devices that show the other receipt layout will be tapped on the wrong map. Use \${RECEIPT_SCREEN}.`);
     }
     if (a.action === 'screenCompare') {

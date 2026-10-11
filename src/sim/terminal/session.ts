@@ -93,8 +93,8 @@ const STATIC_FILES: Record<string, string> = {
   [`${HOME}/.gitconfig`]: '[user]\n\tname = Engineer\n\temail = engineer@labsim-lab.example\n[pull]\n\tff = only\n',
   [`${HOME}/.ssh/id_ed25519`]: '-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW\n-----END OPENSSH PRIVATE KEY-----\n',
   [`${HOME}/.ssh/id_ed25519.pub`]: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK7q8wS0mXzXkq3dQ0m1a9Lr2pY5cJbTq0vU8fH3sQnE engineer@ws-17\n',
-  [`${HOME}/.ssh/known_hosts`]: '10.42.10.11 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB4m...\n10.42.20.1 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDk2...\norca.lab.local ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHf7...\n',
-  [`${HOME}/Desktop/README-lab.txt`]: 'LabSim automation lab — quick links\nOrca:    http://orca.lab.local:8080\nJenkins: http://jenkins.lab.local:8080\nOllama:  http://10.42.1.12:3000 (WebUI) / :11434 (API)\nADB: lab devices listen on 5444. Never 5555.\n',
+  [`${HOME}/.ssh/known_hosts`]: '10.42.10.11 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB4m...\n10.42.20.1 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDk2...\norka.lab.local ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHf7...\n',
+  [`${HOME}/Desktop/README-lab.txt`]: 'LabSim automation lab — quick links\nOrka:    http://orka.lab.local:8080\nJenkins: http://jenkins.lab.local:8080\nOllama:  http://10.42.1.12:3000 (WebUI) / :11434 (API)\nADB: lab devices listen on 5444. Never 5555.\n',
 };
 const STATIC_DIRS = [`${HOME}/IdeaProjects`, `${HOME}/Pictures`, `${HOME}/Downloads`, `${HOME}/Desktop`, `${HOME}/.ssh`];
 

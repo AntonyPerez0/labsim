@@ -12,7 +12,7 @@ import { layoutIdFor, screenOf } from '../deviceTypes';
 import { LAYOUTS, coreMm } from './tables';
 import type { LayoutEl } from './tables';
 
-export { LAYOUTS, coreMm, GENERIC_ORCA_SCREENS, CFD_ORCA_SCREENS, ORCA_SCREEN_DESCRIPTIONS } from './tables';
+export { LAYOUTS, coreMm, GENERIC_ORKA_SCREENS, CFD_ORKA_SCREENS, ORKA_SCREEN_DESCRIPTIONS } from './tables';
 export type { LayoutEl, LayoutDef, ElementKind } from './tables';
 
 type Params = Readonly<Record<string, string | number | boolean>>;
@@ -62,10 +62,10 @@ export function layoutKey(screen: ScreenName, display: 'primary' | 'secondary', 
 }
 
 /**
- * Orca screen name for what a display shows (Sim §2.10.1), e.g. `RECEIPT_OPTIONS_5`, `CFD_CART`.
+ * Orka screen name for what a display shows (Sim §2.10.1), e.g. `RECEIPT_OPTIONS_5`, `CFD_CART`.
  * null for non-automated screens.
  */
-export function orcaScreenName(screen: ScreenName, display: 'primary' | 'secondary', receiptOptions: 4 | 5 | undefined): string | null {
+export function orkaScreenName(screen: ScreenName, display: 'primary' | 'secondary', receiptOptions: 4 | 5 | undefined): string | null {
   const key = layoutKey(screen, display, receiptOptions, {});
   if (!key || key === 'HOME_P1' || key === 'THANK_YOU') return key === 'HOME_P1' ? 'HOME' : null;
   if (display === 'secondary') {

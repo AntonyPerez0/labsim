@@ -4,9 +4,9 @@ import {
   AC_STRIPS,
   BAYS,
   BUILD_TABLE_ITEMS,
-  CALLUS_BOXES,
+  KALLUS_BOXES,
   CAMERAS,
-  COLLIS_PROBES,
+  KOLLIS_PROBES,
   DEVICE_MODELS,
   GANTRY_MM,
   INTERACTABLES,
@@ -70,10 +70,10 @@ const CURRICULUM_PROP_IDS = [
   'prop.walle.limit-switch-y', 'prop.walle.dip-arm', 'prop.walle.pi', 'prop.bolt-bins', 'prop.family-trays', 'prop.megatron.mfd',
   'prop.megatron.cfd', 'prop.optimus.mfd', 'prop.optimus.cfd', 'prop.smartstripe-probe', 'prop.hub-dock', 'prop.meanwell-psu',
   'prop.power-trace', 'prop.regulator-12v', 'prop.regulator-5v10a', 'prop.fuse-5v-b', 'prop.fuse-spares', 'prop.multimeter',
-  'prop.ac-strip', 'prop.flux4-psu-brick', 'prop.collis-probe-spare', 'prop.nuc-03', 'prop.minix-01', 'prop.collis-probe-a',
+  'prop.ac-strip', 'prop.flux4-psu-brick', 'prop.kollis-probe-spare', 'prop.nuc-03', 'prop.minix-01', 'prop.kollis-probe-a',
   'prop.eve.pi-power', 'prop.eve.device', 'prop.seti.device', 'prop.data.device', 'prop.tars.device', 'prop.ruler', 'prop.r2d2.mfd',
   'prop.r2d2.cfd', 'prop.coworker-device', 'prop.whiteboard', 'prop.roadmap-board', 'prop.gpu-blade', 'prop.legacy-tower',
-  'prop.history.semi', 'prop.history.sedi', 'prop.history.ipx', 'prop.history.paycore', 'prop.history.match',
+  'prop.history.semi', 'prop.history.sedi', 'prop.history.ipx', 'prop.history.paycrest', 'prop.history.match',
   ...['stand-2018', 'stand-2', 'stand-duet-1', 'stand-duet-2', 'box-duet-3', 'micro-2', 'micro-3', 'box-micro-4', 'flux-1', 'flux-2', 'flux-3', 'flux-4', 'flux-pocket', 'compass'].map(
     (m) => `prop.device-library.${m}`,
   ),
@@ -81,9 +81,9 @@ const CURRICULUM_PROP_IDS = [
 
 /** 10-curriculum §0.5 locations + the extra World §1.3 anchors. */
 const LOCATION_IDS = [
-  'loc.corridor', 'loc.entrance', 'loc.workstation', 'loc.morgan-desk', 'loc.coworker-desks', 'loc.rack-a', 'loc.callus-shelf',
+  'loc.corridor', 'loc.entrance', 'loc.workstation', 'loc.morgan-desk', 'loc.coworker-desks', 'loc.rack-a', 'loc.kallus-shelf',
   'loc.rack-b', 'loc.rear-aisle', 'loc.adb-shelf', 'loc.rack-tethered', 'loc.power-wall', 'loc.server-shelf', 'loc.print-corner',
-  'loc.jared-bench', 'loc.husky', 'loc.storage', 'loc.whiteboard', 'loc.build-table', 'loc.device-library', 'loc.coffee', 'loc.history-wall',
+  'loc.jaden-bench', 'loc.husky', 'loc.storage', 'loc.whiteboard', 'loc.build-table', 'loc.device-library', 'loc.coffee', 'loc.history-wall',
 ];
 
 function dupes(ids: readonly string[]): string[] {
@@ -106,7 +106,7 @@ describe('ids', () => {
   it('are unique inside every table', () => {
     const tables: Record<string, readonly { id: string }[]> = {
       PROPS, LOCATIONS, SPAWNS, NPC_ANCHORS, INTERACTABLES, POWER_WALL_PARTS, OUTLETS, AC_STRIPS, TROFFERS, CAMERAS, RIGS,
-      COLLIS_PROBES, CALLUS_BOXES, BUILD_TABLE_ITEMS, LIBRARY_ITEMS,
+      KOLLIS_PROBES, KALLUS_BOXES, BUILD_TABLE_ITEMS, LIBRARY_ITEMS,
     };
     for (const [name, rows] of Object.entries(tables)) expect(dupes(rows.map((r) => r.id)), name).toEqual([]);
     expect(dupes(PROP_IDS)).toEqual([]);
@@ -142,7 +142,7 @@ describe('ids', () => {
         expect(isPropId(id), id).toBe(true);
         if (part !== 'solenoid-connector') expect(INTERACTABLE_IDS[id], id).toBeDefined();
       }
-      expect(INTERACTABLE_IDS[`collis.${rig.id}`]).toBeDefined();
+      expect(INTERACTABLE_IDS[`kollis.${rig.id}`]).toBeDefined();
     }
     expect(INTERACTABLE_IDS['rig.r2-d2.mfd']).toBeDefined();
     expect(INTERACTABLE_IDS['rig.r2-d2.cfd']).toBeDefined();
@@ -287,7 +287,7 @@ describe('racks and bays', () => {
     }));
     for (let i = 0; i < faces.length; i++) for (let j = i + 1; j < faces.length; j++) expect(overlaps(faces[i]!, faces[j]!), `${faces[i]!.id} × ${faces[j]!.id}`).toBe(false);
     expect(Math.abs(ADB_RIGS[0]!.world[0] - ADB_RIGS[1]!.world[0])).toBeGreaterThan(0.2);
-    expect(dupes(COLLIS_PROBES.map((c) => `${c.level}/${c.local[0] < 0 ? 'L' : 'R'}`))).toEqual([]);
+    expect(dupes(KOLLIS_PROBES.map((c) => `${c.level}/${c.local[0] < 0 ? 'L' : 'R'}`))).toEqual([]);
   });
 
   it('roster: 12 physical rigs with known locations and hosts', () => {

@@ -1,6 +1,6 @@
 /**
  * The workstation terminal (Apps §5, Sim §3.15, §3.22): shell semantics, adb (5444 vs the 5555
- * coworker trap), UI Automator dumps, ssh + systemctl, curl against Orca, git commit/push/PR, local runs.
+ * coworker trap), UI Automator dumps, ssh + systemctl, curl against Orka, git commit/push/PR, local runs.
  */
 import { beforeEach, describe, expect, it } from 'vitest';
 import { bus } from '@/core/bus';
@@ -158,33 +158,33 @@ describe('ssh into the Robot Pi and the Windows boxes (Apps §5.4, Cur M05)', ()
     expect(run('ssh pi@nosuchhost').out).toEqual(['ssh: Could not resolve hostname nosuchhost: Name or service not known']);
   });
 
-  it('Windows box: cmd prompt, sc query Callus, schtasks', () => {
+  it('Windows box: cmd prompt, sc query Kallus, schtasks', () => {
     const r = run('ssh automation@10.42.20.1');
     expect(r.out[0]).toBe('Microsoft Windows [Version 10.0.19044.5011]');
     expect(r.prompt).toBe('automation@MINIX-01 C:\\Users\\automation>');
-    expect(run('sc query Callus').out).toContain('        STATE              : 4  RUNNING');
-    expect(run('schtasks /run /tn GortCardSync').out).toEqual(['SUCCESS: Attempted to run the scheduled task "GortCardSync".']);
-    expect(run('dir C:\\gort\\cards\\emv').out.join('\n')).toContain('visa_std_dip.json');
+    expect(run('sc query Kallus').out).toContain('        STATE              : 4  RUNNING');
+    expect(run('schtasks /run /tn GorthCardSync').out).toEqual(['SUCCESS: Attempted to run the scheduled task "GorthCardSync".']);
+    expect(run('dir C:\\gorth\\cards\\emv').out.join('\n')).toContain('visa_std_dip.json');
     expect(run('frob').out).toEqual(["'frob' is not recognized as an internal or external command,", 'operable program or batch file.']);
     expect(run('exit').out).toEqual(['Connection to 10.42.20.1 closed.']);
   });
 });
 
 describe('curl (Sim §3.23)', () => {
-  it('xy_touch through Orca and the Ollama / Jenkins APIs', () => {
-    const r = run(`curl -s -X POST http://orca.lab.local:8080/api/xy_touch -H 'Content-Type: application/json' -d '{"robot":"wall-e","screen":"HOME","button":"Register"}'`);
+  it('xy_touch through Orka and the Ollama / Jenkins APIs', () => {
+    const r = run(`curl -s -X POST http://orka.lab.local:8080/api/xy_touch -H 'Content-Type: application/json' -d '{"robot":"wall-e","screen":"HOME","button":"Register"}'`);
     expect(r.out[0]).toMatch(/^\{"result":"OK","mode":"PHYSICAL_TAP","x_mm":[\d.]+,"y_mm":[\d.]+/);
     expect(run('curl -s http://10.42.1.12:11434/api/tags | jq -r .models[].name').out).toEqual(['llava:latest']);
-    expect(run('curl -s http://jenkins.lab.local:8080/job/Java/job/uia-remote-regression-flux/lastBuild/api/json').out[0]).toMatch(/^\{"number":4119,"result":"SUCCESS","building":false,"duration":\d+\}$/);
+    expect(run('curl -s http://jenkins.lab.local:8080/job/Java/job/uia-relay-regression-flux/lastBuild/api/json').out[0]).toMatch(/^\{"number":4119,"result":"SUCCESS","building":false,"duration":\d+\}$/);
     expect(run('curl http://nosuch.lab.local/').out).toEqual(['curl: (6) Could not resolve host: nosuch.lab.local']);
   });
 });
 
 describe('git and GitHub from the terminal (Sim §3.22)', () => {
-  it('clone, branch, edit, commit, push; protected main on gort', () => {
+  it('clone, branch, edit, commit, push; protected main on gorth', () => {
     expect(run('git status').out).toEqual(['fatal: not a git repository (or any of the parent directories): .git']);
-    run('cd IdeaProjects && git clone git@github.com:labsim-lab/uia-remote.git && cd uia-remote');
-    expect(sim.terminal.prompt()).toBe('engineer@ws-17:~/IdeaProjects/uia-remote$ ');
+    run('cd IdeaProjects && git clone git@github.com:labsim-lab/uia-relay.git && cd uia-relay');
+    expect(sim.terminal.prompt()).toBe('engineer@ws-17:~/IdeaProjects/uia-relay$ ');
     run('git checkout -b fix/readme');
     run('echo "See config.properties.example." >> README.md');
     expect(run('git status').out).toEqual(['On branch fix/readme', '', 'Changes not staged for commit:', '  (use "git add <file>..." to update what will be committed)', '  (use "git restore <file>..." to discard changes in working directory)', '\tmodified:   README.md', '', 'no changes added to commit (use "git add" and/or "git commit -a")']);
@@ -197,48 +197,48 @@ describe('git and GitHub from the terminal (Sim §3.22)', () => {
     const p = run('git push -u origin fix/readme');
     expect(p.code).toBe(0);
     expect(p.out).toContain(' * [new branch]      fix/readme -> fix/readme');
-    expect(lab().repos['uia-remote'].branches['fix/readme']).toBe(lab().repos['uia-remote'].local!.headSha);
+    expect(lab().repos['uia-relay'].branches['fix/readme']).toBe(lab().repos['uia-relay'].local!.headSha);
     expect(run('git log --oneline -n 1').out[0]).toMatch(/^[0-9a-f]{7} \(HEAD -> fix\/readme, origin\/fix\/readme\) Docs: point to the example config$/);
 
-    run('cd ~/IdeaProjects && git clone git@github.com:labsim-lab/gort.git && cd gort');
+    run('cd ~/IdeaProjects && git clone git@github.com:labsim-lab/gorth.git && cd gorth');
     run('echo x >> README.md && git commit -am "direct to main"');
     const rej = run('git push');
     expect(rej.code).not.toBe(0);
     expect(rej.out).toContain(' ! [remote rejected] main -> main (protected branch hook declined)');
   });
 
-  it('a gort coordinate PR: Jared requests changes, approves the fix, merges, Orca syncs (Sim §3.22.2–§3.22.3)', { timeout: 30_000 }, () => {
+  it('a gorth coordinate PR: Jaden requests changes, approves the fix, merges, Orka syncs (Sim §3.22.2–§3.22.3)', { timeout: 30_000 }, () => {
     transact((root) => {
       root.lab.config.npcAutoMerge = true;
     });
     const ev: string[] = [];
-    const offs = (['github.prReviewed', 'github.prMerged', 'orca.screenLocationsSynced'] as const).map((e) => bus.on(e, (p) => ev.push(`${e}:${'verdict' in p ? p.verdict : 'screen' in p ? p.screen : p.number}`)));
-    run('cd ~/IdeaProjects && git clone git@github.com:labsim-lab/gort.git && cd gort && git checkout -b fix/flux3-receipt5');
+    const offs = (['github.prReviewed', 'github.prMerged', 'orka.screenLocationsSynced'] as const).map((e) => bus.on(e, (p) => ev.push(`${e}:${'verdict' in p ? p.verdict : 'screen' in p ? p.screen : p.number}`)));
+    run('cd ~/IdeaProjects && git clone git@github.com:labsim-lab/gorth.git && cd gorth && git checkout -b fix/flux3-receipt5');
     const path = 'config/screen-locations/FLUX_3/RECEIPT_OPTIONS_5.json';
-    const truth = lab().repos['gort'].local!.files[path]!;
+    const truth = lab().repos['gorth'].local!.files[path]!;
     const nudge = (mm: number): string => truth.replace(/"y": ([\d.]+)/, (_m, y: string) => `"y": ${(Number(y) + mm).toFixed(1)}`);
-    sim.git.writeFile('gort', path, nudge(3));
+    sim.git.writeFile('gorth', path, nudge(3));
     run('git commit -am "Shift receipt options" && git push -u origin fix/flux3-receipt5');
-    const pr = sim.git.createPullRequest('gort', 'Shift FLUX_3 receipt options', '', 'fix/flux3-receipt5', 'player');
+    const pr = sim.git.createPullRequest('gorth', 'Shift FLUX_3 receipt options', '', 'fix/flux3-receipt5', 'player');
     if (!pr.ok) throw new Error(pr.error);
     for (let i = 0; i < 100; i++) sim.tick(250);
     expect(ev).toEqual(['github.prReviewed:CHANGES_REQUESTED']);
-    expect(lab().chat.messages.some((m) => m.author === 'jared' && m.text.includes('Print on FLUX_3 is still 3.0 mm low'))).toBe(true);
-    sim.git.writeFile('gort', path, nudge(0.3));
+    expect(lab().chat.messages.some((m) => m.author === 'jaden' && m.text.includes('Print on FLUX_3 is still 3.0 mm low'))).toBe(true);
+    sim.git.writeFile('gorth', path, nudge(0.3));
     run('git commit -am "Within tolerance" && git push');
     for (let i = 0; i < 160; i++) sim.tick(250);
     offs.forEach((o) => o());
-    expect(ev).toEqual(['github.prReviewed:CHANGES_REQUESTED', 'github.prReviewed:APPROVED', `github.prMerged:${pr.value.number}`, 'orca.screenLocationsSynced:RECEIPT_OPTIONS_5']);
+    expect(ev).toEqual(['github.prReviewed:CHANGES_REQUESTED', 'github.prReviewed:APPROVED', `github.prMerged:${pr.value.number}`, 'orka.screenLocationsSynced:RECEIPT_OPTIONS_5']);
   });
 });
 
 describe('local runs from the terminal (Sim §1.12, §3.19)', () => {
   it('mvn test reads the local config.properties and streams the runner', { timeout: 60_000 }, () => {
-    run('cd IdeaProjects && git clone git@github.com:labsim-lab/uia-remote.git && cd uia-remote');
+    run('cd IdeaProjects && git clone git@github.com:labsim-lab/uia-relay.git && cd uia-relay');
     expect(run('mvn test -Dtest=TaxTest').out).toContain('java.lang.IllegalStateException: config.properties not found — copy config.properties.example');
     run('cp config.properties.example config.properties');
-    const cfg = lab().repos['uia-remote'].local!.files['config.properties']!.replace(/robotName=.*/, 'robotName=megatron');
-    sim.git.writeFile('uia-remote', 'config.properties', cfg);
+    const cfg = lab().repos['uia-relay'].local!.files['config.properties']!.replace(/robotName=.*/, 'robotName=megatron');
+    sim.git.writeFile('uia-relay', 'config.properties', cfg);
     expect(lab().workstation.configProperties['portNumber']).toBe('5444');
     const r = run('mvn test -Dtest=TaxTest');
     expect(r.out).toContain('[INFO] Running com.labsim.uia.testactions.TaxTest');
@@ -252,9 +252,9 @@ describe('local runs from the terminal (Sim §1.12, §3.19)', () => {
 describe('the 5555 collision (Sim §3.15.3, Cur S19)', () => {
   it('a local run with portNumber=5555 falls back to the first known device — a coworker\'s Flux', { timeout: 60_000 }, () => {
     run('adb connect 10.42.60.4:5555');
-    run('cd IdeaProjects && git clone git@github.com:labsim-lab/uia-remote.git && cd uia-remote && cp config.properties.example config.properties');
-    const cfg = lab().repos['uia-remote'].local!.files['config.properties']!.replace(/robotName=.*/, 'robotName=megatron').replace('portNumber=5444', 'portNumber=5555');
-    sim.git.writeFile('uia-remote', 'config.properties', cfg);
+    run('cd IdeaProjects && git clone git@github.com:labsim-lab/uia-relay.git && cd uia-relay && cp config.properties.example config.properties');
+    const cfg = lab().repos['uia-relay'].local!.files['config.properties']!.replace(/robotName=.*/, 'robotName=megatron').replace('portNumber=5444', 'portNumber=5555');
+    sim.git.writeFile('uia-relay', 'config.properties', cfg);
     const driven: string[] = [];
     const off = bus.on('adb.coworkerDriven', (p) => driven.push(p.by));
     const r = run('mvn test -Dtest=TaxTest');
@@ -290,7 +290,7 @@ describe('ping streaming and Ctrl+C', () => {
 
 describe('determinism', () => {
   it('the same command sequence from the same seed gives identical output and state', { timeout: 30_000 }, () => {
-    const script = ['adb connect 10.42.30.32:5444', 'adb -s 10.42.30.32:5444 shell uiautomator dump', 'adb -s 10.42.30.32:5444 pull /sdcard/window_dump.xml', 'ping -c 3 10.42.10.11', 'ssh pi@10.42.10.11', 'journalctl -u robot-controller -n 5', 'exit', 'git clone git@github.com:labsim-lab/pigeon.git', 'cd pigeon && git log --oneline'];
+    const script = ['adb connect 10.42.30.32:5444', 'adb -s 10.42.30.32:5444 shell uiautomator dump', 'adb -s 10.42.30.32:5444 pull /sdcard/window_dump.xml', 'ping -c 3 10.42.10.11', 'ssh pi@10.42.10.11', 'journalctl -u robot-controller -n 5', 'exit', 'git clone git@github.com:labsim-lab/parrot.git', 'cd parrot && git log --oneline'];
     const once = (): string => {
       sim.reset({ preset: 'test', seed: 99 });
       resetTerminalSessions();

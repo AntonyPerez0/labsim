@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 /**
  * MagStripe Reader (Apps §12.1): a physical swipe (`workstation.cardSwiped`) fills the canonical tracks and emits
- * `cardreader.swiped`; Copy Track 1 + 2 writes the desktop clipboard in Orca's format and emits `cardreader.copied`.
+ * `cardreader.swiped`; Copy Track 1 + 2 writes the desktop clipboard in Orka's format and emits `cardreader.copied`.
  */
 import { afterEach, describe, expect, it } from 'vitest';
 import { act } from 'react';

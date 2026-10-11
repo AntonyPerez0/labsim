@@ -9,7 +9,7 @@ import type { LogData } from './logic';
 import './style.css';
 
 const SOURCE_LABEL: Record<string, string> = {
-  Notes: 'Orca · Notes',
+  Notes: 'Orka · Notes',
   Jenkins: 'Jenkins · Console',
   Terminal: 'Terminal',
   IDE: 'IntelliJ IDEA',
@@ -19,7 +19,7 @@ const SOURCE_LABEL: Record<string, string> = {
   Tablet: 'Status tablet',
   LED: 'LEDs',
   Camera: 'Camera app',
-  Orca: 'Orca',
+  Orka: 'Orka',
   LabChat: 'LabChat',
   World: 'In the lab',
   HUD: 'HUD',

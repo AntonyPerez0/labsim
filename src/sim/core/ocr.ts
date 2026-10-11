@@ -13,8 +13,8 @@ import { screenOf } from '../seed/deviceTypes';
 import { resolveElements } from '../seed/layouts';
 import { liveElements } from './devices';
 import { reach } from './network';
-import { piIpOf } from './orca/health';
-import { orcaDown } from './orca/status';
+import { piIpOf } from './orka/health';
+import { orkaDown } from './orka/status';
 import { receiptText } from '../text/devices';
 import { RECEIPT_ADDRESS } from '../seed/merchants';
 
@@ -221,18 +221,18 @@ function captureFrom(lab: LabState, fromHostId: string, url: string): { cam: Cam
   return { cam };
 }
 
-export function screenCompare(lab: LabState, ctx: Ctx, ref: string | number, actor: Actor, source: 'orca' | 'runner' = 'orca'): Result<CompareOutcome> {
-  const down = orcaDown(lab);
+export function screenCompare(lab: LabState, ctx: Ctx, ref: string | number, actor: Actor, source: 'orka' | 'runner' = 'orka'): Result<CompareOutcome> {
+  const down = orkaDown(lab);
   if (down) return { ok: false, error: down };
-  const row: ScreenCompareImage | undefined = typeof ref === 'number' ? lab.orca.screenCompareImages[ref] : Object.values(lab.orca.screenCompareImages).find((c) => c.name === ref);
+  const row: ScreenCompareImage | undefined = typeof ref === 'number' ? lab.orka.screenCompareImages[ref] : Object.values(lab.orka.screenCompareImages).find((c) => c.name === ref);
   if (!row) return { ok: false, error: `404 Not Found: no screen compare image '${ref}'` };
-  const robot = lab.orca.robots[row.robotId];
+  const robot = lab.orka.robots[row.robotId];
   const finish = (text: string, match: boolean, line: string): Result<CompareOutcome> => {
     ctx.emit('ocr.ran', { compareId: row.id, text, expected: row.expectedText, match, source, robotName: robot?.name, line });
     return { ok: true, value: { text, expected: row.expectedText, match, line } };
   };
   const piIp = robot ? piIpOf(robot.adbServiceUrl) : null;
-  const pr = piIp ? reach(lab, 'orca-vm', piIp, 8000, { noLatency: true }) : null;
+  const pr = piIp ? reach(lab, 'orka-vm', piIp, 8000, { noLatency: true }) : null;
   if (!robot || !piIp || !pr || !pr.ok) return finish('', false, `[ocr] robot controller ${piIp ?? '?'}:8000 unreachable → match=false`);
   const cap = captureFrom(lab, pr.hostId!, robot.cameraStreamUrl);
   if ('error' in cap) return finish('', false, `[ocr] capture webcam → ${cap.error} → match=false`);
@@ -244,7 +244,7 @@ export function screenCompare(lab: LabState, ctx: Ctx, ref: string | number, act
 
 /* ────────────────────────────── canonical frames (fault predicates) ────────────────────────────── */
 
-/** Runtime screen behind an Orca compare row's `screenName` (canonical frame, Sim §4.3.7). */
+/** Runtime screen behind an Orka compare row's `screenName` (canonical frame, Sim §4.3.7). */
 const CANONICAL_SCREEN: Record<string, ScreenName> = {
   CFD_CART: 'customer-cart',
   CUSTOMER_CART: 'customer-cart',
@@ -272,17 +272,17 @@ function canonicalText(id: string, cfdLayout: 'v1' | 'v2'): string {
 /**
  * Does Screen Compare row `row` read `match=true` on the canonical frame of its screen (Tax Item 5 →
  * CFD_CART `TOTAL $10.83`; CFD_THANK_YOU → `Thank you`)? Pure evaluation of Sim §3.12 on a
- * hypothetical frame through the robot's Orca camera URL, with the device's current label shift,
+ * hypothetical frame through the robot's Orka camera URL, with the device's current label shift,
  * CFD copy version and webcam aim. Used by the `ocr.*` fault predicates (Sim §4.3.7).
  */
 export function canonicalCompareMatch(lab: LabState, row: ScreenCompareImage): boolean {
-  const robot = lab.orca.robots[row.robotId];
+  const robot = lab.orka.robots[row.robotId];
   if (!robot) return false;
   const cam = cameraForUrl(robot.cameraStreamUrl);
   if (!cam) return false;
   const runtimeIds = new Set<string>();
   for (const id of [robot.deviceId, robot.mfdDeviceId, robot.cfdDeviceId]) {
-    const r = id != null ? lab.orca.devices[id] : undefined;
+    const r = id != null ? lab.orka.devices[id] : undefined;
     if (r?.simDeviceId) runtimeIds.add(r.simDeviceId);
   }
   const screen = CANONICAL_SCREEN[row.screenName] ?? 'customer-cart';

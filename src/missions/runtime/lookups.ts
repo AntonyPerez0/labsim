@@ -10,9 +10,9 @@ import type {
   JenkinsBuild,
   LabState,
   MerchantConfig,
-  OrcaDevice,
-  OrcaRobot,
-  OrcaScreen,
+  OrkaDevice,
+  OrkaRobot,
+  OrkaScreen,
   ScreenCompareImage,
 } from '@/sim/types';
 
@@ -27,72 +27,72 @@ function indexBy<T>(cache: WeakMap<object, Map<string, T>>, table: Record<string
   return idx;
 }
 
-const robotIdx = new WeakMap<object, Map<string, OrcaRobot>>();
-const deviceRowIdx = new WeakMap<object, Map<string, OrcaDevice>>();
+const robotIdx = new WeakMap<object, Map<string, OrkaRobot>>();
+const deviceRowIdx = new WeakMap<object, Map<string, OrkaDevice>>();
 const merchantIdx = new WeakMap<object, Map<string, MerchantConfig>>();
 const cardIdx = new WeakMap<object, Map<string, CardProfile>>();
 const compareIdx = new WeakMap<object, Map<string, ScreenCompareImage>>();
-const screenIdx = new WeakMap<object, Map<string, OrcaScreen>>();
+const screenIdx = new WeakMap<object, Map<string, OrkaScreen>>();
 const hostIpIdx = new WeakMap<object, Map<string, Host>>();
-const devByOrcaName = new WeakMap<object, Map<string, TerminalDevice>>();
+const devByOrkaName = new WeakMap<object, Map<string, TerminalDevice>>();
 
-export function robotByName(lab: LabState, name: string | null | undefined): OrcaRobot | null {
+export function robotByName(lab: LabState, name: string | null | undefined): OrkaRobot | null {
   if (!name) return null;
-  return indexBy(robotIdx, lab.orca?.robots, (r) => r.name).get(name) ?? null;
+  return indexBy(robotIdx, lab.orka?.robots, (r) => r.name).get(name) ?? null;
 }
 
-export function robotById(lab: LabState, id: number | null | undefined): OrcaRobot | null {
+export function robotById(lab: LabState, id: number | null | undefined): OrkaRobot | null {
   if (id === null || id === undefined) return null;
-  return lab.orca?.robots?.[id] ?? null;
+  return lab.orka?.robots?.[id] ?? null;
 }
 
 export function robotNameOf(lab: LabState, id: number | null | undefined): string | null {
   return robotById(lab, id)?.name ?? null;
 }
 
-/** Orca Device Type of a robot's device row (e.g. `FLUX_4`), or null. */
+/** Orka Device Type of a robot's device row (e.g. `FLUX_4`), or null. */
 export function robotDeviceType(lab: LabState, robotName: string | null | undefined): string | null {
   const r = robotByName(lab, robotName);
   return (r && r.deviceId != null ? deviceRowById(lab, r.deviceId)?.deviceType : null) ?? null;
 }
 
-export function deviceRowByName(lab: LabState, name: string | null | undefined): OrcaDevice | null {
+export function deviceRowByName(lab: LabState, name: string | null | undefined): OrkaDevice | null {
   if (!name) return null;
-  return indexBy(deviceRowIdx, lab.orca?.devices, (d) => d.name).get(name) ?? null;
+  return indexBy(deviceRowIdx, lab.orka?.devices, (d) => d.name).get(name) ?? null;
 }
 
-export function deviceRowById(lab: LabState, id: number | null | undefined): OrcaDevice | null {
+export function deviceRowById(lab: LabState, id: number | null | undefined): OrkaDevice | null {
   if (id === null || id === undefined) return null;
-  return lab.orca?.devices?.[id] ?? null;
+  return lab.orka?.devices?.[id] ?? null;
 }
 
 export function merchantByName(lab: LabState, name: string): MerchantConfig | null {
-  return indexBy(merchantIdx, lab.orca?.merchants, (m) => m.name).get(name) ?? null;
+  return indexBy(merchantIdx, lab.orka?.merchants, (m) => m.name).get(name) ?? null;
 }
 
 export function merchantById(lab: LabState, id: number | null | undefined): MerchantConfig | null {
   if (id === null || id === undefined) return null;
-  return lab.orca?.merchants?.[id] ?? null;
+  return lab.orka?.merchants?.[id] ?? null;
 }
 
 export function cardProfileByName(lab: LabState, name: string): CardProfile | null {
-  return indexBy(cardIdx, lab.orca?.cardProfiles, (c) => c.name).get(name) ?? null;
+  return indexBy(cardIdx, lab.orka?.cardProfiles, (c) => c.name).get(name) ?? null;
 }
 
 export function screenCompareByName(lab: LabState, name: string): ScreenCompareImage | null {
-  return indexBy(compareIdx, lab.orca?.screenCompareImages, (c) => c.name).get(name) ?? null;
+  return indexBy(compareIdx, lab.orka?.screenCompareImages, (c) => c.name).get(name) ?? null;
 }
 
-export function screenByTypeAndName(lab: LabState, deviceType: string, name: string): OrcaScreen | null {
-  return indexBy(screenIdx, lab.orca?.screens, (s) => `${s.deviceType}/${s.name}`).get(`${deviceType}/${name}`) ?? null;
+export function screenByTypeAndName(lab: LabState, deviceType: string, name: string): OrkaScreen | null {
+  return indexBy(screenIdx, lab.orka?.screens, (s) => `${s.deviceType}/${s.name}`).get(`${deviceType}/${name}`) ?? null;
 }
 
-/** Runtime device by runtime id (`dev-wall-e-flux3`), Orca row name (`wall-e-flux3`) or `dev-<name>`. */
+/** Runtime device by runtime id (`dev-wall-e-flux3`), Orka row name (`wall-e-flux3`) or `dev-<name>`. */
 export function runtimeDevice(lab: LabState, idOrName: string | null | undefined): TerminalDevice | null {
   if (!idOrName || !lab.devices) return null;
   const direct = lab.devices[idOrName] ?? lab.devices[`dev-${idOrName}`];
   if (direct) return direct;
-  return indexBy(devByOrcaName, lab.devices, (d) => d.orcaDeviceName || d.id).get(idOrName) ?? null;
+  return indexBy(devByOrkaName, lab.devices, (d) => d.orkaDeviceName || d.id).get(idOrName) ?? null;
 }
 
 /** Host by id (`pi-wall-e`), case-insensitive id (`MINIX-01`), `pi-<ip>`, bare IP or hostname. */
@@ -145,16 +145,16 @@ export function piHostOfRobot(lab: LabState, robotName: string): Host | null {
   return ip ? hostById(lab, ip) : null;
 }
 
-/** Robot names a host id refers to (its own rig, every rig of a shared Pi / Callus box). */
+/** Robot names a host id refers to (its own rig, every rig of a shared Pi / Kallus box). */
 export function rigsServedByHost(lab: LabState, hostId: string): string[] {
   const host = hostById(lab, hostId);
   if (!host) return [];
   const out: string[] = [];
   for (const rig of Object.values(lab.rigs ?? {})) {
-    if (rig.piHostId === host.id || rig.callusHostId === host.id) out.push(rig.id);
+    if (rig.piHostId === host.id || rig.kallusHostId === host.id) out.push(rig.id);
   }
   if (!out.length) {
-    for (const r of Object.values(lab.orca?.robots ?? {})) if (urlHost(r.adbServiceUrl) === host.ip) out.push(r.name);
+    for (const r of Object.values(lab.orka?.robots ?? {})) if (urlHost(r.adbServiceUrl) === host.ip) out.push(r.name);
   }
   return out.sort();
 }

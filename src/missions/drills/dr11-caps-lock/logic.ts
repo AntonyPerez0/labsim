@@ -1,5 +1,5 @@
 /**
- * DR11 Caps Lock (GP §2.4.3): accept (→) or reject (←) a Jenkins `DEVICE_TYPE` value against the Orca
+ * DR11 Caps Lock (GP §2.4.3): accept (→) or reject (←) a Jenkins `DEVICE_TYPE` value against the Orka
  * Device Type enum (ALL CAPS, F121/F122); bonus cards ask about config.properties `deviceType` (the family:
  * Micro, Flux, Stand — F195). Generated: early cards are obvious (lower-case), later ones subtle
  * (`FLUX_GEN3`, `STAND_DUET2`, `POCKET`).
@@ -101,11 +101,11 @@ export function generateCaps(rng: RngState, state: RootState | null, index: numb
   const why = config
     ? 'config.properties deviceType is the target form factor — Micro, Flux or Stand — and governs layout/scroll logic.'
     : data.valid
-      ? 'Device Type is an Orca enum, which is why Jenkins pipeline environment variables must be in ALL CAPS — exactly as the enum spells them.'
-      : `Device Type is an Orca enum (ALL CAPS, F122): ${data.reason}.`;
+      ? 'Device Type is an Orka enum, which is why Jenkins pipeline environment variables must be in ALL CAPS — exactly as the enum spells them.'
+      : `Device Type is an Orka enum (ALL CAPS, F122): ${data.reason}.`;
   return {
     id,
-    tags: config ? ['uia.config', 'orca.devicetype'] : ['orca.devicetype', 'jenkins.envvars'],
+    tags: config ? ['uia.config', 'orka.devicetype'] : ['orka.devicetype', 'jenkins.envvars'],
     factIds: config ? ['F195'] : ['F121', 'F122'],
     teach: teach(what, why, { ref: config ? 'Ref §4.5' : 'Ref §3.2', factIds: config ? ['F195'] : ['F121', 'F122'], illustrative: !config && (data.valid || data.level >= 2) && data.value !== 'FLUX_5', doInstead: data.valid ? 'Accept (→).' : 'Reject (←).' }),
     data,
@@ -116,7 +116,7 @@ export const DR11: DrillDef<CapsData> = {
   id: 'DR11',
   name: 'Caps Lock',
   format: 'Accept/reject a Jenkins DEVICE_TYPE / enum value',
-  tags: ['orca.devicetype', 'jenkins.envvars', 'uia.config'],
+  tags: ['orka.devicetype', 'jenkins.envvars', 'uia.config'],
   unlockedBy: ['M07'],
   durationS: 45,
   itemCount: null,

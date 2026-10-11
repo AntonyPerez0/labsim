@@ -2,7 +2,7 @@
  * M16 — Seeing the Second Screen: Stand Duet, OCR, GIMP & UIA 2.3 (Cur §2 M16). Mentor {{morgan}}.
  * Setup (`academy:M16`, Sim §4.4.2): R2-D2 (STAND_DUET, `10.42.30.14`) mid-sale — MFD on Review Order,
  * CFD showing `TOTAL $10.83`; R2-D2's webcam is aimed at the CFD; the `CFD_TOTAL` Screen Compare row is
- * deleted; uia-remote is cloned with MEGATRON's valid config; Pigeon's `swipe_sale_print.json` has an
+ * deleted; uia-relay is cloned with MEGATRON's valid config; Parrot's `swipe_sale_print.json` has an
  * empty `screenCompare` block. Step 8: the player's "CFD layout v2" toggle = `flag.set cfdLayoutV2Toggle`.
  */
 import { c, on, p } from '../../types';
@@ -13,7 +13,7 @@ import { inject, localFile, localFilesNamed, ran, say } from './helpers';
 const BOX = { x: 412, y: 288, w: 236, h: 44 } as const;
 const EXPECTED = 'TOTAL $10.83';
 const DUET = '10.42.30.14:5444';
-const PIGEON_FILE = 'tests/sale/swipe_sale_print.json';
+const PARROT_FILE = 'tests/sale/swipe_sale_print.json';
 const near = (a: unknown, b: number, tol = 3) => typeof a === 'number' && Math.abs(a - b) <= tol;
 
 const compareRowOk: Condition = c.all(
@@ -24,8 +24,8 @@ const compareRowOk: Condition = c.all(
   c.eq(p.screenCompare('CFD_TOTAL').expected, EXPECTED),
 );
 
-const pigeonBlockOk: Condition = c.custom('m16-pigeon-compare', 'Pigeon screenCompare block = the GIMP box', (s) => {
-  const text = localFile(s, 'pigeon', PIGEON_FILE);
+const parrotBlockOk: Condition = c.custom('m16-parrot-compare', 'Parrot screenCompare block = the GIMP box', (s) => {
+  const text = localFile(s, 'parrot', PARROT_FILE);
   if (!text) return false;
   try {
     const doc = JSON.parse(text) as { actions?: { action?: string; params?: Record<string, unknown> }[] };
@@ -45,14 +45,14 @@ const duoIps: Condition = c.all(c.eq(p.prop('config', 'merchantFacingDeviceIp'),
  * (Sim §3.11; the M16 preset un-merges #398, which made that change).
  */
 const cfdLocatorsOnCfd: Condition = c.custom('m16-cfd-display-id', 'CfdTotalsScreen uses displayId locators', (s) => {
-  const [hit] = localFilesNamed(s, 'uia-remote', 'CfdTotalsScreen.java');
+  const [hit] = localFilesNamed(s, 'uia-relay', 'CfdTotalsScreen.java');
   return !!hit && /\.displayId\(/.test(hit[1].replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, ''));
 });
 
 export const M16: LessonDef = {
   moduleId: 'M16',
   mentor: 'morgan',
-  setup: { preset: 'academy:M16', spawn: 'loc.workstation', apps: { unlock: ['terminal', 'camera', 'gimp', 'orca', 'vscode', 'intellij', 'github', 'chat'] } },
+  setup: { preset: 'academy:M16', spawn: 'loc.workstation', apps: { unlock: ['terminal', 'camera', 'gimp', 'orka', 'vscode', 'intellij', 'github', 'chat'] } },
   deck: 'deck.M16',
   realLabChecklist: [
     'On a Stand Duet one terminal drives two displays, but only the primary MFD is exposed to ADB: legacy UI Automator is blind to the CFD.',
@@ -131,14 +131,14 @@ export const M16: LessonDef = {
       id: 'M16.07',
       kind: 'computer-task',
       hud: 'Create a Screen Compare Image and test it',
-      app: 'orca',
+      app: 'orka',
       route: '/screen-compare-image/new',
-      success: c.all(compareRowOk, c.appAction('orca', 'orca.screenCompare.tested', (d) => d.name === 'CFD_TOTAL' && d.match === true)),
+      success: c.all(compareRowOk, c.appAction('orka', 'orka.screenCompare.tested', (d) => d.name === 'CFD_TOTAL' && d.match === true)),
       objectives: [
         { id: 'M16.07.row', text: 'CFD_TOTAL · r2-d2 · X 412 · Y 288 · W 236 · H 44 · "TOTAL $10.83"', done: compareRowOk },
-        { id: 'M16.07.test', text: 'Test → match=true', done: c.appAction('orca', 'orca.screenCompare.tested', (d) => d.name === 'CFD_TOTAL' && d.match === true) },
+        { id: 'M16.07.test', text: 'Test → match=true', done: c.appAction('orka', 'orka.screenCompare.tested', (d) => d.name === 'CFD_TOTAL' && d.match === true) },
       ],
-      showMe: [{ app: 'orca', route: '/screen-compare-image/new', target: 'orca.screenCompare.test', action: 'click' }],
+      showMe: [{ app: 'orka', route: '/screen-compare-image/new', target: 'orka.screenCompare.test', action: 'click' }],
       onComplete: [say('morgan', 'capture webcam → crop 236x44@412,288 → tesseract → "TOTAL $10.83" → match=true. That is the whole OCR workaround.')],
       factIds: ['F150', 'F153', 'F154', 'F029'],
     },
@@ -146,29 +146,29 @@ export const M16: LessonDef = {
       id: 'M16.08',
       kind: 'computer-task',
       hud: "Now flip 'CFD layout v2' and test again",
-      app: 'orca',
+      app: 'orka',
       success: c.sequence(
-        on('app.action', { app: 'orca', action: 'orca.screenCompare.layoutV2Toggled' }, (pl) => pl.data?.on === true),
-        on('app.action', { app: 'orca', action: 'orca.screenCompare.tested' }, (pl) => pl.data?.match === false),
+        on('app.action', { app: 'orka', action: 'orka.screenCompare.layoutV2Toggled' }, (pl) => pl.data?.on === true),
+        on('app.action', { app: 'orka', action: 'orka.screenCompare.tested' }, (pl) => pl.data?.match === false),
       ),
-      showMe: [{ app: 'orca', target: 'orca.screenCompare.layoutV2', action: 'click' }],
+      showMe: [{ app: 'orka', target: 'orka.screenCompare.layoutV2', action: 'click' }],
       factIds: ['F155'],
     },
     {
       id: 'M16.09',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: "Ten pixels. Or a capital letter. Or a typo. That's all it takes to break the suite. Pigeon's screen comparisons work the same way: GIMP box, copy the coordinates into the JSON block.",
+      text: "Ten pixels. Or a capital letter. Or a typo. That's all it takes to break the suite. Parrot's screen comparisons work the same way: GIMP box, copy the coordinates into the JSON block.",
       factIds: ['F155', 'F212'],
     },
     {
       id: 'M16.10',
       kind: 'computer-task',
-      hud: "Paste your GIMP coordinates into Pigeon's screenCompare block (VS Code)",
+      hud: "Paste your GIMP coordinates into Parrot's screenCompare block (VS Code)",
       app: 'vscode',
-      route: `/folder/pigeon/file/${PIGEON_FILE}`,
-      onEnter: [inject({ op: 'repo.clone', params: { repo: 'pigeon' } })],
-      success: pigeonBlockOk,
+      route: `/folder/parrot/file/${PARROT_FILE}`,
+      onEnter: [inject({ op: 'repo.clone', params: { repo: 'parrot' } })],
+      success: parrotBlockOk,
       hints: [
         { afterS: 60, idle: true, effect: 'text', text: 'Find the screenCompare action at the end of swipe_sale_print.json.' },
         { afterS: 120, idle: true, effect: 'text', text: '"x": 412, "y": 288, "w": 236, "h": 44, "expected": "TOTAL $10.83" — keep the commas.' },
@@ -181,7 +181,7 @@ export const M16: LessonDef = {
       id: 'M16.11',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: "Here's the good news. UI Automator 2.3 natively tracks elements on both screens. That's why uia-remote uses 2.3, and why Screen Compare and OCR are being phased out.",
+      text: "Here's the good news. UI Automator 2.3 natively tracks elements on both screens. That's why uia-relay uses 2.3, and why Screen Compare and OCR are being phased out.",
       factIds: ['F006', 'F007', 'F156'],
     },
     {
@@ -189,10 +189,10 @@ export const M16: LessonDef = {
       kind: 'computer-task',
       hud: 'Replace the OCR check in TaxTestDuet with a UIA 2.3 assertion',
       app: 'intellij',
-      route: '/project/uia-remote',
+      route: '/project/uia-relay',
       success: c.all(c.eq(p.codeFact('usesScreenCompare', 'local:TaxTestDuet'), false), cfdLocatorsOnCfd, duoIps, c.eq(p.localRun('TaxTestDuet').result, 'PASS')),
       objectives: [
-        { id: 'M16.12.code', text: 'TaxTestDuet: replace orca.screenCompare("CFD_TOTAL") with a UIA assertion, e.g. cfdTotals.assertTotals()', done: c.eq(p.codeFact('usesScreenCompare', 'local:TaxTestDuet'), false) },
+        { id: 'M16.12.code', text: 'TaxTestDuet: replace orka.screenCompare("CFD_TOTAL") with a UIA assertion, e.g. cfdTotals.assertTotals()', done: c.eq(p.codeFact('usesScreenCompare', 'local:TaxTestDuet'), false) },
         { id: 'M16.12.display', text: 'CfdTotalsScreen: scope the locators to the CFD with .displayId(cfdDisplayId)', done: cfdLocatorsOnCfd },
         { id: 'M16.12.ips', text: 'config.properties: both IPs = 10.42.30.14 (Stand Duet)', done: duoIps },
         { id: 'M16.12.run', text: 'Run TaxTestDuet on R2-D2 with layout v2 still on: green', done: c.eq(p.localRun('TaxTestDuet').result, 'PASS') },
@@ -202,7 +202,7 @@ export const M16: LessonDef = {
         { afterS: 120, idle: true, effect: 'text', text: 'On a Stand Duet merchantFacingDeviceIp and customerFacingDeviceIp are the same: 10.42.30.14. Point robotName at r2-d2.' },
         { afterS: 180, idle: true, effect: 'show-me-button' },
       ],
-      showMe: [{ app: 'intellij', route: '/project/uia-remote/file/config.properties', target: 'intellij.configValidator', action: 'click' }],
+      showMe: [{ app: 'intellij', route: '/project/uia-relay/file/config.properties', target: 'intellij.configValidator', action: 'click' }],
       onComplete: [say('morgan', 'Layout v2 is still on, and the UIA 2.3 assertion does not care. That is why OCR is on its way out.')],
       factIds: ['F007', 'F156', 'F193'],
     },

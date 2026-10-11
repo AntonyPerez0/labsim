@@ -1,5 +1,5 @@
 /**
- * VS Code commands that touch the simulation: clone, save, format, run (LSTR local run), git, Pigeon Practice.
+ * VS Code commands that touch the simulation: clone, save, format, run (LSTR local run), git, Parrot Practice.
  * Every lab change is a `sim.*` call; every meaningful action emits its `vscode.*` app action afterwards.
  * Nothing here throws: a failing sim call becomes an error notification.
  */
@@ -15,8 +15,8 @@ import { checkExercise, EXERCISES_BY_ID, practiceFile } from './practice/exercis
 import type { ProfileInfo } from './practice/lstrCheck';
 
 export const WS_HOST = 'ws-17';
-export const REPOS: RepoId[] = ['pigeon', 'gort', 'uia-remote', 'orchestrator'];
-export const PRACTICE_REPO = 'pigeon-practice';
+export const REPOS: RepoId[] = ['parrot', 'gorth', 'uia-relay', 'orchestrator'];
+export const PRACTICE_REPO = 'parrot-practice';
 
 type R<T = undefined> = { ok: true; value: T } | { ok: false; error: string };
 
@@ -321,14 +321,14 @@ export function remoteBranches(lab: LabState, repo: RepoId): string[] {
 /* ───────────────────────────── run ───────────────────────────── */
 
 export function runLocal(m: VsModel, path: string): void {
-  if (m.repo !== 'pigeon') {
-    m.toast('warning', 'Run LSTR Test works in the pigeon folder. Java tests run from IntelliJ.');
+  if (m.repo !== 'parrot') {
+    m.toast('warning', 'Run LSTR Test works in the parrot folder. Java tests run from IntelliJ.');
     return;
   }
   saveAll(m);
-  const r = call(() => sim.runner.runLocal('pigeon', path, 'player'));
+  const r = call(() => sim.runner.runLocal('parrot', path, 'player'));
   const runId = r.ok ? r.value.runId : null;
-  emitAppAction('vscode', 'vscode.run.started', { repo: 'pigeon', testPath: path, runId, ok: r.ok, error: r.ok ? null : r.error });
+  emitAppAction('vscode', 'vscode.run.started', { repo: 'parrot', testPath: path, runId, ok: r.ok, error: r.ok ? null : r.error });
   m.panelOpen = true;
   m.panelTab = 'output';
   const robot = getState().lab.workstation?.configProperties?.['robotName'] || '(none)';
@@ -366,10 +366,10 @@ export function reportRun(m: VsModel, passed: boolean | null): void {
   emitAppAction('vscode', 'vscode.run.finished', { runId: m.runId, testPath: m.runPath ?? '', passed });
 }
 
-/* ───────────────────────────── Pigeon Practice ───────────────────────────── */
+/* ───────────────────────────── Parrot Practice ───────────────────────────── */
 
 export function cardProfiles(): ProfileInfo[] {
-  return Object.values(getState().lab.orca?.cardProfiles ?? {}).map((p) => ({ name: p.name, entry: p.entry, requiresPin: p.requiresPin }));
+  return Object.values(getState().lab.orka?.cardProfiles ?? {}).map((p) => ({ name: p.name, entry: p.entry, requiresPin: p.requiresPin }));
 }
 
 export function startExercise(m: VsModel, id: string): void {
@@ -410,8 +410,8 @@ export function checkPractice(m: VsModel): void {
     emitAppAction('vscode', 'vscode.practice.solved', { exerciseId: p.exerciseId, seconds, checks: p.checks, hints: p.hintsShown });
     const day = Math.floor(Date.now() / 86_400_000);
     mutate((s) => {
-      const rec = s.progress.pigeonPractice[p.exerciseId] ?? { solved: 0, bestS: 0, lastDay: 0 };
-      s.progress.pigeonPractice[p.exerciseId] = { solved: rec.solved + 1, bestS: rec.bestS ? Math.min(rec.bestS, seconds) : seconds, lastDay: day };
+      const rec = s.progress.parrotPractice[p.exerciseId] ?? { solved: 0, bestS: 0, lastDay: 0 };
+      s.progress.parrotPractice[p.exerciseId] = { solved: rec.solved + 1, bestS: rec.bestS ? Math.min(rec.bestS, seconds) : seconds, lastDay: day };
     });
   }
   m.changed();

@@ -1,6 +1,6 @@
 /**
  * Arcade Shift director (GP §2.3): shift setup, real-time clock at 5× game time, heat ramp, ticket
- * spawning (heat spawner or pre-drawn plan), planned work, shift events, Jared's lunch, strikes / early
+ * spawning (heat spawner or pre-drawn plan), planned work, shift events, Jaden's lunch, strikes / early
  * end, end-of-shift handover, grade, XP, records, leaderboard and debrief.
  */
 import type { TxContext } from '@/core/store';
@@ -138,7 +138,7 @@ export function startShift(d: RootState, ctx: TxContext, o: ShiftStartOptions, x
     pipelinePoints: 0,
     uptime: { attempts: 0, gotRig: 0 },
     event: null,
-    jaredAwayUntilS: null,
+    jadenAwayUntilS: null,
     queuedEscalations: [],
     plannedWorkTicketId: null,
     plan,
@@ -178,7 +178,7 @@ export function startShift(d: RootState, ctx: TxContext, o: ShiftStartOptions, x
   const dayFlag = `firstShift:${todayKey()}`;
   if (!d.progress.flags[dayFlag] && cfg.kind !== 'certification') {
     d.progress.flags[dayFlag] = true;
-    barkById(d, ctx, 'BARK_JARED_08', 'flavour');
+    barkById(d, ctx, 'BARK_JADEN_08', 'flavour');
   }
   if (cfg.kind === 'certification') setBanner(d, 'cert', 'info', `${cfg.title}: no hints, no score — resolve every incident.`, 8);
   return true;
@@ -342,10 +342,10 @@ function tickEvent(d: RootState, ctx: TxContext, sh: ShiftState): void {
       return;
     }
     ev.fired = true;
-    if (def.banner) setBanner(d, 'shift-event', 'info', personText(def.banner), def.jaredAwayS ? d.session.clockS + def.jaredAwayS : d.session.clockS + 10);
-    if (def.jaredAwayS) {
-      sh.jaredAwayUntilS = sh.elapsedS + def.jaredAwayS;
-      ev.activeUntilS = sh.jaredAwayUntilS;
+    if (def.banner) setBanner(d, 'shift-event', 'info', personText(def.banner), def.jadenAwayS ? d.session.clockS + def.jadenAwayS : d.session.clockS + 10);
+    if (def.jadenAwayS) {
+      sh.jadenAwayUntilS = sh.elapsedS + def.jadenAwayS;
+      ev.activeUntilS = sh.jadenAwayUntilS;
     }
     if (def.forcesIncident) {
       sh.nextSpawnAtS = sh.elapsedS;
@@ -354,8 +354,8 @@ function tickEvent(d: RootState, ctx: TxContext, sh: ShiftState): void {
     ctx.emit('shift.eventStarted', { eventId: ev.id });
     toast(d, 'info', def.title, def.banner ? personText(def.banner) : undefined);
   }
-  if (ev.fired && sh.jaredAwayUntilS !== null && sh.elapsedS >= sh.jaredAwayUntilS) {
-    sh.jaredAwayUntilS = null;
+  if (ev.fired && sh.jadenAwayUntilS !== null && sh.elapsedS >= sh.jadenAwayUntilS) {
+    sh.jadenAwayUntilS = null;
     removeBanner(d, 'shift-event');
     ctx.emit('shift.eventEnded', { eventId: ev.id });
     releaseQueuedEscalations(d, ctx);
@@ -424,7 +424,7 @@ export function endShift(d: RootState, ctx: TxContext, reason: NonNullable<Shift
 }
 
 function barkLine(d: RootState, ctx: TxContext): void {
-  ctx.emit('mission.bark', { speaker: 'jared', text: "Let's call it for today — read the Field Manual page on what went wrong before tomorrow.", barkId: null, priority: 'safety' });
+  ctx.emit('mission.bark', { speaker: 'jaden', text: "Let's call it for today — read the Field Manual page on what went wrong before tomorrow.", barkId: null, priority: 'safety' });
   toast(d, 'warning', 'Shift ended: 3 strikes', 'Grade capped at D.');
 }
 

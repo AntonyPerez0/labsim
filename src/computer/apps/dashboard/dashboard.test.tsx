@@ -63,15 +63,15 @@ describe('DashboardSurface — Motion Control (Apps §10.3)', () => {
     mutate((s) => {
       const rig = s.lab.rigs['wall-e']!;
       rig.dashboardLocked = true;
-      rig.lockedBy = { kind: 'jenkins', ref: 'Java/uia-remote-regression-flux#4127' };
+      rig.lockedBy = { kind: 'jenkins', ref: 'Java/uia-relay-regression-flux#4127' };
     });
     cap = captureActions();
     const spy = vi.spyOn(sim.rig, 'command');
     m = await mount(<DashboardSurface robotId="wall-e" host="tablet" tab="motion-control" />);
     expect(m.container.textContent).toContain('TEST IN PROGRESS — CONTROLS LOCKED');
-    expect(m.container.textContent).toContain('Java/uia-remote-regression-flux #4127');
-    expect(m.container.textContent).toContain('Checked out via Orca · unlocks when the build finishes');
-    expect(cap.of('tablet.lockout.shown')[0]).toEqual({ robot: 'wall-e', holder: 'Java/uia-remote-regression-flux #4127', blockedClick: false });
+    expect(m.container.textContent).toContain('Java/uia-relay-regression-flux #4127');
+    expect(m.container.textContent).toContain('Checked out via Orka · unlocks when the build finishes');
+    expect(cap.of('tablet.lockout.shown')[0]).toEqual({ robot: 'wall-e', holder: 'Java/uia-relay-regression-flux #4127', blockedClick: false });
     await click(m.container.querySelector('.rdash-lock'));
     expect(spy).not.toHaveBeenCalled();
     expect(cap.of('tablet.lockout.shown')[1]).toMatchObject({ blockedClick: true });

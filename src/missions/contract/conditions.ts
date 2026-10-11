@@ -31,7 +31,7 @@
  * );
  * @example M06 step 12 — "Build observed waiting while WALL-E was Reserved, then checked out WALL-E":
  * c.sequence(
- *   on('orca.checkoutRejected', { jobId: 'Java/uia-remote-regression-flux' }),
+ *   on('orka.checkoutRejected', { jobId: 'Java/uia-relay-regression-flux' }),
  *   on('robot.checkedOut', { name: 'wall-e' }),
  * )
  */
@@ -53,8 +53,8 @@ export type MagLockState = 'ENGAGED' | 'RELEASED';
 export type ConnectorState = 'SEATED' | 'UNSEATED' | 'LOOSE';
 export type CradleState = 'OK' | 'CRACKED' | 'NEW';
 export type DeviceHwState = 'OK' | 'BOOTING' | 'DEAD' | 'FRIED';
-export type CollisPower = 'OFF' | 'AC' | 'DC';
-export type CollisState = 'OK' | 'FRIED';
+export type KollisPower = 'OFF' | 'AC' | 'DC';
+export type KollisState = 'OK' | 'FRIED';
 export type LinkState = 'UP' | 'DOWN';
 export type LocalRunResult = 'PASS' | 'FAIL' | 'RUNNING' | 'NONE';
 export type PrState = 'OPEN' | 'MERGED' | 'CLOSED' | 'NONE';
@@ -66,7 +66,7 @@ export type ProbeValue = string | number | boolean | null | readonly string[];
 
 /* ═════════════════════════════ Probes ═════════════════════════════ */
 
-/** Robot fields (GP §3.3 `orca.robot(R).{…}`); offsets in mm; `lastHealth*` from the latest health check. */
+/** Robot fields (GP §3.3 `orka.robot(R).{…}`); offsets in mm; `lastHealth*` from the latest health check. */
 export type RobotField =
   | 'status'
   | 'name'
@@ -101,19 +101,19 @@ export type HwDeviceField = 'power' | 'state' | 'adbTcpPort' | 'activeMerchant' 
 
 /**
  * Probe data. The resolver (runtime) reads it; authors build it with `p.*`.
- * Keys follow GP §3.3; ids are system names (`wall-e`), Orca device-row names (`johnny-5-flux2`),
- * host ids (`pi-wall-e` or `pi-10.42.10.11`, `minix-01`, `orca-vm`), fuse ids (`F-RACKB-5V`), job paths.
+ * Keys follow GP §3.3; ids are system names (`wall-e`), Orka device-row names (`johnny-5-flux2`),
+ * host ids (`pi-wall-e` or `pi-10.42.10.11`, `minix-01`, `orka-vm`), fuse ids (`F-RACKB-5V`), job paths.
  */
 export type ProbeSpec =
-  | { p: 'orca.robot'; robot: string; field: RobotField }
-  | { p: 'orca.robot.url'; robot: string; kind: RobotUrlKind }
-  | { p: 'orca.device'; device: string; field: 'exists' | 'type' | 'serial' | 'ip' }
-  | { p: 'orca.screenLocation'; deviceType: DeviceTypeCode; screen: string; button: string; field: 'x' | 'y' | 'exists' }
-  | { p: 'orca.screenCompare'; name: string; field: 'x' | 'y' | 'w' | 'h' | 'expected' | 'deprecated' | 'exists' }
-  | { p: 'orca.merchant'; merchant: string; field: string }
-  | { p: 'orca.cardProfile'; profile: string; field: 'kind' | 'trackData' | 'gortPath' | 'exists' }
-  /** Orca app health (`/management/health` status code; 200 healthy, 500/503 broken). */
-  | { p: 'orca.http' }
+  | { p: 'orka.robot'; robot: string; field: RobotField }
+  | { p: 'orka.robot.url'; robot: string; kind: RobotUrlKind }
+  | { p: 'orka.device'; device: string; field: 'exists' | 'type' | 'serial' | 'ip' }
+  | { p: 'orka.screenLocation'; deviceType: DeviceTypeCode; screen: string; button: string; field: 'x' | 'y' | 'exists' }
+  | { p: 'orka.screenCompare'; name: string; field: 'x' | 'y' | 'w' | 'h' | 'expected' | 'deprecated' | 'exists' }
+  | { p: 'orka.merchant'; merchant: string; field: string }
+  | { p: 'orka.cardProfile'; profile: string; field: 'kind' | 'trackData' | 'gorthPath' | 'exists' }
+  /** Orka app health (`/management/health` status code; 200 healthy, 500/503 broken). */
+  | { p: 'orka.http' }
   | { p: 'hw.pi'; host: string; field: 'power' | 'os' | 'eth' }
   | { p: 'hw.fuse'; fuse: string; field: 'state' | 'rating' | 'labelRating' | 'removed' }
   /** Load id plugged into an AC strip outlet (1-based), or null. */
@@ -122,7 +122,7 @@ export type ProbeSpec =
   | { p: 'hw.dcTerminal'; terminal: string }
   | { p: 'hw.box'; box: string; field: 'power' | 'diskFreeGB' }
   | { p: 'hw.rig'; rig: string; field: RigField }
-  | { p: 'hw.collis'; collis: string; field: 'power' | 'ribbon' | 'state' }
+  | { p: 'hw.kollis'; kollis: string; field: 'power' | 'ribbon' | 'state' }
   | { p: 'hw.device'; device: string; field: HwDeviceField }
   | { p: 'hw.camera'; camera: string; field: 'svc' | 'usb' }
   | { p: 'svc'; host: string; service: string }
@@ -133,7 +133,7 @@ export type ProbeSpec =
   | { p: 'jenkins.greenStreak'; job: string; robot: string | null }
   /** Workstation ADB connections (`host:port` strings). */
   | { p: 'adb.connections' }
-  /** `key` of a properties file; `file` = `config` (the player's uia-remote config.properties), `alexConfig`, or `<repo>:<path>`. */
+  /** `key` of a properties file; `file` = `config` (the player's uia-relay config.properties), `alexConfig`, or `<repo>:<path>`. */
   | { p: 'prop'; file: string; key: string }
   | { p: 'fs'; host: string; path: string; field: 'exists' | 'contents' }
   | { p: 'git.file'; repo: string; path: string; ref: string; field: 'exists' | 'contents' | 'parsesJson' }
@@ -161,7 +161,7 @@ export type ProbeSpec =
   | { p: 'player'; field: 'location' | 'lookingAt' | 'activeTool' | 'carrying' | 'crouched' | 'fuseRating' }
   /** Current overlay kind (`computer`, `tablet` …). */
   | { p: 'overlay' }
-  /** Escape hatch: dot path into RootState (`lab.orca.app.dbConnected`). Prefer a typed probe. */
+  /** Escape hatch: dot path into RootState (`lab.orka.app.dbConnected`). Prefer a typed probe. */
   | { p: 'path'; path: string };
 
 /** A typed probe: the data plus a phantom value type used by `c.*` for checking. */
@@ -177,64 +177,64 @@ function probe<T extends ProbeValue>(spec: ProbeSpec): Probe<T> {
 
 /** Probe builders (GP §3.3 state paths). */
 export const p = {
-  /** `orca.robot(R).*` */
+  /** `orka.robot(R).*` */
   robot: (robot: string) => ({
-    status: probe<RobotStatus>({ p: 'orca.robot', robot, field: 'status' }),
-    name: probe<string | null>({ p: 'orca.robot', robot, field: 'name' }),
-    hrn: probe<string | null>({ p: 'orca.robot', robot, field: 'hrn' }),
-    reservedBy: probe<string | null>({ p: 'orca.robot', robot, field: 'reservedBy' }),
-    deviceId: probe<string | null>({ p: 'orca.robot', robot, field: 'deviceId' }),
-    mfdDeviceId: probe<string | null>({ p: 'orca.robot', robot, field: 'mfdDeviceId' }),
-    cfdDeviceId: probe<string | null>({ p: 'orca.robot', robot, field: 'cfdDeviceId' }),
-    offsetX: probe<number>({ p: 'orca.robot', robot, field: 'offsetX' }),
-    offsetY: probe<number>({ p: 'orca.robot', robot, field: 'offsetY' }),
-    capabilities: probe<readonly string[]>({ p: 'orca.robot', robot, field: 'capabilities' }),
-    lastHealthAt: probe<number | null>({ p: 'orca.robot', robot, field: 'lastHealthAt' }),
-    lastHealthHttp: probe<number | null>({ p: 'orca.robot', robot, field: 'lastHealthHttp' }),
-    lastHealthError: probe<string | null>({ p: 'orca.robot', robot, field: 'lastHealthError' }),
+    status: probe<RobotStatus>({ p: 'orka.robot', robot, field: 'status' }),
+    name: probe<string | null>({ p: 'orka.robot', robot, field: 'name' }),
+    hrn: probe<string | null>({ p: 'orka.robot', robot, field: 'hrn' }),
+    reservedBy: probe<string | null>({ p: 'orka.robot', robot, field: 'reservedBy' }),
+    deviceId: probe<string | null>({ p: 'orka.robot', robot, field: 'deviceId' }),
+    mfdDeviceId: probe<string | null>({ p: 'orka.robot', robot, field: 'mfdDeviceId' }),
+    cfdDeviceId: probe<string | null>({ p: 'orka.robot', robot, field: 'cfdDeviceId' }),
+    offsetX: probe<number>({ p: 'orka.robot', robot, field: 'offsetX' }),
+    offsetY: probe<number>({ p: 'orka.robot', robot, field: 'offsetY' }),
+    capabilities: probe<readonly string[]>({ p: 'orka.robot', robot, field: 'capabilities' }),
+    lastHealthAt: probe<number | null>({ p: 'orka.robot', robot, field: 'lastHealthAt' }),
+    lastHealthHttp: probe<number | null>({ p: 'orka.robot', robot, field: 'lastHealthHttp' }),
+    lastHealthError: probe<string | null>({ p: 'orka.robot', robot, field: 'lastHealthError' }),
     /** Build id / `local:<engineer>` holding the robot, or null. */
-    checkedOutBy: probe<string | null>({ p: 'orca.robot', robot, field: 'checkedOutBy' }),
-    url: (kind: RobotUrlKind) => probe<string | null>({ p: 'orca.robot.url', robot, kind }),
+    checkedOutBy: probe<string | null>({ p: 'orka.robot', robot, field: 'checkedOutBy' }),
+    url: (kind: RobotUrlKind) => probe<string | null>({ p: 'orka.robot.url', robot, kind }),
   }),
-  /** `orca.device(D).*` — D = Orca device-row name (`johnny-5-flux2`). */
+  /** `orka.device(D).*` — D = Orka device-row name (`johnny-5-flux2`). */
   device: (device: string) => ({
-    exists: probe<boolean>({ p: 'orca.device', device, field: 'exists' }),
-    type: probe<DeviceTypeCode | null>({ p: 'orca.device', device, field: 'type' }),
-    serial: probe<string | null>({ p: 'orca.device', device, field: 'serial' }),
-    ip: probe<string | null>({ p: 'orca.device', device, field: 'ip' }),
+    exists: probe<boolean>({ p: 'orka.device', device, field: 'exists' }),
+    type: probe<DeviceTypeCode | null>({ p: 'orka.device', device, field: 'type' }),
+    serial: probe<string | null>({ p: 'orka.device', device, field: 'serial' }),
+    ip: probe<string | null>({ p: 'orka.device', device, field: 'ip' }),
   }),
-  /** `orca.screenLocation(deviceType, screen, button).{x,y}` in mm. */
+  /** `orka.screenLocation(deviceType, screen, button).{x,y}` in mm. */
   screenLocation: (deviceType: DeviceTypeCode, screen: string, button: string) => ({
-    x: probe<number | null>({ p: 'orca.screenLocation', deviceType, screen, button, field: 'x' }),
-    y: probe<number | null>({ p: 'orca.screenLocation', deviceType, screen, button, field: 'y' }),
-    exists: probe<boolean>({ p: 'orca.screenLocation', deviceType, screen, button, field: 'exists' }),
+    x: probe<number | null>({ p: 'orka.screenLocation', deviceType, screen, button, field: 'x' }),
+    y: probe<number | null>({ p: 'orka.screenLocation', deviceType, screen, button, field: 'y' }),
+    exists: probe<boolean>({ p: 'orka.screenLocation', deviceType, screen, button, field: 'exists' }),
   }),
-  /** `orca.screenCompare(name).*` in px. */
+  /** `orka.screenCompare(name).*` in px. */
   screenCompare: (name: string) => ({
-    x: probe<number | null>({ p: 'orca.screenCompare', name, field: 'x' }),
-    y: probe<number | null>({ p: 'orca.screenCompare', name, field: 'y' }),
-    w: probe<number | null>({ p: 'orca.screenCompare', name, field: 'w' }),
-    h: probe<number | null>({ p: 'orca.screenCompare', name, field: 'h' }),
-    expected: probe<string | null>({ p: 'orca.screenCompare', name, field: 'expected' }),
-    deprecated: probe<boolean>({ p: 'orca.screenCompare', name, field: 'deprecated' }),
-    exists: probe<boolean>({ p: 'orca.screenCompare', name, field: 'exists' }),
+    x: probe<number | null>({ p: 'orka.screenCompare', name, field: 'x' }),
+    y: probe<number | null>({ p: 'orka.screenCompare', name, field: 'y' }),
+    w: probe<number | null>({ p: 'orka.screenCompare', name, field: 'w' }),
+    h: probe<number | null>({ p: 'orka.screenCompare', name, field: 'h' }),
+    expected: probe<string | null>({ p: 'orka.screenCompare', name, field: 'expected' }),
+    deprecated: probe<boolean>({ p: 'orka.screenCompare', name, field: 'deprecated' }),
+    exists: probe<boolean>({ p: 'orka.screenCompare', name, field: 'exists' }),
   }),
-  /** `orca.merchant(M).*` — `field` is any MerchantConfig field (`appId`, `appSecret`, `apiKey`, `ubiRoute`, `region` …). */
+  /** `orka.merchant(M).*` — `field` is any MerchantConfig field (`appId`, `appSecret`, `apiKey`, `uboRoute`, `region` …). */
   merchant: (merchant: string) => ({
-    field: (field: string) => probe<string | number | boolean | null>({ p: 'orca.merchant', merchant, field }),
-    appId: probe<string | null>({ p: 'orca.merchant', merchant, field: 'appId' }),
-    appSecret: probe<string | null>({ p: 'orca.merchant', merchant, field: 'appSecret' }),
-    apiKey: probe<string | null>({ p: 'orca.merchant', merchant, field: 'apiKey' }),
-    ubiRoute: probe<string | null>({ p: 'orca.merchant', merchant, field: 'ubiRoute' }),
+    field: (field: string) => probe<string | number | boolean | null>({ p: 'orka.merchant', merchant, field }),
+    appId: probe<string | null>({ p: 'orka.merchant', merchant, field: 'appId' }),
+    appSecret: probe<string | null>({ p: 'orka.merchant', merchant, field: 'appSecret' }),
+    apiKey: probe<string | null>({ p: 'orka.merchant', merchant, field: 'apiKey' }),
+    uboRoute: probe<string | null>({ p: 'orka.merchant', merchant, field: 'uboRoute' }),
   }),
-  /** `orca.cardProfile(P).*` */
+  /** `orka.cardProfile(P).*` */
   cardProfile: (profile: string) => ({
-    kind: probe<'SWIPE' | 'DIP' | 'TAP' | null>({ p: 'orca.cardProfile', profile, field: 'kind' }),
-    trackData: probe<string | null>({ p: 'orca.cardProfile', profile, field: 'trackData' }),
-    gortPath: probe<string | null>({ p: 'orca.cardProfile', profile, field: 'gortPath' }),
-    exists: probe<boolean>({ p: 'orca.cardProfile', profile, field: 'exists' }),
+    kind: probe<'SWIPE' | 'DIP' | 'TAP' | null>({ p: 'orka.cardProfile', profile, field: 'kind' }),
+    trackData: probe<string | null>({ p: 'orka.cardProfile', profile, field: 'trackData' }),
+    gorthPath: probe<string | null>({ p: 'orka.cardProfile', profile, field: 'gorthPath' }),
+    exists: probe<boolean>({ p: 'orka.cardProfile', profile, field: 'exists' }),
   }),
-  orcaHttp: probe<number>({ p: 'orca.http' }),
+  orkaHttp: probe<number>({ p: 'orka.http' }),
   /** `hw.pi(host).*`; `svc` = `svc(host, name)`. */
   pi: (host: string) => ({
     power: probe<OnOff>({ p: 'hw.pi', host, field: 'power' }),
@@ -276,13 +276,13 @@ export const p = {
     lockedOut: probe<boolean>({ p: 'hw.rig', rig, field: 'lockedOut' }),
     door: probe<'OPEN' | 'CLOSED'>({ p: 'hw.rig', rig, field: 'door' }),
   }),
-  /** `hw.collis(C).*` (`collis-wall-e`). */
-  collis: (collis: string) => ({
-    power: probe<CollisPower>({ p: 'hw.collis', collis, field: 'power' }),
-    ribbon: probe<ConnectorState>({ p: 'hw.collis', collis, field: 'ribbon' }),
-    state: probe<CollisState>({ p: 'hw.collis', collis, field: 'state' }),
+  /** `hw.kollis(C).*` (`kollis-wall-e`). */
+  kollis: (kollis: string) => ({
+    power: probe<KollisPower>({ p: 'hw.kollis', kollis, field: 'power' }),
+    ribbon: probe<ConnectorState>({ p: 'hw.kollis', kollis, field: 'ribbon' }),
+    state: probe<KollisState>({ p: 'hw.kollis', kollis, field: 'state' }),
   }),
-  /** `hw.device(D).*` — D = Orca device-row name or runtime device id. `screen` = current display screen name. */
+  /** `hw.device(D).*` — D = Orka device-row name or runtime device id. `screen` = current display screen name. */
   hwDevice: (device: string) => ({
     power: probe<OnOff>({ p: 'hw.device', device, field: 'power' }),
     state: probe<DeviceHwState>({ p: 'hw.device', device, field: 'state' }),
@@ -297,7 +297,7 @@ export const p = {
     svc: probe<SvcStatus>({ p: 'hw.camera', camera, field: 'svc' }),
     usb: probe<ConnectorState>({ p: 'hw.camera', camera, field: 'usb' }),
   }),
-  /** `svc(host, name)` — hosts `pi-<rig>`, `pi-10.42.10.x`, `orca-vm`, `ollama-vm`, `minix-01`, `nuc-03` … */
+  /** `svc(host, name)` — hosts `pi-<rig>`, `pi-10.42.10.x`, `orka-vm`, `ollama-vm`, `minix-01`, `nuc-03` … */
   svc: (host: string, service: string) => probe<SvcStatus>({ p: 'svc', host, service }),
   /** `link(mfdDevice, cfdDevice)` — Pay Display link. */
   link: (mfd: string, cfd: string) => probe<LinkState>({ p: 'link', mfd, cfd }),
@@ -549,7 +549,7 @@ export const c = {
   /** ∃x∈items: fn(x). */
   forAny: <T>(items: readonly T[], fn: (item: T) => Condition): Condition => ({ op: 'any', of: items.map(fn) }),
 
-  /** Sugar: `orca.robot(R).status == S`. */
+  /** Sugar: `orka.robot(R).status == S`. */
   status: (robot: string, status: RobotStatus): Condition => cmp(p.robot(robot).status, 'eq', status),
 
   /** The event happened (≥ `min` times) in scope. */
@@ -581,7 +581,7 @@ export const c = {
 
   /**
    * A workstation UI fact happened (`app.action`, apps doc Appendix B), e.g. "Notes opened":
-   * `c.appAction('orca', 'orca.robot.notesOpened', (d) => d.name === 'eve')`. Use sim-state probes
+   * `c.appAction('orka', 'orka.robot.notesOpened', (d) => d.name === 'eve')`. Use sim-state probes
    * whenever the curriculum's success column is a sim fact (Cur §2.0).
    */
   appAction: (app: string, action: string, test?: (data: Record<string, unknown>) => boolean): Condition =>

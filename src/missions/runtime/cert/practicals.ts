@@ -141,9 +141,9 @@ export const BUILT_IN_PRACTICALS: readonly CertPracticalDef[] = [
         examId: "CERT-R2",
         setup: { flags: { receiptQrFeature: true } },
         pass: c.all(
-          c.eq(p.pr("gort").state, "MERGED"),
+          c.eq(p.pr("gorth").state, "MERGED"),
           c.happened(
-            on("orca.screenLocationsSynced", {}, (pl) =>
+            on("orka.screenLocationsSynced", {}, (pl) =>
               /RECEIPT_OPTIONS_5/i.test(pl.screen),
             ),
           ),
@@ -194,8 +194,8 @@ export const BUILT_IN_PRACTICALS: readonly CertPracticalDef[] = [
         examId: "CERT-R3",
         setup: {},
         pass: c.all(
-          c.eq(p.job("Java/pigeon-android-sale-swipe").lastResult, "SUCCESS"),
-          c.eq(p.pr("gort").verdict, "APPROVE"),
+          c.eq(p.job("Java/parrot-android-sale-swipe").lastResult, "SUCCESS"),
+          c.eq(p.pr("gorth").verdict, "APPROVE"),
         ),
         timeLimitGameMin: 9,
       } satisfies BuiltInTask,
@@ -229,7 +229,7 @@ export const BUILT_IN_PRACTICALS: readonly CertPracticalDef[] = [
     gameMinutes: 20,
     maxStrikes: 1,
     hudObjectives: true,
-    requireCategories: ["hardware", "orca", "code-config"],
+    requireCategories: ["hardware", "orka", "code-config"],
   },
   {
     examId: "CERT-R5",

@@ -19,10 +19,10 @@ export function mainAccessoryA(rigId: string): number {
 export const HOST_EXTRA_A: Record<string, number> = { 'pi-cam-rackb': 0.25, 'pi-tethered': 0.45, 'pi-adb-shelf': 0 };
 
 const STRIP_LAYOUT: Record<string, { label: string; outlet: string; loads: (string | null)[] }> = {
-  'STRIP-A': { label: 'Rack A AC strip', outlet: 'WALL-2', loads: ['psu-wall-e-flux3', 'psu-bumblebee-micro3', 'psu-r2-d2-duet', 'brick-minix-01', 'psu-collis-eve', 'psu-eve-flux4'] },
-  'STRIP-B': { label: 'Rack B AC strip', outlet: 'WALL-3', loads: ['psu-johnny-5-flux1', 'psu-baymax-st2018', 'psu-seti-compass', 'psu-rosie-pocket', 'brick-minix-02', 'psu-collis-rosie'] },
+  'STRIP-A': { label: 'Rack A AC strip', outlet: 'WALL-2', loads: ['psu-wall-e-flux3', 'psu-bumblebee-micro3', 'psu-r2-d2-duet', 'brick-minix-01', 'psu-kollis-eve', 'psu-eve-flux4'] },
+  'STRIP-B': { label: 'Rack B AC strip', outlet: 'WALL-3', loads: ['psu-johnny-5-flux1', 'psu-baymax-st2018', 'psu-seti-compass', 'psu-rosie-pocket', 'brick-minix-02', 'psu-kollis-rosie'] },
   'STRIP-T': { label: 'Tethered rack + ADB shelf AC strip', outlet: 'WALL-4', loads: ['psu-megatron-mfd', 'psu-megatron-cfd', 'psu-optimus-mfd', 'psu-optimus-cfd', 'psu-data-micro3', 'psu-tars-flux4'] },
-  'STRIP-C': { label: 'Callus shelf AC strip', outlet: 'WALL-5', loads: ['psu-collis-wall-e', 'psu-collis-bumblebee', 'psu-collis-r2-d2', 'psu-collis-johnny-5', 'psu-collis-baymax', 'psu-collis-seti'] },
+  'STRIP-C': { label: 'Kallus shelf AC strip', outlet: 'WALL-5', loads: ['psu-kollis-wall-e', 'psu-kollis-bumblebee', 'psu-kollis-r2-d2', 'psu-kollis-johnny-5', 'psu-kollis-baymax', 'psu-kollis-seti'] },
   'STRIP-W': { label: 'Power-wall bench AC strip', outlet: 'WALL-6', loads: ['soldering-station', 'desk-lamp', null, null, null, null] },
 };
 
@@ -33,7 +33,7 @@ const MISC_AC: Record<string, { label: string; drawA: number }> = {
   'desk-fan': { label: 'Desk fan', drawA: 0.4 },
 };
 
-export function seedPower(deviceLoads: { loadId: string; deviceId: string; label: string }[], collisLoads: { loadId: string; collisId: string; rigId: string }[]): PowerState {
+export function seedPower(deviceLoads: { loadId: string; deviceId: string; label: string }[], kollisLoads: { loadId: string; kollisId: string; rigId: string }[]): PowerState {
   const outlets: Record<string, PowerOutlet> = {};
   const plugged: Record<string, string> = { 'WALL-1': 'MW-1', 'WALL-2': 'STRIP-A', 'WALL-3': 'STRIP-B', 'WALL-4': 'STRIP-T', 'WALL-5': 'STRIP-C', 'WALL-6': 'STRIP-W' };
   for (let n = 1; n <= 6; n++) {
@@ -82,7 +82,7 @@ export function seedPower(deviceLoads: { loadId: string; deviceId: string; label
   term('T-12V-NUC', 'rail-12v', 'NUC-03 12 V', 'fuse-bus', 'nuc-03');
   term('T-12V-SPARE', 'rail-12v', 'Spare 12 V line ("the 12 V NUC line")', 'spare', null);
   term('T-24V-SPARE', 'rail-24v', 'Spare 24 V rail tap', 'spare', null);
-  term('T-24V-CALLUS', 'rail-24v', 'Free 24 V barrel lead (Callus shelf)', 'spare', null);
+  term('T-24V-KALLUS', 'rail-24v', 'Free 24 V barrel lead (Kallus shelf)', 'spare', null);
   for (const t of Object.values(terminals)) t.propId = t.id.startsWith('T-') ? `power.${t.id.toLowerCase()}` : null;
 
   const strips: Record<string, AcStrip> = {};
@@ -114,8 +114,8 @@ export function seedPower(deviceLoads: { loadId: string; deviceId: string; label
   for (const d of deviceLoads) {
     load({ id: d.loadId, label: d.label, expects: 'AC-BRICK-18V', drawA: 0.5, supply: socketOf[d.loadId] ?? { kind: 'none', targetId: null }, powered: !!socketOf[d.loadId], damaged: false, deviceId: d.deviceId });
   }
-  for (const c of collisLoads) {
-    load({ id: c.loadId, label: `Collis probe PSU (${c.rigId.toUpperCase()})`, expects: 'AC-BRICK-18V', drawA: 0.3, supply: socketOf[c.loadId] ?? { kind: 'none', targetId: null }, powered: true, damaged: false, collisId: c.collisId, rigId: c.rigId });
+  for (const c of kollisLoads) {
+    load({ id: c.loadId, label: `Kollis probe PSU (${c.rigId.toUpperCase()})`, expects: 'AC-BRICK-18V', drawA: 0.3, supply: socketOf[c.loadId] ?? { kind: 'none', targetId: null }, powered: true, damaged: false, kollisId: c.kollisId, rigId: c.rigId });
   }
   for (const [id, m] of Object.entries(MISC_AC)) {
     const s = socketOf[id];

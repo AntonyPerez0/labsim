@@ -40,11 +40,11 @@ describe('condition evaluator', () => {
 
   it('matches event history with happened / sequence in the owner scope', () => {
     const scope = createScope({ id: 't1', kind: 'step', ownerId: 'x', cond: null, state: state() });
-    const seq = c.sequence(on('orca.checkoutRejected', { jobId: 'Java/uia-remote-regression-flux' }), on('robot.checkedOut', { name: 'wall-e' }));
+    const seq = c.sequence(on('orka.checkoutRejected', { jobId: 'Java/uia-relay-regression-flux' }), on('robot.checkedOut', { name: 'wall-e' }));
     expect(evaluate(seq, state(), scope)).toBe(false);
     fire('robot.checkedOut', { robotId: 1, name: 'wall-e', buildId: 'b1', byName: false });
     expect(evaluate(seq, state(), scope)).toBe(false); // wrong order
-    fire('orca.checkoutRejected', { buildId: 'b2', jobId: 'Java/uia-remote-regression-flux', reason: 'Reserved' });
+    fire('orka.checkoutRejected', { buildId: 'b2', jobId: 'Java/uia-relay-regression-flux', reason: 'Reserved' });
     fire('robot.checkedOut', { robotId: 1, name: 'wall-e', buildId: 'b2', byName: false });
     expect(evaluate(seq, state(), scope)).toBe(true);
     expect(evaluate(c.happened(on('robot.checkedOut', { name: 'wall-e' }), { min: 2 }), state(), scope)).toBe(true);
@@ -80,7 +80,7 @@ describe('condition evaluator', () => {
     const cond = c.all(c.eq(p.v('fixed'), true), c.nextHealthCheck());
     const scope = createScope({ id: 't4', kind: 'ticket', ownerId: 'LAB-1', cond, state: state() });
     // A health check before the fix fails the verification.
-    fire('orca.healthCheckRan', { atMs: 0, checked: 12, failedRobotIds: [], recoveredRobotIds: [] });
+    fire('orka.healthCheckRan', { atMs: 0, checked: 12, failedRobotIds: [], recoveredRobotIds: [] });
     expect(feedTrigger(scope, RT.log[RT.log.length - 1]!, state())).toBe('failed');
     mutate((s) => {
       s.session.vars.fixed = true;
@@ -89,7 +89,7 @@ describe('condition evaluator', () => {
     const st = scopeStatus(scope, state());
     expect(st.immediate).toBe(true);
     expect(st.full).toBe(false);
-    fire('orca.healthCheckRan', { atMs: 1, checked: 12, failedRobotIds: [], recoveredRobotIds: [] });
+    fire('orka.healthCheckRan', { atMs: 1, checked: 12, failedRobotIds: [], recoveredRobotIds: [] });
     expect(feedTrigger(scope, RT.log[RT.log.length - 1]!, state())).toBe('satisfied');
     expect(scopeStatus(scope, state()).full).toBe(true);
   });

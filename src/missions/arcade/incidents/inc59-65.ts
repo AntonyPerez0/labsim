@@ -1,6 +1,6 @@
 /**
- * GP §3.5 INC59–INC65: the cracked 3D-printed cradle, Orca's MySQL, two judgement tickets (AI tools,
- * Orca's platform), the Human Readable Name typo, the ADB-blind Duet CFD and a blank Tap URL.
+ * GP §3.5 INC59–INC65: the cracked 3D-printed cradle, Orka's MySQL, two judgement tickets (AI tools,
+ * Orka's platform), the Human Readable Name typo, the ADB-blind Duet CFD and a blank Tap URL.
  */
 import type { IncidentBinding, IncidentDef } from '../../types';
 import { c, on, p } from '../../types';
@@ -11,7 +11,7 @@ import {
   deviceIp,
   gw,
   hrn,
-  orcaSave,
+  orkaSave,
   piIp,
   reply,
   rig,
@@ -20,7 +20,7 @@ import {
   wm,
 } from './helpers';
 
-const FLUX_JOB = 'Java/uia-remote-regression-flux';
+const FLUX_JOB = 'Java/uia-relay-regression-flux';
 
 export const INC59: IncidentDef = {
   id: 'INC59',
@@ -33,7 +33,7 @@ export const INC59: IncidentDef = {
   escalatable: false,
   unlockedBy: 'M04',
   plannedWork: true,
-  tags: ['hw.print3d', 'hw.rigbom', 'orca.status.offline', 'hw.motion'],
+  tags: ['hw.print3d', 'hw.rigbom', 'orka.status.offline', 'hw.motion'],
   factIds: ['F072', 'F073', 'F093', 'F105', 'F242'],
   processBonuses: ['PB01', 'PB07', 'PB02'],
   ticket: { title: (b) => `${hrn(b)}'s taps drift on the right side of the screen`, reporter: 'morgan' },
@@ -70,7 +70,7 @@ export const INC59: IncidentDef = {
 
 export const INC60: IncidentDef = {
   id: 'INC60',
-  name: "Orca's MySQL is down",
+  name: "Orka's MySQL is down",
   difficulty: 4,
   base: 500,
   parS: 240,
@@ -80,36 +80,36 @@ export const INC60: IncidentDef = {
   unlockedBy: 'M06',
   tags: ['arch.stack', 'arch.infra', 'tools.terminal', 'arch.flow'],
   factIds: ['F013', 'F014', 'F002', 'F003', 'F004', 'F023', 'F037'],
-  ticket: { title: 'Every pipeline fails checkout; Orca shows an error page', reporter: 'jenkins-bot' },
-  setup: () => ({ scenario: [F('orca.mysqlDown')] }),
+  ticket: { title: 'Every pipeline fails checkout; Orka shows an error page', reporter: 'jenkins-bot' },
+  setup: () => ({ scenario: [F('orka.mysqlDown')] }),
   reveal: 'immediate',
   symptoms: [
-    sym('Orca', '500 Internal Server Error — Could not open JPA EntityManager for transaction; nested exception is org.hibernate.exception.JDBCConnectionException: Unable to acquire JDBC Connection / Communications link failure'),
-    sym('Jenkins', 'Every pipeline: [orca] checkout request … → 500'),
-    sym('Terminal', 'curl -s -o /dev/null -w "%{http_code}" http://orca.lab.local:8080/management/health → 503 [illus. JHipster health path]'),
-    sym('Terminal', 'ssh automation@orca.lab.local → systemctl status mysql → inactive (dead)'),
+    sym('Orka', '500 Internal Server Error — Could not open JPA EntityManager for transaction; nested exception is org.hibernate.exception.JDBCConnectionException: Unable to acquire JDBC Connection / Communications link failure'),
+    sym('Jenkins', 'Every pipeline: [orka] checkout request … → 500'),
+    sym('Terminal', 'curl -s -o /dev/null -w "%{http_code}" http://orka.lab.local:8080/management/health → 503 [illus. JHipster health path]'),
+    sym('Terminal', 'ssh automation@orka.lab.local → systemctl status mysql → inactive (dead)'),
   ],
-  diagnosisPath: ['Orca answers but cannot reach its database.', 'ssh to the Orca VM: MySQL is stopped.', 'Start MySQL; Orca reconnects.'],
+  diagnosisPath: ['Orka answers but cannot reach its database.', 'ssh to the Orka VM: MySQL is stopped.', 'Start MySQL; Orka reconnects.'],
   hints: [
-    'Orca itself answered with a 500. What is it failing to connect to?',
-    'ssh automation@orca.lab.local → systemctl status mysql.',
-    'sudo systemctl start mysql → Orca reconnects within 15 s → /management/health 200.',
+    'Orka itself answered with a 500. What is it failing to connect to?',
+    'ssh automation@orka.lab.local → systemctl status mysql.',
+    'sudo systemctl start mysql → Orka reconnects within 15 s → /management/health 200.',
   ],
-  fix: { handsOn: 'sudo systemctl start mysql → Orca reconnects within 15 s → health 200.' },
+  fix: { handsOn: 'sudo systemctl start mysql → Orka reconnects within 15 s → health 200.' },
   success: () =>
     c.all(
-      c.eq(p.svc('orca-vm', 'mysql'), 'UP'),
-      c.eq(p.orcaHttp, 200),
+      c.eq(p.svc('orka-vm', 'mysql'), 'UP'),
+      c.eq(p.orkaHttp, 200),
       c.label(c.verify({ kind: 'event', match: on('robot.checkedOut', {}) }), 'Next checkout OK'),
     ),
   diagnosisCall: dc(
-    "Orca's MySQL database is down",
-    ['Jenkins misconfigured', 'Orca returns the 500 on its own error page. Read the exception.'],
-    ['All Pis down', 'Orca cannot even read its robot table. What does the exception say?'],
-    ['GPU blade off', 'Orca and Jenkins answer — they run on the blade.'],
+    "Orka's MySQL database is down",
+    ['Jenkins misconfigured', 'Orka returns the 500 on its own error page. Read the exception.'],
+    ['All Pis down', 'Orka cannot even read its robot table. What does the exception say?'],
+    ['GPU blade off', 'Orka and Jenkins answer — they run on the blade.'],
   ),
-  wrongButTempting: [gw('restart-vm', 'GW13', 'Restart the Orca VM (works after 45 s but kills running builds)'), gw('reboot-blade', 'GW13', 'Reboot the GPU blade')],
-  teaches: 'Ref §1/§3: Orca is an on-premise Spring Boot monolith scaffolded by JHipster and backed by MySQL, running on a lab VM; Docker/GCP are only planned.',
+  wrongButTempting: [gw('restart-vm', 'GW13', 'Restart the Orka VM (works after 45 s but kills running builds)'), gw('reboot-blade', 'GW13', 'Reboot the GPU blade')],
+  teaches: 'Ref §1/§3: Orka is an on-premise Spring Boot monolith scaffolded by JHipster and backed by MySQL, running on a lab VM; Docker/GCP are only planned.',
 };
 
 const AI_PAIRS = [
@@ -130,7 +130,7 @@ export const INC61: IncidentDef = {
   unlockedBy: 'M17',
   tags: ['tools.claude', 'vision.ollama', 'vision.tesseract'],
   factIds: ['F029', 'F031', 'F032', 'F033'],
-  ticket: { title: 'Leadership wants one line per AI/vision tool for the AI-initiative slide', reporter: 'tate' },
+  ticket: { title: 'Leadership wants one line per AI/vision tool for the AI-initiative slide', reporter: 'nate' },
   setup: () => ({}),
   reveal: 'immediate',
   symptoms: [],
@@ -145,7 +145,7 @@ export const INC61: IncidentDef = {
     kind: 'match',
     prompt: 'Match each tool to its role in the lab.',
     pairs: AI_PAIRS,
-    distractors: ['Runs the Orchestrator backend', 'Drives the Collis probes'],
+    distractors: ['Runs the Orchestrator backend', 'Drives the Kollis probes'],
     statusLine: {
       prompt: 'Status line for the slide',
       options: [
@@ -164,7 +164,7 @@ export const INC61: IncidentDef = {
 
 export const INC62: IncidentDef = {
   id: 'INC62',
-  name: '"Where does Orca run?" (judgement)',
+  name: '"Where does Orka run?" (judgement)',
   difficulty: 1,
   base: 150,
   parS: 90,
@@ -174,7 +174,7 @@ export const INC62: IncidentDef = {
   unlockedBy: 'M06',
   tags: ['arch.stack', 'arch.infra', 'arch.roles'],
   factIds: ['F098', 'F037', 'F003', 'F023', 'F022', 'F078'],
-  ticket: { title: "Explain Orca's platform to the new hire", reporter: 'alex' },
+  ticket: { title: "Explain Orka's platform to the new hire", reporter: 'alex' },
   setup: () => ({}),
   reveal: 'immediate',
   symptoms: [],
@@ -187,12 +187,12 @@ export const INC62: IncidentDef = {
     options: [
       reply(
         'R1',
-        'Orca is the Controller and Jenkins the Executor. Orca is an on-premise Spring Boot monolith in Java, scaffolded with JHipster (UI, REST endpoints, MySQL schemas), running on a lab VM on the 4-GPU blade; Docker and GCP are planned migration targets.',
+        'Orka is the Controller and Jenkins the Executor. Orka is an on-premise Spring Boot monolith in Java, scaffolded with JHipster (UI, REST endpoints, MySQL schemas), running on a lab VM on the 4-GPU blade; Docker and GCP are planned migration targets.',
         true,
       ),
-      reply('R2', 'It runs in Docker on GCP today.', false, { teach: teach('Not yet.', 'Docker and GCP are planned migration targets; Orca runs on an on-premise lab VM today. (Ref §1)', 'Reply R1.') }),
-      reply('R3', 'Jenkins is the Controller, Orca the Executor.', false, { teach: teach('Reversed.', 'Orchestrator is the Controller and Jenkins is the Executor. (Ref §3)', 'Reply R1.') }),
-      reply('R4', 'Orca is a Go service on the Raspberry Pis.', false, { teach: teach('No.', 'Orca is a Java Spring Boot monolith on a lab VM; the Pis run the Robot Controllers. (Ref §1)', 'Reply R1.') }),
+      reply('R2', 'It runs in Docker on GCP today.', false, { teach: teach('Not yet.', 'Docker and GCP are planned migration targets; Orka runs on an on-premise lab VM today. (Ref §1)', 'Reply R1.') }),
+      reply('R3', 'Jenkins is the Controller, Orka the Executor.', false, { teach: teach('Reversed.', 'Orchestrator is the Controller and Jenkins is the Executor. (Ref §3)', 'Reply R1.') }),
+      reply('R4', 'Orka is a Go service on the Raspberry Pis.', false, { teach: teach('No.', 'Orka is a Java Spring Boot monolith on a lab VM; the Pis run the Robot Controllers. (Ref §1)', 'Reply R1.') }),
     ],
   },
   success: () => c.eq(p.ticket.reply, 'R1'),
@@ -218,28 +218,28 @@ export const INC63: IncidentDef = {
   rigs: { candidates: ['johnny-5', 'wall-e', 'eve', 'bumblebee', 'baymax', 'seti'], default: 'johnny-5', scope: 'rig', describe: 'any touch rig (default JOHNNY-5)' },
   escalatable: false,
   unlockedBy: 'M07',
-  tags: ['orca.names', 'hw.tablet'],
+  tags: ['orka.names', 'hw.tablet'],
   factIds: ['F117', 'F118'],
   ticket: { title: (b) => `${hrn(b)}'s tablet says ${hrnTypo(hrn(b))} — can someone fix the robot's name?`, reporter: 'riley' },
-  setup: (b: IncidentBinding) => ({ scenario: [F('orca.hrnTypo', { robot: '$R', hrn: hrnTypo(hrn(b)) })] }),
+  setup: (b: IncidentBinding) => ({ scenario: [F('orka.hrnTypo', { robot: '$R', hrn: hrnTypo(hrn(b)) })] }),
   reveal: 'immediate',
   symptoms: [
     sym('Tablet', (b) => `Header ${hrnTypo(hrn(b))}`),
-    sym('Orca', (b) => `Name ${rig(b)}, Human Readable Name ${hrnTypo(hrn(b))}`),
+    sym('Orka', (b) => `Name ${rig(b)}, Human Readable Name ${hrnTypo(hrn(b))}`),
   ],
   diagnosisPath: ['The tablet shows the Human Readable Name.', 'Fix that field — not the Name.'],
-  hints: ['Which Orca field is pushed to the tablet?', (b) => `Orca → ${hrn(b)} → Human Readable Name.`, (b) => `Human Readable Name → ${hrn(b)}; leave Name (${rig(b)}) alone; check the tablet.`],
+  hints: ['Which Orka field is pushed to the tablet?', (b) => `Orka → ${hrn(b)} → Human Readable Name.`, (b) => `Human Readable Name → ${hrn(b)}; leave Name (${rig(b)}) alone; check the tablet.`],
   fix: { handsOn: (b) => `Edit Human Readable Name → ${hrn(b)}; leave Name alone; check the tablet.` },
   success: (b) =>
     c.all(
       c.eq(p.robot(rig(b)).hrn, hrn(b)),
       c.eq(p.robot(rig(b)).name, rig(b)),
-      c.label(c.happened(orcaSave('robot', { fields: ['humanReadableName'] })), 'Human Readable Name saved'),
+      c.label(c.happened(orkaSave('robot', { fields: ['humanReadableName'] })), 'Human Readable Name saved'),
     ),
   diagnosisCall: dc(
     'Human Readable Name typo (pushed to the tablet)',
     ['Name typo', 'The Name is the system identifier pipelines use — and it is spelled right. Which field feeds the tablet?'],
-    ['Tablet firmware', 'The tablet shows exactly what Orca pushes. Check Orca.'],
+    ['Tablet firmware', 'The tablet shows exactly what Orka pushes. Check Orka.'],
     ['Device row wrong', 'The Device row describes the hardware, not the display name.'],
   ),
   wrongButTempting: [gw('edit-name', 'GW22', 'Edit the robot Name')],
@@ -256,7 +256,7 @@ export const INC64: IncidentDef = {
   rigs: { roles: ['duet'], default: 'r2-d2', scope: 'rig', describe: '`duet` (R2-D2)' },
   escalatable: false,
   unlockedBy: 'M16',
-  tags: ['bots.types', 'uia.v23', 'orca.xytouch', 'adb.usage'],
+  tags: ['bots.types', 'uia.v23', 'orka.xytouch', 'adb.usage'],
   factIds: ['F151', 'F152', 'F221', 'F007', 'F143', 'F144'],
   ticket: { title: (b) => `Need an adb shell input tap for 'Done' on ${hrn(b)}'s CFD receipt screen`, reporter: 'riley' },
   setup: () => ({ scenario: [OP('device.stage', { device: '$DEV', stage: 'receipt-done' })] }),
@@ -265,27 +265,27 @@ export const INC64: IncidentDef = {
     sym('Terminal', (b) => `adb -s ${deviceIp(b)}:5444 shell uiautomator dump → the dump only contains MFD elements (grep -c "Done" window_dump.xml → 0)`),
     sym('World', (b) => `${hrn(b)}'s CFD shows a receipt prompt with "Done".`),
   ],
-  diagnosisPath: ['ADB only sees the MFD on a Stand Duet.', 'Tap the CFD physically through Orca\'s xy_touch.', 'Reply with the right approach.'],
+  diagnosisPath: ['ADB only sees the MFD on a Stand Duet.', 'Tap the CFD physically through Orka\'s xy_touch.', 'Reply with the right approach.'],
   hints: [
     'Is "Done" anywhere in the UI dump?',
-    'Orca has a screen CFD_RECEIPT_DONE for STAND_DUET — call xy_touch on the touch robot.',
-    (b) => `curl -X POST http://orca.lab.local:8080/api/xy_touch -H "Content-Type: application/json" -d '{"robot":"${rig(b)}","screen":"CFD_RECEIPT_DONE","button":"Done"}' → "mode":"PHYSICAL_TAP"; reply R_DUET_BLIND.`,
+    'Orka has a screen CFD_RECEIPT_DONE for STAND_DUET — call xy_touch on the touch robot.',
+    (b) => `curl -X POST http://orka.lab.local:8080/api/xy_touch -H "Content-Type: application/json" -d '{"robot":"${rig(b)}","screen":"CFD_RECEIPT_DONE","button":"Done"}' → "mode":"PHYSICAL_TAP"; reply R_DUET_BLIND.`,
   ],
   fix: {
     handsOn: (b) =>
-      `curl -X POST http://orca.lab.local:8080/api/xy_touch -H "Content-Type: application/json" -d '{"robot":"${rig(b)}","screen":"CFD_RECEIPT_DONE","button":"Done"}' → "mode":"PHYSICAL_TAP"; reply R_DUET_BLIND.`,
+      `curl -X POST http://orka.lab.local:8080/api/xy_touch -H "Content-Type: application/json" -d '{"robot":"${rig(b)}","screen":"CFD_RECEIPT_DONE","button":"Done"}' → "mode":"PHYSICAL_TAP"; reply R_DUET_BLIND.`,
   },
   replies: {
     wrongPenalty: 100,
     to: 'riley',
     options: [
-      reply('R_DUET_BLIND', "ADB can't see the Duet's CFD. Tap it physically through Orca's xy_touch on R2-D2, or use a UIA 2.3 dual-screen locator in the test.", true),
+      reply('R_DUET_BLIND', "ADB can't see the Duet's CFD. Tap it physically through Orka's xy_touch on R2-D2, or use a UIA 2.3 dual-screen locator in the test.", true),
       reply('R_ADB_TAP', 'Use adb shell input tap with the CFD coordinates.', false, { teach: teach('That taps the MFD.', 'On the Stand Duet only the primary MFD is exposed to ADB. (Ref §3)', 'Use a physical tap via xy_touch, or a UIA 2.3 dual-screen locator.') }),
     ],
   },
   success: (b) =>
     c.all(
-      c.label(c.happened(on('orca.xyTouch', { robotName: rig(b), screen: 'CFD_RECEIPT_DONE', button: 'Done', ok: true }, (pl) => pl.mode === 'probe' || pl.orcaMode === 'PHYSICAL_TAP')), 'Physical tap on the CFD'),
+      c.label(c.happened(on('orka.xyTouch', { robotName: rig(b), screen: 'CFD_RECEIPT_DONE', button: 'Done', ok: true }, (pl) => pl.mode === 'probe' || pl.orkaMode === 'PHYSICAL_TAP')), 'Physical tap on the CFD'),
       c.eq(p.ticket.reply, 'R_DUET_BLIND'),
     ),
   diagnosisCall: dc(
@@ -295,7 +295,7 @@ export const INC64: IncidentDef = {
     ['Wrong IP', 'MFD and CFD share one IP on a Duet. The dump lacks the CFD.'],
   ),
   wrongButTempting: [
-    wm('adb-tap', 'adb … input tap <x> <y> with CFD coordinates', 100, on('adb.command', {}, (pl) => /input\s+tap/.test(pl.command) && /10\.42\.30\.14/.test(pl.target ?? '')), teach('It tapped the MFD instead.', 'On the Stand Duet only the MFD is exposed to ADB; physical bots are required for ADB-blind displays. (Ref §3, §6)', "Use Orca's xy_touch on the touch robot.")),
+    wm('adb-tap', 'adb … input tap <x> <y> with CFD coordinates', 100, on('adb.command', {}, (pl) => /input\s+tap/.test(pl.command) && /10\.42\.30\.14/.test(pl.target ?? '')), teach('It tapped the MFD instead.', 'On the Stand Duet only the MFD is exposed to ADB; physical bots are required for ADB-blind displays. (Ref §3, §6)', "Use Orka's xy_touch on the touch robot.")),
   ],
   teaches: 'Ref §3: the dual-screen problem (only the MFD is exposed to ADB). Ref §6: physical bots for ADB-blind displays. UI Automator 2.3 dual-screen tracking.',
 };
@@ -307,40 +307,40 @@ export const INC65: IncidentDef = {
   base: 200,
   parS: 120,
   severity: 'P1',
-  rigs: { candidates: ['johnny-5', 'wall-e', 'eve'], default: 'johnny-5', scope: 'rig', describe: 'touch + collis rigs (default JOHNNY-5)' },
+  rigs: { candidates: ['johnny-5', 'wall-e', 'eve'], default: 'johnny-5', scope: 'rig', describe: 'touch + kollis rigs (default JOHNNY-5)' },
   escalatable: false,
   unlockedBy: 'M07',
-  tags: ['orca.urls', 'cards.diptap'],
+  tags: ['orka.urls', 'cards.diptap'],
   factIds: ['F125', 'F123', 'F071'],
   ticket: { title: (b) => `${hrn(b)} contactless taps fail instantly`, reporter: 'jenkins-bot' },
   setup: () => ({
     scenario: [
-      F('orca.urlWrong', { robot: '$R', field: 'tap', value: '' }),
+      F('orka.urlWrong', { robot: '$R', field: 'tap', value: '' }),
       OP('jenkins.startBuild', { job: FLUX_JOB, params: { ROBOT_NAME: '$R', DEVICE_TYPE: '$T', CARD_PROFILE: 'VISA_STD_TAP' } }),
     ],
   }),
   reveal: 'pipeline',
   symptoms: [
-    sym('Jenkins', (b) => `POST /api/card/tap {"robot":"${rig(b)}","profile":"VISA_STD_TAP"} → [orca] 400 Bad Request: robot ${rig(b)} has no Tap URL [illus.]`),
-    sym('Orca', (b) => `URL Mappings: ADB http://${piIp(b)}:8000/adb, Dip …/dip, Swipe …/swipe, Tap (blank)`),
+    sym('Jenkins', (b) => `POST /api/card/tap {"robot":"${rig(b)}","profile":"VISA_STD_TAP"} → [orka] 400 Bad Request: robot ${rig(b)} has no Tap URL [illus.]`),
+    sym('Orka', (b) => `URL Mappings: ADB http://${piIp(b)}:8000/adb, Dip …/dip, Swipe …/swipe, Tap (blank)`),
   ],
-  diagnosisPath: ['Orca refused the tap before any hardware moved.', 'URL Mappings: the Tap URL is blank.', 'Fill it in the same pattern as the others.'],
+  diagnosisPath: ['Orka refused the tap before any hardware moved.', 'URL Mappings: the Tap URL is blank.', 'Fill it in the same pattern as the others.'],
   hints: [
-    'Orca answered 400 — it had nowhere to send the tap.',
-    (b) => `Orca → ${hrn(b)} → URL Mappings.`,
+    'Orka answered 400 — it had nowhere to send the tap.',
+    (b) => `Orka → ${hrn(b)} → URL Mappings.`,
     (b) => `Tap URL = http://${piIp(b)}:8000/tap → tablet Tap In/Out to verify → rebuild.`,
   ],
   fix: { handsOn: (b) => `Tap URL = http://${piIp(b)}:8000/tap → tablet Tap → In/Out to verify → rebuild.` },
   success: (b) => c.all(c.eq(p.robot(rig(b)).url('tap'), `http://${piIp(b)}:8000/tap`), c.nextBuild({ robots: [rig(b)], params: { CARD_PROFILE: 'VISA_STD_TAP' } })),
   diagnosisCall: dc(
     "The rig's Tap URL mapping is missing",
-    ['Collis offline', 'Orca refused with a 400 before the probe was involved.'],
-    ['VISA_STD_TAP path wrong', 'A wrong path fails in Callus with FileNotFoundException. This failed in Orca.'],
+    ['Kollis offline', 'Orka refused with a 400 before the probe was involved.'],
+    ['VISA_STD_TAP path wrong', 'A wrong path fails in Kallus with FileNotFoundException. This failed in Orka.'],
     ['Pi crashed', 'Dip and swipe work on the same Pi.'],
   ),
   wrongButTempting: [
-    wm('tap-to-callus', 'Point Tap at the Callus box', 50, orcaSave('robot', { fields: ['tapUrl'], test: (pl, s) => /10\.42\.20\./.test(s.lab.orca.robots[pl.id as number]?.tapUrl ?? '') }), teach('Wrong host.', 'URL Mappings store hardware-specific Dip, Tap and Swipe URLs that route to the rig\'s Pi. (Ref §3)', 'Use the Pi\'s /tap endpoint.')),
-    wm('edit-profile', 'Edit the card profile', 50, orcaSave('cardProfile'), teach('The profile was fine.', 'Orca had no Tap URL to call. (Ref §3)', 'Fill the Tap URL.')),
+    wm('tap-to-kallus', 'Point Tap at the Kallus box', 50, orkaSave('robot', { fields: ['tapUrl'], test: (pl, s) => /10\.42\.20\./.test(s.lab.orka.robots[pl.id as number]?.tapUrl ?? '') }), teach('Wrong host.', 'URL Mappings store hardware-specific Dip, Tap and Swipe URLs that route to the rig\'s Pi. (Ref §3)', 'Use the Pi\'s /tap endpoint.')),
+    wm('edit-profile', 'Edit the card profile', 50, orkaSave('cardProfile'), teach('The profile was fine.', 'Orka had no Tap URL to call. (Ref §3)', 'Fill the Tap URL.')),
   ],
   teaches: 'Ref §3 URL Mappings: hardware-specific Dip, Tap and Swipe URLs per robot.',
 };

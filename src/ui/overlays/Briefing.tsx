@@ -61,13 +61,13 @@ export function Briefing() {
             </div>
             <ul className="briefing__list">
               <li>
-                <Icon name="refresh" size={14} /> Orca pings every Pi every 5 game minutes — one health check per real minute at 5×. Fixes show in Orca only after the next ping.
+                <Icon name="refresh" size={14} /> Orka pings every Pi every 5 game minutes — one health check per real minute at 5×. Fixes show in Orka only after the next ping.
               </li>
               <li>
                 <Icon name="ticket" size={14} /> Ack tickets fast (<Kbd k="T" size="sm" />, Enter). Call the root cause from the evidence before you fix.
               </li>
               <li>
-                <Icon name="escalate" size={14} /> Hardware Connection Failed? Escalate to {personName('jared')} with the exact endpoint — or fix it hands-on.
+                <Icon name="escalate" size={14} /> Hardware Connection Failed? Escalate to {personName('jaden')} with the exact endpoint — or fix it hands-on.
               </li>
               <li>
                 <Icon name="pipeline" size={14} /> Keep rigs Available: pipelines check out a rig every 30 s.

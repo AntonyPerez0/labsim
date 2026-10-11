@@ -1,7 +1,7 @@
 /**
  * Reusable rig hardware (World §2.8, §2.12–§2.14, §3.4): a frame-relative builder `B` plus the
  * Raspberry Pi case, inline ATO fuse holder, AC brick, gooseneck webcam, commercial AC strip,
- * LabSim connectivity hub, SmartStripe dongle, Collis probe, Minix / NUC boxes and cable tubes.
+ * LabSim connectivity hub, SmartStripe dongle, Kollis probe, Minix / NUC boxes and cable tubes.
  * Everything static goes into the kit's world-space batches (merged per material).
  */
 import { Matrix4, Mesh, MeshStandardMaterial, Vector3, type BufferGeometry, type Material } from 'three';
@@ -290,25 +290,25 @@ export function buildHub(b: B): LedHandle {
   return led;
 }
 
-/* ───────────────────────────── Collis probe (§2.14) ───────────────────────────── */
+/* ───────────────────────────── Kollis probe (§2.14) ───────────────────────────── */
 
-export interface CollisHandles {
+export interface KollisHandles {
   led: LedHandle;
   /** Local rear-panel IDC header centre (the ribbon leaves from here toward local −Z). */
   ribbonOut: V3;
 }
 
 /** Light-grey aluminium box 150 W × 45 H × 110 D: front sticker, status LED, USB-B, DC in; rear IDC. */
-export function buildCollis(b: B, hrn: string): CollisHandles {
+export function buildKollis(b: B, hrn: string): KollisHandles {
   const m = b.m;
-  b.box(m.collisGrey, 150, 45, 110, [0, 22.5, 0], 2.5);
-  b.box(m.collisGrey, 154, 4, 114, [0, 2, 0], 1);
+  b.box(m.kollisGrey, 150, 45, 110, [0, 22.5, 0], 2.5);
+  b.box(m.kollisGrey, 154, 4, 114, [0, 2, 0], 1);
   b.tape('UL Transaction Security', 3.2, { p: [-25, 26, 55.3] }, { bg: '#fbfbf8', edges: false });
   const led = b.led([45, 30, 55.4], 3, '#2bff6a', 7);
   b.box(m.darkPort, 12, 11, 1.5, [60, 16, 55.4], 1);
   b.cyl(m.darkPort, 8, 2, [30, 14, 55.6], [Math.PI / 2, 0, 0], 14);
   b.box(m.minixBlack, 56, 10, 6, [0, 22, -57], 1);
-  b.tape(`COLLIS · ${hrn}`, 4, { p: [0, 45.3, 10], r: [-Math.PI / 2, 0, 0] });
+  b.tape(`KOLLIS · ${hrn}`, 4, { p: [0, 45.3, 10], r: [-Math.PI / 2, 0, 0] });
   return { led, ribbonOut: [0, 22, -60] };
 }
 

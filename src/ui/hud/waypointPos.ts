@@ -10,7 +10,7 @@ import type { RigDef, Vec3 } from '@/world/layout';
 /** Placement-less part families → the prop that carries them. */
 const FALLBACK_HOSTS: readonly [string, string][] = [
   ['power.', 'wall.power'],
-  ['callus.', 'shelf.callus'],
+  ['kallus.', 'shelf.kallus'],
   ['server.', 'shelf.server'],
 ];
 
@@ -24,7 +24,7 @@ export function markerWorldPos(m: MarkerTarget): Vec3 | null {
       return l ? [l.center[0], 1.1, l.center[2]] : null;
     }
     if (m.kind === 'npc' || m.id.startsWith('npc.')) {
-      // People stand at their desk / bench: `npc.morgan` → `desk.morgan`, `npc.jared` → his bench.
+      // People stand at their desk / bench: `npc.morgan` → `desk.morgan`, `npc.jaden` → his bench.
       const key = m.id.replace(/^npc\./, '');
       const prop = PROPS.find((p) => p.id === `desk.${key}` || p.id === `bench.${key}`) ?? PROPS.find((p) => p.id.split('.').includes(key));
       return prop ? [prop.pos[0], 1.3, prop.pos[2]] : null;
@@ -32,8 +32,8 @@ export function markerWorldPos(m: MarkerTarget): Vec3 | null {
     if (m.kind !== 'prop' && m.kind !== 'rig') return null;
     let id = m.kind === 'rig' ? `rig.${m.id}` : resolvePropId(m.id);
     // Parts without their own placement: fall back to the fixture that carries them.
-    const collis = /^collis\.(.+)$/.exec(id);
-    if (collis) id = `rig.${collis[1]}`;
+    const kollis = /^kollis\.(.+)$/.exec(id);
+    if (kollis) id = `rig.${kollis[1]}`;
     for (const [prefix, host] of FALLBACK_HOSTS) if (!PROP_BY_ID[id] && id.startsWith(prefix) && PROP_BY_ID[host]) id = host;
     for (let i = 0; i < 4 && id; i++) {
       const prop = PROP_BY_ID[id];

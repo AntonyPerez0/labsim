@@ -13,7 +13,7 @@ export function AboutScreen({ onBack }: { onBack: () => void }) {
         <LabWordmark size={44} className="menu__mark" />
         <div>
           <h1 className="menu__h1">LabSim — LabSim Automation Lab</h1>
-          <p className="muted">A first-person training simulator for new automation engineers. Walk the lab, trace power, park robots, read Orca and Jenkins, write page objects — then do it all for real.</p>
+          <p className="muted">A first-person training simulator for new automation engineers. Walk the lab, trace power, park robots, read Orka and Jenkins, write page objects — then do it all for real.</p>
         </div>
       </div>
       <div className="about__grid">

@@ -7,9 +7,9 @@ import { createDefaultProgress, DEFAULT_SETTINGS, PROGRESS_VERSION } from './sta
 import type { LabState } from '@/sim/types';
 
 const PROGRESS_KEY = 'labsim.progress.v1';
-// v2: device families renamed (Stand / Micro / Flux / Compass) — older Free Play labs are discarded.
-const FREEPLAY_KEY = 'labsim.freeplay.v2';
-const OLD_FREEPLAY_KEYS = ['labsim.freeplay.v1'];
+// v3: device families (v2) and internal tool names renamed — older Free Play labs are discarded.
+const FREEPLAY_KEY = 'labsim.freeplay.v3';
+const OLD_FREEPLAY_KEYS = ['labsim.freeplay.v1', 'labsim.freeplay.v2'];
 
 function isPlainObject(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null && !Array.isArray(v);

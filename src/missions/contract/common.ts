@@ -23,11 +23,11 @@ export type LocationId = string;
 export type PropId = string;
 
 /**
- * Computer app id (`AppId` in `src/computer/apps.ts`, apps doc §1.9; Cur's `app.orca` → `orca`).
+ * Computer app id (`AppId` in `src/computer/apps.ts`, apps doc §1.9; Cur's `app.orka` → `orka`).
  * LabChat is `chat`; the tablet dashboard is `dashboard`.
  */
 export type AppId =
-  | 'orca'
+  | 'orka'
   | 'jenkins'
   | 'github'
   | 'ollama'
@@ -50,14 +50,14 @@ export type Templated<B = IncidentBinding> = string | ((b: B) => string);
  * Rig binding of an incident instance. `TicketBinding` (core) + the chosen variant.
  * Conventional `vars` keys (filled by the default binder, sim doc §4.5 placeholders in brackets):
  * `pi` [$PI] Pi host id (`pi-wall-e`), `piIp` (`10.42.10.11`), `dev` [$DEV] Robot Device runtime id,
- * `device` Orca device-row name (`wall-e-flux3`), `deviceIp`, `deviceType` [$T] (`FLUX_3`),
- * `box` [$BOX] Callus host id (`minix-01`), `probe` [$PROBE] Collis probe id, `rack`, `fuse`, `camera`;
+ * `device` Orka device-row name (`wall-e-flux3`), `deviceIp`, `deviceType` [$T] (`FLUX_3`),
+ * `box` [$BOX] Kallus host id (`minix-01`), `probe` [$PROBE] Kollis probe id, `rack`, `fuse`, `camera`;
  * seeded truth under `truth.<key>`. `$R` = `rig`.
  */
 export type IncidentBinding = TicketBinding & { readonly variant: string };
 
 /**
- * A setup operation (sim doc §4.4.1: `orca.setStatus`, `device.stage`, `repo.commitFixture`,
+ * A setup operation (sim doc §4.4.1: `orka.setStatus`, `device.stage`, `repo.commitFixture`,
  * `jenkins.seedBuild` …). Structurally identical to the sim's `SetupOp`.
  */
 export interface SetupOpSpec {
@@ -76,9 +76,9 @@ export type ScenarioItem = FaultSpec | SetupOpSpec;
 export interface AppGating {
   /** Apps the desktop shows (`'all'` to lift gating). */
   unlock?: readonly AppId[] | 'all';
-  /** Per-app restrictions, e.g. `{ jenkins: { visibleJobs: ['Java/uia-remote-regression-flux'] } }`. */
+  /** Per-app restrictions, e.g. `{ jenkins: { visibleJobs: ['Java/uia-relay-regression-flux'] } }`. */
   restrictions?: Readonly<Record<string, Readonly<Record<string, readonly string[] | string | boolean>>>>;
-  /** Orca's tutorial **Force health check** header button. */
+  /** Orka's tutorial **Force health check** header button. */
   forceHealthCheck?: boolean;
 }
 
@@ -99,10 +99,10 @@ export interface ScriptContext {
  * const setup: SetupSpec = {
  *   preset: 'academy:M06',
  *   scenario: [
- *     { op: 'orca.setStatus', params: { robot: 'baymax', status: 'OFFLINE', by: 'jared' } },
+ *     { op: 'orka.setStatus', params: { robot: 'baymax', status: 'OFFLINE', by: 'jaden' } },
  *     { faultId: 'pi.hung', params: { host: '$PI' } },
  *   ],
- *   apps: { unlock: ['orca', 'jenkins'], restrictions: { jenkins: { visibleJobs: ['Java/uia-remote-regression-flux'] } }, forceHealthCheck: true },
+ *   apps: { unlock: ['orka', 'jenkins'], restrictions: { jenkins: { visibleJobs: ['Java/uia-relay-regression-flux'] } }, forceHealthCheck: true },
  *   spawn: 'loc.whiteboard',
  * };
  */
@@ -134,13 +134,13 @@ export interface SpokenLine {
 }
 
 /**
- * Side effects at step boundaries (`onEnter` / `onComplete`), incident spawn/resolve, Jared's fix.
+ * Side effects at step boundaries (`onEnter` / `onComplete`), incident spawn/resolve, Jaden's fix.
  *
  * @example
  * const onComplete: ScriptAction[] = [
- *   { do: 'say', speaker: 'jared', text: 'On it. Probably the Pi, or a Minix box running Callus. Same symptom.' },
- *   { do: 'npc', npc: 'jared', action: 'fix', target: 'rig.eve.pi-power' },
- *   { do: 'sim', run: (sim) => { sim.faults.clear('fault-7', 'mentor'); } }, // Jared re-plugs EVE's Pi lead
+ *   { do: 'say', speaker: 'jaden', text: 'On it. Probably the Pi, or a Minix box running Kallus. Same symptom.' },
+ *   { do: 'npc', npc: 'jaden', action: 'fix', target: 'rig.eve.pi-power' },
+ *   { do: 'sim', run: (sim) => { sim.faults.clear('fault-7', 'mentor'); } }, // Jaden re-plugs EVE's Pi lead
  * ];
  */
 export type ScriptAction =
@@ -197,10 +197,10 @@ export interface HintDef {
 /**
  * One "Show me" / Walkthrough pointer on the workstation. `target` is a hint target from
  * `APP_HINT_TARGETS` (apps doc §1.7: elements carry `data-hint="<target>"`; parametrised with `:`,
- * e.g. `orca.robots.row:johnny-5`). The runtime calls `requestHint({ app, target, route, showMe })`
+ * e.g. `orka.robots.row:johnny-5`). The runtime calls `requestHint({ app, target, route, showMe })`
  * from `@/computer/apps`: a pulsing ring, plus the ghost cursor for Show me (it never clicks).
  *
- * @example { app: 'orca', route: '/robot', target: 'orca.robots.filter.status', action: 'select', text: 'Available', caption: "Tate's filter UI" }
+ * @example { app: 'orka', route: '/robot', target: 'orka.robots.filter.status', action: 'select', text: 'Available', caption: "Nate's filter UI" }
  */
 export interface GhostAction {
   app: AppId;

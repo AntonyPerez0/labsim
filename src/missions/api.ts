@@ -162,7 +162,7 @@ export interface EscalationRequest {
 }
 
 export interface EscalationResult {
-  /** `queued` while Jared is at lunch; `pending` → Jared will check (bounce after 20 s if wrong). */
+  /** `queued` while Jaden is at lunch; `pending` → Jaden will check (bounce after 20 s if wrong). */
   outcome: 'queued' | 'pending' | 'accepted' | 'bounced' | 'not-escalatable';
   points: number;
   message: string;
@@ -286,7 +286,7 @@ export interface TagMasteryView {
   def: TagDef | null;
   /** Curriculum module tag it rolls up to (Cur §8). */
   parent: string;
-  /** Radar group (Architecture, Orca, Jenkins …). */
+  /** Radar group (Architecture, Orka, Jenkins …). */
   group: string;
   taughtIn: string;
   m: number;
@@ -382,7 +382,7 @@ export interface MissionsApi {
   startWeakSpot(): void;
   /** "Call it a day": end now (open tickets → handover debt). */
   endShift(): void;
-  /** Real seconds until Orca's next health check (HUD countdown). */
+  /** Real seconds until Orka's next health check (HUD countdown). */
   nextHealthCheckInS(): number;
 
   /* ═══ Arcade: tickets ═══ */
@@ -397,7 +397,7 @@ export interface MissionsApi {
   ticketView(ticketId: string): TicketView | null;
   /** Diagnosis Call (one per ticket). */
   callRootCause(ticketId: string, optionId: string): DiagnosisCallResult;
-  /** Escalate to Jared with cause + endpoint (GP §2.3.7). */
+  /** Escalate to Jaden with cause + endpoint (GP §2.3.7). */
   escalate(ticketId: string, request: EscalationRequest): EscalationResult;
   /** Evaluate the success condition (false → GW16; deferred → verifying). */
   resolveTicket(ticketId: string): ResolveResult;

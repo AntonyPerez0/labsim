@@ -1,6 +1,6 @@
 /**
  * World-lab builder (World §1, §6–§9 for everything that is not a rig): room shell, ceiling,
- * lights, overhead trays, workstations, power wall, server shelf, print corner, Jared's bench +
+ * lights, overhead trays, workstations, power wall, server shelf, print corner, Jaden's bench +
  * parts wall + Husky + storage, west/east/south walls, device library, coffee corner.
  *
  * `buildLab` registers the static colliders (`STATIC_COLLIDERS`, incl. rack/shelf footprints),
@@ -23,7 +23,7 @@ import { buildPowerWall } from './powerWall';
 import { bindPowerWall } from './powerBind';
 import { buildServer } from './server';
 import { buildFab } from './fab';
-import { buildJaredCorner } from './jared';
+import { buildJadenCorner } from './jaden';
 import { buildPartsWall } from './partsWall';
 import { buildWestWall } from './westWall';
 import { buildEastWall } from './eastWall';
@@ -59,7 +59,7 @@ export async function buildLab(engine: Engine, onProgress: (p: number, label: st
   steps.push(['Power wall…', () => bindPowerWall(ctx, buildPowerWall(ctx))]);
   steps.push(['Server shelf…', () => buildServer(ctx)]);
   steps.push(['3D print corner…', () => buildFab(ctx)]);
-  steps.push([`${personName(HARDWARE_LEAD)}'s bench…`, () => buildJaredCorner(ctx)]);
+  steps.push([`${personName(HARDWARE_LEAD)}'s bench…`, () => buildJadenCorner(ctx)]);
   steps.push(['Parts wall, Husky and storage…', () => buildPartsWall(ctx)]);
   steps.push(['Whiteboard and posters…', () => buildWestWall(ctx)]);
   steps.push(['Device library…', () => buildEastWall(ctx)]);

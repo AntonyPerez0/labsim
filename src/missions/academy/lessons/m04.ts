@@ -1,7 +1,7 @@
 /**
- * M04 — Touch Robot Mechanics & the Status Tablet (Cur §2 M04). Mentor {{jared}}.
+ * M04 — Touch Robot Mechanics & the Status Tablet (Cur §2 M04). Mentor {{jaden}}.
  * Setup (`academy:M04` = factory): WALL-E idle and Available (tablet unlocked), enclosure door closed,
- * bolt bins at `loc.jared-bench`. Sim: `rig.command` for every tablet group, `rig.setDoor`,
+ * bolt bins at `loc.jaden-bench`. Sim: `rig.command` for every tablet group, `rig.setDoor`,
  * `rig.dragCarriage` (≥ 20 mm breaks the magnetic lock), banner (Sim §3.7).
  */
 import { c, on, p } from '../../types';
@@ -12,7 +12,7 @@ const R = 'wall-e';
 
 export const M04: LessonDef = {
   moduleId: 'M04',
-  mentor: 'jared',
+  mentor: 'jaden',
   setup: { preset: 'academy:M04', spawn: 'loc.workstation', inventory: { tools: ['screwdriver'] } },
   deck: 'deck.M04',
   manualChapters: ['Robots'],
@@ -23,11 +23,11 @@ export const M04: LessonDef = {
     'Every robot is hand-built: 10 ft cut aluminium rails, about 130 ft of wiring, ~300 solder points, 200+ nuts and bolts in 2.5 mm and 5 mm, custom 25-pin PCBs printed in Hong Kong.',
   ],
   steps: [
-    { id: 'M04.01', kind: 'walk-to', hud: 'Meet {{jared}} at WALL-E', location: 'loc.rack-a' },
+    { id: 'M04.01', kind: 'walk-to', hud: 'Meet {{jaden}} at WALL-E', location: 'loc.rack-a' },
     {
       id: 'M04.02',
       kind: 'dialogue',
-      speaker: 'jared',
+      speaker: 'jaden',
       text: 'A touch robot is basically a 3D-printer gantry that taps instead of prints. Aluminium 2020 extrusion, V-slot wheels, a NEMA-17 stepper on a GT2 belt, and a blue push-pull solenoid on the carriage. The steppers move in sub-millimetre steps.',
       factIds: ['F240', 'F079', 'F080'],
     },
@@ -53,7 +53,7 @@ export const M04: LessonDef = {
       kind: 'inspect',
       hud: 'Look at how the Flux 3 is held',
       prop: 'prop.walle.cradle',
-      callouts: ['Angled 3D-printed cradle', 'Collis probe box (UL Transaction Security)', 'Webcam'],
+      callouts: ['Angled 3D-printed cradle', 'Kollis probe box (UL Transaction Security)', 'Webcam'],
       factIds: ['F242', 'F088'],
     },
     {
@@ -89,7 +89,7 @@ export const M04: LessonDef = {
         { id: 'M04.08.lower', text: 'Solenoid → Lower', done: pressed(R, 'solenoid.lower') },
         { id: 'M04.08.raise', text: 'Solenoid → Raise', done: pressed(R, 'solenoid.raise') },
       ],
-      onComplete: [say('jared', 'Lower and Raise are the slow version of the same tap. Down and Up fire it fast.')],
+      onComplete: [say('jaden', 'Lower and Raise are the slow version of the same tap. Down and Up fire it fast.')],
       factIds: ['F235', 'F243'],
     },
     {
@@ -138,7 +138,7 @@ export const M04: LessonDef = {
           done: c.all(c.happened(on('rig.carriageDragged', { rigId: R })), c.eq(p.rig(R).magLock, 'RELEASED')),
         },
       ],
-      onComplete: [say('jared', 'Hear that clunk? You broke the magnetic lock. Look at the banner.')],
+      onComplete: [say('jaden', 'Hear that clunk? You broke the magnetic lock. Look at the banner.')],
       factIds: ['F081', 'F231'],
     },
     {
@@ -168,15 +168,15 @@ export const M04: LessonDef = {
     {
       id: 'M04.13',
       kind: 'dialogue',
-      speaker: 'jared',
+      speaker: 'jaden',
       text: "That's the whole trick: push an arm, break the magnetic lock, banner goes yellow. Park All drives the steppers back to the limit switches at zero-zero, clears the error, banner goes green. And for the record, each robot took ten-foot aluminium rails cut to size, a hundred and thirty feet of wiring, about three hundred hand solder points, and two-hundred-plus nuts and bolts, in 2.5 and 5 millimetre.",
       factIds: ['F231', 'F232', 'F090', 'F091', 'F092', 'F093'],
     },
-    { id: 'M04.13a', kind: 'walk-to', hud: "Head to {{jared}}'s bench", location: 'loc.jared-bench' },
+    { id: 'M04.13a', kind: 'walk-to', hud: "Head to {{jaden}}'s bench", location: 'loc.jaden-bench' },
     {
       id: 'M04.14',
       kind: 'interact',
-      hud: "Sort {{jared}}'s bolts into the 2.5 mm and 5 mm bins (10 bolts)",
+      hud: "Sort {{jaden}}'s bolts into the 2.5 mm and 5 mm bins (10 bolts)",
       target: 'prop.bolt-bins',
       success: minigameDone('bolt-sort', 10),
       factIds: ['F093'],

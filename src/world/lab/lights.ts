@@ -199,12 +199,12 @@ export function buildLights(ctx: LabCtx): LightRig {
   const bt = LIGHTS.benchTask;
   const bench = new PointLight(bt.color, bt.intensity, bt.distance, bt.decay);
   bench.position.set(...bt.pos);
-  bench.name = 'jared.bench-light';
+  bench.name = 'jaden.bench-light';
   group.add(bench);
   const ml = LIGHTS.magnifierLamp;
   const magnifier = new PointLight(ml.color, ml.intensity, ml.distance, 2);
   magnifier.position.set(1.4, 1.32, -4.62);
-  magnifier.name = 'jared.magnifier-light';
+  magnifier.name = 'jaden.magnifier-light';
   group.add(magnifier);
 
   /* ── t01 flicker (seeded 6–14 s gaps, 150 ms sequence at 30 ms steps) ── */

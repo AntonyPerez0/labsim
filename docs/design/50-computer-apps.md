@@ -74,7 +74,7 @@ Inside `src/computer`, an app folder never imports another app folder **except**
 | Builder | Owns |
 |---|---|
 | A — shell & small apps | `shell/`, `tablet/`, `index.ts`, `apps/terminal`, `apps/chat`, `apps/dashboard`, `apps/cardreader`, `apps/files`, `apps/browser` |
-| B — web apps | `apps/orca`, `apps/jenkins`, `apps/github`, `apps/ollama` |
+| B — web apps | `apps/orka`, `apps/jenkins`, `apps/github`, `apps/ollama` |
 | C — desktop pro apps | `apps/intellij`, `apps/gimp`, `apps/camera` (incl. the recorder and the image materializer, §6.5/§8.6) |
 
 `apps.ts` is shared: changes are additive only and announced (add, never rename — same rule as the sim
@@ -94,12 +94,12 @@ achievements listen to them; nothing else in the computer is observable.
 Rules:
 1. **Route strings.** For browser-hosted apps (`chrome: 'browser'`) the route is the URL *path + query* exactly as
    the address bar shows after the host (`/robot/5/edit`, `/robot?status.in=AVAILABLE&page=1&sort=id,asc`,
-   `/job/Java/job/uia-remote-regression-flux/4127/console`). For desktop apps it is a pseudo-path defined in
-   `APP_ROUTES` (`/project/uia-remote/file/app/src/.../HomeScreen.java`, `/stream/r2-d2`). Query keys are emitted
+   `/job/Java/job/uia-relay-regression-flux/4127/console`). For desktop apps it is a pseudo-path defined in
+   `APP_ROUTES` (`/project/uia-relay/file/app/src/.../HomeScreen.java`, `/stream/r2-d2`). Query keys are emitted
    in the order the app writes them; missions use `matchRoute()` (apps.ts), which ignores query order.
 2. **Route templates** use `:name` for one path segment and `*name` for "the rest of the path" (may contain `/`).
-   `buildRoute(APP_ROUTES.orca.robotEdit, { id: 5 })` → `/robot/5/edit`. Templates and builders live in apps.ts.
-3. **Action names** are `<app>.<object>.<verb>` in lowerCamel segments (`orca.merchant.editOpened`). The event's
+   `buildRoute(APP_ROUTES.orka.robotEdit, { id: 5 })` → `/robot/5/edit`. Templates and builders live in apps.ts.
+3. **Action names** are `<app>.<object>.<verb>` in lowerCamel segments (`orka.merchant.editOpened`). The event's
    `app` field is the emitting `AppId`, or `'desktop'` (shell actions) or `'tablet'` (the 3D tablet overlay).
 4. **Payloads** are plain JSON, typed in `AppActionPayloads` (apps.ts). Every payload carries enough to evaluate
    a lesson step without re-reading UI state (ids **and** names, the sim result `ok`/`error` where a sim call is
@@ -118,7 +118,7 @@ Rules:
 * **Reads:** `useGame(s => s.lab…)` with selectors that return primitives or stable references; small derived
   objects/arrays via `useGameShallow`. Never select `s.lab` wholesale (the sim ticks at 20 Hz — a component that
   selects the whole lab re-renders 20×/s). Derive heavy views (sorted/filtered tables, git trees) with
-  `useMemo` keyed on the stable sub-objects (`s.lab.orca.robots`, `s.lab.repos['gort']`).
+  `useMemo` keyed on the stable sub-objects (`s.lab.orka.robots`, `s.lab.repos['gorth']`).
 * **Writes:** only `sim.*` with actor `'player'`. Every method returns `Result` (`{ok:true,value}` /
   `{ok:false,error}`); apps render `error` verbatim in the tool's own error style (JHipster alert, Jenkins red
   text, IntelliJ balloon, terminal stderr…). Methods never throw for user error; an exception means the sim is
@@ -144,7 +144,7 @@ Until the sim exports a pure helper (contract delta D10), the shell implements `
 | no running service listening on `port` | `refused` | `This site can't be reached` · `<host> refused to connect.` · `ERR_CONNECTION_REFUSED` | `… · Connection refused` |
 | otherwise | `ok` | page renders | stream/dashboard renders |
 
-Per app: Orca = `orca-vm` service `orca` :8080 (then app-level `orca.app.dbConnected` decides the JHipster 500
+Per app: Orka = `orka-vm` service `orka` :8080 (then app-level `orka.app.dbConnected` decides the JHipster 500
 page, §2.13); Jenkins = `jenkins-vm` service `jenkins` :8080 (or `lab.jenkins.up`); Ollama WebUI = `ollama-vm`
 :3000 [illus.] (VM up ⇒ page loads; `ollama` service :11434 down ⇒ "Model server unreachable", §9); GitHub =
 always reachable [sim]; dashboards = the rig's Pi `robot-controller` :8000; camera streams = camera host
@@ -161,7 +161,7 @@ All times come from the **game clock** `lab.time.nowMs` (ms since game-midnight 
 |---|---|---|
 | `fmtClock(ms)` | `9:41 AM` | taskbar, LabChat, Ollama |
 | `fmtDate(ms)` | `10/5/2026` | taskbar |
-| `fmtStamp(ms)` | `2026-10-05 09:41:07` | Orca (non-sim strings), camera overlay, GIMP image info |
+| `fmtStamp(ms)` | `2026-10-05 09:41:07` | Orka (non-sim strings), camera overlay, GIMP image info |
 | `fmtJenkins(ms)` | `Oct 5, 2026, 9:41:07 AM` | Jenkins build pages |
 | `fmtRelative(ms, nowMs)` | `just now`, `3 minutes ago`, `2 hours ago`, `yesterday`, `2 days ago` | GitHub, Jenkins "Last Success" (`1 hr 4 min`) has its own `fmtDuration` |
 | `fmtDuration(ms)` | `4.1 sec`, `1 min 2 sec`, `1 hr 4 min` | Jenkins, IntelliJ (`24 s 512 ms` via `fmtIdeaDuration`) |
@@ -177,14 +177,14 @@ integers.
   marks drawn in SVG (no bitmaps, no trademarks traced).
 * **Scoped CSS.** CSS modules or colocated `.css` files; every selector is prefixed with the app's class prefix and
   every app root is `<div className="<prefix>-root" data-app="<id>">`. Never style bare elements globally
-  (`button {}`, `*`, `body`). Colour tokens are CSS variables declared on the root (`.orca-root { --orca-primary:
+  (`button {}`, `*`, `body`). Colour tokens are CSS variables declared on the root (`.orka-root { --orka-primary:
   #0d6efd }`).
 
   | Area | Prefix | | Area | Prefix |
   |---|---|---|---|---|
   | shell / desktop | `ws-` | | GitHub | `gh-` |
   | browser chrome | `br-` | | Lab Cameras | `cam-` |
-  | Orca | `orca-` | | Ollama WebUI | `oll-` |
+  | Orka | `orka-` | | Ollama WebUI | `oll-` |
   | Jenkins | `jk-` | | Robot dashboard / tablet | `rdash-` |
   | IntelliJ IDEA | `ij-` | | LabChat | `lc-` |
   | Terminal | `term-` | | Card Reader | `cr-` |
@@ -208,15 +208,15 @@ Builders code against these now (feature-detect, fall back as stated) and list t
 
 | # | Owner | Delta | Fallback until it lands |
 |---|---|---|---|
-| D1 | sim | `orca.addNote(robotId, text, actor)` → MANUAL note | hide **Add note** |
-| D2 | sim | `orca.matchPreview(capsJson, env)` (Sim §0.4, §3.4.3) | `orca.rest('POST','/api/match-preview', body)` |
-| D3 | sim | `orca.checkout({… kind:'manual', environment})`, manual `orca.release` (Sim §3.4) | **Check out** shows the block toast from status alone (§2.4) |
+| D1 | sim | `orka.addNote(robotId, text, actor)` → MANUAL note | hide **Add note** |
+| D2 | sim | `orka.matchPreview(capsJson, env)` (Sim §0.4, §3.4.3) | `orka.rest('POST','/api/match-preview', body)` |
+| D3 | sim | `orka.checkout({… kind:'manual', environment})`, manual `orka.release` (Sim §3.4) | **Check out** shows the block toast from status alone (§2.4) |
 | D4 | sim | `jenkins.saveJob(jobId, patch)`, `jenkins.moveJob(jobId, folder)` (Sim §0.4, §3.18.1) | Configure/Move pages render read-only with a Jenkins `Error` banner |
 | D5 | sim | `git.moveFile`, `git.deleteFile`; GitHub-side `github.createBranch(repo, name, fromSha)`, `github.commitFile(repo, branch, path, contents, message, actor)`; `git.reviewPullRequest(repo, n, {verdict, body, comments[{path,line,body,reason}]}, actor)` (Sim §3.22.2) | web edits go through the local clone (clone if needed → checkout/branch → `writeFile` → `stage` → `commit` → `push`); Approve → `approvePullRequest`; Request changes emits the action only |
 | D6 | sim | `host.writeFile(hostId, path, contents)` (Sim §0.4), incl. `ws-17` paths under `~` → `workstation.files` | nano/snapshots keep a session-local file map in the computer store |
 | D7 | sim | `terminal.exec/poll/complete/prompt(…, sessionId?)` — one shell session per terminal tab | all tabs share the single sim session |
 | D8 | sim | `runner.validateConfig(text, robotName)` → the Cur M14 11-key result | IntelliJ's local validator (§4.8) |
-| D9 | sim | `net.request(method, url, body?) : RestResponse` — the curl engine for any lab URL (Sim §3.23) | the browser shows Orca via `orca.rest`, every other raw URL as "This site can't be reached" |
+| D9 | sim | `net.request(method, url, body?) : RestResponse` — the curl engine for any lab URL (Sim §3.23) | the browser shows Orka via `orka.rest`, every other raw URL as "This site can't be reached" |
 | D10 | sim | pure `reach(lab, host, port)` helper (Sim §1.9) | shell-local implementation of §0.5 |
 | D11 | core | ✅ landed: `core/events.ts` declares `computer.windowsChanged` and `workstation.cardSwiped`; the mission-only request events (`computer.openAppRequested`, `computer.hintRequested`, `computer.hintCleared`) stay declared in `apps.ts` (missions import it) | — |
 | D12 | core | ✅ landed: `session.realism` and the lesson gating `session.computer` (`unlockedApps`, `restrictions`, `forceHealthCheckButton`, `tabCompletion`) — §1.11 | — |
@@ -227,7 +227,7 @@ Builders code against these now (feature-detect, fall back as stated) and list t
 | D17 | sim | `ocr.frame(imageRef)` → the frame model's label rects for a webcam/screencap ref (Sim A.2 M16, "GIMP") — the materializer's synthetic frames and GIMP's self-check use it | the Sim §2.11.1 table hard-coded in `apps/camera/frameModel.ts` |
 | D18 | sim | `runner.runLocal(repo, test, actor, { configPath })` for Code With Me runs (Sim §1.15, INC29) | run with the default clone config |
 | D19 | sim | `git.requestChanges(repo, n, reason, actor)` (Sim A.2 M17) — the D5 review call's Request-changes half | emit only |
-| D20 | sim | `orca.forceHealthCheck()` (= `runHealthCheckNow` behind the tutorial gate, Sim §0.4) — Orca's tutorial button calls it | `orca.runHealthCheckNow()` |
+| D20 | sim | `orka.forceHealthCheck()` (= `runHealthCheckNow` behind the tutorial gate, Sim §0.4) — Orka's tutorial button calls it | `orka.runHealthCheckNow()` |
 
 ---
 
@@ -238,7 +238,7 @@ Builders code against these now (feature-detect, fall back as stated) and list t
 | Export (`@/computer`) | Signature | Notes |
 |---|---|---|
 | `Desktop` | `(props: { onExit?: () => void }) => JSX` | Full-screen overlay (fills its parent, `position:absolute; inset:0`). `onExit` is called on **Stand up**; without it the desktop does `mutate(s => { s.ui.overlay = { kind: 'none' } })` and `engine.releaseFocus()`. |
-| `TabletDashboard` | `(props: { robotId: string; onExit?: () => void }) => JSX` | The zoomed status-tablet overlay (§10.7). `robotId` = rig id = Orca robot **Name** (`wall-e`). Same exit fallback. |
+| `TabletDashboard` | `(props: { robotId: string; onExit?: () => void }) => JSX` | The zoomed status-tablet overlay (§10.7). `robotId` = rig id = Orka robot **Name** (`wall-e`). Same exit fallback. |
 | `APP_REGISTRY` | `AppDefinition[]` | `APP_META` (apps.ts) + `load()` per app. |
 | `initComputer` | `() => () => void` | Idempotent. Starts the camera recorder (§8.6), the image materializer (§1.6) and the request queue drain. ui calls it at boot (D13); `Desktop` also calls it on mount. Returns a disposer (tests). |
 
@@ -253,12 +253,12 @@ Corporate Windows-11-like desktop; nothing is branded Microsoft. Base font `Sego
 | Element | Spec |
 |---|---|
 | Wallpaper | radial gradient `#0b3d2a` (centre-left) → `#06261b` → `#041a13` edges, plus a large translucent four-leaf mark (4 circles, `rgba(110, 231, 160, .10)`) bottom-right — the "dark green gradient + leaf" of World §3.6 |
-| Desktop icons | left column grid 84 × 92 px cells starting (12, 12); 40 px icon + 2-line label 12 px white with `text-shadow 0 1px 2px #000a`; single click selects (`rgba(255,255,255,.18)` tile, 1 px `rgba(255,255,255,.3)` border), double-click / Enter opens, arrow keys move selection, drag to rearrange (positions persisted per viewer in `localStorage['labsim.desktop.icons.v1']`, try/catch). Icons: Files (`This PC` folder), Browser, Orca, Jenkins, GitHub, IntelliJ IDEA, Terminal, GIMP, Lab Cameras, Ollama WebUI, LabChat, Robot Dashboard, Card Reader, Recycle Bin (opens Files at an empty `Recycle Bin` folder). |
-| Taskbar | bottom, height 48 px, `rgba(32, 32, 32, .85)` + `backdrop-filter: blur(20px)` (fallback `#202020`), top border 1 px `#ffffff14`. Centre group: Start button (a neutral 2 × 2 white-squares glyph), Search pill (`Search` placeholder, opens Start with focus), then pinned apps: Files, Browser, Orca, Jenkins, GitHub, IntelliJ IDEA, Terminal, LabChat; running apps not pinned append after a 1 px divider. Running indicator: 3 × 16 px pill under the icon (`#9a9a9a`, focused window `#4cc2ff` 6 × 16 px). Hover: tooltip with window titles (one row per window, click focuses). Badges: red pill top-right of the icon — LabChat total unread (`lab.chat.unread` sum), Jenkins count of builds that finished `FAILURE` since the Jenkins window was last focused. |
+| Desktop icons | left column grid 84 × 92 px cells starting (12, 12); 40 px icon + 2-line label 12 px white with `text-shadow 0 1px 2px #000a`; single click selects (`rgba(255,255,255,.18)` tile, 1 px `rgba(255,255,255,.3)` border), double-click / Enter opens, arrow keys move selection, drag to rearrange (positions persisted per viewer in `localStorage['labsim.desktop.icons.v1']`, try/catch). Icons: Files (`This PC` folder), Browser, Orka, Jenkins, GitHub, IntelliJ IDEA, Terminal, GIMP, Lab Cameras, Ollama WebUI, LabChat, Robot Dashboard, Card Reader, Recycle Bin (opens Files at an empty `Recycle Bin` folder). |
+| Taskbar | bottom, height 48 px, `rgba(32, 32, 32, .85)` + `backdrop-filter: blur(20px)` (fallback `#202020`), top border 1 px `#ffffff14`. Centre group: Start button (a neutral 2 × 2 white-squares glyph), Search pill (`Search` placeholder, opens Start with focus), then pinned apps: Files, Browser, Orka, Jenkins, GitHub, IntelliJ IDEA, Terminal, LabChat; running apps not pinned append after a 1 px divider. Running indicator: 3 × 16 px pill under the icon (`#9a9a9a`, focused window `#4cc2ff` 6 × 16 px). Hover: tooltip with window titles (one row per window, click focuses). Badges: red pill top-right of the icon — LabChat total unread (`lab.chat.unread` sum), Jenkins count of builds that finished `FAILURE` since the Jenkins window was last focused. |
 | System tray (right) | `^` overflow (Card Reader status dot when a reader swipe is pending), network glyph (tooltip `lab-corp · Connected` / `No internet access` when `network.switchUp` is false), speaker glyph (tooltip `Speakers: <masterVolume×100>%`), notification bell with count, clock block: two lines 12 px right-aligned `9:41 AM` / `10/5/2026` from `fmtClock`/`fmtDate` (updates once per game second — select `Math.floor(nowMs / 1000)`). Clicking the clock opens a flyout calendar for October 2026 with today highlighted and the line `Lab time ×<timeScale>` [game] (`×1`, `×5` in a shift). |
 | Stand up [game] | right of the clock: button `Stand up` with a chair glyph, 32 px high, amber 1 px border `#f5b301`, label `Stand up · Esc`. |
-| Start menu | 640 × 720 px panel centred above the taskbar, `#2b2b2bf2` + blur, radius 8 px. Search box `Type here to search` (filters apps by title/alias), **Pinned** 6 × 3 grid of app tiles, **All apps ›** alphabetical list, **Recommended** = last 6 opened routes (e.g. `Orca — Robots`, `HomeScreen.java`). Footer: user tile (circle with initials of `progress.playerName`, name) and a power button whose menu has `Stand up` [game] and `Sign out` (= Stand up). `Esc` or click outside closes. |
-| Windows | radius 8 px, 1 px border `#ffffff1f` (dark apps) / `#0000001f` (light apps), shadow `0 8px 32px #0008`. Title bar 32 px (browser windows use the browser tab strip as their title bar, §1.4): app icon 16 px, title 12 px, right buttons `─ ☐ ✕` 46 × 32 px (close hover `#c42b1c`). Unfocused windows: title text 60 % opacity, no shadow change. Light apps (Orca, Jenkins, GitHub, Files, Card Reader) get light title bars `#f3f3f3`; dark apps (IntelliJ, Terminal, GIMP, Cameras, Ollama, LabChat sidebar) get `#202020`. |
+| Start menu | 640 × 720 px panel centred above the taskbar, `#2b2b2bf2` + blur, radius 8 px. Search box `Type here to search` (filters apps by title/alias), **Pinned** 6 × 3 grid of app tiles, **All apps ›** alphabetical list, **Recommended** = last 6 opened routes (e.g. `Orka — Robots`, `HomeScreen.java`). Footer: user tile (circle with initials of `progress.playerName`, name) and a power button whose menu has `Stand up` [game] and `Sign out` (= Stand up). `Esc` or click outside closes. |
+| Windows | radius 8 px, 1 px border `#ffffff1f` (dark apps) / `#0000001f` (light apps), shadow `0 8px 32px #0008`. Title bar 32 px (browser windows use the browser tab strip as their title bar, §1.4): app icon 16 px, title 12 px, right buttons `─ ☐ ✕` 46 × 32 px (close hover `#c42b1c`). Unfocused windows: title text 60 % opacity, no shadow change. Light apps (Orka, Jenkins, GitHub, Files, Card Reader) get light title bars `#f3f3f3`; dark apps (IntelliJ, Terminal, GIMP, Cameras, Ollama, LabChat sidebar) get `#202020`. |
 | Context menus | `#2c2c2c` (dark) / `#f9f9f9` (light), radius 8 px, item height 28 px, shortcut text right-aligned 60 % opacity. |
 
 ### 1.3 Window manager
@@ -284,24 +284,24 @@ interface WindowState { id: string; app: AppId; title: string; route: string; pa
 | Close | `✕` button, title-bar context menu `Close`, or `Alt+F4` when keyboard-locked (§1.8). Apps can veto with `props.onBeforeClose` returning a message (IntelliJ unsaved files are auto-saved first, so it never vetoes; nano asks `Save modified buffer?`). |
 | Cycle | `Alt+\`` (always) and `Ctrl+Tab` (keyboard-locked only, GP §6.3) cycle windows in MRU order with a centred switcher strip of app icons + titles; release `Alt`/`Ctrl` to pick. |
 | Persistence | per-app last bounds in `localStorage['labsim.desktop.layout.v1']` (try/catch). Open windows survive standing up and sitting down again (the store is module-level). On `session.started` (new lesson/shift/free-play), all windows close except LabChat, and the desktop shows the session's objective (§1.7). |
-| Title | `props.onTitle(t)` sets the title shown in the title bar/taskbar tooltip (`Robots — Orchestrator`, `HomeScreen.java – uia-remote`, `pi@wall-e: ~`). |
+| Title | `props.onTitle(t)` sets the title shown in the title bar/taskbar tooltip (`Robots — Orchestrator`, `HomeScreen.java – uia-relay`, `pi@wall-e: ~`). |
 
 `WindowManagerApi` (apps.ts) is what apps use: `openApp`, `close`, `focus`, `minimize`, `toggleMaximize`,
 `setTitle`, `navigate`, `notify`, `pickFile`, `clipboard`, `windows()`. The shell passes it as `props.wm` and
 registers it with `setWindowManager()` on mount (`null` on unmount); code outside a window (the recorder,
 notifications from background services) uses `getWindowManager()`.
 
-### 1.4 Browser chrome (Orca, Jenkins, GitHub, Ollama WebUI, Browser)
+### 1.4 Browser chrome (Orka, Jenkins, GitHub, Ollama WebUI, Browser)
 
 Apps with `chrome: 'browser'` are hosted in a Chromium-like frame drawn by the shell. The app renders only the
 page; it is a pure function of `props.route` and calls `props.navigate(route)` to move.
 
 | Part | Spec |
 |---|---|
-| Tab strip (title bar) | `#dee1e6` 38 px; one tab 240 px max: favicon 16 px (per app: Orca whale, Jenkins butler head [simplified], GitHub cat-mark [simplified], Ollama llama head [simplified], globe), page title from `onTitle`, `✕`. `+` new-tab button opens a Browser window (new-tab page). Window buttons on the right. |
+| Tab strip (title bar) | `#dee1e6` 38 px; one tab 240 px max: favicon 16 px (per app: Orka whale, Jenkins butler head [simplified], GitHub cat-mark [simplified], Ollama llama head [simplified], globe), page title from `onTitle`, `✕`. `+` new-tab button opens a Browser window (new-tab page). Window buttons on the right. |
 | Toolbar | `#ffffff` 40 px: back `←`, forward `→` (enabled from window history), reload `⟳` (`F5`/`Ctrl+R`, increments `reloadKey` → app remounts its page), address bar (pill `#f1f3f4`, radius 20 px): left chip `ⓘ Not secure` for `http://` URLs (all lab URLs are plain HTTP), lock icon for `https://github.com`; the URL text grey host + dark path when not focused; full URL selected on focus. `Ctrl+L` / `Alt+D` focus it. Right: star (decor) and a profile circle with the player's initials. |
-| Bookmarks bar | 28 px, `#ffffff`, bookmarks: `Orchestrator` (`http://orca.lab.local:8080/`), `Jenkins` (`http://jenkins.lab.local:8080/`), `labsim-lab` (`https://github.com/labsim-lab`), `Vision PoC` (`http://10.42.1.12:3000/`), `Rack B cam` (`http://10.42.10.40:8081/stream.mjpg`), `Ollama API` (`http://10.42.1.12:11434/api/tags`). |
-| Address resolution | typed text without scheme gets `http://`; the host table maps hosts to apps: `orca.lab.local:8080`, `10.42.1.10:8080` → **orca**; `jenkins.lab.local:8080`, `10.42.1.11:8080` → **jenkins**; `github.com/labsim-lab…` → **github**; `10.42.1.12:3000` → **ollama**; `http://<cam host>:8081/stream.mjpg` → **camera** (opens/focuses the Lab Cameras window on that URL); anything else → **browser** (raw view, §12.3). A URL for another app opens/focuses that app's window with the route; the current window stays where it was. |
+| Bookmarks bar | 28 px, `#ffffff`, bookmarks: `Orchestrator` (`http://orka.lab.local:8080/`), `Jenkins` (`http://jenkins.lab.local:8080/`), `labsim-lab` (`https://github.com/labsim-lab`), `Vision PoC` (`http://10.42.1.12:3000/`), `Rack B cam` (`http://10.42.10.40:8081/stream.mjpg`), `Ollama API` (`http://10.42.1.12:11434/api/tags`). |
+| Address resolution | typed text without scheme gets `http://`; the host table maps hosts to apps: `orka.lab.local:8080`, `10.42.1.10:8080` → **orka**; `jenkins.lab.local:8080`, `10.42.1.11:8080` → **jenkins**; `github.com/labsim-lab…` → **github**; `10.42.1.12:3000` → **ollama**; `http://<cam host>:8081/stream.mjpg` → **camera** (opens/focuses the Lab Cameras window on that URL); anything else → **browser** (raw view, §12.3). A URL for another app opens/focuses that app's window with the route; the current window stays where it was. |
 | History | per window (`history`, `historyIndex`), `Alt+←/→`, mouse buttons 4/5. `navigate(route, {replace:true})` replaces (used for query-param edits while typing a filter). |
 | Loading bar | a 2 px blue `#1a73e8` progress line under the toolbar for 150–400 ms on each navigation (purely visual; pages render synchronously). |
 | Error pages | §0.5. The page area shows the error instead of the app when `reach` ≠ `ok` (re-evaluated on reload and every 2 s while shown). |
@@ -315,8 +315,8 @@ game-time stamp. Max 3 visible, 6 s each (paused while hovered), click → `open
 The bell flyout lists the last 30 (`Clear all`). Sources (each app documents its own): Jenkins build finished
 (only builds the player triggered, or any `FAILURE` while the Jenkins window is not focused), LabChat message
 (not from the player, channel not currently open), GitHub review/merge on a PR the player authored or reviews,
-IntelliJ run finished while IntelliJ is not focused, Orca health-check failures (`:red_circle:` posts mirrored from
-`#orca-alerts` only if the Orca window is open), Card Reader swipe received. A notification sound
+IntelliJ run finished while IntelliJ is not focused, Orka health-check failures (`:red_circle:` posts mirrored from
+`#orka-alerts` only if the Orka window is open), Card Reader swipe received. A notification sound
 `engine.audio.play('ui-ticket', { bus: 'ui', volume: .5 })`.
 
 ### 1.6 Clipboard, file dialog, images
@@ -354,7 +354,7 @@ IntelliJ run finished while IntelliJ is not focused, Orca health-check failures 
   left border, title `Objective` [game] and the current `session.objectives` (`!done` first, done ones struck
   through, max 3). Collapses to a 28 px pill on click. Hidden when there are no objectives.
 * **Hints.** Elements that lessons point at carry `data-hint="<target>"` (catalogue `APP_HINT_TARGETS` in apps.ts;
-  parametrised targets use `:` — `orca.robots.row:johnny-5`). `requestHint({ app, target, route? })` (apps.ts) opens
+  parametrised targets use `:` — `orka.robots.row:johnny-5`). `requestHint({ app, target, route? })` (apps.ts) opens
   the app (and route), then the shell draws a pulsing amber ring (2 px, 1 Hz) around the first matching element,
   scrolls it into view, and for **Show me** (Cur §2.0, 180 s) animates a ghost cursor (white arrow, 40 % opacity)
   from the screen centre to it over 900 ms and "clicks" (ring burst) — it never performs the click. `clearHint()`
@@ -385,7 +385,7 @@ IntelliJ run finished while IntelliJ is not focused, Orca health-check failures 
 
 | `AppId` | Title (taskbar) | Component (stub export) | Chrome | Default size | Min size | Instancing | Desktop / pinned |
 |---|---|---|---|---|---|---|---|
-| `orca` | Orchestrator | `OrcaApp` | browser | 1280 × 820 | 760 × 480 | single | icon · pinned |
+| `orka` | Orchestrator | `OrkaApp` | browser | 1280 × 820 | 760 × 480 | single | icon · pinned |
 | `jenkins` | Jenkins | `JenkinsApp` | browser | 1240 × 800 | 760 × 480 | single | icon · pinned |
 | `github` | GitHub | `GitHubApp` | browser | 1240 × 820 | 760 × 480 | single | icon · pinned |
 | `ollama` | Ollama WebUI | `OllamaApp` | browser | 1060 × 760 | 640 × 440 | single | icon |
@@ -413,29 +413,29 @@ IntelliJ run finished while IntelliJ is not focused, Orca health-check failures 
 ### 1.11 Lesson gating (`session.computer`, written by missions)
 
 `session.computer` (`ComputerGating`, `src/core/sessionState.ts`) narrows the desktop during Academy steps
-(Cur M06 setup: "Orca app unlocked with the Robots page … Jenkins showing only job `Java/uia-remote-regression-flux`").
+(Cur M06 setup: "Orka app unlocked with the Robots page … Jenkins showing only job `Java/uia-relay-regression-flux`").
 Gating focuses the trainee; it is not security, and it never changes lab state.
 
 | Field | Effect |
 |---|---|
 | `unlockedApps: 'all' \| AppId[]` | Locked apps keep their desktop icon/start entry but greyed with a small padlock [game] and tooltip `Unlocks later in the Academy`; opening one shows a toast with the same text. Running windows of an app that becomes locked stay open. `requestOpenApp` for a locked app is ignored (console warning). Taskbar pins of locked apps are hidden. |
 | `restrictions.jenkins.visibleJobs: string[]` | Only these job ids appear in views, folders, search and widgets; any other job route renders Jenkins' `404 Not Found` page. |
-| `restrictions.orca.pages: string[]` | `APP_ROUTES.orca` keys that may be opened (`['home','robots','robotView','robotEdit']`); other Entities/Administration menu items render disabled with a padlock [game]; their routes redirect to `/` with `alert-info` `This page unlocks later in the Academy.` [game] |
-| `restrictions.orca.layoutV2Toggle: boolean` | shows the Screen Compare tutorial toggle (§2.11) |
+| `restrictions.orka.pages: string[]` | `APP_ROUTES.orka` keys that may be opened (`['home','robots','robotView','robotEdit']`); other Entities/Administration menu items render disabled with a padlock [game]; their routes redirect to `/` with `alert-info` `This page unlocks later in the Academy.` [game] |
+| `restrictions.orka.layoutV2Toggle: boolean` | shows the Screen Compare tutorial toggle (§2.11) |
 | `restrictions.github.repos` / `restrictions.intellij.repos: string[]` | repos listed/openable (others hidden from lists; direct routes show GitHub's 404 page / IntelliJ refuses `Get from VCS` with `Repository not found`) |
 | `restrictions.<app>.readOnly: true` | forms and editors of that app are read-only (inputs disabled, save buttons hidden) |
-| `forceHealthCheckButton: boolean` | Orca's tutorial button (§2.1) |
+| `forceHealthCheckButton: boolean` | Orka's tutorial button (§2.1) |
 | `tabCompletion: boolean` | Terminal completion (§5.2) |
 
 Unknown restriction keys are ignored. Apps read gating with `useGameShallow(s => s.session.computer)`.
 
 ---
 
-## 2. Orca — Orchestrator (`http://orca.lab.local:8080`)
+## 2. Orka — Orchestrator (`http://orka.lab.local:8080`)
 
-Orca is a JHipster-generated Spring Boot + Angular monolith (Ref §1, §3; Cur M06). The UI MUST read as a
-**JHipster 7 Angular app with Bootstrap 5** that Tate customised in a few places (robot filters, Notes, health log,
-match preview, test buttons). A trainee who later opens the real Orca should see the same navbar, the same
+Orka is a JHipster-generated Spring Boot + Angular monolith (Ref §1, §3; Cur M06). The UI MUST read as a
+**JHipster 7 Angular app with Bootstrap 5** that Nate customised in a few places (robot filters, Notes, health log,
+match preview, test buttons). A trainee who later opens the real Orka should see the same navbar, the same
 "Create a new Robot" button, the same `View / Edit / Delete` row buttons and the same green alert
 `A Robot is updated with identifier 17`.
 
@@ -445,9 +445,9 @@ match preview, test buttons). A trainee who later opens the real Orca should see
 |---|---|
 | Fonts | Bootstrap native stack (`system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif`), base 14 px (window-scaled from 16), headings `h2` 1.6 rem 500 |
 | Colours | body `#212529` on `#ffffff`; primary `#0d6efd`; success `#198754`; info `#0dcaf0` (black text); warning `#ffc107`; danger `#dc3545`; secondary `#6c757d`; light `#f8f9fa`; borders `#dee2e6` |
-| Navbar | height 56 px, background `#353d47`, brand: whale glyph 32 px (white body, `#5ab7ee` belly) + `Orchestrator` 20 px white + version `v3.14.2` 10 px `#bbbbbb` under it (JHipster `.navbar-version`). Right-aligned items with 14 px icons: `Home`, `Entities ▾`, `Administration ▾` (admins only), `Account ▾`. Link colour `rgba(255,255,255,.55)`, hover/active white. Ribbon top-left corner "DEV"? **no** — Orca runs the `prod` profile (no ribbon). |
-| Tutorial button [game] | when `session.computer.forceHealthCheckButton` (missions' gating, §1.11) **and** `lab.config.forceHealthCheckAllowed` (Sim §1.1): amber outline button `⟳ Force health check` in the navbar left of `Home`, with the sub-label `next run 09:40:00` 10 px; click → D20 `sim.orca.forceHealthCheck()`, emit `orca.healthCheck.forced`. |
-| Page | `.container-fluid` padding 16 px, page heading `h2#page-heading` with right-aligned buttons; entity cards `jh-card` (white, 1 px border `#dee2e6`, padding 16 px). Footer 32 px `#f8f9fa`: `Orchestrator · LabSim automation lab · orca.lab.local (10.42.1.10)`. |
+| Navbar | height 56 px, background `#353d47`, brand: whale glyph 32 px (white body, `#5ab7ee` belly) + `Orchestrator` 20 px white + version `v3.14.2` 10 px `#bbbbbb` under it (JHipster `.navbar-version`). Right-aligned items with 14 px icons: `Home`, `Entities ▾`, `Administration ▾` (admins only), `Account ▾`. Link colour `rgba(255,255,255,.55)`, hover/active white. Ribbon top-left corner "DEV"? **no** — Orka runs the `prod` profile (no ribbon). |
+| Tutorial button [game] | when `session.computer.forceHealthCheckButton` (missions' gating, §1.11) **and** `lab.config.forceHealthCheckAllowed` (Sim §1.1): amber outline button `⟳ Force health check` in the navbar left of `Home`, with the sub-label `next run 09:40:00` 10 px; click → D20 `sim.orka.forceHealthCheck()`, emit `orka.healthCheck.forced`. |
+| Page | `.container-fluid` padding 16 px, page heading `h2#page-heading` with right-aligned buttons; entity cards `jh-card` (white, 1 px border `#dee2e6`, padding 16 px). Footer 32 px `#f8f9fa`: `Orchestrator · LabSim automation lab · orka.lab.local (10.42.1.10)`. |
 | Tables | `.table .table-striped` (stripe `rgba(0,0,0,.05)`), header row bottom border 2 px; sortable headers show a sort glyph (`⇅` grey, `▲`/`▼` black for the active column); row action buttons `btn-sm`: `👁 View` (`btn-info`), `✎ Edit` (`btn-primary`), `✕ Delete` (`btn-danger`), right-aligned in a `btn-group`. |
 | Forms | `form-label` above `form-control` (height 31 px, radius 4 px); invalid fields get red border + messages in `small.form-text.text-danger`; buttons at the bottom: `⊘ Cancel` (`btn-secondary`) and `💾 Save` (`btn-primary`, disabled while the form is invalid or saving). |
 | Alerts | JHipster alert area at the top of the page content: `alert alert-success` / `alert-danger` / `alert-warning` with close `×`, auto-dismiss 5 s (success) / sticky (errors). |
@@ -460,18 +460,18 @@ match preview, test buttons). A trainee who later opens the real Orca should see
 **Entities ▾** (in this order): `Robot`, `Device`, `Robot Capability`, `Merchant Config`, `Screen`,
 `Screen Location`, `Card Profile`, `Screen Compare Image` (the 7 core schemas of Ref §3, Screens and Screen
 Locations listed separately as JHipster does). **Administration ▾**: `User management`, `Metrics`, `Health`,
-`Configuration`, `Health-check log` [illus., Tate], `Audits`, `Logs`, `API`. **Account ▾**: `Settings`, `Password`,
+`Configuration`, `Health-check log` [illus., Nate], `Audits`, `Logs`, `API`. **Account ▾**: `Settings`, `Password`,
 `Sign out` (when signed out: `Sign in`, `Register` disabled).
 
-* **Login.** The workstation's browser "remembers" the session: Orca opens signed in as `admin`. After **Sign out**
+* **Login.** The workstation's browser "remembers" the session: Orka opens signed in as `admin`. After **Sign out**
   the home page shows the JHipster text `If you want to sign in, you can try the default accounts:` /
   `- Administrator (login="admin" and password="admin")` / `- User (login="user" and password="user").` and the
   `/login` page (`Sign in` heading, `Username`, `Password`, `Remember me`, `Sign in` button,
   `Did you forget your password?` link). Wrong credentials: `alert-danger`
   `Failed to sign in! Please check your credentials and try again.`. `user` sees no **Administration** menu but can
-  edit entities (JHipster default `ROLE_USER`). Accounts: `admin`/`admin`, `user`/`user`, plus `tate`, `jared` (no
+  edit entities (JHipster default `ROLE_USER`). Accounts: `admin`/`admin`, `user`/`user`, plus `nate`, `jaden` (no
   password known — sign-in fails). All sim calls use actor `'player'` regardless of the login. Emit
-  `orca.session.signedIn { login }` / `orca.session.signedOut { login }`.
+  `orka.session.signedIn { login }` / `orka.session.signedOut { login }`.
 * **Route guard.** Every entity/admin route redirects to `/login` when signed out; after sign-in it returns to the
   requested route.
 * **Unreachable / DB down** — see §2.13.
@@ -487,17 +487,17 @@ Locations listed separately as JHipster does). **Administration ▾**: `User man
 |---|---|
 | Left (col-md-3) | whale illustration (SVG, 220 px) |
 | Right heading | `h1` `Welcome to Orchestrator!` · lead `Controller for Jenkins pipelines and the lab robots.` · `You are logged in as user "admin".` (JHipster) |
-| Status cards | five cards in a row, one per status: big count + chip, click → `/robot?status.in=<STATUS>`. Counts from `lab.orca.robots`. |
-| Health check | `Health check: every 5 minutes · last run 09:35:00 (#7) · next 09:40:00` from `orca.healthCheck` (`lastRunMs`, `runCount`, `nextRunMs`); link `View health-check log`. |
-| Active checkouts | table `Robot · Build · Since`: every robot with `checkout != null` → `wall-e · Java/uia-remote-regression-flux #4127 · 09:41:07` (link to Jenkins build route via `wm.openApp('jenkins', …)`); `manual` checkouts show `manual (admin)`. Empty: `No robots are checked out.` |
+| Status cards | five cards in a row, one per status: big count + chip, click → `/robot?status.in=<STATUS>`. Counts from `lab.orka.robots`. |
+| Health check | `Health check: every 5 minutes · last run 09:35:00 (#7) · next 09:40:00` from `orka.healthCheck` (`lastRunMs`, `runCount`, `nextRunMs`); link `View health-check log`. |
+| Active checkouts | table `Robot · Build · Since`: every robot with `checkout != null` → `wall-e · Java/uia-relay-regression-flux #4127 · 09:41:07` (link to Jenkins build route via `wm.openApp('jenkins', …)`); `manual` checkouts show `manual (admin)`. Empty: `No robots are checked out.` |
 | Recent alerts | last 8 unresolved HEALTH notes across robots: timestamp, robot name link, note text in monospace 12 px. |
 
-### 2.4 Robots (`/robot`) — Tate's filter UI
+### 2.4 Robots (`/robot`) — Nate's filter UI
 
 Heading `Robots` with buttons `⟳ Refresh list` (`btn-info`) and `+ Create a new Robot` (`btn-primary`,
 `.jh-create-entity`).
 
-**Filter bar** [Tate's custom UI, Ref §3 "custom UI filtering created by Tate"] — a `jh-card` above the table:
+**Filter bar** [Nate's custom UI, Ref §3 "custom UI filtering created by Nate"] — a `jh-card` above the table:
 
 | Control | Behaviour | URL query |
 |---|---|---|
@@ -509,7 +509,7 @@ Heading `Robots` with buttons `⟳ Refresh list` (`btn-info`) and `+ Create a ne
 | Clear | link `Clear filters` (visible when any filter is set) | — |
 
 Device type of a robot = its Robot Device row's `deviceType` (the MFD's for tethered rigs whose Robot Device is
-the MFD). On every committed filter change (toggle, select, debounced text) emit `orca.robots.filtered` with the
+the MFD). On every committed filter change (toggle, select, debounced text) emit `orka.robots.filtered` with the
 active filters and the resulting count; the route updates (`page=1`).
 
 **Columns:** `ID` · `Name` · `Human Readable Name` · `Status` · `Device Type` · `Rig Kind` · `Environment` ·
@@ -517,18 +517,18 @@ active filters and the resulting count; the route updates (`page=1`).
 `in use by Jenkins #4127` (link) — the combined text reads `Available · in use by Jenkins #4127` for screen
 readers and copy (Cur M11 s7). Last Health Check: `09:35:00 · 200 OK` (green) / `09:35:00 · FAIL` (red, tooltip =
 `lastHealth.error`) / `—` (never or Offline) / `Reserved — not overridden` (grey). Row actions: `View`, `Edit`,
-`Delete`, plus a split-button `Status ▾` [Tate] listing the four settable statuses (current one checked):
+`Delete`, plus a split-button `Status ▾` [Nate] listing the four settable statuses (current one checked):
 choosing one runs the same flow as the form (§2.5 status rules) and shows the success alert
 `A Robot is updated with identifier 6`.
 
 ### 2.5 Robot detail (`/robot/:id/view`) and form (`/robot/new`, `/robot/:id/edit`)
 
-**Detail view** (`h2` `Robot` + `hr`; emit `orca.robot.viewed` on open): `dl` rows in the order of the form below,
+**Detail view** (`h2` `Robot` + `hr`; emit `orka.robot.viewed` on open): `dl` rows in the order of the form below,
 then **Notes**, then buttons
 `← Back` (`btn-info`), `✎ Edit` (`btn-primary`), `⇄ Check out` (`btn-outline-secondary`) [illus.] and, when the
 robot has a manual checkout, `Release`.
 
-**Form** (`h2#jhi-robot-heading` `Create or edit a Robot`; emit `orca.robot.editOpened` on open, `robotId`/`name`
+**Form** (`h2#jhi-robot-heading` `Create or edit a Robot`; emit `orka.robot.editOpened` on open, `robotId`/`name`
 null for `/robot/new`), grouped in cards with `h5` titles. Field labels are
 exact; `(?)` marks a help tooltip.
 
@@ -556,35 +556,35 @@ exact; `(?)` marks a help tooltip.
 | Capabilities | `Capabilities` | checkbox list of capability rows (`DIP`, `TAP`, … with their `key`) | — | `capabilityIds` |
 | Merchant | `Merchant Config` | select of merchant rows by `name` | required | `merchantConfigId` |
 
-**Save flow.** `💾 Save` → for edits: `sim.orca.saveRobot({id, …changedFields}, 'player')` then, if Status
-changed, `sim.orca.setRobotStatus(id, status, 'player')`. Status rules (Sim §3.2.1): moving **away from**
+**Save flow.** `💾 Save` → for edits: `sim.orka.saveRobot({id, …changedFields}, 'player')` then, if Status
+changed, `sim.orka.setRobotStatus(id, status, 'player')`. Status rules (Sim §3.2.1): moving **away from**
 `Connection Failed` first shows the modal `Confirm status change` / `This robot failed its last health check
 (<lastHealth.error>). Override anyway?` / buttons `Cancel`, `Override` (`btn-danger`); emit
-`orca.robot.statusChangeRequested` with `confirmed`. Success → navigate to `/robot` (JHipster returns to the list)
+`orka.robot.statusChangeRequested` with `confirmed`. Success → navigate to `/robot` (JHipster returns to the list)
 with `A Robot is updated with identifier <id>` (create: `A new Robot is created with identifier <id>`) and emit
-`orca.robot.saved` (`changed` = CONFIG field names of Sim §3.3.4: `name`, `humanReadableName`, `deviceId`,
+`orka.robot.saved` (`changed` = CONFIG field names of Sim §3.3.4: `name`, `humanReadableName`, `deviceId`,
 `mfdDeviceId`, `cfdDeviceId`, `urls.adb`, `urls.camera`, `urls.dip`, `urls.tap`, `urls.swipe`, `offsets.x`,
 `offsets.y`, `merchant`, `capabilities`, plus `status`, `environment`, `rigKind`, `location`, `description`).
 Failure (`Result.error`, e.g. `400 Bad Request: ADB-only robots require a PIN-bypass merchant`) → `alert-danger`
-showing the sim's text verbatim; stay on the form; emit `orca.robot.saveFailed`. Editing **Name** shows an inline `alert-warning` under the field while it differs from the
+showing the sim's text verbatim; stay on the form; emit `orka.robot.saveFailed`. Editing **Name** shows an inline `alert-warning` under the field while it differs from the
 saved value: `Pipelines and named jobs use the Name. Change it only if the robot is really renamed.` [illus.]
-(GW22 is GP's penalty; Tate's bark fires from missions.)
+(GW22 is GP's penalty; Nate's bark fires from missions.)
 
 **Notes** (detail view and below the form on edit; Ref §3 "opens a Notes section … logging the exact endpoint
 attempted and error text"). `h4 Notes` + count badge; newest first; each row: kind badge (`HEALTH` red, `STATUS`
 grey, `CONFIG` blue, `MANUAL` dark) + the note's `text` in monospace 12.5 px exactly as stored (Sim §3.3.4 formats,
 including ` (×3, last 08:25:00)` suffixes), resolved notes dimmed with a `Resolved` tag; per-row `✓ Resolve`
-(`sim.orca.resolveNote`, emit `orca.robot.noteResolved`). `Add note` textarea + button (D1, emit
-`orca.robot.noteAdded`). When the section first scrolls into view (or the
-detail page opens with it visible) emit `orca.robot.notesViewed` once per page visit.
+(`sim.orka.resolveNote`, emit `orka.robot.noteResolved`). `Add note` textarea + button (D1, emit
+`orka.robot.noteAdded`). When the section first scrolls into view (or the
+detail page opens with it visible) emit `orka.robot.notesViewed` once per page visit.
 
-**Check out** [illus.] (Cur M06 s9): manual checkout through Orca's UI. Blocked statuses show `alert-danger`
+**Check out** [illus.] (Cur M06 s9): manual checkout through Orka's UI. Blocked statuses show `alert-danger`
 exactly `Robot is blocked from checkouts (Connection Failed)` / `(Reserved)` / `(Offline)`; Unavailable shows
-`alert-warning` `Robot is Unavailable — pass its exact Name in the job to use it`; Available → `sim.orca.checkout({
+`alert-warning` `Robot is Unavailable — pass its exact Name in the job to use it`; Available → `sim.orka.checkout({
 buildId: 'manual-<seq>', jobId: 'manual', robotName: name, environment: robot.environment, kind: 'manual' })`
 (D3) → `alert-success` `Checked out robot <name> (manual). Release it when you are done.`. Emit
-`orca.robot.checkoutAttempted` with `ok` and the shown message. **Release** → `sim.orca.release(robotId,
-buildId)` → `alert-success` `Released robot <name>.`; emit `orca.robot.released`.
+`orka.robot.checkoutAttempted` with `ok` and the shown message. **Release** → `sim.orka.release(robotId,
+buildId)` → `alert-success` `Released robot <name>.`; emit `orka.robot.released`.
 
 ### 2.6 Device (`/device`, `/device/new`, `/device/:id/view|edit`)
 
@@ -594,15 +594,15 @@ appears when on). Form fields: `Name` (required, pattern as robot name, unique �
 (select of the 14 enum values, required), `Serial` (required, pattern `^[A-Z0-9-]+$`), `IP` (required, IPv4 →
 `This field should follow pattern for "IP".`), `Label` (text), `Retired` (checkbox). A grey info line under
 Device Type shows the enum metrics (`Flux · FLUX_GEN2 · portrait 68.0 × 121.0 mm · 720 × 1280 px · printer`).
-Create → `sim.orca.saveDevice` → `A new Device is created with identifier 43`, emit `orca.device.created`.
+Create → `sim.orka.saveDevice` → `A new Device is created with identifier 43`, emit `orka.device.created`.
 Editing a device that is linked to a robot shows `alert-info` `This device is linked to johnny-5. For a hardware
 swap, create a new Device and relink the robot instead.` [illus.] (GW10's lesson). Saving an edit emits
-`orca.device.saved`. Delete of a linked device: the sim's error is shown verbatim.
+`orka.device.saved`. Delete of a linked device: the sim's error is shown verbatim.
 
 **Deletes (every entity):** the JHipster modal `Confirm delete operation` / `Are you sure you want to delete Robot
-17?` (entity name + id) with `⊘ Cancel` and `✕ Delete` (`btn-danger`) → `sim.orca.deleteEntity(entity, id,
+17?` (entity name + id) with `⊘ Cancel` and `✕ Delete` (`btn-danger`) → `sim.orka.deleteEntity(entity, id,
 'player')` → `alert-success` `A Robot is deleted with identifier 17` (or the sim error); emit
-`orca.entity.deleted { entity, id, ok, error }`.
+`orka.entity.deleted { entity, id, ok, error }`.
 
 ### 2.7 Robot Capability (`/robot-capability`) and Match preview
 
@@ -610,21 +610,21 @@ Three tabs [illus.] in one page:
 
 1. **Capabilities** (default) — JHipster list of `capabilities` rows: `ID` · `Name` · `Key` · `Lookup`
    (`DYNAMIC_JSON` / `NON_DYNAMIC` / `BOTH` badges) · `Description` · `JSON` (monospace). CRUD as usual
-   (`sim.orca.saveCapability`, emit `orca.capability.saved`).
+   (`sim.orka.saveCapability`, emit `orka.capability.saved`).
 2. **Robot documents** (`?tab=documents&robot=wall-e`) — robot select (name + HRN) → the robot's capability
    document (Sim §1.3.4, §2.7.1) rendered **compass, in canonical key order**, exactly as Cur M08 shows it
    (`{"deviceType":"FLUX_3","printer":true,"physicalTouch":true,…}`) in a monospace box with `Copy`; below, a
    two-column legend `Derived from the robot's device and rig` (deviceType, printer, physicalTouch, pinEntry,
    tethered, duet, adbOnly, testingProfile) vs `Linked capability rows`. Source: `GET /api/robots/{name}/capabilities`
-   via `sim.orca.rest`. On each robot selection emit `orca.capabilities.viewed`.
-3. **Match preview** (`/robot-capability/match-preview`) — Tate's tool (Cur §7, Sim §3.4.3): textarea
+   via `sim.orka.rest`. On each robot selection emit `orka.capabilities.viewed`.
+3. **Match preview** (`/robot-capability/match-preview`) — Nate's tool (Cur §7, Sim §3.4.3): textarea
    `Capabilities JSON` (monospace, placeholder `{"goSdk": true, "printer": true}`), select `Environment` (default
-   `DEV1`), button `Preview match` → `sim.orca.matchPreview` (D2) → table `Robot` · `Status` · `Match` (`✓` green /
+   `DEV1`), button `Preview match` → `sim.orka.matchPreview` (D2) → table `Robot` · `Status` · `Match` (`✓` green /
    `✗` red) · `First failing key` (`printer: required true, robot false`); matching rows first, ordered as the
    checkout would try them (LRU). Invalid JSON → `alert-danger` `Invalid JSON: Unexpected token } in JSON at
-   position 17` (browser `JSON.parse` message). Emit `orca.matchPreview.ran` with the matching robot names.
-   A `Load from Gort file…` [illus.] dropdown lists `go-sdk/tests/*.json` and `suites/**/*.json` from
-   `lab.repos.gort.files` and fills the textarea with that file's `capabilities` object (this is how Cur M08 s5's
+   position 17` (browser `JSON.parse` message). Emit `orka.matchPreview.ran` with the matching robot names.
+   A `Load from Gorth file…` [illus.] dropdown lists `go-sdk/tests/*.json` and `suites/**/*.json` from
+   `lab.repos.gorth.files` and fills the textarea with that file's `capabilities` object (this is how Cur M08 s5's
    "Match preview no longer lists …" is checked after the IntelliJ edit is pushed — the rig that drops out is
    `vision`, the GO_SDK Flux Pocket; Sim A.2 records the deviation from Cur's "rosie").
 
@@ -633,72 +633,72 @@ Three tabs [illus.] in one page:
 The list table **deliberately truncates** (Ref §3 "Due to UI table display limits, you must click Edit on a row to
 view all fields"; Sim §1.3.5): columns `ID` · `Name` · `Region` · `PIN Bypass` (`✓`/`—`) · `Country` · `Owner` and a
 final header cell `…` whose cells show `…`; the table has `table-layout: fixed` and the **App ID / App Secret /
-API Key / Ubi Route** columns do not exist in the list. Row buttons `View`, `Edit`, `Delete`. The View page also
-hides the credentials (Tate's view shows `App credentials: 3 fields — open Edit to see them`) [illus.] so the only
-way to see them is **Edit** (`/merchant-config/:id/edit`; emit `orca.merchant.editOpened` on open).
+API Key / Ubo Route** columns do not exist in the list. Row buttons `View`, `Edit`, `Delete`. The View page also
+hides the credentials (Nate's view shows `App credentials: 3 fields — open Edit to see them`) [illus.] so the only
+way to see them is **Edit** (`/merchant-config/:id/edit`; emit `orka.merchant.editOpened` on open).
 
 Edit form (all Sim §1.3.5 fields, grouped): **Merchant** `Name`, `Display Name`, `Address`, `Merchant ID (MID)`,
 `Environment` (`dev1` `dev2` `stg` `qa` `int`), `Region` (`US-EAST`, `CA-CENTRAL`), `Country` (`US`, `CA`),
-`Currency` (`USD`, `CAD`), `Owner` (`Automation`, `PayCore`, `SDK`, `Westers`) · **Payments** `Tax Rate (%)`
+`Currency` (`USD`, `CAD`), `Owner` (`Automation`, `PayCrest`, `SDK`, `Westerly`) · **Payments** `Tax Rate (%)`
 (number, two decimals, shown from `taxRateBp/100`), `Tips Enabled`, `Tip Percents` (comma list), `PIN Bypass`,
 `Cash Discount Enabled`, `Card Adjust (%)`, `QR Receipts Enabled`, `Signature Threshold ($)`, `Accepted Brands`
 (checkboxes VISA, MASTERCARD, AMEX, DISCOVER, INTERAC), `Extra Apps` (comma list) · **Go SDK credentials**
-(Tate, Ref §3) `App ID` (text), `App Secret` (password field showing `••••••` with an eye toggle `Show`),
+(Nate, Ref §3) `App ID` (text), `App Secret` (password field showing `••••••` with an eye toggle `Show`),
 `API Key` (text) — help text `Exported to pipelines as APP_ID, APP_SECRET, API_KEY for the Go SDK.` ·
-**Routing** `Ubi Route` (select `(none)`, `us-east`, `ca-central`) · `Notes` textarea. Save →
-`sim.orca.saveMerchant` → `A Merchant Config is updated with identifier 3`; emit `orca.merchant.saved` (`changed`
-field names). Toggling `Show` on the secret emits `orca.merchant.secretRevealed`.
+**Routing** `Ubo Route` (select `(none)`, `us-east`, `ca-central`) · `Notes` textarea. Save →
+`sim.orka.saveMerchant` → `A Merchant Config is updated with identifier 3`; emit `orka.merchant.saved` (`changed`
+field names). Toggling `Show` on the secret emits `orka.merchant.secretRevealed`.
 
 ### 2.9 Screen (`/screen`) and Screen Location (`/screen-location`)
 
 **Screens list:** filter bar `Device type` select (required-ish: defaults to `All`), `Name` contains, `Display`
 (`All`, `primary`, `secondary`) → query `deviceType.equals=FLUX_3&name.contains=RECEIPT`. Columns `ID` · `Name` ·
 `Device Type` · `Testing Profile` · `Display` · `Options` (`4`, `5 · QR` badge, `—`) · `Description` · `Locations`
-(count). Emit `orca.screens.filtered` on committed filter changes.
+(count). Emit `orka.screens.filtered` on committed filter changes.
 
 **Screen detail** (`/screen/:id/view`, Cur M09 s2 "Open Screens → FLUX_3 → TENDER_CASH_DISCOUNT … then its Screen
 Locations"): `dl` (Name, Device Type, Testing Profile, Display, Options, Description), then **Screen Locations**
-table `Button` · `X (mm)` · `Y (mm)` · `Last modified` (from `orca.audit`: `bulk-import · yesterday 16:02`,
-`jared · 2026-10-02 11:20`, `—`) · actions `Edit`, `Delete`, `◎ Test tap` [illus.]; button `+ Add location`
+table `Button` · `X (mm)` · `Y (mm)` · `Last modified` (from `orka.audit`: `bulk-import · yesterday 16:02`,
+`jaden · 2026-10-02 11:20`, `—`) · actions `Edit`, `Delete`, `◎ Test tap` [illus.]; button `+ Add location`
 (inline row: Button text, X, Y, Save). Right of the table: a to-scale outline of the Device Type's screen (mm
 metrics from `DeviceTypeInfo`, 1 px = 0.5 mm min, axis ticks every 10 mm, `(0,0)` marked top-left) with a dot +
-label per location — Orca knows **points only, never button sizes** (Sim §1.3.6), so no rectangles are drawn.
-Emit `orca.screen.viewed` on open and `orca.screenLocations.viewed` (count) when the locations table is rendered.
+label per location — Orka knows **points only, never button sizes** (Sim §1.3.6), so no rectangles are drawn.
+Emit `orka.screen.viewed` on open and `orka.screenLocations.viewed` (count) when the locations table is rendered.
 
 **Test tap** [illus.] (Cur §7, M07 s11, INC21/22): a popover with `Robot` select (robots whose Robot Device type
 — or MFD/CFD type — equals the screen's Device Type; default the first Available) and `Tap` →
-`sim.orca.xyTouch(robot, screen.name, button, 'player')` → shows Orca's raw response in a monospace alert, exactly
+`sim.orka.xyTouch(robot, screen.name, button, 'player')` → shows Orka's raw response in a monospace alert, exactly
 the REST body: `200 {"result":"OK","mode":"PHYSICAL_TAP","x_mm":22.0,"y_mm":58.5}` or the error text
-(`409 Conflict: LOCK_RELEASED (park required)`). Orca never says whether the button was hit (Sim §3.5.2 — "the
+(`409 Conflict: LOCK_RELEASED (park required)`). Orka never says whether the button was hit (Sim §3.5.2 — "the
 response never says whether a button was hit"); the hint under the popover reads `Watch the robot or its camera
-to confirm the hit.`. Emit `orca.screenLocation.testTap`.
+to confirm the hit.`. Emit `orka.screenLocation.testTap`.
 
 **Screen form:** `Name` (required, pattern `^[A-Z0-9_]+$` → `This field should follow pattern for "Name".`),
 `Device Type` (select, required), `Display` (`primary` / `secondary`), `Option Count` (`(none)`, `4`, `5`),
 `Description`. Uniqueness `(deviceType, name)` errors come from the sim. Create → `A new Screen is created with
-identifier 211` → lands on the new screen's detail so locations can be added. Emit `orca.screen.saved`.
+identifier 211` → lands on the new screen's detail so locations can be added. Emit `orka.screen.saved`.
 
 **Screen Location list** (`/screen-location`): filters `Device type`, `Screen` (select filtered by device type),
 `Button` contains; columns `ID` · `Screen` · `Device Type` · `Button` · `X (mm)` · `Y (mm)` · `Last modified` ·
 actions. Form: `Screen` (select `RECEIPT_OPTIONS_5 · FLUX_4`), `Button` (exact string, case-sensitive help
 `Exact text passed to xy_touch, e.g. "No Receipt"`), `X (mm)`, `Y (mm)` (number step 0.1, 0…400). Save →
-`sim.orca.saveScreenLocation` → `A Screen Location is updated with identifier 1093`; emit
-`orca.screenLocation.saved`. A banner on both pages [illus.]: `Screen Locations are synced from gort
-config/screen-locations/<DEVICE_TYPE>/<SCREEN>.json on merge. Direct edits here are not written back to Gort.`
+`sim.orka.saveScreenLocation` → `A Screen Location is updated with identifier 1093`; emit
+`orka.screenLocation.saved`. A banner on both pages [illus.]: `Screen Locations are synced from gorth
+config/screen-locations/<DEVICE_TYPE>/<SCREEN>.json on merge. Direct edits here are not written back to Gorth.`
 (Sim §3.22.3).
 
 ### 2.10 Card Profile (`/card-profile`)
 
 Columns `ID` · `Name` · `Brand` · `Entry` (`Swipe` / `Dip` / `Tap` badges) · `Track Data / Path` — SWIPE rows show
-the Track Data (monospace, truncated with `…` at 48 chars, full value in a tooltip), DIP/TAP rows show the Gort
+the Track Data (monospace, truncated with `…` at 48 chars, full value in a tooltip), DIP/TAP rows show the Gorth
 path (`cards/emv/visa_std_dip.json`) · `PAN` (`•••• 1111`) · `Country` · `Owner`. Detail view: `Type` (= entry)
 then **either** `Track Data` (full, monospace, wraps) **or** `Path` (Sim §2.9: "the other field hidden"), `PIN`
 (`••••` with Show), `Expiry` (`12/30` from `3012`), etc. Clicking the Track Data or Path value selects it and emits
-`orca.cardProfile.fieldClicked` (Cur M10 s7 "Path field clicked"); opening a detail emits
-`orca.cardProfile.viewed`. Form: `Name`, `Brand`, `Entry`; Entry = SWIPE shows `Track Data` (textarea, monospace,
+`orka.cardProfile.fieldClicked` (Cur M10 s7 "Path field clicked"); opening a detail emits
+`orka.cardProfile.viewed`. Form: `Name`, `Brand`, `Entry`; Entry = SWIPE shows `Track Data` (textarea, monospace,
 required → `This field is required.`) and hides `Path`; DIP/TAP show `Path` (`cards/emv/…json`) and hide Track
 Data; `PAN`, `Expiry (YYMM)`, `PIN`, `Requires PIN`, `Country`, `Owner`. Server validation text (Sim §2.9) shown
-verbatim. Save → `A Card Profile is updated with identifier 2`; emit `orca.cardProfile.saved`.
+verbatim. Save → `A Card Profile is updated with identifier 2`; emit `orka.cardProfile.saved`.
 
 ### 2.11 Screen Compare Image (`/screen-compare-image`)
 
@@ -707,39 +707,39 @@ Every page of this entity starts with a **deprecation banner** (`alert-warning`,
 both Stand Duet displays natively — migrate checks with displayId locators instead.` (Ref §3).
 
 List columns `ID` · `Name` · `Robot` · `Screen` · `X` · `Y` · `W` · `H` (px) · `Expected Text` (monospace, shows
-leading/trailing spaces as `·`) · `Deprecated` (`✓`) · `Used By` (`uia-remote:DuetCfdSuite`). Form: `Name`
+leading/trailing spaces as `·`) · `Deprecated` (`✓`) · `Used By` (`uia-relay:DuetCfdSuite`). Form: `Name`
 (required, `^[A-Z0-9_]+$`), `Robot` (select), `Screen` (text, e.g. `CFD_CART`), `X`, `Y`, `W`, `H` (integers ≥ 0,
 px of the 1280 × 720 webcam frame), `Expected Text` (text; help `Exact, case-sensitive match.`), `Deprecated`
-(checkbox). Save → `sim.orca.saveScreenCompareImage`; emit `orca.screenCompare.saved` (with `created`).
+(checkbox). Save → `sim.orka.saveScreenCompareImage`; emit `orka.screenCompare.saved` (with `created`).
 
 **Test panel** (detail view, Cur M16 s7–s8): button `▶ Test` → `sim.ocr.compare(id)` → shows (1) the robot's
-current webcam frame (from Orca's `cameraStreamUrl` — §8.4 capture, scaled to 640 px) with the bbox drawn in
+current webcam frame (from Orka's `cameraStreamUrl` — §8.4 capture, scaled to 640 px) with the bbox drawn in
 magenta, (2) the crop enlarged ×2, (3) result lines in monospace: the Pi log line exactly
 `[ocr] capture webcam → crop 236x44@412,288 → tesseract → "TOTAL $10.83" → match=true` (Sim §3.12.1) and a large
 `match=true` (green) / `match=false` (red). Capture failures show the sim's error line
 (`[ocr] capture webcam → GET http://10.42.10.40:8081/stream.mjpg → Connection refused`). Emit
-`orca.screenCompare.tested`. Tutorial toggle [game] (Academy/Free Play only, i.e. `lab.config.mode` ∈ `academy`, `freeplay`, or when
-`session.computer.restrictions.orca.layoutV2Toggle === true`): switch `CFD layout v2 (tutorial)` bound to
+`orka.screenCompare.tested`. Tutorial toggle [game] (Academy/Free Play only, i.e. `lab.config.mode` ∈ `academy`, `freeplay`, or when
+`session.computer.restrictions.orka.layoutV2Toggle === true`): switch `CFD layout v2 (tutorial)` bound to
 `lab.flags.cfdLayoutV2Toggle` →
-`sim.setFlag('cfdLayoutV2Toggle', v)`; emit `orca.screenCompare.layoutV2Toggled`.
+`sim.setFlag('cfdLayoutV2Toggle', v)`; emit `orka.screenCompare.layoutV2Toggled`.
 
 ### 2.12 Administration
 
 | Page | Route | Content |
 |---|---|---|
-| User management | `/admin/user-management` | JHipster table `ID` · `Login` · `Email` · `Activated` · `Langkey` · `Profiles` (`ROLE_ADMIN`, `ROLE_USER`) · `Created date` · `Modified by`; rows `admin`, `user`, `tate`, `jared`, `morgan`, `david`, `jenkins-ci` [illus.]. Buttons render but edits answer `alert-danger` `You are not allowed to modify users on this instance (LDAP-managed).` [illus.] |
-| Metrics | `/admin/metrics` | JHipster metrics page: `JVM Metrics` (Memory heap/non-heap bars, threads), `HTTP requests` table (counts per status from `orca.rest`-style counters kept by the app session [illus.]), `Cache statistics` (empty), `Datasource statistics` (`Connection pool: HikariPool-1 · active 2 · idle 8 · max 10`; when DB down `0 active · pending 10`). Static plausible numbers; refresh button. |
-| Health | `/admin/health` | JHipster health table `Service name` · `Status` · `Details`: `db` (`UP` / `DOWN`), `diskSpace` (`UP`, `free 59 GB`), `ping` (`UP`), `healthCheckThread` [illus.] (`UP · last run #7 09:35:00`), from `GET /management/health` (`sim.orca.rest`). |
-| Configuration | `/admin/configuration` | Spring beans/properties table (static, filterable): `spring.datasource.url = jdbc:mysql://localhost:3306/orca`, `orca.health-check.interval = 300000`, `orca.health-check.timeout-ms = 10000`, `jhipster.clientApp.name = orchestratorApp`, … |
-| Health-check log | `/admin/health-check-log` | [Tate, Sim §3.3.4] newest run first, one card per run: header line exactly as stored (`2026-10-05 08:15:00  health-check run #4 — 41 pinged, 1 skipped, 1 failed, 0 recovered`) then the run's lines in monospace 12.5 px, colouring by suffix: `FAIL …` red, `(recovered)` green, `SKIPPED (Offline)` grey, `RESERVED — not overridden` blue, `200 OK` default. Filter input `Robot name` (filters lines), `Force health check` [game] button when allowed. Emit `orca.healthLog.viewed` on open (with the newest run number). |
-| Audits | `/admin/audits` | table `Date` · `User` · `State/Action` · `Entity` · `ID` · `Changes` from `lab.orca.audit` (newest first, date range pickers `From`/`To` defaulting to today, JHipster style); `Changes` renders `diff` as `field: old → new` lines. |
-| Logs | `/admin/logs` | JHipster "Logs" page: `There are 412 loggers.` + filter + table `Name` · `Level` (buttons `TRACE DEBUG INFO WARN ERROR OFF`, current one coloured) for `com.labsim.orca`, `com.labsim.orca.health`, `org.hibernate.SQL`, … (level changes are UI-only); below, **Recent log** [illus.]: the last 100 `lab.log` entries with `source` starting `orca` in Logback format `2026-10-05 08:15:00.012  WARN 1 --- [health-check-1] c.c.orca.health.HealthCheckService : wall-e FAIL connect timed out after 10000 ms`. |
+| User management | `/admin/user-management` | JHipster table `ID` · `Login` · `Email` · `Activated` · `Langkey` · `Profiles` (`ROLE_ADMIN`, `ROLE_USER`) · `Created date` · `Modified by`; rows `admin`, `user`, `nate`, `jaden`, `morgan`, `devin`, `jenkins-ci` [illus.]. Buttons render but edits answer `alert-danger` `You are not allowed to modify users on this instance (LDAP-managed).` [illus.] |
+| Metrics | `/admin/metrics` | JHipster metrics page: `JVM Metrics` (Memory heap/non-heap bars, threads), `HTTP requests` table (counts per status from `orka.rest`-style counters kept by the app session [illus.]), `Cache statistics` (empty), `Datasource statistics` (`Connection pool: HikariPool-1 · active 2 · idle 8 · max 10`; when DB down `0 active · pending 10`). Static plausible numbers; refresh button. |
+| Health | `/admin/health` | JHipster health table `Service name` · `Status` · `Details`: `db` (`UP` / `DOWN`), `diskSpace` (`UP`, `free 59 GB`), `ping` (`UP`), `healthCheckThread` [illus.] (`UP · last run #7 09:35:00`), from `GET /management/health` (`sim.orka.rest`). |
+| Configuration | `/admin/configuration` | Spring beans/properties table (static, filterable): `spring.datasource.url = jdbc:mysql://localhost:3306/orka`, `orka.health-check.interval = 300000`, `orka.health-check.timeout-ms = 10000`, `jhipster.clientApp.name = orchestratorApp`, … |
+| Health-check log | `/admin/health-check-log` | [Nate, Sim §3.3.4] newest run first, one card per run: header line exactly as stored (`2026-10-05 08:15:00  health-check run #4 — 41 pinged, 1 skipped, 1 failed, 0 recovered`) then the run's lines in monospace 12.5 px, colouring by suffix: `FAIL …` red, `(recovered)` green, `SKIPPED (Offline)` grey, `RESERVED — not overridden` blue, `200 OK` default. Filter input `Robot name` (filters lines), `Force health check` [game] button when allowed. Emit `orka.healthLog.viewed` on open (with the newest run number). |
+| Audits | `/admin/audits` | table `Date` · `User` · `State/Action` · `Entity` · `ID` · `Changes` from `lab.orka.audit` (newest first, date range pickers `From`/`To` defaulting to today, JHipster style); `Changes` renders `diff` as `field: old → new` lines. |
+| Logs | `/admin/logs` | JHipster "Logs" page: `There are 412 loggers.` + filter + table `Name` · `Level` (buttons `TRACE DEBUG INFO WARN ERROR OFF`, current one coloured) for `com.labsim.orka`, `com.labsim.orka.health`, `org.hibernate.SQL`, … (level changes are UI-only); below, **Recent log** [illus.]: the last 100 `lab.log` entries with `source` starting `orka` in Logback format `2026-10-05 08:15:00.012  WARN 1 --- [health-check-1] c.c.orka.health.HealthCheckService : wall-e FAIL connect timed out after 10000 ms`. |
 | API | `/admin/docs` | Swagger UI (OpenAPI 3) — §2.12.1 |
 
 #### 2.12.1 API docs (Swagger UI)
 
 Header `Orchestrator API` + badges `3.14.2` `OAS 3.0`, link `/v3/api-docs`, `Servers` select
-`http://orca.lab.local:8080`. Operations grouped by tag, each a collapsible bar coloured by method (GET `#61affe`,
+`http://orka.lab.local:8080`. Operations grouped by tag, each a collapsible bar coloured by method (GET `#61affe`,
 POST `#49cc90`, PUT `#fca130`, DELETE `#f93e3e`, light tinted backgrounds), monospace path, summary:
 
 | Tag | Operations (Sim §3.23) |
@@ -759,17 +759,17 @@ POST `#49cc90`, PUT `#fca130`, DELETE `#f93e3e`, light tinted backgrounds), mono
 Expanded op: `Parameters` table (name, in, type, description), `Request body` (`application/json`) with an example
 (xy_touch: `{"robot":"wall-e","screen":"TENDER_CASH_DISCOUNT","button":"Cash"}`), `Responses` (200 example, 400,
 404, 409, 423, 502, 503 with the Sim texts). **Try it out** → editable params/body → **Execute** →
-`sim.orca.rest(method, path, body, 'player')` → `Curl` block (`curl -X 'POST' \ 'http://orca.lab.local:8080/api/xy_touch' \
+`sim.orka.rest(method, path, body, 'player')` → `Curl` block (`curl -X 'POST' \ 'http://orka.lab.local:8080/api/xy_touch' \
 -H 'accept: */*' \ -H 'Content-Type: application/json' \ -d '{…}'`), `Request URL`, `Server response` `Code` +
-`Response body` (pretty JSON, copy button) + `Response headers`. Emit `orca.api.executed`. This page is how a
+`Response body` (pretty JSON, copy button) + `Response headers`. Emit `orka.api.executed`. This page is how a
 trainee learns the REST calls the runners make — it MUST match what `curl` in the Terminal returns.
 
-### 2.13 Orca unavailable
+### 2.13 Orka unavailable
 
 | Condition (§0.5) | What the window shows |
 |---|---|
-| `orca-vm` down / `orca` service down / network | browser error page (`orca.lab.local took too long to respond.` / `refused to connect.`) |
-| app up, `orca.app.dbConnected == false` (INC60) | navbar renders; page area shows JHipster's error page: `h1` `Error Page!` and `alert-danger` with exactly `500 Internal Server Error — Could not open JPA EntityManager for transaction; nested exception is org.hibernate.exception.JDBCConnectionException: Unable to acquire JDBC Connection` and a second line `Communications link failure` (Sim §3.14.5). Every entity call returns 500; list pages show the JHipster alert `Internal server error`; `/admin/health` shows `db DOWN`. |
+| `orka-vm` down / `orka` service down / network | browser error page (`orka.lab.local took too long to respond.` / `refused to connect.`) |
+| app up, `orka.app.dbConnected == false` (INC60) | navbar renders; page area shows JHipster's error page: `h1` `Error Page!` and `alert-danger` with exactly `500 Internal Server Error — Could not open JPA EntityManager for transaction; nested exception is org.hibernate.exception.JDBCConnectionException: Unable to acquire JDBC Connection` and a second line `Communications link failure` (Sim §3.14.5). Every entity call returns 500; list pages show the JHipster alert `Internal server error`; `/admin/health` shows `db DOWN`. |
 | sim call throws (not implemented) | `alert-danger` `Server not reachable` (JHipster's status-0 message) |
 
 ### 2.14 Keyboard
@@ -791,7 +791,7 @@ the stock theme, the Folders, Pipeline, Pipeline: Stage View and Green Balls [il
 |---|---|
 | Fonts | system UI stack 14 px (`--font-size-base`), monospace console 13 px |
 | Header | 56 px, background `#ffffff` with bottom border `#e5e5e5`; left: butler head glyph 28 px (simplified, flat) + `Jenkins` 18 px 600; centre-right: search box (`Search (Ctrl+K)`, rounded 6 px, `#f2f2f3`), bell, user chip `Engineer` (from `progress.playerName`), `log out` (does nothing but reload [illus.]) |
-| Breadcrumb bar | 40 px under the header, `#f8f8f8`: `Dashboard › Java › uia-remote-regression-flux › #4127`, each crumb with a hover chevron dropdown (job context menu) |
+| Breadcrumb bar | 40 px under the header, `#f8f8f8`: `Dashboard › Java › uia-relay-regression-flux › #4127`, each crumb with a hover chevron dropdown (job context menu) |
 | Side panel | 260 px left column, task links with 20 px icons: `+ New Item`, `People`, `Build History`, `Manage Jenkins`, `My Views` on the dashboard; job/build-specific tasks elsewhere. Below: **Build Queue** and **Build Executor Status** widgets (collapsible cards). |
 | Colours | links `#0b6aa2` (hover underline), text `#14141f`, muted `#6d6b7f`, success `#138347`, failure `#e6001f`, unstable `#fe820a`, aborted/disabled `#9a9aaa`, running pulse `#0b6aa2`; tables `.jenkins-table` with 1 px `#e5e5e5` row borders, row hover `#f5f5f7` |
 | Status icons | 24 px circles (Green Balls [illus.]): success green `#138347` ✓, failure red `#e6001f` ✕, unstable orange `#fe820a` !, aborted/not built grey, running = the previous result's colour with a rotating 2 px ring (CSS animation 1 s), queued = grey clock |
@@ -800,11 +800,11 @@ the stock theme, the Folders, Pipeline, Pipeline: Stage View and Green Balls [il
 
 ### 3.2 Dashboard and views (`/`, `/view/:view/`)
 
-View tabs above the table (Sim §2.13): `All` · `Java` · `iOS` · `uia-remote` · `SDK-Go` · `Pigeon-LSTR` · `Laz` ·
+View tabs above the table (Sim §2.13): `All` · `Java` · `iOS` · `uia-relay` · `SDK-Go` · `Parrot-LSTR` · `Lazo` ·
 `Vision-PoC` · `+` (new view → `Access Denied` [illus.]). The **All** view lists the two **folders** `Java` and
 `iOS` (folder icon, aggregated S/W). `Java` and `iOS` views list their jobs (full names relative to the folder,
-`uia-remote-regression-flux`); the other views list matching jobs with their folder prefix
-(`Java » uia-remote-regression-flux`). Tab clicks navigate (`/view/Java/`) and emit `jenkins.view.opened`
+`uia-relay-regression-flux`); the other views list matching jobs with their folder prefix
+(`Java » uia-relay-regression-flux`). Tab clicks navigate (`/view/Java/`) and emit `jenkins.view.opened`
 (Cur M11 s2 "Both views opened").
 
 Table columns (Jenkins defaults): `S` (status icon) · `W` (weather) · `Name ↓` · `Last Success` (`2 hr 4 min #4126`)
@@ -821,12 +821,12 @@ Windows, REST, Go). iOS jobs live in the iOS folder.` [illus.], the same jobs ta
 * `Build Queue (n)` — `lab.jenkins.queue` entries: job name link + `pending—Waiting for next available executor`;
   `No builds in the queue.` when empty; red `✕` cancels (`sim.jenkins.abort`).
 * `Build Executor Status` — node `Built-In Node` [illus. name `lab-executor`] with `executors` rows: `1  Idle` or
-  `Java » uia-remote-regression-flux #4127` + a progress bar (elapsed ÷ last successful duration, striped when over
+  `Java » uia-relay-regression-flux #4127` + a progress bar (elapsed ÷ last successful duration, striped when over
   100 %) + red `✕` abort. Builds blocked in `Checkout robot` still hold their executor (Sim §3.18.1).
 
 ### 3.3 Job page (`/job/:folder/job/:job/`)
 
-Heading: status icon + `Pipeline uia-remote-regression-flux`, description (from `job.description`), the
+Heading: status icon + `Pipeline uia-relay-regression-flux`, description (from `job.description`), the
 `Disabled` banner when `job.disabled` (`This project is currently disabled` + `Enable` button → D4).
 
 Side panel: `Status`, `Changes`, `Build with Parameters` (parameterised) / `Build Now` (no params), `Configure`,
@@ -851,11 +851,11 @@ Emit `jenkins.job.opened` on open.
 
 ### 3.4 Build with Parameters (`/job/:folder/job/:job/build`)
 
-Heading `Pipeline uia-remote-regression-flux`, text `This build requires parameters:`. One block per `job.params`
+Heading `Pipeline uia-relay-regression-flux`, text `This build requires parameters:`. One block per `job.params`
 in order: parameter name bold (`DEVICE_TYPE`), the control — `string` → text input prefilled with
 `job.savedParams[name] ?? param.default` (so `flux_3` shows up exactly as saved, INC39/Cur M11); `choice` → select;
-`boolean` → checkbox — and the description below in grey (`DEVICE_TYPE`: `Orca DeviceType enum value, ALL CAPS
-(e.g. FLUX_3). Blank = any.` [illus.]; `ROBOT_NAME`: `Exact Orca robot Name (lowercase). Blank = any matching
+`boolean` → checkbox — and the description below in grey (`DEVICE_TYPE`: `Orka DeviceType enum value, ALL CAPS
+(e.g. FLUX_3). Blank = any.` [illus.]; `ROBOT_NAME`: `Exact Orka robot Name (lowercase). Blank = any matching
 Available robot.`; `MERCHANT`: `Merchant Config name`; `CARD_PROFILE`: `Card profile name(s), comma separated`;
 `BACKEND_ENV`: `Backend environment (DEV1, DEV2, STG, QA, INT)`; `BRANCH`: `Git branch`). Button `Build` (primary
 `#0b6aa2`). Submit → `sim.jenkins.build(jobId, values, 'player')` → on success navigate to the job page and show
@@ -869,9 +869,9 @@ not need to finish.
 **Build page:** heading status icon + `#4127 (Oct 5, 2026, 9:41:07 AM)`; side panel `Status`, `Changes`,
 `Console Output`, `Edit Build Information`, `Delete build '#4127'` (denied), `Parameters`, `Pipeline Steps`,
 `Restart from Stage` (denied), `Replay` (denied), `‹ Previous Build`, `Next Build ›`; a red `✕` `Abort` button in the
-heading while running (`sim.jenkins.abort`, confirm `Are you sure you want to abort uia-remote-regression-flux
+heading while running (`sim.jenkins.abort`, confirm `Are you sure you want to abort uia-relay-regression-flux
 #4127?`, emit `jenkins.build.aborted`). Main: `Started by user Engineer` / `Started by timer` / `Started by upstream
-project …` (from `triggeredBy`), `Revision: 7a20f5b…` + `Repository: git@github.com:labsim-lab/uia-remote.git`
+project …` (from `triggeredBy`), `Revision: 7a20f5b…` + `Repository: git@github.com:labsim-lab/uia-relay.git`
 (from the job's `testRef` repo head) [illus. block], `Robot: wall-e (FLUX_3)` [illus.] when `robotId`, `Test Result:
 2 tests, 0 failures` parsed from the console's `Tests: …` line when finished, and the build's stage row.
 `Parameters` page: table name/value of `build.params` (secrets masked). Build duration `Took 1 min 2 sec` when done.
@@ -911,12 +911,12 @@ true]`"); opening Configure emits `jenkins.script.viewed`.
 
 ### 3.7 Move (`/job/…/move`) and search
 
-**Move** (CloudBees Folders, INC26): heading `Move`, text `Move 'pigeon-windows-tender' to:` + select
+**Move** (CloudBees Folders, INC26): heading `Move`, text `Move 'parrot-windows-tender' to:` + select
 `Jenkins » Java` / `Jenkins » iOS` (current folder preselected) + button `Move`. → D4 `sim.jenkins.moveJob` →
 navigate to the new job URL; emit `jenkins.job.moved` (`from`, `to` job ids).
 
 **Search** (`Ctrl+K` or click): a command-palette dropdown (Jenkins 2.4xx) listing matching jobs/folders/views/builds
-as you type (`pigeon-windows` → `iOS » pigeon-windows-tender`); Enter navigates; full results page `/search/?q=…`.
+as you type (`parrot-windows` → `iOS » parrot-windows-tender`); Enter navigates; full results page `/search/?q=…`.
 Emit `jenkins.search` with the query and the result ids when the user submits or picks a result.
 
 ### 3.8 Other pages
@@ -924,7 +924,7 @@ Emit `jenkins.search` with the query and the result ids when the user submits or
 | Page | Content |
 |---|---|
 | Build History (`/view/all/builds`) | timeline strip (decor) + table `Build` · `Time Since` · `Status` for every build across jobs, newest first |
-| People (`/asynchPeople/`) | `User ID` · `Name` · `Last Commit Activity` · `On` from team keys (`jenkins-ci`, `morgan`, `tate`, …) |
+| People (`/asynchPeople/`) | `User ID` · `Name` · `Last Commit Activity` · `On` from team keys (`jenkins-ci`, `morgan`, `nate`, …) |
 | Manage Jenkins (`/manage/`) | sectioned tiles (`System Configuration`: System, Tools, Plugins, Nodes, Clouds; `Security`: Security, Credentials, Users; `Status Information`: System Information, System Log, Load Statistics, About Jenkins). Only **Nodes** and **About Jenkins** open (Nodes: `Built-In Node` · `Linux (amd64)` · `In sync` · free disk `104.80 GB` · 8 executors; About: version and license text); the rest show §3.9. |
 | Pipeline Syntax | static `Snippet Generator` page with a `Sample Step` select and `Generate Pipeline Script` producing a fixed snippet [illus.] |
 | Parameters (`/…/:number/parameters/`) | §3.5 |
@@ -940,7 +940,7 @@ Emit `jenkins.search` with the query and the result ids when the user submits or
 
 ### 3.10 Notifications and keyboard
 
-Notifications (§1.5): `Build #4127 FAILURE — Java/uia-remote-regression-flux` (red) / `SUCCESS` (green) for builds
+Notifications (§1.5): `Build #4127 FAILURE — Java/uia-relay-regression-flux` (red) / `SUCCESS` (green) for builds
 the player triggered; failures of any job while the Jenkins window is unfocused (one per build). Keyboard:
 `Ctrl+K` search, `Esc` closes search/menus (consumed), `Enter` submits Build with Parameters, `Alt+←/→` history.
 
@@ -975,7 +975,7 @@ clone's `config.properties` (Sim §3.19.1); git operations are `sim.git.*`.
 
 ```
 ┌ Main menu: File Edit View Navigate Code Refactor Build Run Tools Git Window Help ─────────────────────────┐
-├ Nav bar: uia-remote › app › src › androidTest › … › HomeScreen.java    [🔨] [TaxTest ▾] ▶ 🐞 ■ │ Git: ↙ ✓ ↗ 🕒 ↶ ┤
+├ Nav bar: uia-relay › app › src › androidTest › … › HomeScreen.java    [🔨] [TaxTest ▾] ▶ 🐞 ■ │ Git: ↙ ✓ ↗ 🕒 ↶ ┤
 │1:Project ┌ Project ▾ ──────────┐┌ HomeScreen.java ×  TaxTest.java ×  config.properties × ─────────────┐ │
 │0:Commit  │ tree                ││ gutter │ editor                                       ❗1 ⚠0 ✓ ⌄   │ │
 │          │                     ││        │                                                            │ │
@@ -992,25 +992,25 @@ Tool windows (left: `Project` Alt+1, `Commit` Alt+0; bottom: `Run` Alt+4, `Termi
 
 * **Welcome** (no project; route `/welcome`): window `Welcome to IntelliJ IDEA`, left nav `Projects` (active),
   `Customize`, `Plugins`, `Learn`; main: search field `Search projects`, buttons `New Project`, `Open`,
-  `Get from VCS`; recent projects (cloned repos): `uia-remote  ~/IdeaProjects/uia-remote`. Clicking a recent
+  `Get from VCS`; recent projects (cloned repos): `uia-relay  ~/IdeaProjects/uia-relay`. Clicking a recent
   project opens it (route `/project/<repo>`).
 * **Get from Version Control** (Welcome `Get from VCS` or `File › New › Project from Version Control…`; Cur M13 s3):
   modal `Get from Version Control`, left list `Repository URL` (selected), `GitHub`, `GitHub Enterprise`; fields
   `Version control: Git ▾`, `URL:` (text, paste from the in-game clipboard), `Directory:` auto-filled
   `~/IdeaProjects/<repo>` as soon as the URL parses; buttons `Clone` (disabled until valid) / `Cancel`. Accepted URLs:
   `git@github.com:labsim-lab/<repo>.git`, `https://github.com/labsim-lab/<repo>(.git)` with
-  `<repo>` ∈ `gort`, `uia-remote`, `pigeon`, `orchestrator`. Unknown repo → red text under the field
-  `Repository not found`; already cloned → `Directory '~/IdeaProjects/uia-remote' already exists and is not
+  `<repo>` ∈ `gorth`, `uia-relay`, `parrot`, `orchestrator`. Unknown repo → red text under the field
+  `Repository not found`; already cloned → `Directory '~/IdeaProjects/uia-relay' already exists and is not
   empty` with an `Open` link. Clone shows a progress line `Cloning source repository
-  git@github.com:labsim-lab/uia-remote.git…` (1.2 s) then `sim.git.clone(repo, 'player')`; the project opens,
-  the status bar shows `Indexing…` with a progress bar for 1.5 s and `Maven: Importing 'uia-remote'…` for
-  uia-remote (pom.xml). Emit `intellij.project.cloned` (with the URL as typed) and `intellij.project.opened`.
+  git@github.com:labsim-lab/uia-relay.git…` (1.2 s) then `sim.git.clone(repo, 'player')`; the project opens,
+  the status bar shows `Indexing…` with a progress bar for 1.5 s and `Maven: Importing 'uia-relay'…` for
+  uia-relay (pom.xml). Emit `intellij.project.cloned` (with the URL as typed) and `intellij.project.opened`.
 * **Code With Me** [illus.] (Sim §1.15, GP INC29): a toolbar icon (person with `+`) opens `Code With Me` popup
   `Join Session…` listing colleagues' shared projects found under `~/CodeWithMe/<person>/<repo>/` in
-  `lab.workstation.files` (`Alex — uia-remote`). Joining opens a project window titled `uia-remote [Alex] — Code With
-  Me` (route `/project/uia-remote` with `?cwm=alex` [illus.]) whose files are that folder; saves write with D6
-  `sim.host.writeFile('ws-17', '~/CodeWithMe/alex/uia-remote/<path>', text)`, runs pass
-  `{ configPath: '~/CodeWithMe/alex/uia-remote/config.properties' }` (D18). The config validator (§4.8) runs on that
+  `lab.workstation.files` (`Alex — uia-relay`). Joining opens a project window titled `uia-relay [Alex] — Code With
+  Me` (route `/project/uia-relay` with `?cwm=alex` [illus.]) whose files are that folder; saves write with D6
+  `sim.host.writeFile('ws-17', '~/CodeWithMe/alex/uia-relay/<path>', text)`, runs pass
+  `{ configPath: '~/CodeWithMe/alex/uia-relay/config.properties' }` (D18). The config validator (§4.8) runs on that
   file too. A blue banner `You are a guest in Alex's project` sits above the editor; git actions are disabled
   (`Version control is managed by the host`).
 * `File › Open…` → a folder picker over `~/IdeaProjects`; `File › Recent Projects` lists clones; opening a project
@@ -1018,7 +1018,7 @@ Tool windows (left: `Project` Alt+1, `Commit` Alt+0; bottom: `Run` Alt+4, `Termi
 
 ### 4.4 Project tool window (the trees of Sim §2.12)
 
-The tree is built from `local.files` paths. Root node `uia-remote  ~/IdeaProjects/uia-remote` (bold name, grey
+The tree is built from `local.files` paths. Root node `uia-relay  ~/IdeaProjects/uia-relay` (bold name, grey
 path). Folders sort before files, alphabetical, case-insensitive. Java source roots are marked by path:
 `app/src/main/java` (blue source root), `app/src/test/java` and `app/src/androidTest/java` (green test source roots);
 inside a source root **packages are shown compacted** (`com.labsim.uia`) with sub-packages as children (IntelliJ
@@ -1028,7 +1028,7 @@ inside a source root **packages are shown compacted** (`com.labsim.uia`) with su
 Expected factory trees (content comes from the sim seed; this list is what Cur/GP lessons click):
 
 ```
-gort                                   uia-remote                                   pigeon
+gorth                                   uia-relay                                   parrot
 ├─ cards                               ├─ app                                       ├─ runners
 │  ├─ emv  (visa_std_dip.json,         │  └─ src                                    │  ├─ android
 │  │        interac_ca_dip.json,       │     ├─ androidTest/java                    │  ├─ ios
@@ -1045,7 +1045,7 @@ gort                                   uia-remote                               
 │  └─ contact-canada (pin_sale.json)   │     │     ├─ testactions (HomeScreenTest,
 └─ README.md                           │     │     │   ReceiptScreenTest, SaleTest, TaxTest, TaxTestDuet,
                                        │     │     │   RefundTest, DuetCfdSuite, DuetCheckoutTest,
-                                       │     │     │   PrinterlessSmokeTest, PaycoreMatrixTest,
+                                       │     │     │   PrinterlessSmokeTest, PaycrestMatrixTest,
                                        │     │     │   ContactCanadaPinSaleTest)
                                        │     │     └─ BaseTest
                                        │     ├─ main/java/com.labsim.uia (AppRegistration)
@@ -1060,7 +1060,7 @@ gort                                   uia-remote                               
 | double-click / Enter on a file | open in the editor (preview tab replaced on single-click if `Enable Preview Tab` — off by default) ; emit `intellij.file.opened` |
 | arrows / `←`/`→` | collapse/expand; type-to-search highlights matching nodes (IntelliJ speed search) |
 | drag & drop a file onto a folder/package | opens the **Move** refactoring dialog (§4.7) |
-| context menu | `New ▸` (`Java Class`, `File`, `Directory`, `Package`), `Cut`/`Copy`/`Paste`, `Copy Path/Reference… ▸` (`Absolute Path`, `Path From Content Root`), `Find in Files…`, `Refactor ▸` (`Rename…`, `Move…`), `Delete…` (D5), `Run 'TaxTest'` on test classes / Pigeon JSON, `Git ▸` (`Add`, `Rollback…`, `Show History`), `Open In ▸ Terminal` |
+| context menu | `New ▸` (`Java Class`, `File`, `Directory`, `Package`), `Cut`/`Copy`/`Paste`, `Copy Path/Reference… ▸` (`Absolute Path`, `Path From Content Root`), `Find in Files…`, `Refactor ▸` (`Rename…`, `Move…`), `Delete…` (D5), `Run 'TaxTest'` on test classes / Parrot JSON, `Git ▸` (`Add`, `Rollback…`, `Show History`), `Open In ▸ Terminal` |
 
 ### 4.5 Editor
 
@@ -1084,11 +1084,11 @@ gort                                   uia-remote                               
   stripped). Cur M13 s6 ("click Zone 1, then Zone 2") and M15 s3 ("click `name`, `connectionType`, `platforms`,
   `actions`") are evaluated by missions from these payloads.
 * **Gutter:** line numbers; green ▶ run icons on `public class <X>Test` lines of `testactions` classes and on line 1
-  of Pigeon test JSONs (`tests/**` except `_templates`) → click = run that config (§4.9); hover shows `Run 'TaxTest'`.
+  of Parrot test JSONs (`tests/**` except `_templates`) → click = run that config (§4.9); hover shows `Run 'TaxTest'`.
 * **Find bar** (`Ctrl+F`): field + toggles `Cc` (match case), `W` (words), `.*` (regex), result `1/3`, `↑`/`↓`
   (`Shift+F3`/`F3`, also `Enter`/`Shift+Enter`), `✕`/`Esc` (consumed). `Ctrl+R` adds the replace row with
   `Replace`, `Replace All`. **Find in Files** (`Ctrl+Shift+F`): popup with query field and a results list
-  `TaxTestDuet.java 23  assertTrue(orca.screenCompare("CFD_TOTAL"));` — Enter opens at the line.
+  `TaxTestDuet.java 23  assertTrue(orka.screenCompare("CFD_TOTAL"));` — Enter opens at the line.
 * **Navigation:** `Ctrl+G` `Go to Line:Column` dialog; `Ctrl+Shift+N` Go to File popup; `Shift Shift` Search
   Everywhere (tabs `All`, `Classes`, `Files`, `Actions`); `Ctrl+E` Recent Files; `Ctrl+Alt+←/→` back/forward;
   `Ctrl+B`/`Ctrl+click` on a class name opens that class's file (by simple name within the project).
@@ -1100,9 +1100,9 @@ gort                                   uia-remote                               
 | File type | What is flagged | Messages |
 |---|---|---|
 | Java (all projects) | the Sim CF12 sanity rules: unbalanced `()[]{}` and a statement line missing its `;` (heuristic: inside a method body, a line ending in `)`, an identifier or a literal, followed by a line that starts a new statement). MUST report **zero** problems on every factory file. | `'}' expected`, `')' expected`, `';' expected` |
-| JSON in **gort** / orchestrator | strict JSON parse errors at the offending token | IntelliJ wording: `',' or '}' expected`, `',' or ']' expected`, `Property name expected`, `Value expected`, `Missing closing quote` |
-| JSON in **pigeon** | **nothing** — the pigeon project disables JSON inspections and error highlighting (legacy project settings, Cur §7, M15 s6). The editor's inspection widget shows a grey eye with tooltip `Highlighting level: None (pigeon/.idea/inspectionProfiles)` [illus.]; the Problems window shows `Inspections are disabled for this project` [illus.] instead of a problem list — a missing comma is only discovered at run time (`LSTR ParseError: …`, Sim §3.20.1) | — |
-| `config.properties` (uia-remote) | the config validator (§4.8) | per key |
+| JSON in **gorth** / orchestrator | strict JSON parse errors at the offending token | IntelliJ wording: `',' or '}' expected`, `',' or ']' expected`, `Property name expected`, `Value expected`, `Missing closing quote` |
+| JSON in **parrot** | **nothing** — the parrot project disables JSON inspections and error highlighting (legacy project settings, Cur §7, M15 s6). The editor's inspection widget shows a grey eye with tooltip `Highlighting level: None (parrot/.idea/inspectionProfiles)` [illus.]; the Problems window shows `Inspections are disabled for this project` [illus.] instead of a problem list — a missing comma is only discovered at run time (`LSTR ParseError: …`, Sim §3.20.1) | — |
+| `config.properties` (uia-relay) | the config validator (§4.8) | per key |
 | others | none | |
 
 Problems tool window (Alt+6): tabs `File` and `Project Errors`; rows `❗ ';' expected :23` grouped by file; click
@@ -1140,20 +1140,20 @@ navigates. Counts show in the editor's top-right chip (`❗ 1`), green `✓` whe
   `Screen class is missing mandatory method isScreenPresent()` [illus.] that the intention fixes. Emit
   `intellij.intention.applied` (Cur M13 s9).
 
-### 4.8 `config.properties` validator [illus., "uia-remote Config Assistant" plugin]
+### 4.8 `config.properties` validator [illus., "uia-relay Config Assistant" plugin]
 
-Shown as an editor notification bar at the top of `uia-remote/config.properties` (and of `config.properties.example`
+Shown as an editor notification bar at the top of `uia-relay/config.properties` (and of `config.properties.example`
 when no `config.properties` exists: `config.properties not found — copy config.properties.example` with link
 `Create config.properties from example` → `writeFile`). The bar reads exactly **`config.properties ✓ 11/11`** (green
 check) when valid, otherwise `config.properties ✗ 8/11` (amber) with `Show details ⌄` expanding one row per key:
 `✓ runType = tethered`, `✗ portNumber = 5555 — must be 5444: lab devices listen on 5444; 5555 is the ADB default`.
 It re-runs on every save and when the file is opened, and emits `intellij.configValidator.ran { passed, total,
-failures[] }`. Rules (Cur M14 validator target, Sim §3.19.1; `R` = Orca robot named by `robotName`, its
-MFD/CFD/Robot Device rows from `lab.orca`): D8 replaces this when the sim provides it.
+failures[] }`. Rules (Cur M14 validator target, Sim §3.19.1; `R` = Orka robot named by `robotName`, its
+MFD/CFD/Robot Device rows from `lab.orka`): D8 replaces this when the sim provides it.
 
 | # | Key | Valid when | Failure text (after `— `) |
 |---|---|---|---|
-| 1 | `robotName` | an Orca robot with that exact Name exists | `no robot named 'X' in Orca` |
+| 1 | `robotName` | an Orka robot with that exact Name exists | `no robot named 'X' in Orka` |
 | 2 | `runType` | `tethered` if R's MFD is populated or R's device is a Stand Duet, else `standalone` | `must be "tethered" for megatron (MFD populated)` / `must be "standalone"` |
 | 3 | `merchantFacingDeviceIp` | MFD device IP (standalone: Robot Device IP) | `expected 10.42.30.21 (megatron-mfd)` |
 | 4 | `customerFacingDeviceIp` | CFD device IP; Duet: **equal to the MFD IP**; standalone: empty or equal to the MFD | `On a Stand Duet both IPs are the same address (10.42.30.14)` / `expected 10.42.30.22 (megatron-cfd)` |
@@ -1167,10 +1167,10 @@ MFD/CFD/Robot Device rows from `lab.orca`): D8 replaces this when the sim provid
 
 ### 4.9 Run configurations and the Run tool window
 
-* **Configurations** (combo in the nav bar, `Run › Edit Configurations…` lists them read-only): uia-remote — one
+* **Configurations** (combo in the nav bar, `Run › Edit Configurations…` lists them read-only): uia-relay — one
   JUnit configuration per class in `…/testactions/` (`HomeScreenTest`, `ReceiptScreenTest`, `SaleTest`, `TaxTest`,
-  `TaxTestDuet`, `RefundTest`, `DuetCfdSuite`, `DuetCheckoutTest`, `PrinterlessSmokeTest`, `PaycoreMatrixTest`,
-  `ContactCanadaPinSaleTest`, plus classes the player adds); pigeon — `LSTR: <file>` for every `tests/**/*.json`
+  `TaxTestDuet`, `RefundTest`, `DuetCfdSuite`, `DuetCheckoutTest`, `PrinterlessSmokeTest`, `PaycrestMatrixTest`,
+  `ContactCanadaPinSaleTest`, plus classes the player adds); parrot — `LSTR: <file>` for every `tests/**/*.json`
   outside `_templates`. The last run configuration is selected.
 * **Run** (`▶`, `Shift+F10`, gutter ▶, `Run › Run '<cfg>'`): autosave (§4.5) → `sim.runner.runLocal(repo,
   testPath, 'player')` (`testPath` = repo-relative path of the class or JSON file) → opens/focuses the bottom **Run**
@@ -1182,7 +1182,7 @@ MFD/CFD/Robot Device rows from `lab.orca`): D8 replaces this when the sim provid
   3 ms` / grey `Tests stopped`; test tree `Test Results › TaxTest › testTax` [illus. method names: `test` + class name
   without `Test`] with ✓/✗/⊘ icons and durations. Right: the console — first line grey: `/usr/lib/jvm/java-17-openjdk/
   bin/java -ea -Didea.test.cyclic.buffer.size=1048576 … com.intellij.rt.junit.JUnitStarter -ideVersion5 -junit4
-  com.labsim.uia.testactions.TaxTest` (pigeon: `… LstrRunner --platform ANDROID tests/sale/swipe_sale_print.json`
+  com.labsim.uia.testactions.TaxTest` (parrot: `… LstrRunner --platform ANDROID tests/sale/swipe_sale_print.json`
   [illus.]), then `sim.runner.output(runId).lines` **verbatim** (Sim §3.19.2–§3.19.5, §3.20), streamed. Colour: lines
   containing `Exception`, `Error:`, `AssertionError`, `FAILED`, `ParseError` red `#FF6B68`; `PASSED` / `✓` green
   `#5FB15F`; stack frames `at com.labsim.uia.pageobjects.RegisterHomeScreen.reviewOrder(RegisterHomeScreen.java:21)`
@@ -1198,7 +1198,7 @@ MFD/CFD/Robot Device rows from `lab.orca`): D8 replaces this when the sim provid
 | Branch widget | status bar `⎇ Git: main` (+ `↑1` when `ahead > 0`, `↓2` when `behind > 0`); click or `Ctrl+Shift+\`` opens the **Branches** popup: search field, `+ New Branch…`, `Checkout Tag or Revision…` (disabled), sections `Local` (current marked ★ / tag icon) and `Remote` (`origin/main`, `origin/fix/…`). Branch → submenu `Checkout`, `New Branch from '<b>'…`, `Show Diff with Working Tree` (opens the diff of that branch vs working tree), `Delete` (disabled for current). | `checkout(repo, b, false)` / `checkout(repo, name, true)`; emit `intellij.git.branchCheckedOut` |
 | New Branch | dialog `Create New Branch`, `New branch name:`, `☑ Checkout branch`, `☐ Overwrite existing branch`; invalid names → `Branch name ... is not valid` | `checkout(repo, name, true)` |
 | Commit (`Ctrl+K`, toolbar ✓, Commit tool window Alt+0) | tree `Changes` (modified/added files from `local.dirty` with checkboxes, VCS colours) and `Unversioned Files`; double-click → diff tab `HEAD (Read-only)` ↔ `Your version`; message box placeholder `Commit Message`; buttons `Commit` and `Commit and Push…`; gear: `☐ Amend` (disabled [sim]). Empty message → inline `Specify commit message`; nothing selected → `Select files to commit`. | `stage(repo, paths)` then `commit(repo, msg, 'player')`; balloon `1 file committed: <message>`; emit `intellij.git.committed` |
-| Push (`Ctrl+Shift+K`, toolbar ↗) | dialog `Push Commits to uia-remote`: left `main → origin : main` (new remote branch shown `origin : fix/flux4-receipt-qr` + green `New`), right the commits list (`7a20f5b Fix waitForScreen…  engineer  10/5/2026, 9:41 AM`) and their files; `Push` / `Cancel`. | `push(repo)`; success balloon `Pushed 1 commit to origin/main` or `Pushed fix/flux4-receipt-qr to new branch origin/fix/flux4-receipt-qr` with link **`Create Pull Request`** (opens GitHub on `/labsim-lab/<repo>/compare/main...<branch>`); rejection balloon (red) `Push rejected` + body = the sim error (`! [remote rejected] main -> main (protected branch hook declined)`); emit `intellij.git.pushed { ok, error? }` |
+| Push (`Ctrl+Shift+K`, toolbar ↗) | dialog `Push Commits to uia-relay`: left `main → origin : main` (new remote branch shown `origin : fix/flux4-receipt-qr` + green `New`), right the commits list (`7a20f5b Fix waitForScreen…  engineer  10/5/2026, 9:41 AM`) and their files; `Push` / `Cancel`. | `push(repo)`; success balloon `Pushed 1 commit to origin/main` or `Pushed fix/flux4-receipt-qr to new branch origin/fix/flux4-receipt-qr` with link **`Create Pull Request`** (opens GitHub on `/labsim-lab/<repo>/compare/main...<branch>`); rejection balloon (red) `Push rejected` + body = the sim error (`! [remote rejected] main -> main (protected branch hook declined)`); emit `intellij.git.pushed { ok, error? }` |
 | Pull / Update (`Git › Pull…`, toolbar ↙ `Update Project…`) | dialog `Update Project` (radio `Merge incoming changes into the current branch` / `Rebase`) or `Pull to main` | `pull(repo)`; balloon `1 file updated in 1 commit` / `All files are up-to-date`; emit `intellij.git.pulled` |
 | Rollback | Commit window toolbar `↶` on selected files → confirm `Rollback Changes` | D5 (writeFile with HEAD contents) |
 | Git tool window (Alt+9) | `Log` tab: commit list (graph dot, message, author, date) of the current branch; selecting a commit shows its changed files; double-click a file → diff vs parent | read-only, from `repos[r].commits` |
@@ -1269,11 +1269,11 @@ catalogue in §5.4 is the contract the sim implements.
 
 | Where | Prompt |
 |---|---|
-| workstation | `engineer@ws-17:~$ ` (`~/IdeaProjects/uia-remote` → `engineer@ws-17:~/IdeaProjects/uia-remote$ `) |
+| workstation | `engineer@ws-17:~$ ` (`~/IdeaProjects/uia-relay` → `engineer@ws-17:~/IdeaProjects/uia-relay$ `) |
 | Robot Pi (ssh `pi@10.42.10.11`) | `pi@wall-e:~ $ ` (Raspberry Pi OS default with the space before `$`) |
 | Windows/Minix box (ssh `automation@10.42.20.1`, OpenSSH → cmd) | `automation@MINIX-01 C:\Users\automation>` |
 | PowerShell inside it (`powershell`) | `PS C:\Users\automation> ` |
-| VMs (ssh `automation@orca.lab.local`, `…@10.42.1.11`, `…@10.42.1.12`) | `automation@orca:~$ `, `automation@jenkins:~$ `, `automation@ollama:~$ ` |
+| VMs (ssh `automation@orka.lab.local`, `…@10.42.1.11`, `…@10.42.1.12`) | `automation@orka:~$ `, `automation@jenkins:~$ `, `automation@ollama:~$ ` |
 
 ### 5.4 Command catalogue (implemented by the sim; outputs exact where quoted)
 
@@ -1291,10 +1291,10 @@ privileged command without `sudo` prints `Failed to restart <svc>.service: Inter
 | `clear`, `pwd`, `cd [dir\|~\|..\|-]`, `ls [-l\|-a\|-la\|-h] [path]`, `cat`, `less`/`more` (=cat), `head`/`tail [-n N] [-f]`, `echo`, `whoami` (`engineer`), `hostname` (`ws-17`), `hostname -I` (`10.42.50.17`), `date` (`Mon Oct  5 09:41:07 EDT 2026`), `history`, `which`, `uname -a`, `exit` | standard GNU output over the workstation file system (`~/IdeaProjects/<repo>/…` clones, `~/Pictures`, `~/Downloads`, `~/Desktop`) | M12, M16 |
 | `grep [-o\|-c\|-i\|-n\|-v\|-E\|-r] PATTERN [files]` (also on piped input), `wc -l`, `sort`, `uniq` | GNU semantics; `grep -c "TOTAL" window_dump.xml` → `0` on the Duet dump; `grep -o 'text="Register"[^>]*' window_dump.xml` → `text="Register" resource-id="…" class="android.widget.TextView" … bounds="[96,412][288,604]"` | M12 s5, M16 s4, INC64 |
 | `ping [-c N] host` | iputils format: `PING 10.42.10.11 (10.42.10.11) 56(84) bytes of data.` / `64 bytes from 10.42.10.11: icmp_seq=1 ttl=64 time=1.84 ms` … / `--- 10.42.10.11 ping statistics ---` / `3 packets transmitted, 3 received, 0% packet loss, time 2003ms` / `rtt min/avg/max/mdev = …`; unreachable → `From 10.42.50.17 icmp_seq=1 Destination Host Unreachable` and `3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 2034ms` (GP INC01 quotes the `0 received, 100% packet loss` part); without `-c` it streams until `Ctrl+C` | INC01–04 |
-| `curl [-i] [-s] [-v] [-X M] [-H h] [-d body] [-o /dev/null] [-w "%{http_code}"] URL` | every REST surface of Sim §3.23: Orca (`/api/xy_touch`, `/api/card/*`, `/api/robots…`, `/management/health`), Pi `:8000/health` (`HTTP/1.1 200 OK` + `{"status":"ok","robot":"wall-e"}`), `/status`, Callus `:9000/status`, Ollama `/api/tags` / `/api/generate`, Jenkins JSON. `-i` prints the status line + headers (`Content-Type: application/json`, `Content-Length`, `Date`). Errors: `curl: (7) Failed to connect to 10.42.1.12 port 11434: Connection refused` (GP INC10), `curl: (28) Connection timed out after 10001 milliseconds`, `curl: (6) Could not resolve host: <h>`. | M05 s11, M09 s3–4, M10 s11, INC02, INC05, INC06, INC10, INC18, INC53, INC60, INC64 |
+| `curl [-i] [-s] [-v] [-X M] [-H h] [-d body] [-o /dev/null] [-w "%{http_code}"] URL` | every REST surface of Sim §3.23: Orka (`/api/xy_touch`, `/api/card/*`, `/api/robots…`, `/management/health`), Pi `:8000/health` (`HTTP/1.1 200 OK` + `{"status":"ok","robot":"wall-e"}`), `/status`, Kallus `:9000/status`, Ollama `/api/tags` / `/api/generate`, Jenkins JSON. `-i` prints the status line + headers (`Content-Type: application/json`, `Content-Length`, `Date`). Errors: `curl: (7) Failed to connect to 10.42.1.12 port 11434: Connection refused` (GP INC10), `curl: (28) Connection timed out after 10001 milliseconds`, `curl: (6) Could not resolve host: <h>`. | M05 s11, M09 s3–4, M10 s11, INC02, INC05, INC06, INC10, INC18, INC53, INC60, INC64 |
 | `ssh [user@]host` | key auth (Sim §2.5.1) → Pi banner `Linux wall-e 6.6.31-v8+ #1 SMP PREEMPT Debian 1:6.6.31-1+rpt1 (2024-05-29) aarch64` + Debian notice + `Last login: Mon Oct  5 07:58:12 2026 from 10.42.50.17`; Academy shows `pi@10.42.10.11's password:` auto-filled first (Cur M05 s7); errors `ssh: connect to host 10.42.10.11 port 22: Connection timed out` (GP INC01), `… Connection refused`, `ssh: Could not resolve hostname x: Name or service not known`, wrong user `engineer@10.42.10.11: Permission denied (publickey).` | M05, M10 s10, INC01, INC02-C, INC08, INC10, INC19, INC28, INC54, INC56, INC60 |
 | `adb …` | exactly Sim §3.15.1: `connect` (port defaults to 5555 → `failed to connect to '10.42.30.32:5555': Connection refused`), `devices` (`List of devices attached` + `10.42.30.32:5444\tdevice`), `disconnect`, `kill-server`, `start-server`, `version`, `-s <t> shell uiautomator dump` (`UI hierchary dumped to: /sdcard/window_dump.xml`), `-s <t> pull /sdcard/window_dump.xml` (`/sdcard/window_dump.xml: 1 file pulled. 0.4 MB/s (7351 bytes in 0.017s)`), `-s <t> shell input tap x y`, `… input swipe …`, `… input keyevent KEYCODE_HOME`, `… input text 0000`, `-s <t> exec-out screencap -p > x.png` (creates `~/x.png` → image ref, §1.6), `-s <t> shell getprop ro.product.model` / `ro.serialno`, `-s <t> logcat -d` (and streaming `logcat`), `-s <serial> tcpip 5444` (`restarting in TCP mode port: 5444`). Server start lines `* daemon not running; starting now at tcp:5037` / `* daemon started successfully`. `adb shell …` with several devices → `adb: more than one device/emulator`; none → `adb: no devices/emulators found`. | M12, M16 s4, INC24, INC27, INC28, INC35, INC42, INC64, DR19 |
-| `git …` (inside a clone) | Sim §3.22.1: `clone <url>` (`Cloning into 'uia-remote'...` + `Receiving objects: 100% (412/412), done.`), `status` (`On branch main` / `Your branch is up to date with 'origin/main'.` / `Changes not staged for commit:` …), `log [-1] [--stat] [--oneline] [-n N]`, `show <sha>`, `diff [HEAD~1] [--stat] [path]` (unified diff), `checkout [-b] <b>` / `switch [-c] <b>`, `branch [-a]`, `add <paths\|.>`, `restore <path>`, `commit -m "<msg>"`, `push [-u origin <b>]` (protected-branch rejection `! [remote rejected] main -> main (protected branch hook declined)`), `pull`, `revert <sha>` | INC25, INC23, INC38 |
+| `git …` (inside a clone) | Sim §3.22.1: `clone <url>` (`Cloning into 'uia-relay'...` + `Receiving objects: 100% (412/412), done.`), `status` (`On branch main` / `Your branch is up to date with 'origin/main'.` / `Changes not staged for commit:` …), `log [-1] [--stat] [--oneline] [-n N]`, `show <sha>`, `diff [HEAD~1] [--stat] [path]` (unified diff), `checkout [-b] <b>` / `switch [-c] <b>`, `branch [-a]`, `add <paths\|.>`, `restore <path>`, `commit -m "<msg>"`, `push [-u origin <b>]` (protected-branch rejection `! [remote rejected] main -> main (protected branch hook declined)`), `pull`, `revert <sha>` | INC25, INC23, INC38 |
 | `nano <file>` / `sudo nano <file>` | opens the nano editor UI (§5.5) on a workstation or remote file | INC19 |
 | `tesseract <image> stdout [--psm 7]` [illus.] | OCR of the whole image via the sim's Tesseract model (Sim §3.12.2) — prints the text lines | — |
 | `OLLAMA_HOST=10.42.1.12:11434 ollama list` / `ollama run llava "<prompt>" <image>` [illus.] | `NAME            ID              SIZE      MODIFIED` / `llava:latest    8dd30f6b0cb1    4.7 GB    3 weeks ago`; `run` streams the sim's response after ~6 s (Sim §3.21.2) | — |
@@ -1322,21 +1322,21 @@ privileged command without `sudo` prints `Failed to restart <svc>.service: Inter
 | Command | Output / behaviour | Req. |
 |---|---|---|
 | (login) | `Microsoft Windows [Version 10.0.19044.5011]` / `(c) Microsoft Corporation. All rights reserved.` [illus. build] | M10 s10 |
-| `hostname`, `ipconfig`, `cd`, `dir [path]`, `type <file>`, `ping -n N host`, `curl …` | `dir C:\gort\cards\emv` lists `10/04/2026  10:00 AM               412 visa_std_dip.json` (Sim §3.14.6) | M10 s10, INC53, INC54 |
-| `sc query Callus`, `sc start Callus`, `sc stop Callus` | Sim §3.14.2 exact (`STATE              : 4  RUNNING`, `1  STOPPED`, `2  START_PENDING`) | INC02-C |
-| `schtasks /query /tn GortCardSync`, `schtasks /run /tn GortCardSync` | Sim §3.14.6 exact table and `SUCCESS: Attempted to run the scheduled task "GortCardSync".` | M10 s10, INC54 |
-| `powershell` → `Get-PSDrive C`, `Get-Service Callus`, `Get-ChildItem <path>`, `exit` | `Name           Used (GB)     Free (GB) Provider      Root` / `C                  237.9          0.00 FileSystem    C:\` (Sim §3.14.3) | INC19 |
+| `hostname`, `ipconfig`, `cd`, `dir [path]`, `type <file>`, `ping -n N host`, `curl …` | `dir C:\gorth\cards\emv` lists `10/04/2026  10:00 AM               412 visa_std_dip.json` (Sim §3.14.6) | M10 s10, INC53, INC54 |
+| `sc query Kallus`, `sc start Kallus`, `sc stop Kallus` | Sim §3.14.2 exact (`STATE              : 4  RUNNING`, `1  STOPPED`, `2  START_PENDING`) | INC02-C |
+| `schtasks /query /tn GorthCardSync`, `schtasks /run /tn GorthCardSync` | Sim §3.14.6 exact table and `SUCCESS: Attempted to run the scheduled task "GorthCardSync".` | M10 s10, INC54 |
+| `powershell` → `Get-PSDrive C`, `Get-Service Kallus`, `Get-ChildItem <path>`, `exit` | `Name           Used (GB)     Free (GB) Provider      Root` / `C                  237.9          0.00 FileSystem    C:\` (Sim §3.14.3) | INC19 |
 | `del C:\Windows\Temp\*` / `rmdir /s /q C:\Windows\Temp` | frees 2.0 GB on NUC-03 (`host.cleanDisk`) | INC19 (wrong-but-tempting) |
 | `sc stop SecAgent`, deleting `C:\ProgramData\SecAgent\logs` | `[SC] OpenService FAILED 5:` / `Access is denied.` — recorded as `host.securityTamper` (GW11) | INC19 trap |
 | `exit` | `Connection to 10.42.20.1 closed.` | all |
 
-**VMs (`automation@orca`, `@jenkins`, `@ollama`, Ubuntu 22.04)**
+**VMs (`automation@orka`, `@jenkins`, `@ollama`, Ubuntu 22.04)**
 
 | Command | Output / behaviour | Req. |
 |---|---|---|
-| `systemctl status <orca\|mysql\|jenkins\|ollama>` | `Active: inactive (dead)` when stopped (Sim §3.14.4–5) | INC10, INC60 |
-| `sudo systemctl start\|restart <svc>` | silent; readiness per Sim §2.5.2 (mysql 5 s + Orca pool 15 s) | INC10, INC60 |
-| `journalctl -u <svc> -n N`, `df -h`, `uptime`, `cat /opt/orca/application-prod.yml`, `curl -s localhost:8080/management/health`, `ollama list` (on ollama-vm) | Sim strings | — |
+| `systemctl status <orka\|mysql\|jenkins\|ollama>` | `Active: inactive (dead)` when stopped (Sim §3.14.4–5) | INC10, INC60 |
+| `sudo systemctl start\|restart <svc>` | silent; readiness per Sim §2.5.2 (mysql 5 s + Orka pool 15 s) | INC10, INC60 |
+| `journalctl -u <svc> -n N`, `df -h`, `uptime`, `cat /opt/orka/application-prod.yml`, `curl -s localhost:8080/management/health`, `ollama list` (on ollama-vm) | Sim strings | — |
 
 ### 5.5 `nano` (GNU nano 7.2) — handled by the terminal UI
 
@@ -1400,10 +1400,10 @@ Functional tools (others in the toolbox are drawn but clicking them shows the st
 | **Measure** (`Shift+M`) | drag a line; status bar shows `Distance: 236.0 pixels, Angle: 0.00°, 236 × 0 pixels` | `Orientation: Auto`, `☐ Use info window` |
 | **Color Picker** (`O`) | click shows `R 255 G 255 B 255` / hex in Tool Options | `Sample average` |
 
-**Copy selection as Pigeon JSON** [illus., the team's Script-Fu]: `Filters › Script-Fu › Lab › Copy selection as
-Pigeon JSON` and the canvas context menu entry of the same name copy `"x": 412, "y": 288, "w": 236, "h": 44` to the
+**Copy selection as Parrot JSON** [illus., the team's Script-Fu]: `Filters › Script-Fu › Lab › Copy selection as
+Parrot JSON` and the canvas context menu entry of the same name copy `"x": 412, "y": 288, "w": 236, "h": 44` to the
 clipboard (§1.6) with the status message `Copied selection bounds: x 412, y 288, w 236, h 44`. Emit
-`gimp.selection.copied { x, y, w, h, format: 'pigeon-json' }` (copying a single Position/Size field emits it with
+`gimp.selection.copied { x, y, w, h, format: 'parrot-json' }` (copying a single Position/Size field emits it with
 `format: 'field'`).
 
 Whenever a selection is committed or changed (mouse-up, field edit, arrow nudge), debounce 300 ms and emit
@@ -1443,7 +1443,7 @@ in-progress selection or closes menus/dialogs (consumed); otherwise not consumed
 
 ## 7. GitHub (`https://github.com/labsim-lab`)
 
-The team's repositories (Ref §1: Gort, uia-remote, pigeon; Sim §2.12 adds orchestrator). GitHub's Primer UI in
+The team's repositories (Ref §1: Gorth, uia-relay, parrot; Sim §2.12 adds orchestrator). GitHub's Primer UI in
 **light** mode, 2024 layout. All data from `lab.repos` (Sim §1.11); every write goes through `sim.git.*` (D5).
 
 ### 7.1 Look and feel (Primer)
@@ -1452,7 +1452,7 @@ The team's repositories (Ref §1: Gort, uia-remote, pigeon; Sim §2.12 adds orch
 |---|---|
 | Fonts | `-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif` 14 px; code `ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace` 12 px |
 | Colours | fg `#1f2328`, muted `#59636e`, canvas `#ffffff`, subtle `#f6f8fa`, borders `#d1d9e0`, accent `#0969da`, success `#1f883d` (buttons `#1f883d`, hover `#1c8139`), open `#1a7f37`, merged `#8250df`, closed `#d1242f`, attention `#9a6700` |
-| Header | 64 px `#f6f8fa` with bottom border: simplified cat-mark 32 px (black), breadcrumb `labsim-lab / uia-remote` (bold repo), search pill `Type / to search`, icons (Copilot-less), `+▾`, notifications, avatar (player initials). Repo pages add the tab bar under it: `<> Code`, `⊙ Issues 0`, `⇄ Pull requests 2`, `▶ Actions`, `⊞ Projects`, `🛡 Security`, `📈 Insights` (only Code / Issues / Pull requests are functional; the others show GitHub's empty states: Actions `Get started with GitHub Actions` (decor), Projects `Welcome to Projects` … with no CTA function) |
+| Header | 64 px `#f6f8fa` with bottom border: simplified cat-mark 32 px (black), breadcrumb `labsim-lab / uia-relay` (bold repo), search pill `Type / to search`, icons (Copilot-less), `+▾`, notifications, avatar (player initials). Repo pages add the tab bar under it: `<> Code`, `⊙ Issues 0`, `⇄ Pull requests 2`, `▶ Actions`, `⊞ Projects`, `🛡 Security`, `📈 Insights` (only Code / Issues / Pull requests are functional; the others show GitHub's empty states: Actions `Get started with GitHub Actions` (decor), Projects `Welcome to Projects` … with no CTA function) |
 | Syntax (light) | keywords `#cf222e`, strings `#0a3069`, comments `#59636e`, entity/function names `#8250df`, constants/numbers `#0550ae`, JSON keys `#0550ae`, tags `#116329` |
 | Diff | additions `#dafbe1` (line-number cells `#aceebb`, `+` `#1a7f37`), deletions `#ffebe9` (`#ffcecb`), hunk header `#ddf4ff` with `@@ -12,7 +12,7 @@` in `#59636e` |
 | Avatars | 20/32 px circles: team members' colours from `team.ts`, initials white; `jenkins-ci` a grey robot glyph |
@@ -1469,16 +1469,16 @@ The team's repositories (Ref §1: Gort, uia-remote, pigeon; Sim §2.12 adds orch
   it, relative time). Below: rendered `README.md` (markdown subset: headings, lists, code, links, tables). Right
   sidebar **About**: description, `📖 Readme`, `Activity`, `☆ 0 stars`, `👁 4 watching`, `⑂ 0 forks`.
 * **Code ▾ popover** (Cur M13 s2): tabs `Local` | `Codespaces` (disabled); under `Local`: `Clone` with sub-tabs
-  `HTTPS` | `SSH` | `GitHub CLI`, a read-only field with the URL (`https://github.com/labsim-lab/uia-remote.git`
-  / **`git@github.com:labsim-lab/uia-remote.git`** (Sim §2.12 remote) / `gh repo clone
-  labsim-lab/uia-remote`) and a copy button (`⧉` → `✓ Copied!` 2 s) → `wm.clipboard.write` and emit
+  `HTTPS` | `SSH` | `GitHub CLI`, a read-only field with the URL (`https://github.com/labsim-lab/uia-relay.git`
+  / **`git@github.com:labsim-lab/uia-relay.git`** (Sim §2.12 remote) / `gh repo clone
+  labsim-lab/uia-relay`) and a copy button (`⧉` → `✓ Copied!` 2 s) → `wm.clipboard.write` and emit
   `github.cloneUrl.copied { repo, protocol, url }`; links `Open with GitHub Desktop` (disabled), `Download ZIP`
   (disabled). The SSH tab is preselected [illus. team habit].
 * **Tree** (`/tree/<branch>/<path>`) and **blob** (`/blob/<branch>/<path>`): breadcrumb path with copy-path button; file
   header `Code | Blame` toggle (Blame shows per-line last commit [sim: per-file last commit]), `26 lines (22 loc) ·
   812 Bytes`, `Raw`, `⧉` copy, `⤓` download (disabled), `✎` edit (§7.6), `⋯`. Code view: line numbers (click →
   `#L12` highlight `#fff8c5`, shift-click range), syntax highlighting, wrap toggle. Opening a blob emits
-  `github.file.viewed` (Cur M10 s9 "Navigate gort → cards/emv/visa_std_dip.json"); trees emit `github.tree.viewed`.
+  `github.file.viewed` (Cur M10 s9 "Navigate gorth → cards/emv/visa_std_dip.json"); trees emit `github.tree.viewed`.
 * Branch contents: `files` of the default branch head are `repo.files`; any other ref is reconstructed by replaying
   `commits` from the root to the branch head (`changes` path→contents, `null` = delete), memoised per sha.
   Branch names may contain `/` — the router resolves `/tree/<rest>` by the longest existing branch prefix.
@@ -1491,7 +1491,7 @@ The team's repositories (Ref §1: Gort, uia-remote, pigeon; Sim §2.12 adds orch
   file with 13 additions and 0 deletions` + `Split | Unified` toggle, then per-file diffs (computed: parent tree vs
   commit tree; unified diff with 3 context lines). Emit `github.commit.viewed` (GP INC23 "the commit diff shows
   the removed line", INC25).
-* **Branches** (`/branches`): sections `Default` (`main` with `🛡 Protected` label on `gort` and `orchestrator` — tooltip
+* **Branches** (`/branches`): sections `Default` (`main` with `🛡 Protected` label on `gorth` and `orchestrator` — tooltip
   `Branch protection rule: Require a pull request before merging · Require approvals (1)`), `Your branches`, `Active
   branches`; columns branch, updated, check status, behind|ahead bars, PR link. `New branch` button → dialog
   `Create a branch` (`New branch name`, `Source` `main ▾`) → D5 `github.createBranch` (fallback through the local
@@ -1501,28 +1501,28 @@ The team's repositories (Ref §1: Gort, uia-remote, pigeon; Sim §2.12 adds orch
 
 * **List** (`/pulls`): filter bar `is:pr is:open` + `Labels`, `Milestones`, green `New pull request`; header
   `⊙ 1 Open  ✓ 3 Closed`; rows: state icon (open green / merged purple / closed red / draft grey), title (bold link),
-  labels, `#418 opened 3 days ago by jared` / `• Approved` / `• Changes requested` / `• Review required`, comment
+  labels, `#418 opened 3 days ago by jaden` / `• Approved` / `• Changes requested` / `• Review required`, comment
   count. Sim fields: `state`, `verdict`, `comments`, `reviewers`, `approvals`, `createdMs`.
 * **Compare** (`/compare/<base>...<head>`): `Comparing changes` with `base: main ▾` ← `compare: fix/… ▾`, mergeability
   `✓ Able to merge. These branches can be automatically merged.`, green `Create pull request` → the form: title
   (prefilled with the last commit message), description textarea (`Write` | `Preview`), right sidebar **Reviewers**
-  (gear menu; the repo owner from Sim §3.22.2 — `jared` for gort, `morgan` for uia-remote/pigeon, `tate` for
+  (gear menu; the repo owner from Sim §3.22.2 — `jaden` for gorth, `morgan` for uia-relay/parrot, `nate` for
   orchestrator — is pre-selected and labelled `(code owner)` [illus.]), `Assignees`, `Labels`; button `Create pull
   request ▾` (`Create draft pull request` disabled). Submit → `sim.git.createPullRequest(repo, title, body, head,
   'player')` → navigate to `/pull/<n>`; emit `github.pr.created` (Cur M09 s12 title `Add 5-option receipt
   coordinates for FLUX_4`, branch `fix/flux4-receipt-qr`).
 * **PR view** (`/pull/<n>`, tabs `Conversation`, `Commits`, `Checks`, `Files changed +N −M`): title + `#418`, state badge
-  (`Open` green / `Merged` purple / `Closed` red), `jared wants to merge 1 commit into main from fix/…`.
-  *Conversation*: description card, timeline events in order (commits pushed, `requested a review from jared`,
-  review events `jared approved these changes` with green check / `morgan requested changes` with red `±` and the
+  (`Open` green / `Merged` purple / `Closed` red), `jaden wants to merge 1 commit into main from fix/…`.
+  *Conversation*: description card, timeline events in order (commits pushed, `requested a review from jaden`,
+  review events `jaden approved these changes` with green check / `morgan requested changes` with red `±` and the
   review body + line comments shown with their diff hunk, comments, `merged commit c41d9e2 into main`, `deleted the
   fix/… branch`), then the **merge box**: checks summary (`All checks have passed — 1 successful check` /
   `Some checks haven't completed yet` amber / failure red) from `pr.checks` (`Jenkins / pr-build`), review summary
   (`Changes approved` / `Changes requested` / `Review required — At least 1 approving review is required by
-  reviewers with write access.`), and the merge button: protected repos (gort, orchestrator) without approval →
+  reviewers with write access.`), and the merge button: protected repos (gorth, orchestrator) without approval →
   `Merging is blocked` + disabled button; approved → enabled `Merge pull request ▾` (`Create a merge commit`, `Squash
   and merge`, `Rebase and merge`) → `Confirm merge` → `sim.git.mergePullRequest(repo, n, 'player')` (emit `github.pr.merged`); unprotected repos
-  (uia-remote, pigeon) allow merging without approval but show `Merge without waiting for requirements to be met`
+  (uia-relay, parrot) allow merging without approval but show `Merge without waiting for requirements to be met`
   unchecked/disabled-styled text [illus. team practice]. Merged/closed PRs show the purple `Pull request successfully
   merged and closed` box. Bottom: comment box (`Write`/`Preview`, `Comment` button → `pr.comments` via D5; emit `github.pr.commented`).
   Opening the PR or switching tabs emits `github.pr.viewed`.
@@ -1537,10 +1537,10 @@ The team's repositories (Ref §1: Gort, uia-remote, pigeon; Sim §2.12 adds orch
   and radios `Comment` / `Approve` / `Request changes` (`Approve`/`Request changes` disabled on your own PR:
   `Pull request authors can't approve their own pull request`) → `Submit review`. Approve → D5
   `reviewPullRequest` (fallback `sim.git.approvePullRequest`); Request changes / Comment → D5 (fallback: emit only).
-  Emit `github.pr.reviewSubmitted { repo, number, verdict, body, comments[] }` (Cur M15 s11 approve `gort#418`,
-  Cur M17 s8 request changes on `uia-remote#212` with reason `Missing mandatory isScreenPresent()`, GP INC34 three
+  Emit `github.pr.reviewSubmitted { repo, number, verdict, body, comments[] }` (Cur M15 s11 approve `gorth#418`,
+  Cur M17 s8 request changes on `uia-relay#212` with reason `Missing mandatory isScreenPresent()`, GP INC34 three
   line comments + Request changes). Scripted NPC reviews arrive as timeline events and notifications
-  (`jared approved your pull request #419`, `jared merged your pull request #419`).
+  (`jaden approved your pull request #419`, `jaden merged your pull request #419`).
 
 ### 7.5 Issues
 
@@ -1569,16 +1569,16 @@ forms, `Ctrl+.` saved replies, `Esc` closes popovers (consumed).
 ## 8. Lab Cameras (MJPEG stream viewer)
 
 [illus. app; the real team opens the Pi MJPEG URLs in a browser or a viewer.] Every webcam is an MJPEG stream on a
-camera host, `http://<host>:8081/stream.mjpg` (canon); Orca stores which URL each robot uses (Camera Stream URL, Ref
+camera host, `http://<host>:8081/stream.mjpg` (canon); Orka stores which URL each robot uses (Camera Stream URL, Ref
 §3) — dedicated per Pi or **shared across 4 rigs** (Rack B `10.42.10.40`, Rack C `.60`, Rack E `.79`, the tethered
-shelf `.20`; Sim §2.3). The viewer shows **what the URL serves**, so a robot whose Orca URL points at another rig's
+shelf `.20`; Sim §2.3). The viewer shows **what the URL serves**, so a robot whose Orka URL points at another rig's
 camera shows that other rig (GP INC09).
 
 ### 8.1 Layout and look
 
 Dark media-app style: background `#111214`, panels `#1b1d21`, text `#e6e6e6`, accent `#3ea6ff`, live dot `#ff3b30`.
 * **Left sidebar** (280 px): search `Filter cameras…`; section **Streams** = distinct Camera Stream URLs from
-  `lab.orca.robots` (non-empty), each row: host `10.42.10.40` (bold) + `:8081/stream.mjpg` (grey) and the robots that
+  `lab.orka.robots` (non-empty), each row: host `10.42.10.40` (bold) + `:8081/stream.mjpg` (grey) and the robots that
   use it (`JOHNNY-5 · BAYMAX · SETI · ROSIE`), a status dot (green live / red unavailable / grey unknown). Rows sort by
   host IP. Then **Robots** (all robots with a URL, by HRN) — selecting a robot opens its URL with that robot's tile
   highlighted. Then **Recordings** (§8.6). Bottom: `Open URL…` input (any `http://…:8081/stream.mjpg`).
@@ -1646,15 +1646,15 @@ other than C-3PO show a `NO SIGNAL`-free placeholder: their device screen only, 
   `camera.snapshot.saved { path, ref, url, robotName }`.
 * **Recorder** (`startCameraRecorder()` in `apps/camera`, started by `initComputer`, runs while the desktop is closed):
   on `jenkins.buildStarted` with a `robotId` and on `test.localRunStarted` with a `robotName`, if that robot has a
-  Camera Stream URL, start a recording `{ id, buildId | runId, label ('Java/uia-remote-regression-flux #4127'),
+  Camera Stream URL, start a recording `{ id, buildId | runId, label ('Java/uia-relay-regression-flux #4127'),
   robotName, url, startedMs, endedMs, result, frames[], events[] }`. Frames: 2 fps at 480 × 270 JPEG (quality 0.6)
   via `captureView` (synthetic frames when no feed), max 150 frames (75 s; older frames thinned to 1 fps). Events
-  from the bus: `orca.xyTouch` (screen, button, x/y mm, mode, ok, `hitButton`), `rig.solenoidTap`, `device.touched`,
+  from the bus: `orka.xyTouch` (screen, button, x/y mm, mode, ok, `hitButton`), `rig.solenoidTap`, `device.touched`,
   `device.screenChanged`, `runner.step`, each stamped with its frame index. Stop on the matching
   `jenkins.buildFinished` / `test.localRunFinished` (+2 s tail). Keep the last 8 recordings (memory cap ≈ 20 MB).
   The recorder never renders when the quality preset is `low` and no Lab Cameras window is open — it then records
   events plus one synthetic frame per event.
-* **Recordings view** (`/recordings`, `/recording/:id`): list newest first `#4127 · Java/uia-remote-regression-flux ·
+* **Recordings view** (`/recordings`, `/recording/:id`): list newest first `#4127 · Java/uia-relay-regression-flux ·
   WALL-E · FAILURE · 09:41` (result chip). Player: frame area + transport (`⏮ ⏯ ⏭`, scrubber with **event markers**:
   taps green when `hitButton === button`, red when `hitButton` is `null` or another button, blue for screen changes;
   speed `0.5× 1× 2×`; `Space` play/pause, `←/→` step). Clicking a tap marker opens **Tap analysis** [illus.]: the
@@ -1756,7 +1756,7 @@ constants module"); otherwise `apps/dashboard/layout.ts` copies the World §5.1�
 | Element | Spec (World §5.1, §5.4) |
 |---|---|
 | Header (0, 0, 1280, 112) | gradient by banner: green `#1fcf4f → #2bd862 → #3fdc9a → #52c9d6 → #5ab7ee`; yellow `#f2c12e → #f7d86a → #f2e08c`; grey `#8b9099 → #a3a8b0`; red `#e04b3c → #ef7a5a`. Banner change animates a 300 ms left-to-right wipe. |
-| Robot name | `rig.tablet.hrnShown` (falls back to Orca `humanReadableName`): x 150, baseline 82, 800-weight 64 px `#121212`, shrink to fit 380 px — shows `JONNY-5` while Orca has the typo and the tablet has received it (Cur M07) |
+| Robot name | `rig.tablet.hrnShown` (falls back to Orka `humanReadableName`): x 150, baseline 82, 800-weight 64 px `#121212`, shrink to fit 380 px — shows `JONNY-5` while Orka has the typo and the tablet has received it (Cur M07) |
 | Logo | four-leaf glyph + `lab` wordmark, `rgba(255,255,255,.55)` at x 560–860 |
 | Status line | x 1000, baseline 46: `Status: ` + status text — **the sim's string** (`rig.bannerText` / `rig.tablet.statusText`: `Status: OK`, `Status: LOCK RELEASED — PARK REQUIRED`, `Status: CONTROLLER UNREACHABLE`, `Status: MOTION FAULT — HOMING FAILED (X limit not found)`); 22 px `#1a1a1a`, shrink to 15 px, wrap to 2 lines |
 | Board line | x 1000, baseline 76: `Brainbox v6` (`rig.tablet.brainbox`) |
@@ -1792,7 +1792,7 @@ the lockout overlay handles it). Emit `<host>.command.sent { robot, command, ok,
 ### 10.4 Robot and Robot Control tabs (World §5.3)
 
 * **Robot:** key/value list at x 80/420 (labels 22 px `#9fb3d6`, values 24 px white, pitch 48): `Name` (`wall-e`),
-  `Human Readable Name`, `Orca status` (chip, Orca colours), `Device` (`FLUX_3 · SIM-F3-000011`), `Device IP`
+  `Human Readable Name`, `Orka status` (chip, Orka colours), `Device` (`FLUX_3 · SIM-F3-000011`), `Device IP`
   (`10.42.30.11:5444`), `Robot Pi` (`10.42.10.11`), `Camera` (stream URL, ellipsised), `Last health check`
   (`09:35:00 · 200 OK`), `Magnetic lock` (`ENGAGED` / `RELEASED`). Micro-map box (760, 200, 440, 300): the covered
   display's outline to scale, crosshair + 12 px dot at `(gantry.xMm, gantry.yMm)` (green; yellow when the lock is
@@ -1809,8 +1809,8 @@ the lockout overlay handles it). Emit `<host>.command.sent { robot, command, ok,
 
 When `rig.dashboardLocked` (Sim §3.7.6): overlay (0, 112, 1280, 688) `rgba(8,12,22,.80)`, padlock glyph 96 px white at
 (640, 330), line 1 **`TEST IN PROGRESS — CONTROLS LOCKED`** bold 34 px white (baseline 450), line 2 the holder:
-`Java/uia-remote-regression-flux #4120` (from `robot.checkout` → build job/number) or `Local run · TaxTest (ws-17)`
-[illus.] for local runs (`rig.lockedBy`), 24 px `#b9c6dc` (baseline 492), line 3 `Checked out via Orca · unlocks when
+`Java/uia-relay-regression-flux #4120` (from `robot.checkout` → build job/number) or `Local run · TaxTest (ws-17)`
+[illus.] for local runs (`rig.lockedBy`), 24 px `#b9c6dc` (baseline 492), line 3 `Checked out via Orka · unlocks when
 the build finishes` 20 px `#8ea0bf` (baseline 528). Any click on the panel: overlay shakes ±6 px 200 ms + quiet
 `ui-fail`; **no command is sent**; emit `<host>.lockout.shown { robot, holder }` on the first display per lock period
 and on every blocked click (`blockedClick: true`) — Cur M01 s6 "Overlay has been shown once", GP INC12 counts
@@ -1847,16 +1847,16 @@ Sidebar `#1a1d29` (white/`#d1d2d3` text, active item `#1164a3`, unread items bol
 `LabSim Automation ▾` 18 px bold; message pane `#ffffff`, text `#1d1c1d` 15 px, names bold, timestamps `#616061` 12 px,
 hover row `#f8f8f8`; mentions `@engineer` highlighted `#fff3c4`; links `#1264a3`; code spans `#e01e5a` on `#f6f6f6`
 (monospace), code blocks `#f8f8f8` with border. Avatars 36 px rounded squares (team colours, initials); bots
-(`orca-health-check` → `Orca`, `jenkins-bot` → `Jenkins`) get an `APP` badge.
+(`orka-health-check` → `Orka`, `jenkins-bot` → `Jenkins`) get an `APP` badge.
 
 ### 11.2 Layout
 
 * **Sidebar:** `Threads` (decor), `Mentions & reactions` (messages containing `@engineer` or the player's name),
-  **Channels** `# lab-automation`, `# orca-alerts`, `# jenkins` (from distinct `channel` values starting with `#`),
-  **Direct messages** (`dm:<key>` channels plus all team NPCs: Jared, Tate, David, Morgan, Riley, Sam, Alex — names
+  **Channels** `# lab-automation`, `# orka-alerts`, `# jenkins` (from distinct `channel` values starting with `#`),
+  **Direct messages** (`dm:<key>` channels plus all team NPCs: Jaden, Nate, Devin, Morgan, Riley, Sam, Alex — names
   from `team.ts`), each with an unread badge (`lab.chat.unread[channel]`).
-* **Channel header:** `# orca-alerts` + topic (`#lab-automation`: `Lab ops, tickets, coworkers`; `#orca-alerts`:
-  `Health-check failures and recoveries (Orca)`; `#jenkins`: `Red builds`) [illus.].
+* **Channel header:** `# orka-alerts` + topic (`#lab-automation`: `Lab ops, tickets, coworkers`; `#orka-alerts`:
+  `Health-check failures and recoveries (Orka)`; `#jenkins`: `Red builds`) [illus.].
 * **Messages:** grouped by author within 5 minutes, day dividers (`Today`, `Yesterday`), emoji shortcodes rendered
   (`:red_circle:` 🔴, `:large_green_circle:` 🟢, `:white_check_mark:` ✅, `:warning:` ⚠️, `:wave:` 👋), mrkdwn subset
   (`*bold*`, `_italic_`, `` `code` ``, fenced blocks, `<url|label>`, bare URLs → links that open the right app via the
@@ -1869,14 +1869,14 @@ hover row `#f8f8f8`; mentions `@engineer` highlighted `#fff3c4`; links `#1264a3`
 
 ### 11.3 Notifications
 
-New messages not from the player in a channel that is not on screen → desktop toast (§1.5, title `#orca-alerts` /
+New messages not from the player in a channel that is not on screen → desktop toast (§1.5, title `#orka-alerts` /
 `Riley`, body = first line) and the taskbar badge; DMs from mentors also play `ui-ticket`.
 
 ### 11.4 Quick replies (missions bridge)
 
 `setChatReplyProvider((ctx) => ChatReplyOption[])` (apps.ts). `ctx = { channel, lastMessage, ticketIds }`. LabChat calls
 it whenever the open channel or its last message changes and shows the returned options as chips (`R_WAIT_PING —
-Orca hasn't re-pinged yet; it'll clear at the next health check`). Clicking a chip posts `option.text` with
+Orka hasn't re-pinged yet; it'll clear at the next health check`). Clicking a chip posts `option.text` with
 `sim.chat.post(channel, 'player', text, option.ticketId)` and emits `chat.reply.chosen { channel, ticketId, replyId,
 messageId }` — this is how GP ticket replies (`R_WAIT_PING`, `R_OFFLINE`, `R_FIXED`, `R_LOCKOUT`, `R_WAIT`,
 `R_FALSE_POSITIVE`, `R_DUET_BLIND`, INC58/INC62 `R1`–`R4`) and "ask before touching a Reserved rig" (INC48: `Still
@@ -1901,11 +1901,11 @@ Segoe UI, group boxes.
   swipe…` (pulsing).
 * Group `Raw data`: read-only multiline monospace box showing what the reader typed.
 * Group `Parsed tracks`: `Track 1` / `Track 2` / `Track 3` read-only fields (monospace), each with a `Copy` button;
-  buttons `Copy Track 1 + 2` (the format Orca stores: Track 1 immediately followed by Track 2, e.g.
+  buttons `Copy Track 1 + 2` (the format Orka stores: Track 1 immediately followed by Track 2, e.g.
   `%B4111111111111111^SIM/VISA^30121010000000000000?;4111111111111111=3012101000000000?`), `Clear`.
 * On `workstation.cardSwiped { card }` (world, D14; also a `Simulate swipe ▾` [game] menu for sandbox/tests): beep
   (`engine.audio.play('device-beep')`), fill the fields from the **physical card's** tracks — `test-card-visa` = Sim
-  §2.9 `VISA_STD_SWIPE` canonical tracks (never the possibly corrupted Orca row, GP INC55 `canonicalTracks`);
+  §2.9 `VISA_STD_SWIPE` canonical tracks (never the possibly corrupted Orka row, GP INC55 `canonicalTracks`);
   `test-card-interac` = `%B4506440000000017^SIM/INTERAC^30121010000000000000?;4506440000000017=3012101000000000?`
   [illus.] — `Track 3` empty, status `Swipe OK — 2 tracks read`. If the window is closed it opens itself (focus) and
   toasts. Emit `cardreader.swiped { card, track1, track2 }` and `cardreader.copied { field, text }`.
@@ -1943,57 +1943,57 @@ match (Appendix A). Where Cur's condition is a UI observation, the app action is
 | Step | Open | Done when |
 |---|---|---|
 | M05 s7–s11 | `terminal` | *Sim:* `terminal.command` events on host `pi-wall-e` with lines matching `ssh pi@10.42.10.11` (then `ssh.connected {hostId:'pi-wall-e'}`), `uname -a`, `systemctl status robot-controller`, `df -h /`, `ps aux \| grep -i wine`, `curl -i http://10.42.10.11:8000/health` (exit 0); flag orders/trailing spaces normalised by missions |
-| M06 s5 | `orca` `{route:'/robot'}` | `orca.robots.filtered` with `status == ['AVAILABLE']` and no other filter |
-| M06 s8 | `orca` | *Sim:* `orca.robots[eve].status == 'CONNECTION_FAILED'` (button: `orca.healthCheck.forced`) |
-| M06 s9 | `orca` `{route:'/robot/2/view'}` | `orca.robot.notesViewed {name:'eve'}` **and** `orca.robot.checkoutAttempted {name:'eve', ok:false}` |
-| M06 s11 | `orca` | *Sim:* baymax `OFFLINE` and a health run whose lines contain `baymax  SKIPPED (Offline)`; plus `orca.healthLog.viewed` after that run |
-| M06 s12 | `orca`, `jenkins` | *Sim:* WALL-E `RESERVED` → `robot.checkoutWaiting` for the build → WALL-E `AVAILABLE` → `robot.checkedOut {name:'wall-e'}` |
-| M06 s13 | `jenkins` `{route:'/job/Java/job/uia-remote-regression-flux/build'}` | *Sim:* named build on rosie finished and `rosie.status == 'UNAVAILABLE'` without a player status change |
-| M07 s2 | `orca` `{route:'/robot/5/edit'}` | `orca.robot.editOpened {name:'johnny-5'}` |
-| M07 s3, s6, s8, s9 | `orca` | *Sim:* HRN `JOHNNY-5` & Name unchanged; new FLUX_2 device linked & old row intact (`orca.device.created`); `tapUrl`; MFD/CFD set |
-| M07 s11 | `camera` `{robot:'bumblebee'}`, `orca` | `camera.stream.opened {robotName:'bumblebee'}` (or Rack A recording) then *Sim:* `offsetYMm == 0` and an `orca.xyTouch` with `hitButton === button` after `orca.screenLocation.testTap` |
-| M08 s3 | `orca` `{route:'/robot-capability?tab=documents&robot=wall-e'}` | `orca.capabilities.viewed` for `wall-e` **and** `rosie` |
-| M08 s5 | `intellij` `{repo:'gort', file:'go-sdk/tests/sale_receipt.json'}` | *Sim:* the clone's file parses and `capabilities.printer === true` (`intellij.file.saved`); the job sees it only after commit + push (gort `main` is protected → branch + PR, or Jared merges) |
-| M08 s6 | `jenkins` `{route:'/job/Java/job/uia-remote-regression-flux/configure'}` | `jenkins.script.lineClicked` whose `text` contains `def capabilities = [deviceType: params.DEVICE_TYPE, physicalTouch: true]` |
-| M08 s7 | `orca` `{route:'/merchant-config'}` | `orca.merchant.editOpened {name:'GO-SDK-US-01'}` |
-| M08 s9, s11 | `orca` → `jenkins` | *Sim:* merchant `apiKey`, build env, Laz build `SUCCESS` |
-| M09 s2 | `orca` `{route:'/screen?deviceType.equals=FLUX_3'}` | `orca.screenLocations.viewed {deviceType:'FLUX_3', screen:'TENDER_CASH_DISCOUNT'}` |
-| M09 s3–s4 | `terminal` | *Sim:* `orca.xyTouch {robotName:'wall-e', mode:'probe'}` then `{robotName:'tars', mode:'adb'}` |
+| M06 s5 | `orka` `{route:'/robot'}` | `orka.robots.filtered` with `status == ['AVAILABLE']` and no other filter |
+| M06 s8 | `orka` | *Sim:* `orka.robots[eve].status == 'CONNECTION_FAILED'` (button: `orka.healthCheck.forced`) |
+| M06 s9 | `orka` `{route:'/robot/2/view'}` | `orka.robot.notesViewed {name:'eve'}` **and** `orka.robot.checkoutAttempted {name:'eve', ok:false}` |
+| M06 s11 | `orka` | *Sim:* baymax `OFFLINE` and a health run whose lines contain `baymax  SKIPPED (Offline)`; plus `orka.healthLog.viewed` after that run |
+| M06 s12 | `orka`, `jenkins` | *Sim:* WALL-E `RESERVED` → `robot.checkoutWaiting` for the build → WALL-E `AVAILABLE` → `robot.checkedOut {name:'wall-e'}` |
+| M06 s13 | `jenkins` `{route:'/job/Java/job/uia-relay-regression-flux/build'}` | *Sim:* named build on rosie finished and `rosie.status == 'UNAVAILABLE'` without a player status change |
+| M07 s2 | `orka` `{route:'/robot/5/edit'}` | `orka.robot.editOpened {name:'johnny-5'}` |
+| M07 s3, s6, s8, s9 | `orka` | *Sim:* HRN `JOHNNY-5` & Name unchanged; new FLUX_2 device linked & old row intact (`orka.device.created`); `tapUrl`; MFD/CFD set |
+| M07 s11 | `camera` `{robot:'bumblebee'}`, `orka` | `camera.stream.opened {robotName:'bumblebee'}` (or Rack A recording) then *Sim:* `offsetYMm == 0` and an `orka.xyTouch` with `hitButton === button` after `orka.screenLocation.testTap` |
+| M08 s3 | `orka` `{route:'/robot-capability?tab=documents&robot=wall-e'}` | `orka.capabilities.viewed` for `wall-e` **and** `rosie` |
+| M08 s5 | `intellij` `{repo:'gorth', file:'go-sdk/tests/sale_receipt.json'}` | *Sim:* the clone's file parses and `capabilities.printer === true` (`intellij.file.saved`); the job sees it only after commit + push (gorth `main` is protected → branch + PR, or Jaden merges) |
+| M08 s6 | `jenkins` `{route:'/job/Java/job/uia-relay-regression-flux/configure'}` | `jenkins.script.lineClicked` whose `text` contains `def capabilities = [deviceType: params.DEVICE_TYPE, physicalTouch: true]` |
+| M08 s7 | `orka` `{route:'/merchant-config'}` | `orka.merchant.editOpened {name:'GO-SDK-US-01'}` |
+| M08 s9, s11 | `orka` → `jenkins` | *Sim:* merchant `apiKey`, build env, Lazo build `SUCCESS` |
+| M09 s2 | `orka` `{route:'/screen?deviceType.equals=FLUX_3'}` | `orka.screenLocations.viewed {deviceType:'FLUX_3', screen:'TENDER_CASH_DISCOUNT'}` |
+| M09 s3–s4 | `terminal` | *Sim:* `orka.xyTouch {robotName:'wall-e', mode:'probe'}` then `{robotName:'tars', mode:'adb'}` |
 | M09 s6 | `jenkins` | *Sim:* build of `Java/contact-canada-pin-sale` with `ROBOT_NAME=seti` (`jenkins.build.triggered` shows the chosen value) |
 | M09 s9 | `camera` `{recordingBuildId:<eve build>}` | `camera.recording.finished {robotName:'eve'}` |
-| M09 s11–s12 | `orca`, `github` | *Sim:* both maps exist, ±0.5 mm; `github.pr.created` → `github.prMerged` |
-| M10 s6 / s7 | `orca` `{route:'/card-profile'}` | `orca.cardProfile.viewed {name:'VISA_STD_SWIPE'}` / `orca.cardProfile.fieldClicked {name:'VISA_STD_DIP', field:'gortPath'}` |
-| M10 s9 | `github` `{route:'/labsim-lab/gort'}` | `github.file.viewed {repo:'gort', path:'cards/emv/visa_std_dip.json'}` |
-| M10 s10–s11 | `terminal` | *Sim:* `terminal.command` on `minix-01` (`schtasks /query /tn GortCardSync`, `dir C:\gort\cards\emv`); `orca.cardAction {entry:'DIP', ok:true}` |
+| M09 s11–s12 | `orka`, `github` | *Sim:* both maps exist, ±0.5 mm; `github.pr.created` → `github.prMerged` |
+| M10 s6 / s7 | `orka` `{route:'/card-profile'}` | `orka.cardProfile.viewed {name:'VISA_STD_SWIPE'}` / `orka.cardProfile.fieldClicked {name:'VISA_STD_DIP', field:'gorthPath'}` |
+| M10 s9 | `github` `{route:'/labsim-lab/gorth'}` | `github.file.viewed {repo:'gorth', path:'cards/emv/visa_std_dip.json'}` |
+| M10 s10–s11 | `terminal` | *Sim:* `terminal.command` on `minix-01` (`schtasks /query /tn GorthCardSync`, `dir C:\gorth\cards\emv`); `orka.cardAction {entry:'DIP', ok:true}` |
 | M10 s13 | `jenkins` | `jenkins.build.triggered` with `CARD_PROFILE=VISA_STD_DIP` (go-sdk) and `INTERAC_CA_DIP` (contact-canada) |
 | M11 s2 | `jenkins` | `jenkins.view.opened {view:'Java'}` and `{view:'iOS'}` |
 | M11 s4 | `jenkins` | `jenkins.console.opened {result:'FAILURE'}` for a build whose sim `failureCode == 'ENUM_CASE'` |
 | M11 s6, s9 | `jenkins` | *Sim:* `robot.checkedOut {name:'wall-e'}`; build checks out `rosie` |
-| M11 s7 | `orca` `{route:'/robot'}` | `route` on Orca robot list/detail while `wall-e.checkout != null`, and again after release |
+| M11 s7 | `orka` `{route:'/robot'}` | `route` on Orka robot list/detail while `wall-e.checkout != null`, and again after release |
 | M11 s8 | `jenkins` | `jenkins.console.lineClicked` with `text` containing `PORT_NUMBER=5444` |
 | M12 s2–s8 | `terminal` | *Sim:* `adb.connected {target:'10.42.30.32:5444'}`, `adb.command` dump/pull, `device.touched {deviceId:'dev-tars-flux4', source:'adb', hitButton:'Register'}`, the refused 5555 connect |
-| M13 s2 | `github` `{route:'/labsim-lab/uia-remote'}` | `github.cloneUrl.copied {repo:'uia-remote'}` |
-| M13 s3 | `intellij` | *Sim:* `git.cloned {repo:'uia-remote'}` (`intellij.project.cloned`) |
-| M13 s4 | `intellij` `{repo:'uia-remote'}` | `intellij.tree.nodeClicked {path:'app/src/main', kind:'dir'}` |
+| M13 s2 | `github` `{route:'/labsim-lab/uia-relay'}` | `github.cloneUrl.copied {repo:'uia-relay'}` |
+| M13 s3 | `intellij` | *Sim:* `git.cloned {repo:'uia-relay'}` (`intellij.project.cloned`) |
+| M13 s4 | `intellij` `{repo:'uia-relay'}` | `intellij.tree.nodeClicked {path:'app/src/main', kind:'dir'}` |
 | M13 s5 | `intellij` | *Sim:* six files at their package paths (`intellij.file.moved` per drop) |
-| M13 s6 | `intellij` `{repo:'uia-remote', file:'…/pageobjects/HomeScreen.java'}` | `intellij.editor.clicked` on a line inside Zone 1, then one inside Zone 2 (missions locate the `// ===== Zone` comment lines in the file) |
+| M13 s6 | `intellij` `{repo:'uia-relay', file:'…/pageobjects/HomeScreen.java'}` | `intellij.editor.clicked` on a line inside Zone 1, then one inside Zone 2 (missions locate the `// ===== Zone` comment lines in the file) |
 | M13 s8–s9, s11 | `intellij` | *Sim:* code facts + `test.localRunFinished` (`HomeScreenTest` pass; `ReceiptScreenTest` pass ×3); `intellij.intention.applied {intention:'implement-mandatory-screen-methods'}` optional |
-| M14 s1 / s3 | `intellij` `{repo:'uia-remote', runConfig:'TaxTest'}` | `intellij.run.started {config:'TaxTest'}` / `intellij.run.stopped` |
+| M14 s1 / s3 | `intellij` `{repo:'uia-relay', runConfig:'TaxTest'}` | `intellij.run.started {config:'TaxTest'}` / `intellij.run.stopped` |
 | M14 s5 | `intellij` `{file:'config.properties'}` | `intellij.configValidator.ran {passed:11, total:11}` (D8: sim validation) |
-| M14 s8, s9, s14 | `orca`, `intellij` | *Sim:* megatron `RESERVED`; run started with a valid config; `TaxTest` pass; megatron `AVAILABLE` |
-| M15 s2 / s3 | `intellij` `{repo:'pigeon'}` | `intellij.tree.nodeClicked {path:'runners/ios'}` / `intellij.editor.clicked` with `token` ∈ `name`, `connectionType`, `platforms`, `actions` |
+| M14 s8, s9, s14 | `orka`, `intellij` | *Sim:* megatron `RESERVED`; run started with a valid config; `TaxTest` pass; megatron `AVAILABLE` |
+| M15 s2 / s3 | `intellij` `{repo:'parrot'}` | `intellij.tree.nodeClicked {path:'runners/ios'}` / `intellij.editor.clicked` with `token` ∈ `name`, `connectionType`, `platforms`, `actions` |
 | M15 s5, s8 | `jenkins` | `jenkins.console.opened {result:'FAILURE'}` for builds with `failureCode` `JSON_PARSE` / `PRINTER_TIMEOUT` |
-| M15 s6 | `intellij` `{repo:'pigeon', file:'tests/sale/swipe_sale_print.json'}` | *Sim:* the file on `main` parses (commit + push; pigeon accepts direct pushes) |
+| M15 s6 | `intellij` `{repo:'parrot', file:'tests/sale/swipe_sale_print.json'}` | *Sim:* the file on `main` parses (commit + push; parrot accepts direct pushes) |
 | M15 s10 | `camera` `{recordingBuildId:<bumblebee build>}` | `camera.recording.finished {robotName:'bumblebee'}` |
-| M15 s11 | `github` `{route:'/labsim-lab/gort/pull/418'}` | `github.pr.reviewSubmitted {repo:'gort', number:418, verdict:'APPROVE'}` → *Sim:* merged, build green |
+| M15 s11 | `github` `{route:'/labsim-lab/gorth/pull/418'}` | `github.pr.reviewSubmitted {repo:'gorth', number:418, verdict:'APPROVE'}` → *Sim:* merged, build green |
 | M16 s4 | `terminal` | *Sim:* `terminal.command` `grep -c "TOTAL" window_dump.xml` printed `0` |
 | M16 s5 | `camera` `{robot:'r2-d2'}` | `camera.snapshot.saved` with `path` ending `r2d2_cfd.png` (sim `camera.snapshot`) |
 | M16 s6 | `gimp` `{path:'~/Pictures/r2d2_cfd.png'}` | `gimp.selection.changed` within ±3 px of `412, 288, 236, 44` |
-| M16 s7 / s8 | `orca` `{route:'/screen-compare-image'}` | *Sim:* `CFD_TOTAL` row; `orca.screenCompare.tested {match:true}` / `orca.screenCompare.layoutV2Toggled {on:true}` then `tested {match:false}` |
-| M16 s10, s12 | `intellij` | *Sim:* file contents (pigeon block values = the GIMP selection; `TaxTestDuet` uses `displayId`), config IPs equal, `TaxTestDuet` pass |
+| M16 s7 / s8 | `orka` `{route:'/screen-compare-image'}` | *Sim:* `CFD_TOTAL` row; `orka.screenCompare.tested {match:true}` / `orka.screenCompare.layoutV2Toggled {on:true}` then `tested {match:false}` |
+| M16 s10, s12 | `intellij` | *Sim:* file contents (parrot block values = the GIMP selection; `TaxTestDuet` uses `displayId`), config IPs equal, `TaxTestDuet` pass |
 | M17 s5 | `ollama` `{prompt:<Cur M17 prompt>, attach:'~/Downloads/walle_receipt_0912.jpg'}` | `ollama.response.received` for a request with image `img:receipt:wall-e:0912`, then `ollama.response.flagged {flag:'tip-math-error'}` |
-| M17 s8 | `github` `{route:'/labsim-lab/uia-remote/pull/212/files'}` | `github.pr.reviewSubmitted {repo:'uia-remote', number:212, verdict:'REQUEST_CHANGES'}` with a comment `reason:'missing-isScreenPresent'` (*Sim:* `pr.verdict` + `comments`) |
-| M18 s8 / s10 | `orca` / `jenkins` | `orca.robot.notesViewed {name:'bumblebee'}` before the escalation (HUD); *Sim:* build green |
+| M17 s8 | `github` `{route:'/labsim-lab/uia-relay/pull/212/files'}` | `github.pr.reviewSubmitted {repo:'uia-relay', number:212, verdict:'REQUEST_CHANGES'}` with a comment `reason:'missing-isScreenPresent'` (*Sim:* `pr.verdict` + `comments`) |
+| M18 s8 / s10 | `orka` / `jenkins` | `orka.robot.notesViewed {name:'bumblebee'}` before the escalation (HUD); *Sim:* build green |
 
 ### 13.2 Arcade incidents (GP §3.5) — app touchpoints
 
@@ -2002,21 +2002,21 @@ signals missions may use for process bonuses, hints and Teach Cards.
 
 | Incidents | Surfaces (symptom → fix) | App signals |
 |---|---|---|
-| INC01–04, INC06, INC19 | Orca filter `Connection Failed` → Notes → (escalation in HUD); Terminal `ping`/`ssh`/`curl`; Lab Cameras `Stream unavailable — …`; desktop dashboard unreachable vs green tablet (INC04) | `orca.robots.filtered`, `orca.robot.notesViewed`, `camera.stream.opened {ok:false}` |
+| INC01–04, INC06, INC19 | Orka filter `Connection Failed` → Notes → (escalation in HUD); Terminal `ping`/`ssh`/`curl`; Lab Cameras `Stream unavailable — …`; desktop dashboard unreachable vs green tablet (INC04) | `orka.robots.filtered`, `orka.robot.notesViewed`, `camera.stream.opened {ok:false}` |
 | INC05, INC06, INC12, INC48, INC57-A, INC58, INC62, INC64 | LabChat replies `R_WAIT_PING`, `R_OFFLINE`, `R_FIXED`, `R_LOCKOUT`, `R_WAIT`, `R_FALSE_POSITIVE`, `R1`…`R4`, `R_DUET_BLIND`; INC48 "ask before touching" message to Riley | `chat.reply.chosen`, `chat.message.sent {channel:'dm:riley'}` (PB06) |
-| INC07, INC31, INC40–42, INC44, INC59, INC63 | Orca status menu / form, Notes history (`STATUS Offline → Available (alex)`), Device create + relink | `orca.robot.statusChangeRequested`, `orca.robot.saved`, `orca.device.created` |
-| INC08, INC09, INC36, INC37, INC38 | Lab Cameras (shared Rack B stream, wrong rig), Orca URL Mappings, Screen Compare **Test**, GIMP re-measure, IntelliJ migration + PR | `camera.stream.opened`, `orca.screenCompare.tested`, `gimp.selection.changed`, `github.pr.created` |
-| INC10, INC60 | Ollama WebUI `Model server unreachable`; Orca JHipster 500 page; Terminal `systemctl` on VMs | `browser.page.unreachable`, `terminal.command.submitted` |
+| INC07, INC31, INC40–42, INC44, INC59, INC63 | Orka status menu / form, Notes history (`STATUS Offline → Available (alex)`), Device create + relink | `orka.robot.statusChangeRequested`, `orka.robot.saved`, `orka.device.created` |
+| INC08, INC09, INC36, INC37, INC38 | Lab Cameras (shared Rack B stream, wrong rig), Orka URL Mappings, Screen Compare **Test**, GIMP re-measure, IntelliJ migration + PR | `camera.stream.opened`, `orka.screenCompare.tested`, `gimp.selection.changed`, `github.pr.created` |
+| INC10, INC60 | Ollama WebUI `Model server unreachable`; Orka JHipster 500 page; Terminal `systemctl` on VMs | `browser.page.unreachable`, `terminal.command.submitted` |
 | INC11, INC13, INC15, INC16 | status tablet / desktop dashboard (Park All, Steppers, Solenoid, Dip) | `tablet.command.sent`, `dashboard.command.sent` |
-| INC14, INC20–22 | Lab Cameras recordings (Tap analysis), Orca Screens/Locations + **Test tap**, GIMP screencap mm, GitHub branch → edit → PR (PB03) | `camera.tapAnalysis.opened`, `orca.screenLocation.saved`, `orca.screenLocation.testTap`, `github.file.committed`, `github.pr.created` |
-| INC23, INC49 | Orca capability documents + Match preview; IntelliJ/GitHub JSON edit; Jenkins Configure (script line) | `orca.matchPreview.ran`, `jenkins.job.configured` |
-| INC24, INC25 | Terminal `adb exec-out screencap`, GIMP selection → Pigeon JSON (Script-Fu copy), IntelliJ (no JSON linter), `git log -1 --stat` / `git diff HEAD~1` (PB04) | `gimp.selection.copied`, `intellij.file.saved`, `terminal.command.submitted` |
+| INC14, INC20–22 | Lab Cameras recordings (Tap analysis), Orka Screens/Locations + **Test tap**, GIMP screencap mm, GitHub branch → edit → PR (PB03) | `camera.tapAnalysis.opened`, `orka.screenLocation.saved`, `orka.screenLocation.testTap`, `github.file.committed`, `github.pr.created` |
+| INC23, INC49 | Orka capability documents + Match preview; IntelliJ/GitHub JSON edit; Jenkins Configure (script line) | `orka.matchPreview.ran`, `jenkins.job.configured` |
+| INC24, INC25 | Terminal `adb exec-out screencap`, GIMP selection → Parrot JSON (Script-Fu copy), IntelliJ (no JSON linter), `git log -1 --stat` / `git diff HEAD~1` (PB04) | `gimp.selection.copied`, `intellij.file.saved`, `terminal.command.submitted` |
 | INC26, INC39, INC41, INC52 | Jenkins search, Move, Configure defaults, Build with Parameters | `jenkins.search`, `jenkins.job.moved`, `jenkins.job.configured`, `jenkins.build.triggered` |
 | INC27–30, INC32–33, INC35, INC47 | IntelliJ config validator, Run window logs, Code With Me (INC29), Terminal `adb devices` / `adb disconnect` / Pi `adb tcpip 5444` | `intellij.configValidator.ran`, `intellij.run.*` |
 | INC34 | GitHub PR #431 Files changed: three line comments with saved replies + Request changes | `github.pr.lineCommentAdded`, `github.pr.reviewSubmitted` |
-| INC45, INC46, INC65 | Orca tethered config (banner `Tethered: MFD populated`), URL Mappings | `orca.robot.saved {changed:['mfdDeviceId','cfdDeviceId']}` |
-| INC50, INC51 | Orca Merchant Config **Edit** (Ubi Route, API Key), Jenkins console env line | `orca.merchant.editOpened`, `orca.merchant.saved` |
-| INC53–56 | Orca Card Profiles (Path / Track Data), MagStripe Reader (canonical tracks), GitHub gort history, Terminal on Minix boxes (`schtasks /run`) and Pis (Wine prefix) | `orca.cardProfile.saved`, `cardreader.swiped`, `cardreader.copied` |
+| INC45, INC46, INC65 | Orka tethered config (banner `Tethered: MFD populated`), URL Mappings | `orka.robot.saved {changed:['mfdDeviceId','cfdDeviceId']}` |
+| INC50, INC51 | Orka Merchant Config **Edit** (Ubo Route, API Key), Jenkins console env line | `orka.merchant.editOpened`, `orka.merchant.saved` |
+| INC53–56 | Orka Card Profiles (Path / Track Data), MagStripe Reader (canonical tracks), GitHub gorth history, Terminal on Minix boxes (`schtasks /run`) and Pis (Wine prefix) | `orka.cardProfile.saved`, `cardreader.swiped`, `cardreader.copied` |
 | INC57 | Ollama response vs the real receipt (lightbox), **File bug** in the HUD ticket panel | `ollama.response.received` |
 
 ---
@@ -2028,7 +2028,7 @@ signals missions may use for process bonuses, hints and Teach Cards.
 * **Unit tests per app** (`src/computer/apps/<id>/*.test.tsx`, `// @vitest-environment jsdom`, `react-dom/client`
   + `act`): render the app against a sandbox lab (`src/computer/sandbox/fakeLab.ts`, seeded through `mutate()` from
   the Sim §2 tables), drive the key flows of its section and assert: the sim call made (spy on `sim.*`), the exact
-  strings shown, the emitted `app.action`/`app.navigated` payloads. Minimum per app: Orca robot filter + edit/save +
+  strings shown, the emitted `app.action`/`app.navigated` payloads. Minimum per app: Orka robot filter + edit/save +
   Notes + merchant Edit + screen-location test tap + screen-compare test; Jenkins Build with Parameters + live console
   + configure + move; IntelliJ clone + tree click + edit/save + run + commit/push; Terminal exec/stream/Ctrl+C/history/
   completion/nano; GIMP open + rectangle select + tool-option fields; GitHub clone URL copy + PR create + review +
@@ -2053,13 +2053,13 @@ Browser-hosted apps: path + query after the origin. Templates: `:x` one segment,
 parameters are listed in the descriptions. Use `buildRoute` / `matchRoute` (apps.ts).
 
 
-**`orca`**
+**`orka`**
 
 | Key | Template | Page |
 |---|---|---|
 | `home` | `/` | Orchestrator home dashboard (status counts, health-check timer, active checkouts, alerts) |
 | `login` | `/login` | Sign in page |
-| `robots` | `/robot` | Robot list with Tate's filters; query status.in, deviceType.equals, rigKind.equals, environment.equals, name.contains, page, sort |
+| `robots` | `/robot` | Robot list with Nate's filters; query status.in, deviceType.equals, rigKind.equals, environment.equals, name.contains, page, sort |
 | `robotNew` | `/robot/new` | Create a new Robot |
 | `robotView` | `/robot/:id/view` | Robot detail incl. Notes and Check out |
 | `robotEdit` | `/robot/:id/edit` | Robot edit form (all configuration fields) |
@@ -2075,7 +2075,7 @@ parameters are listed in the descriptions. Use `buildRoute` / `matchRoute` (apps
 | `merchants` | `/merchant-config` | Merchant Config list (truncated columns) |
 | `merchantNew` | `/merchant-config/new` | Create a Merchant Config |
 | `merchantView` | `/merchant-config/:id/view` | Merchant Config detail (credentials hidden) |
-| `merchantEdit` | `/merchant-config/:id/edit` | Merchant Config Edit — the only view with App ID / App Secret / API Key / Ubi Route |
+| `merchantEdit` | `/merchant-config/:id/edit` | Merchant Config Edit — the only view with App ID / App Secret / API Key / Ubo Route |
 | `screens` | `/screen` | Screen list; query deviceType.equals, name.contains, display.equals |
 | `screenNew` | `/screen/new` | Create a Screen (e.g. RECEIPT_OPTIONS_5 for FLUX_4) |
 | `screenView` | `/screen/:id/view` | Screen detail with its Screen Locations and Test tap |
@@ -2108,7 +2108,7 @@ parameters are listed in the descriptions. Use `buildRoute` / `matchRoute` (apps
 | Key | Template | Page |
 |---|---|---|
 | `dashboard` | `/` | Dashboard, All view (folders Java and iOS) |
-| `view` | `/view/:view/` | A view tab: Java, iOS, uia-remote, SDK-Go, Pigeon-LSTR, Laz, Vision-PoC |
+| `view` | `/view/:view/` | A view tab: Java, iOS, uia-relay, SDK-Go, Parrot-LSTR, Lazo, Vision-PoC |
 | `folder` | `/job/:folder/` | Folder page (Java or iOS) |
 | `job` | `/job/:folder/job/:job/` | Job page with Stage View, Build History, permalinks |
 | `buildWithParameters` | `/job/:folder/job/:job/build` | Build with Parameters form |
@@ -2139,7 +2139,7 @@ parameters are listed in the descriptions. Use `buildRoute` / `matchRoute` (apps
 | `newFile` | `/labsim-lab/:repo/new/*ref` | Create new file in <branch>/<dir> |
 | `commits` | `/labsim-lab/:repo/commits/*ref` | Commit history of a branch |
 | `commit` | `/labsim-lab/:repo/commit/:sha` | One commit with its diff |
-| `branches` | `/labsim-lab/:repo/branches` | Branches (protected badge on gort/orchestrator main) |
+| `branches` | `/labsim-lab/:repo/branches` | Branches (protected badge on gorth/orchestrator main) |
 | `pulls` | `/labsim-lab/:repo/pulls` | Pull request list; query q |
 | `compare` | `/labsim-lab/:repo/compare/*range` | Compare <base>...<head> and open a pull request |
 | `pull` | `/labsim-lab/:repo/pull/:number` | Pull request Conversation tab (merge box) |
@@ -2206,7 +2206,7 @@ parameters are listed in the descriptions. Use `buildRoute` / `matchRoute` (apps
 | Key | Template | Page |
 |---|---|---|
 | `channel` | `/channel/:name` | A channel (name without "#", e.g. lab-automation) |
-| `dm` | `/dm/:user` | Direct messages with a team member key (riley, jared, …) |
+| `dm` | `/dm/:user` | Direct messages with a team member key (riley, jaden, …) |
 | `mentions` | `/mentions` | Mentions & reactions |
 
 **`cardreader`**
@@ -2232,43 +2232,43 @@ returns; semantics in the cited section.
 | `desktop.standUp` | `Record<string, never>` | §1 |
 | `desktop.clipboard.copied` | `{ text: string; sourceApp: string }` | §1 |
 | `desktop.notification.clicked` | `{ app: string; title: string; route: string \| null }` | §1 |
-| `orca.session.signedIn` | `{ login: string }` | §2 |
-| `orca.session.signedOut` | `{ login: string }` | §2 |
-| `orca.robots.filtered` | `{ status: RobotStatus[]; deviceType: string \| null; rigKind: string \| null; environment: string \| null; name: string; resultCount: number; }` | §2 |
-| `orca.robot.viewed` | `{ robotId: number; name: string }` | §2 |
-| `orca.robot.editOpened` | `{ robotId: number \| null; name: string \| null }` | §2 |
-| `orca.robot.saved` | `{ robotId: number; name: string; created: boolean; changed: string[] }` | §2 |
-| `orca.robot.saveFailed` | `{ robotId: number \| null; error: string }` | §2 |
-| `orca.robot.statusChangeRequested` | `{ robotId: number; name: string; from: RobotStatus; to: RobotStatus; confirmed: boolean } & Ok` | §2 |
-| `orca.robot.notesViewed` | `{ robotId: number; name: string; noteCount: number }` | §2 |
-| `orca.robot.noteAdded` | `{ robotId: number; name: string; text: string } & Ok` | §2 |
-| `orca.robot.noteResolved` | `{ robotId: number; noteId: number } & Ok` | §2 |
-| `orca.robot.checkoutAttempted` | `{ robotId: number; name: string; status: RobotStatus; ok: boolean; message: string }` | §2 |
-| `orca.robot.released` | `{ robotId: number; name: string } & Ok` | §2 |
-| `orca.entity.deleted` | `{ entity: OrcaEntityName; id: number } & Ok` | §2 |
-| `orca.healthCheck.forced` | `{ ok: boolean; error: string \| null }` | §2 |
-| `orca.healthLog.viewed` | `{ newestRun: number \| null }` | §2 |
-| `orca.device.created` | `{ deviceId: number; name: string; deviceType: string; serial: string; ip: string }` | §2 |
-| `orca.device.saved` | `{ deviceId: number; name: string; changed: string[] }` | §2 |
-| `orca.capabilities.viewed` | `{ robotId: number; robotName: string; document: string }` | §2 |
-| `orca.capability.saved` | `{ capabilityId: number; name: string; created: boolean }` | §2 |
-| `orca.matchPreview.ran` | `{ capabilities: string; environment: string; matches: string[] } & Ok` | §2 |
-| `orca.merchant.editOpened` | `{ merchantId: number; name: string }` | §2 |
-| `orca.merchant.saved` | `{ merchantId: number; name: string; changed: string[] }` | §2 |
-| `orca.merchant.secretRevealed` | `{ merchantId: number; name: string }` | §2 |
-| `orca.screens.filtered` | `{ deviceType: string \| null; name: string; display: string \| null; resultCount: number }` | §2 |
-| `orca.screen.viewed` | `{ screenId: number; name: string; deviceType: string }` | §2 |
-| `orca.screenLocations.viewed` | `{ screenId: number; screen: string; deviceType: string; count: number }` | §2 |
-| `orca.screen.saved` | `{ screenId: number; name: string; deviceType: string; created: boolean }` | §2 |
-| `orca.screenLocation.saved` | `{ locationId: number; screenId: number; screen: string; deviceType: string; button: string; xMm: number; yMm: number; created: boolean; }` | §2 |
-| `orca.screenLocation.testTap` | `{ robotName: string; screen: string; button: string; ok: boolean; response: string }` | §2 |
-| `orca.cardProfile.viewed` | `{ profileId: number; name: string; entry: CardEntry }` | §2 |
-| `orca.cardProfile.fieldClicked` | `{ profileId: number; name: string; field: 'trackData' \| 'gortPath' }` | §2 |
-| `orca.cardProfile.saved` | `{ profileId: number; name: string; changed: string[] }` | §2 |
-| `orca.screenCompare.saved` | `{ compareId: number; name: string; created: boolean; x: number; y: number; w: number; h: number; expected: string }` | §2 |
-| `orca.screenCompare.tested` | `{ compareId: number; name: string; text: string; expected: string; match: boolean \| null } & Ok` | §2 |
-| `orca.screenCompare.layoutV2Toggled` | `{ on: boolean }` | §2 |
-| `orca.api.executed` | `{ method: string; path: string; status: number }` | §2 |
+| `orka.session.signedIn` | `{ login: string }` | §2 |
+| `orka.session.signedOut` | `{ login: string }` | §2 |
+| `orka.robots.filtered` | `{ status: RobotStatus[]; deviceType: string \| null; rigKind: string \| null; environment: string \| null; name: string; resultCount: number; }` | §2 |
+| `orka.robot.viewed` | `{ robotId: number; name: string }` | §2 |
+| `orka.robot.editOpened` | `{ robotId: number \| null; name: string \| null }` | §2 |
+| `orka.robot.saved` | `{ robotId: number; name: string; created: boolean; changed: string[] }` | §2 |
+| `orka.robot.saveFailed` | `{ robotId: number \| null; error: string }` | §2 |
+| `orka.robot.statusChangeRequested` | `{ robotId: number; name: string; from: RobotStatus; to: RobotStatus; confirmed: boolean } & Ok` | §2 |
+| `orka.robot.notesViewed` | `{ robotId: number; name: string; noteCount: number }` | §2 |
+| `orka.robot.noteAdded` | `{ robotId: number; name: string; text: string } & Ok` | §2 |
+| `orka.robot.noteResolved` | `{ robotId: number; noteId: number } & Ok` | §2 |
+| `orka.robot.checkoutAttempted` | `{ robotId: number; name: string; status: RobotStatus; ok: boolean; message: string }` | §2 |
+| `orka.robot.released` | `{ robotId: number; name: string } & Ok` | §2 |
+| `orka.entity.deleted` | `{ entity: OrkaEntityName; id: number } & Ok` | §2 |
+| `orka.healthCheck.forced` | `{ ok: boolean; error: string \| null }` | §2 |
+| `orka.healthLog.viewed` | `{ newestRun: number \| null }` | §2 |
+| `orka.device.created` | `{ deviceId: number; name: string; deviceType: string; serial: string; ip: string }` | §2 |
+| `orka.device.saved` | `{ deviceId: number; name: string; changed: string[] }` | §2 |
+| `orka.capabilities.viewed` | `{ robotId: number; robotName: string; document: string }` | §2 |
+| `orka.capability.saved` | `{ capabilityId: number; name: string; created: boolean }` | §2 |
+| `orka.matchPreview.ran` | `{ capabilities: string; environment: string; matches: string[] } & Ok` | §2 |
+| `orka.merchant.editOpened` | `{ merchantId: number; name: string }` | §2 |
+| `orka.merchant.saved` | `{ merchantId: number; name: string; changed: string[] }` | §2 |
+| `orka.merchant.secretRevealed` | `{ merchantId: number; name: string }` | §2 |
+| `orka.screens.filtered` | `{ deviceType: string \| null; name: string; display: string \| null; resultCount: number }` | §2 |
+| `orka.screen.viewed` | `{ screenId: number; name: string; deviceType: string }` | §2 |
+| `orka.screenLocations.viewed` | `{ screenId: number; screen: string; deviceType: string; count: number }` | §2 |
+| `orka.screen.saved` | `{ screenId: number; name: string; deviceType: string; created: boolean }` | §2 |
+| `orka.screenLocation.saved` | `{ locationId: number; screenId: number; screen: string; deviceType: string; button: string; xMm: number; yMm: number; created: boolean; }` | §2 |
+| `orka.screenLocation.testTap` | `{ robotName: string; screen: string; button: string; ok: boolean; response: string }` | §2 |
+| `orka.cardProfile.viewed` | `{ profileId: number; name: string; entry: CardEntry }` | §2 |
+| `orka.cardProfile.fieldClicked` | `{ profileId: number; name: string; field: 'trackData' \| 'gorthPath' }` | §2 |
+| `orka.cardProfile.saved` | `{ profileId: number; name: string; changed: string[] }` | §2 |
+| `orka.screenCompare.saved` | `{ compareId: number; name: string; created: boolean; x: number; y: number; w: number; h: number; expected: string }` | §2 |
+| `orka.screenCompare.tested` | `{ compareId: number; name: string; text: string; expected: string; match: boolean \| null } & Ok` | §2 |
+| `orka.screenCompare.layoutV2Toggled` | `{ on: boolean }` | §2 |
+| `orka.api.executed` | `{ method: string; path: string; status: number }` | §2 |
 | `jenkins.view.opened` | `{ view: string }` | §3 |
 | `jenkins.job.opened` | `{ jobId: string }` | §3 |
 | `jenkins.buildWithParameters.opened` | `{ jobId: string; params: Record<string, string> }` | §3 |
@@ -2323,7 +2323,7 @@ returns; semantics in the cited section.
 | `terminal.nano.saved` | `{ host: string; path: string } & Ok` | §5 |
 | `gimp.image.opened` | `{ path: string; ref: string; width: number; height: number }` | §6 |
 | `gimp.selection.changed` | `{ path: string; ref: string; x: number; y: number; w: number; h: number }` | §6 |
-| `gimp.selection.copied` | `{ x: number; y: number; w: number; h: number; format: 'pigeon-json' \| 'field'; text: string }` | §6 |
+| `gimp.selection.copied` | `{ x: number; y: number; w: number; h: number; format: 'parrot-json' \| 'field'; text: string }` | §6 |
 | `camera.stream.opened` | `{ url: string; host: string \| null; robotName: string \| null; cameraId: string \| null } & Ok` | §8 |
 | `camera.wall.opened` | `Record<string, never>` | §8 |
 | `camera.snapshot.saved` | `{ path: string; ref: string; url: string; robotName: string \| null }` | §8 |

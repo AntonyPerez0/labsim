@@ -14,7 +14,7 @@ declare module '@/core/events' {
   interface EventMap {
     /**
      * Internal marker pair bracketing events the mission runtime causes on its own behalf (fault injection,
-     * setup ops, Jared's fixes). Events are flushed after their transaction commits, so the bracket travels
+     * setup ops, Jaden's fixes). Events are flushed after their transaction commits, so the bracket travels
      * through the same queue and tags everything between `on: true` and `on: false` as runtime-driven.
      */
     'missions.runtimeScope': { on: boolean };
@@ -44,7 +44,7 @@ export const RT = {
   /** First seq of the current activity. */
   activityStartSeq: 1,
   /**
-   * > 0 while the runtime drives the sim on its own behalf (fault injection, Jared's fix, setup ops):
+   * > 0 while the runtime drives the sim on its own behalf (fault injection, Jaden's fix, setup ops):
    * events emitted meanwhile are tagged `suppressed` so global-wrong-action detection ignores them.
    */
   gwSuppress: 0,

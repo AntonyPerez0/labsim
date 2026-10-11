@@ -7,22 +7,22 @@ import { resolvePeople } from '../people';
 
 export const UIA_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
   {
-    id: "uia-remote-structure",
-    title: "uia-remote: Structure & the Multi-Device Trick",
+    id: "uia-relay-structure",
+    title: "uia-relay: Structure & the Multi-Device Trick",
     category: "Test Frameworks",
     summary: "The team's modern Java / UI Automator repo: the app/src layout (main, test, androidTest), the three androidTest packages, and how a runner in test drives an MFD and a CFD even though UI Automator talks to one device at a time.",
     factIds: ["F039", "F040", "F005", "F006", "F001", "F010", "F159", "F163", "F164", "F165", "F166", "F167", "F168", "F169", "F170", "F171", "F018"],
     tags: ["uia.pom", "uia.layout", "uia.packages", "uia.multidevice", "arch.repos"],
-    related: ["uia-remote-pom", "tax-test", "config-properties", "intellij-and-github", "teams-and-history"],
-    keywords: ["uia-remote", "app/src", "main", "test", "androidTest", "databases", "pageobjects", "testactions", "Maven", "runner", "MultiDeviceRunner", "device handle", "UI Automator", "one device"],
+    related: ["uia-relay-pom", "tax-test", "config-properties", "intellij-and-github", "teams-and-history"],
+    keywords: ["uia-relay", "app/src", "main", "test", "androidTest", "databases", "pageobjects", "testactions", "Maven", "runner", "MultiDeviceRunner", "device handle", "UI Automator", "one device"],
     practice: ["INC34", "DR15"],
     body: `## What it is
 
-**uia-remote** is the team's modern **Java / UI Automator** test repository {F039}, built on Google's **Android UI Automator** {F005} — specifically **version 2.3** {F006} — in Java {F001}. It automates **both standalone devices and tethered multi-device setups across native LabSim apps** {F040}. {{morgan}} created it because no prior framework could automate native tethered setups: Stand-to-Micro, Micro-to-Micro and Stand Duet {F159}. It lives on GitHub with Gort and pigeon {F018}.
+**uia-relay** is the team's modern **Java / UI Automator** test repository {F039}, built on Google's **Android UI Automator** {F005} — specifically **version 2.3** {F006} — in Java {F001}. It automates **both standalone devices and tethered multi-device setups across native LabSim apps** {F040}. {{morgan}} created it because no prior framework could automate native tethered setups: Stand-to-Micro, Micro-to-Micro and Stand Duet {F159}. It lives on GitHub with Gorth and parrot {F018}.
 
 ## Layout
 
-uia-remote is built inside a standard **Android/Maven** structure under \`app/src/\` {F163} (the layout mirrors Apache Maven {F010}):
+uia-relay is built inside a standard **Android/Maven** structure under \`app/src/\` {F163} (the layout mirrors Apache Maven {F010}):
 
 | Folder | Holds | Rule |
 |---|---|---|
@@ -60,13 +60,13 @@ cfd.run(cfdPayment::finalisePayment);   // Step 4
 `,
   },
   {
-    id: "uia-remote-pom",
+    id: "uia-relay-pom",
     title: "Page Objects: BaseTest, Zones & Mandatory Methods",
     category: "Test Frameworks",
     summary: "One Java class per screen, extending BaseTest; Zone 1 locators, Zone 2 helpers (where device quirks like open() scrolling live); and the two mandatory methods, waitForScreen() and isScreenPresent().",
     factIds: ["F172", "F173", "F174", "F175", "F176", "F177", "F178", "F179", "F180", "F195"],
     tags: ["uia.pom", "uia.sync", "uia.scroll"],
-    related: ["uia-remote-structure", "ts-uia-flaky", "tax-test", "config-properties"],
+    related: ["uia-relay-structure", "ts-uia-flaky", "tax-test", "config-properties"],
     keywords: ["Page Object Model", "POM", "BaseTest", "Zone 1", "Zone 2", "locators", "helper methods", "waitForScreen", "isScreenPresent", "open", "appName", "scroll vertical", "horizontal", "HomeScreen", "LockScreen", "NavigationBar", "RegisterHomeScreen"],
     practice: ["INC32", "INC33", "INC34", "DR15"],
     body: `## One class per screen
@@ -139,10 +139,10 @@ public class HomeScreen extends BaseTest {
     id: "tax-test",
     title: "The Tethered Tax Test, Step by Step",
     category: "Test Frameworks",
-    summary: "The reference's end-to-end example: start on HomeScreen, MFD_O1 rings up Tax Item 5 and Orca loads a swipe card via Callus, CFD_O1 asserts the totals, MFD_O2 pays and charges, Step 4 finalises on the customer screen, teardown back to HomeScreen.",
+    summary: "The reference's end-to-end example: start on HomeScreen, MFD_O1 rings up Tax Item 5 and Orka loads a swipe card via Kallus, CFD_O1 asserts the totals, MFD_O2 pays and charges, Step 4 finalises on the customer screen, teardown back to HomeScreen.",
     factIds: ["F181", "F182", "F183", "F184", "F185", "F186", "F187", "F054", "F171"],
-    tags: ["uia.config", "uia.taxtest", "cards.callus"],
-    related: ["uia-remote-structure", "config-properties", "mfd-cfd-tethered", "callus", "ts-uia-flaky"],
+    tags: ["uia.config", "uia.taxtest", "cards.kallus"],
+    related: ["uia-relay-structure", "config-properties", "mfd-cfd-tethered", "kallus", "ts-uia-flaky"],
     keywords: ["Tax test", "TaxTest", "MFD_O1", "CFD_O1", "MFD_O2", "Step 4", "Tax Item 5", "Review Order", "Pay", "Charge", "subtotal", "tax", "grand total", "HomeScreen", "teardown", "header"],
     practice: ["INC31", "INC35", "INC47"],
     body: `## Before the steps
@@ -154,7 +154,7 @@ public class HomeScreen extends BaseTest {
 
 | Step | Device | What happens |
 |---|---|---|
-| **1 — MFD_O1** | Merchant display | Open the **Register** app, add **"Tax Item 5"**, click **"Review Order"** {F183}. A backend call goes to **Orchestrator**, which routes to the **Callers/Collos (Callus)** microservice to load a simulated **swipe** card {F184} |
+| **1 — MFD_O1** | Merchant display | Open the **Register** app, add **"Tax Item 5"**, click **"Review Order"** {F183}. A backend call goes to **Orchestrator**, which routes to the **Kallers/Kollos (Kallus)** microservice to load a simulated **swipe** card {F184} |
 | **2 — CFD_O1** | Customer display | Control shifts to the CFD, which asserts **subtotal, calculated tax and grand total** {F185} |
 | **3 — MFD_O2** | Merchant display | Control returns to the MFD to click **"Pay"** and **"Charge"** {F186} |
 | **4** | Customer display | The **payment prompt is finalised** on the Customer display {F187} |
@@ -168,7 +168,7 @@ MFD = Merchant Facing Device, CFD = Customer Facing Device {F054}. The hand-offs
  * TaxTest — tethered (MFD + CFD)
  * Intent: verify that a taxable item rings up with the correct subtotal,
  * calculated tax and grand total on the Customer display, then completes
- * payment with a simulated swipe card loaded by Orca via Callus.
+ * payment with a simulated swipe card loaded by Orka via Kallus.
  * Safe state: starts on HomeScreen; teardown forces both devices back to HomeScreen.
  * Steps: MFD_O1 → CFD_O1 → MFD_O2 → CFD finalise.
  */
@@ -179,7 +179,7 @@ MFD = Merchant Facing Device, CFD = Customer Facing Device {F054}. The hand-offs
 ## Running it locally
 
 1. Fix \`config.properties\` for the tethered rig ([[config-properties]]).
-2. **Reserve** the rig in Orca — you're running locally ([[orca-statuses]]).
+2. **Reserve** the rig in Orka — you're running locally ([[orka-statuses]]).
 3. Run \`TaxTest\` from IntelliJ IDEA and watch MFD_O1 → CFD_O1 → MFD_O2 → Step 4.
 4. **Release** the rig (back to Available).
 `,
@@ -188,7 +188,7 @@ MFD = Merchant Facing Device, CFD = Customer Facing Device {F054}. The hand-offs
     id: "config-properties",
     title: "config.properties (Local Runs)",
     category: "Test Frameworks",
-    summary: "Every key in uia-remote's config.properties, the three locked values (avocado, CPA, 5444), the Stand Duet same-IP rule, and why you only edit it for local runs.",
+    summary: "Every key in uia-relay's config.properties, the three locked values (avocado, CPA, 5444), the Stand Duet same-IP rule, and why you only edit it for local runs.",
     factIds: ["F188", "F189", "F190", "F191", "F192", "F193", "F194", "F195", "F196", "F197", "F198", "F199", "F200", "F201"],
     tags: ["uia.config", "adb.port"],
     related: ["adb-port-5444", "tax-test", "jenkins-env-vars", "ts-adb", "stand-duet-dual-screen"],

@@ -1,7 +1,7 @@
 /**
  * Hosts (Sim §3.14): power → OS life cycle (OFF / BOOTING / RUNNING / HUNG), service readiness,
  * restarts and start-up checks (controller.yaml, webcam, Wine prefix), corporate agent disk fill and policy
- * restore, GortCardSync, Pi under-voltage reboots, Ethernet/USB, and the host actions used by the world,
+ * restore, GorthCardSync, Pi under-voltage reboots, Ethernet/USB, and the host actions used by the world,
  * the terminal (via CoreServices) and faults.
  */
 import type { Host, HostOs, HostPower, LabState, ServiceState } from '../types';
@@ -10,7 +10,7 @@ import type { Ctx, SubStep } from './util';
 import { addTimer, cancelTimers, log, takeDue } from './util';
 import { RESTART_DELAYS } from '../seed/hosts';
 import { CARD_FILES_AT_9F02A1B, FACTORY_CARD_FILES } from '../seed/cards';
-import { mirrorCallusFiles } from '../seed';
+import { mirrorKallusFiles } from '../seed';
 import { crashLines, journalLine, NO_VIDEO0, startedLine, stoppedLine, WINE_BROKEN } from '../text/hosts';
 import { hostNetUp } from './network';
 import { ro, roAt } from './ro';
@@ -18,7 +18,7 @@ import { ro, roAt } from './ro';
 const OK: Result = { ok: true, value: undefined };
 const err = (e: string): Result => ({ ok: false, error: e });
 const DAY = 86_400_000;
-const GORT_SYNC_AT = 10 * 3_600_000;
+const GORTH_SYNC_AT = 10 * 3_600_000;
 const SYNC_MS = 20_000;
 const POLICY_RESTORE_MS = 30_000;
 export const corp_LOGS = 'C:\\ProgramData\\SecAgent\\logs\\';
@@ -218,8 +218,8 @@ export function hostsStep(lab: LabState, ctx: Ctx, sub: SubStep): void {
   // Blade first so VMs see its state in the same sub-step.
   ids.sort((a, b) => (a === 'gpu-blade' ? -1 : b === 'gpu-blade' ? 1 : 0));
   const tenSec = Math.floor(phys / 10_000) !== Math.floor((phys - sub.dtPhysMs) / 10_000);
-  const day = Math.floor((lab.time.nowMs - GORT_SYNC_AT) / DAY);
-  const syncCrossed = sub.dtGameMs > 0 && day > Math.floor((sub.prevNowMs - GORT_SYNC_AT) / DAY);
+  const day = Math.floor((lab.time.nowMs - GORTH_SYNC_AT) / DAY);
+  const syncCrossed = sub.dtGameMs > 0 && day > Math.floor((sub.prevNowMs - GORTH_SYNC_AT) / DAY);
   for (const id of ids) {
     const hr = ro(hostsR[id]!);
     if (hr.kind === 'workstation' || hr.kind === 'switch') continue;
@@ -269,11 +269,11 @@ export function hostsStep(lab: LabState, ctx: Ctx, sub: SubStep): void {
       const pct = Math.round((used / h.diskTotalGb) * 100);
       if (h.diskUsedPct !== pct) h.diskUsedPct = pct;
     }
-    // GortCardSync daily at 10:00 (game clock), once per crossing; a box that is down misses it.
-    if (syncCrossed && roAt(ro(hr.schedTasks), 'GortCardSync')) {
+    // GorthCardSync daily at 10:00 (game clock), once per crossing; a box that is down misses it.
+    if (syncCrossed && roAt(ro(hr.schedTasks), 'GorthCardSync')) {
       const h = lab.hosts[id]!;
       if (h.os === 'RUNNING' && hostNetUp(lab, h)) startSync(lab, h, false);
-      else log(lab, 'hosts', 'info', `${h.hostname}: GortCardSync missed (box not running at 10:00)`);
+      else log(lab, 'hosts', 'info', `${h.hostname}: GorthCardSync missed (box not running at 10:00)`);
     }
   }
   // Service mirrors (compatibility fields).
@@ -281,8 +281,8 @@ export function hostsStep(lab: LabState, ctx: Ctx, sub: SubStep): void {
     const h = roAt(hostsR, hid);
     return h?.os === 'RUNNING' && !!roAt(ro(h.services), svc)?.running;
   };
-  const orcaUp = svcUp('orca-vm', 'orca');
-  if (ro(ro(L.orca).app).up !== orcaUp) lab.orca.app.up = orcaUp;
+  const orkaUp = svcUp('orka-vm', 'orka');
+  if (ro(ro(L.orka).app).up !== orkaUp) lab.orka.app.up = orkaUp;
   const jUp = svcUp('jenkins-vm', 'jenkins');
   if (ro(L.jenkins).up !== jUp) lab.jenkins.up = jUp;
   const oUp = svcUp('ollama-vm', 'ollama');
@@ -355,27 +355,27 @@ function policyRestore(lab: LabState, ctx: Ctx, h: Host, what: string, size: num
   log(lab, 'hosts', 'warn', `${h.hostname}: corporate security policy restored the agent (${what})`);
 }
 
-/* ────────────────────────────── GortCardSync (Sim §3.14.6) ────────────────────────────── */
+/* ────────────────────────────── GorthCardSync (Sim §3.14.6) ────────────────────────────── */
 
 function startSync(lab: LabState, h: Host, manual: boolean): void {
-  const t = h.schedTasks.GortCardSync!;
+  const t = h.schedTasks.GorthCardSync!;
   t.running = true;
   t.lastRunMs = lab.time.nowMs;
   t.runEndsPhysMs = lab.time.physMs + SYNC_MS;
   addTimer(lab, 'host.schedTaskDone', 'phys', SYNC_MS, { host: h.id, manual });
 }
 
-/** Files under `cards/` on gort `main` now (sim-devops repo), or the factory list when gort is unseeded. */
-export function gortMainCardFiles(lab: LabState): { files: string[]; commit: string } {
-  const repo = lab.repos?.gort;
+/** Files under `cards/` on gorth `main` now (sim-devops repo), or the factory list when gorth is unseeded. */
+export function gorthMainCardFiles(lab: LabState): { files: string[]; commit: string } {
+  const repo = lab.repos?.gorth;
   const files = repo ? Object.keys(repo.files).filter((p) => p.startsWith('cards/')).sort() : [];
   const head = repo?.branches?.[repo.defaultBranch];
   return { files: files.length ? files : [...FACTORY_CARD_FILES], commit: head ? head.slice(0, 7) : 'c41d9e2' };
 }
 
-/** Files under `cards/` at a gort commit (walks the repo history; factory fallbacks for c41d9e2 / 9f02a1b). */
-export function gortCardFilesAt(lab: LabState, commit: string): string[] {
-  const repo = lab.repos?.gort;
+/** Files under `cards/` at a gorth commit (walks the repo history; factory fallbacks for c41d9e2 / 9f02a1b). */
+export function gorthCardFilesAt(lab: LabState, commit: string): string[] {
+  const repo = lab.repos?.gorth;
   if (repo) {
     const sha = Object.keys(repo.commits).find((s) => s.startsWith(commit));
     if (sha) {
@@ -402,24 +402,24 @@ export function gortCardFilesAt(lab: LabState, commit: string): string[] {
 }
 
 function finishSync(lab: LabState, ctx: Ctx, h: Host, manual: boolean): void {
-  const t = h.schedTasks.GortCardSync;
+  const t = h.schedTasks.GorthCardSync;
   if (!t) return;
   t.running = false;
   t.runEndsPhysMs = null;
   if (h.os !== 'RUNNING' || !hostNetUp(lab, h) || !lab.network.switchUp) {
     t.lastResult = 1;
-    ctx.emit('host.schedTaskRan', { hostId: h.id, task: 'GortCardSync', result: 1, commit: null, manual });
+    ctx.emit('host.schedTaskRan', { hostId: h.id, task: 'GorthCardSync', result: 1, commit: null, manual });
     return;
   }
-  const { files, commit } = gortMainCardFiles(lab);
+  const { files, commit } = gorthMainCardFiles(lab);
   t.lastResult = 0;
-  lab.callus.localCardFiles[h.id] = { syncedCommit: commit, syncedAtMs: lab.time.nowMs, files };
-  const lines = lab.callus.log[h.id] ?? [];
-  lines.push(`GortCardSync: pulled ${commit} (${files.length} files)`);
-  lab.callus.log[h.id] = lines;
-  mirrorCallusFiles(lab, h.id);
-  ctx.emit('host.schedTaskRan', { hostId: h.id, task: 'GortCardSync', result: 0, commit, manual });
-  ctx.emit('callus.syncCompleted', { hostId: h.id, commit, files: files.length, manual });
+  lab.kallus.localCardFiles[h.id] = { syncedCommit: commit, syncedAtMs: lab.time.nowMs, files };
+  const lines = lab.kallus.log[h.id] ?? [];
+  lines.push(`GorthCardSync: pulled ${commit} (${files.length} files)`);
+  lab.kallus.log[h.id] = lines;
+  mirrorKallusFiles(lab, h.id);
+  ctx.emit('host.schedTaskRan', { hostId: h.id, task: 'GorthCardSync', result: 0, commit, manual });
+  ctx.emit('kallus.syncCompleted', { hostId: h.id, commit, files: files.length, manual });
 }
 
 /* ────────────────────────────── actions ────────────────────────────── */
@@ -441,7 +441,7 @@ export function hostService(lab: LabState, ctx: Ctx, hostId: string, service: st
   const h = lab.hosts[hostId];
   if (!h) return err(`unknown host '${hostId}'`);
   if (h.os !== 'RUNNING') return err(`${h.hostname} is not running`);
-  const key = service === 'Callus' ? 'callus' : service.replace(/\.service$/, '');
+  const key = service === 'Kallus' ? 'kallus' : service.replace(/\.service$/, '');
   const s = h.services[key];
   if (!s) return err(isWindows(h) ? '[SC] OpenService FAILED 1060: The specified service does not exist as an installed service.' : `Failed to ${action} ${key}.service: Unit ${key}.service not found.`);
   if (key === 'corporate-agent' && action !== 'start') {
@@ -628,15 +628,15 @@ export function diskFreeGb(h: Host): number {
 }
 
 /** Minix front status screen text (Sim §3.14.2). */
-export function callusScreenText(lab: LabState, boxId: string): string {
+export function kallusScreenText(lab: LabState, boxId: string): string {
   const h = lab.hosts[boxId];
   if (!h || h.os !== 'RUNNING') return '';
-  if (!h.services.callus?.running) return 'Callus service · STOPPED';
-  const probes = Object.values(lab.collis)
-    .filter((c) => c.callusHostId === boxId)
-    .sort((a, b) => (lab.rigs[a.rigId]?.orcaRobotId ?? 0) - (lab.rigs[b.rigId]?.orcaRobotId ?? 0))
+  if (!h.services.kallus?.running) return 'Kallus service · STOPPED';
+  const probes = Object.values(lab.kollis)
+    .filter((c) => c.kallusHostId === boxId)
+    .sort((a, b) => (lab.rigs[a.rigId]?.orkaRobotId ?? 0) - (lab.rigs[b.rigId]?.orkaRobotId ?? 0))
     .map((c) => c.rigId.toUpperCase());
-  return `Callus service · listening on :9000 · probes: ${probes.join(', ')}`;
+  return `Kallus service · listening on :9000 · probes: ${probes.join(', ')}`;
 }
 
 export { journalLine };

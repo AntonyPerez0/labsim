@@ -67,7 +67,7 @@ export function SandboxPanel() {
               />
             </div>
             <div className="sbx__note">
-              Hold <kbd className="k-kbd k-kbd--sm">]</kbd> to fast-forward ×30. Orca pings every Pi every 5 game minutes.
+              Hold <kbd className="k-kbd k-kbd--sm">]</kbd> to fast-forward ×30. Orka pings every Pi every 5 game minutes.
             </div>
             <Toggle label="Penalties" hint="Off by default — Teach Cards still fire." checked={fp?.penalties ?? false} onChange={(v) => setSandbox({ penalties: v })} />
             <Toggle label="Background pipelines" hint="PL1–PL8 keep checking out rigs." checked={fp?.pipelines ?? true} onChange={(v) => setSandbox({ pipelines: v })} />

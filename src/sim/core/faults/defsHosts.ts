@@ -76,12 +76,12 @@ const serviceDown = (id: string, title: string, fixedService: string | null, ext
   },
 });
 
-const VM_UNITS: Record<string, string> = { mysql: 'orca-vm', orca: 'orca-vm', jenkins: 'jenkins-vm', ollama: 'ollama-vm' };
+const VM_UNITS: Record<string, string> = { mysql: 'orka-vm', orka: 'orka-vm', jenkins: 'jenkins-vm', ollama: 'ollama-vm' };
 
 function vmDown(id: string, title: string, fixed: { host: string; service: string } | null, meta: { tags: string[]; usedBy: string[]; symptoms: string[]; clears: string }): CoreFaultDef {
   const hs = (params: Params) => (fixed ? fixed : { host: str(params.host), service: str(params.service) });
   return {
-    info: info(id, title, 'hosts', fixed ? [] : [p('host', 'host', 'orca-vm, jenkins-vm or ollama-vm', { required: true, target: true, values: ['orca-vm', 'jenkins-vm', 'ollama-vm'] }), p('service', 'string', 'Service to stop', { required: true, values: ['mysql', 'orca', 'jenkins', 'ollama'] })], { ...meta }),
+    info: info(id, title, 'hosts', fixed ? [] : [p('host', 'host', 'orka-vm, jenkins-vm or ollama-vm', { required: true, target: true, values: ['orka-vm', 'jenkins-vm', 'ollama-vm'] }), p('service', 'string', 'Service to stop', { required: true, values: ['mysql', 'orka', 'jenkins', 'ollama'] })], { ...meta }),
     validate(lab, params) {
       const { host: hid, service } = hs(params);
       const h = lab.hosts[hid];
@@ -102,7 +102,7 @@ function vmDown(id: string, title: string, fixed: { host: string; service: strin
     isResolved(lab, f) {
       const { host: hid, service } = hs(f.params);
       const up = !!lab.hosts[hid]?.services[service]?.running;
-      return service === 'mysql' ? up && lab.orca.app.dbConnected : up;
+      return service === 'mysql' ? up && lab.orka.app.dbConnected : up;
     },
     revert(lab, ctx, f) {
       const { host: hid, service } = hs(f.params);
@@ -114,7 +114,7 @@ function vmDown(id: string, title: string, fixed: { host: string; service: strin
 export const HOST_FAULTS: CoreFaultDef[] = [
   {
     info: info('pi.hung', 'Pi board hung', 'hosts', [p('host', 'host', 'Any Robot Pi (pi-*)', { required: true, target: true })], {
-      tags: ['hw.pi', 'orca.status.connfailed', 'orca.healthcheck'],
+      tags: ['hw.pi', 'orka.status.connfailed', 'orka.healthcheck'],
       clears: "os == 'RUNNING' (only a power interruption ends a hang)",
       symptoms: ['PWR solid, ACT solid on, Ethernet lit', 'ping/ssh time out', 'Notes → connect timed out after 10000 ms for every rig the Pi serves', 'tablet grey Status: CONTROLLER UNREACHABLE', 'camera stream unavailable'],
       usedBy: ['INC01', 'INC01-C', 'INC05', 'INC06', 'FP'],
@@ -142,7 +142,7 @@ export const HOST_FAULTS: CoreFaultDef[] = [
   },
   {
     info: info('pi.off', 'Pi power lead unplugged', 'hosts', [p('host', 'host', 'Any Robot Pi; @random = the Pis of the 12 physical rigs', { required: true, target: true })], {
-      tags: ['hw.pi', 'orca.status.connfailed'],
+      tags: ['hw.pi', 'orka.status.connfailed'],
       clears: "os == 'RUNNING'",
       symptoms: ["os = 'OFF', all LEDs dark", 'Notes → connect timed out after 10000 ms', 'tablet grey (on battery)', 'camera dark'],
       usedBy: ['P2-1', 'INC06', 'INC07'],
@@ -163,12 +163,12 @@ export const HOST_FAULTS: CoreFaultDef[] = [
     isResolved: (lab, f) => lab.hosts[f.target]?.os === 'RUNNING',
   },
   serviceDown('pi.serviceDown', 'Pi service crashed', null, {
-    tags: ['hw.pi', 'tools.terminal', 'orca.status.connfailed'],
+    tags: ['hw.pi', 'tools.terminal', 'orka.status.connfailed'],
     usedBy: ['INC01-B', 'FP'],
     symptoms: ['robot-controller: Notes → Connection refused, tablet grey, systemctl status → Active: failed (Result: exit-code)', 'camera-stream: Stream unavailable', 'adb-service: ADB_TOUCH 502', 'cardprog: 503 CARDPROG_UNAVAILABLE'],
   }),
   serviceDown('camera.sharedHostDown', 'Shared camera service down', 'camera-stream', {
-    tags: ['orca.urls', 'vision.camera', 'hw.pi'],
+    tags: ['orka.urls', 'vision.camera', 'hw.pi'],
     usedBy: ['INC08'],
     defaultHost: 'pi-cam-rackb',
     symptoms: ['Stream unavailable — http://10.42.10.40:8081/stream.mjpg', '[vision] GET … → Connection refused → Finished: FAILURE', 'rigs stay Available'],
@@ -259,7 +259,7 @@ export const HOST_FAULTS: CoreFaultDef[] = [
   ...(['unplugged', 'damaged'] as const).map(
     (kind): CoreFaultDef => ({
       info: info(`eth.${kind}`, kind === 'unplugged' ? 'Ethernet cable unplugged' : 'Damaged Ethernet cable', 'hosts', [p('host', 'host', 'Any host with an Ethernet jack', { required: true, target: true })], {
-        tags: kind === 'unplugged' ? ['orca.status.connfailed', 'hw.pi', 'orca.notes'] : ['orca.status.connfailed', 'hw.pi'],
+        tags: kind === 'unplugged' ? ['orka.status.connfailed', 'hw.pi', 'orka.notes'] : ['orka.status.connfailed', 'hw.pi'],
         clears: "eth == 'LINKED'",
         symptoms: kind === 'unplugged' ? ['timeouts → Notes connect timed out after 10000 ms', 'jack LEDs off', 'tablet stays green', 'ping 100 % loss'] : ['every other connection attempt times out', 'Notes alternate failure / recovery', 'link LED flickers'],
         usedBy: kind === 'unplugged' ? ['INC04', 'INC03-C', 'FP'] : ['INC04-B'],
@@ -280,25 +280,25 @@ export const HOST_FAULTS: CoreFaultDef[] = [
     }),
   ),
   {
-    info: info('callus.down', 'Callus box offline / Callus stopped', 'hosts', [p('host', 'host', 'Windows box running Callus', { target: true, default: 'minix-01' }), p('mode', 'string', 'box-off (a Windows update shut it down) or service-stopped', { default: 'box-off', values: ['box-off', 'service-stopped'] })], {
-      tags: ['orca.status.connfailed', 'cards.callus', 'hw.nuc', 'orca.notes'],
-      clears: "os == 'RUNNING' && services.callus.running",
-      symptoms: ['/health 502 Bad Gateway {"error":"callus upstream 10.42.20.1:9000 unreachable"} for every rig on the box', '[callus] 10.42.20.1:9000 unreachable', 'service-stopped: sc query Callus → STATE : 1  STOPPED, status screen Callus service · STOPPED'],
+    info: info('kallus.down', 'Kallus box offline / Kallus stopped', 'hosts', [p('host', 'host', 'Windows box running Kallus', { target: true, default: 'minix-01' }), p('mode', 'string', 'box-off (a Windows update shut it down) or service-stopped', { default: 'box-off', values: ['box-off', 'service-stopped'] })], {
+      tags: ['orka.status.connfailed', 'cards.kallus', 'hw.nuc', 'orka.notes'],
+      clears: "os == 'RUNNING' && services.kallus.running",
+      symptoms: ['/health 502 Bad Gateway {"error":"kallus upstream 10.42.20.1:9000 unreachable"} for every rig on the box', '[kallus] 10.42.20.1:9000 unreachable', 'service-stopped: sc query Kallus → STATE : 1  STOPPED, status screen Kallus service · STOPPED'],
       usedBy: ['INC02', 'M18', 'FP'],
     }),
     validate(lab, params) {
       const h = host(lab, params);
-      if (!h || (h.kind !== 'minix' && h.kind !== 'nuc') || !h.services.callus?.enabled) return invalid('callus.down', 'host', str(params.host), 'no such Callus box');
-      if (h.os !== 'RUNNING' || !h.services.callus.running) return nothing('callus.down', `${h.id} Callus is not running`);
+      if (!h || (h.kind !== 'minix' && h.kind !== 'nuc') || !h.services.kallus?.enabled) return invalid('kallus.down', 'host', str(params.host), 'no such Kallus box');
+      if (h.os !== 'RUNNING' || !h.services.kallus.running) return nothing('kallus.down', `${h.id} Kallus is not running`);
       return ok(h.id);
     },
     apply(lab, ctx, params, record) {
       const h = host(lab, params)!;
       if (str(params.mode) === 'service-stopped') {
-        w(lab, record, ['hosts', h.id, 'services', 'callus', 'running'], false);
-        w(lab, record, ['hosts', h.id, 'services', 'callus', 'failure'], null);
-        w(lab, record, ['hosts', h.id, 'services', 'callus', 'startedPhysMs'], null);
-        ctx.emit('host.serviceChanged', { hostId: h.id, service: 'callus', running: false, failure: null });
+        w(lab, record, ['hosts', h.id, 'services', 'kallus', 'running'], false);
+        w(lab, record, ['hosts', h.id, 'services', 'kallus', 'failure'], null);
+        w(lab, record, ['hosts', h.id, 'services', 'kallus', 'startedPhysMs'], null);
+        ctx.emit('host.serviceChanged', { hostId: h.id, service: 'kallus', running: false, failure: null });
         return;
       }
       w(lab, record, ['hosts', h.id, 'os'], 'OFF');
@@ -310,12 +310,12 @@ export const HOST_FAULTS: CoreFaultDef[] = [
       ctx.emit('host.osChanged', { hostId: h.id, from: 'RUNNING', to: 'OFF' });
       ctx.emit('host.powerChanged', { hostId: h.id, from: 'on', to: 'off' });
     },
-    isResolved: (lab, f) => lab.hosts[f.target]?.os === 'RUNNING' && !!lab.hosts[f.target]?.services.callus?.running,
+    isResolved: (lab, f) => lab.hosts[f.target]?.os === 'RUNNING' && !!lab.hosts[f.target]?.services.kallus?.running,
     revert(lab, ctx, f) {
       const h = lab.hosts[f.target];
       if (!h) return;
       if (h.os === 'OFF') hostPowerButton(lab, ctx, h.id, false);
-      else if (h.os === 'RUNNING' && !h.services.callus?.running) hostService(lab, ctx, h.id, 'callus', 'start', 'faults');
+      else if (h.os === 'RUNNING' && !h.services.kallus?.running) hostService(lab, ctx, h.id, 'kallus', 'start', 'faults');
     },
   },
   {
@@ -341,9 +341,9 @@ export const HOST_FAULTS: CoreFaultDef[] = [
     },
     isResolved: () => false,
   },
-  vmDown('vm.serviceDown', 'VM service stopped', null, { tags: ['arch.infra', 'tools.terminal'], usedBy: ['FP'], symptoms: ['systemctl status <service> → Active: inactive (dead)', 'curl: (7) Failed to connect … Connection refused'], clears: 'services[service].running (mysql: && orca.app.dbConnected)' }),
-  vmDown('orca.mysqlDown', "Orca's MySQL down", { host: 'orca-vm', service: 'mysql' }, { tags: ['arch.stack', 'arch.infra', 'tools.terminal', 'arch.flow'], usedBy: ['INC60'], symptoms: ['Orca error page 500 Internal Server Error — Could not open JPA EntityManager…', '[orca] checkout request … → 500', 'health check aborted', '/management/health 503'], clears: 'services.mysql.running && orca.app.dbConnected' }),
-  vmDown('orca.appDown', 'Orca application stopped', { host: 'orca-vm', service: 'orca' }, { tags: ['arch.stack', 'arch.infra'], usedBy: ['FP'], symptoms: ['UI connection refused', 'checkouts → Connection refused', 'no health checks'], clears: 'services.orca.running' }),
+  vmDown('vm.serviceDown', 'VM service stopped', null, { tags: ['arch.infra', 'tools.terminal'], usedBy: ['FP'], symptoms: ['systemctl status <service> → Active: inactive (dead)', 'curl: (7) Failed to connect … Connection refused'], clears: 'services[service].running (mysql: && orka.app.dbConnected)' }),
+  vmDown('orka.mysqlDown', "Orka's MySQL down", { host: 'orka-vm', service: 'mysql' }, { tags: ['arch.stack', 'arch.infra', 'tools.terminal', 'arch.flow'], usedBy: ['INC60'], symptoms: ['Orka error page 500 Internal Server Error — Could not open JPA EntityManager…', '[orka] checkout request … → 500', 'health check aborted', '/management/health 503'], clears: 'services.mysql.running && orka.app.dbConnected' }),
+  vmDown('orka.appDown', 'Orka application stopped', { host: 'orka-vm', service: 'orka' }, { tags: ['arch.stack', 'arch.infra'], usedBy: ['FP'], symptoms: ['UI connection refused', 'checkouts → Connection refused', 'no health checks'], clears: 'services.orka.running' }),
   vmDown('jenkins.down', 'Jenkins stopped', { host: 'jenkins-vm', service: 'jenkins' }, { tags: ['arch.infra'], usedBy: ['FP'], symptoms: ['Jenkins unreachable', 'queue frozen'], clears: 'services.jenkins.running' }),
   vmDown('ollama.down', 'Ollama stopped', { host: 'ollama-vm', service: 'ollama' }, { tags: ['vision.ollama', 'arch.infra', 'tools.terminal'], usedBy: ['INC10'], symptoms: ['Model server unreachable', 'curl: (7) Failed to connect to 10.42.1.12 port 11434: Connection refused', 'OLLAMA_DOWN'], clears: 'services.ollama.running' }),
   {

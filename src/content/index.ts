@@ -89,7 +89,7 @@ export function checkpointQuestions(moduleId: string): QuizQuestion[] {
 
 /**
  * Quiz items carrying any of `tags`. A module tag also matches every fine tag under it
- * (e.g. "orca.status" matches items tagged "orca.status.reserved").
+ * (e.g. "orka.status" matches items tagged "orka.status.reserved").
  */
 export function questionsForTags(tags: TopicTag[], opts: { includeIllustrative?: boolean } = {}): QuizQuestion[] {
   const { includeIllustrative = true } = opts;

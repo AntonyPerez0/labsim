@@ -51,7 +51,7 @@ describe('rigs: lock, Park All, banner (Sim §3.7)', () => {
     sim.tick(50);
     expect(rig('bumblebee').banner).toBe('green');
     expect(sim.rig.command('bumblebee', 'park.all', 'player')).toEqual({ ok: false, error: 'Steppers disabled' });
-    expect(sim.orca.xyTouch('bumblebee', 'HOME', 'Register', 'player')).toEqual({ ok: false, error: '503 Service Unavailable: STEPPERS_DISABLED' });
+    expect(sim.orka.xyTouch('bumblebee', 'HOME', 'Register', 'player')).toEqual({ ok: false, error: '503 Service Unavailable: STEPPERS_DISABLED' });
     sim.rig.command('bumblebee', 'steppers.enable', 'player');
     sim.tick(50);
     expect(rig('bumblebee').banner).toBe('yellow');
@@ -65,7 +65,7 @@ describe('rigs: lock, Park All, banner (Sim §3.7)', () => {
     sim.tick(50);
     expect(lab().power.terminals['MOTOR-seti']!.energised).toBe(false);
     expect(rig('seti').banner).toBe('green');
-    expect(sim.orca.xyTouch('seti', 'HOME', 'Register', 'player')).toEqual({ ok: false, error: '503 Service Unavailable: MOTOR_POWER_LOST' });
+    expect(sim.orka.xyTouch('seti', 'HOME', 'Register', 'player')).toEqual({ ok: false, error: '503 Service Unavailable: MOTOR_POWER_LOST' });
     sim.rig.setSwitch('seti', 'motor', true, 'player');
     sim.tick(50);
     expect(rig('seti').banner).toBe('yellow');
@@ -77,7 +77,7 @@ describe('rigs: lock, Park All, banner (Sim §3.7)', () => {
     run(6_000);
     expect(rig('baymax')).toMatchObject({ banner: 'red', bannerText: 'Status: MOTION FAULT — HOMING FAILED (X limit not found)', motionFault: 'HOMING FAILED (X limit not found)' });
     expect(rig('baymax').gantry.xMm).toBe(-10);
-    expect(sim.orca.xyTouch('baymax', 'HOME', 'Register', 'player')).toEqual({ ok: false, error: '409 Conflict: MOTION_FAULT (HOMING FAILED (X limit not found))' });
+    expect(sim.orka.xyTouch('baymax', 'HOME', 'Register', 'player')).toEqual({ ok: false, error: '409 Conflict: MOTION_FAULT (HOMING FAILED (X limit not found))' });
     sim.rig.reseat('baymax', 'limitSwitchX', 'player');
     sim.rig.command('baymax', 'park.all', 'player');
     run(2_000);
@@ -154,11 +154,11 @@ describe('power (Sim §3.13)', () => {
     expect(device('dev-eve-flux4').power).toBe('fried');
   });
 
-  it('on a 5 V terminal the short blows the branch fuse; a Collis PSU there fries the probe', () => {
-    sim.power.unplug('psu-collis-wall-e', 'player');
-    sim.power.plug('psu-collis-wall-e', { kind: 'dc-rail', targetId: 'T-5V-SPARE' }, 'player');
+  it('on a 5 V terminal the short blows the branch fuse; a Kollis PSU there fries the probe', () => {
+    sim.power.unplug('psu-kollis-wall-e', 'player');
+    sim.power.plug('psu-kollis-wall-e', { kind: 'dc-rail', targetId: 'T-5V-SPARE' }, 'player');
     sim.tick(100);
-    expect(lab().collis['collis-wall-e']!.state).toBe('FRIED');
+    expect(lab().kollis['kollis-wall-e']!.state).toBe('FRIED');
     expect(lab().power.fuses['F-BENCH-5V']!.blown).toBe(true);
     expect(host('pi-tethered').os).toBe('OFF');
   });

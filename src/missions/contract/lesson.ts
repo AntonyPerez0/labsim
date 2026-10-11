@@ -45,7 +45,7 @@ export type LessonStepKind =
   | 'hint'
   | 'script';
 
-/** A dialogue choice (keys 1–4). Wrong choices play `response` (e.g. Tate's correction) and let the player choose again. */
+/** A dialogue choice (keys 1–4). Wrong choices play `response` (e.g. Nate's correction) and let the player choose again. */
 export interface DialogueChoice {
   id: string;
   text: string;
@@ -58,8 +58,8 @@ export interface DialogueChoice {
 
 /**
  * A wrong action watched during a step (Cur "Wrong action gives the mentor correction line").
- * @example { id: 'edit-name', on: on('orca.entitySaved', { entity: 'robot' }), when: c.neq(p.robot('johnny-5').name, 'johnny-5'),
- *            say: 'Name is the system identifier. Pipelines use it. Leave it.', speaker: 'tate' }
+ * @example { id: 'edit-name', on: on('orka.entitySaved', { entity: 'robot' }), when: c.neq(p.robot('johnny-5').name, 'johnny-5'),
+ *            say: 'Name is the system identifier. Pipelines use it. Leave it.', speaker: 'nate' }
  */
 export interface WrongActionDef {
   id: string;
@@ -88,7 +88,7 @@ interface StepBase {
   hints?: readonly HintDef[];
   wrongActions?: readonly WrongActionDef[];
   onEnter?: readonly ScriptAction[];
-  /** Played after success, before the next step (e.g. Jared: "On it…" and the fix). */
+  /** Played after success, before the next step (e.g. Jaden: "On it…" and the fix). */
   onComplete?: readonly ScriptAction[];
   /** Autosave checkpoint at step start (default true). */
   checkpoint?: boolean;
@@ -129,7 +129,7 @@ export interface InspectStep extends StepBase {
 
 /**
  * Hands-on action evaluated against sim state. With `choices`, pressing E on the NPC target opens
- * the choice list (Cur M06 step 10: escalate EVE to Jared).
+ * the choice list (Cur M06 step 10: escalate EVE to Jaden).
  */
 export interface InteractStep extends StepBase {
   kind: 'interact';

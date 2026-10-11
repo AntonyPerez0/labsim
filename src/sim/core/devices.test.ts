@@ -1,4 +1,4 @@
-/** LabSim devices (Sim §3.8–§3.11), OCR Screen Compare (§3.12) and Laz / Ubi (§3.17). */
+/** LabSim devices (Sim §3.8–§3.11), OCR Screen Compare (§3.12) and Lazo / Ubo (§3.17). */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { transact } from '@/core/store';
 import type { TxContext } from '@/core/store';
@@ -69,18 +69,18 @@ describe('transactions on a device (Sim §3.9)', () => {
   it('corrupt Track Data is rejected by the reader: SWIPE_ERROR + "Card read error, try again"', () => {
     sim.faults.inject({ faultId: 'card.trackDataCorrupt' });
     stage('dev-wall-e-flux3', 'payment-prompt');
-    const r = sim.orca.card('wall-e', 'SWIPE', 'VISA_STD_SWIPE', 'player');
+    const r = sim.orka.card('wall-e', 'SWIPE', 'VISA_STD_SWIPE', 'player');
     expect(r).toMatchObject({ ok: true });
     run(500);
     expect(device('dev-wall-e-flux3').logcat.at(-1)).toBe('E CardReader: SWIPE_ERROR: invalid track data');
     expect(device('dev-wall-e-flux3').display.toast?.text).toBe('Card read error, try again');
   });
 
-  it('Interac dip on a Westers bed asks for the PIN; ADB input is rejected by Secure Touch', () => {
+  it('Interac dip on a Westerly bed asks for the PIN; ADB input is rejected by Secure Touch', () => {
     const d = 'dev-seti-compass';
     stage(d, 'payment-prompt');
-    const r = sim.orca.card('seti', 'DIP', 'INTERAC_CA_DIP', 'player');
-    expect(r.ok && r.value?.lines).toEqual(['[callus] map cards/emv/interac_ca_dip.json → C:\\gort\\cards\\emv\\interac_ca_dip.json · load virtual card OK · probe seti: DIP', '[pi] cardprog: program INTERAC_CA_DIP → OK']);
+    const r = sim.orka.card('seti', 'DIP', 'INTERAC_CA_DIP', 'player');
+    expect(r.ok && r.value?.lines).toEqual(['[kallus] map cards/emv/interac_ca_dip.json → C:\\gorth\\cards\\emv\\interac_ca_dip.json · load virtual card OK · probe seti: DIP', '[pi] cardprog: program INTERAC_CA_DIP → OK']);
     run(1_500);
     expect(device(d).display.screen).toBe('pin-entry');
     expect(device(d).secureTouch).toBe(true);
@@ -161,7 +161,7 @@ describe('OCR Screen Compare (Sim §3.12.2 worked results)', () => {
     const f = sim.faults.inject({ faultId: 'ocr.capitalisation' });
     expect(cmp()).toBe('Total $10.83|false');
     expect(sim.faults.isResolved(f.ok ? f.value.instanceId : '')).toBe(false);
-    sim.orca.saveScreenCompareImage({ id: 1, expectedText: 'Total $10.83' }, 'player');
+    sim.orka.saveScreenCompareImage({ id: 1, expectedText: 'Total $10.83' }, 'player');
     expect(cmp()).toBe('Total $10.83|true');
     expect(sim.faults.isResolved(f.ok ? f.value.instanceId : '')).toBe(true);
   });
@@ -171,7 +171,7 @@ describe('OCR Screen Compare (Sim §3.12.2 worked results)', () => {
   });
   it('INC36 fixed by re-measuring the box to y 298 → match', () => {
     sim.faults.inject({ faultId: 'ocr.labelShift' });
-    sim.orca.saveScreenCompareImage({ id: 1, bbox: { x: 412, y: 298, w: 236, h: 44 } }, 'player');
+    sim.orka.saveScreenCompareImage({ id: 1, bbox: { x: 412, y: 298, w: 236, h: 44 } }, 'player');
     expect(cmp()).toBe('TOTAL $10.83|true');
   });
   it('a typo in Expected (INC37-B) fails; whole-screen box reads three lines', () => {
@@ -181,49 +181,49 @@ describe('OCR Screen Compare (Sim §3.12.2 worked results)', () => {
     expect(r.text.split('\n').slice(0, 3)).toEqual(['Subtotal $10.00', 'Tax $0.83', 'TOTAL $10.83']);
   });
   it('a camera URL pointing at WALL-E (INC09) reads WALL-E’s screen', () => {
-    sim.faults.inject({ faultId: 'orca.urlWrong', params: { robot: 'r2-d2', field: 'camera', value: 'http://10.42.10.11:8081/stream.mjpg' } });
+    sim.faults.inject({ faultId: 'orka.urlWrong', params: { robot: 'r2-d2', field: 'camera', value: 'http://10.42.10.11:8081/stream.mjpg' } });
     stage('dev-wall-e-flux3', 'payment-prompt');
-    sim.orca.saveScreenCompareImage({ id: 1, bbox: { x: 397 + 3.5 * 6, y: 112 + 3.5 * 52, w: Math.round(3.5 * 64), h: Math.round(3.5 * 8) } }, 'player');
+    sim.orka.saveScreenCompareImage({ id: 1, bbox: { x: 397 + 3.5 * 6, y: 112 + 3.5 * 52, w: Math.round(3.5 * 64), h: Math.round(3.5 * 8) } }, 'player');
     expect(cmp()).toBe('Tap, insert or swipe|false');
   });
 });
 
-describe('Laz zero-touch OOBE and Ubi (Sim §3.17)', () => {
+describe('Lazo zero-touch OOBE and Ubo (Sim §3.17)', () => {
   beforeEach(() => fresh());
 
   it('swaps the merchant in ≈ 53 s with the exact console lines and restores ADB over TCP', () => {
-    const r = sim.laz.start('dev-data-micro3', 2, 'player');
+    const r = sim.lazo.start('dev-data-micro3', 2, 'player');
     expect(r.ok).toBe(true);
     const id = r.ok ? r.value.runId : '';
-    const t = runUntil(() => ['done', 'failed'].includes(lab().laz.runs[id]!.step), 70_000);
+    const t = runUntil(() => ['done', 'failed'].includes(lab().lazo.runs[id]!.step), 70_000);
     expect(t).toBeGreaterThan(52_000);
     expect(t).toBeLessThan(54_000);
-    expect(lab().laz.runs[id]!.log).toEqual([
-      'ubi: routing merchant switch → AUTO-US-NOPIN-02',
-      'ubi: route us-east → US-EAST OK',
-      'laz: de-provision',
-      'laz: wipe caches',
-      'laz: setup wizard 1/6',
-      'laz: setup wizard 2/6',
-      'laz: setup wizard 3/6',
-      'laz: setup wizard 4/6',
-      'laz: setup wizard 5/6',
-      'laz: setup wizard 6/6',
-      'laz: merchant active',
-      'laz: adb tcpip 5444 via adb-shelf-pi → OK',
-      'laz: verify OK (SIM-M3-000031 on AUTO-US-NOPIN-02)',
+    expect(lab().lazo.runs[id]!.log).toEqual([
+      'ubo: routing merchant switch → AUTO-US-NOPIN-02',
+      'ubo: route us-east → US-EAST OK',
+      'lazo: de-provision',
+      'lazo: wipe caches',
+      'lazo: setup wizard 1/6',
+      'lazo: setup wizard 2/6',
+      'lazo: setup wizard 3/6',
+      'lazo: setup wizard 4/6',
+      'lazo: setup wizard 5/6',
+      'lazo: setup wizard 6/6',
+      'lazo: merchant active',
+      'lazo: adb tcpip 5444 via adb-shelf-pi → OK',
+      'lazo: verify OK (SIM-M3-000031 on AUTO-US-NOPIN-02)',
     ]);
     expect(device('dev-data-micro3')).toMatchObject({ merchantConfigId: 2, provisioned: true, adbTcpPort: 5444 });
-    expect(lab().orca.robots[11]!.merchantConfigId).toBe(1); // Orca says what it SHOULD hold
+    expect(lab().orka.robots[11]!.merchantConfigId).toBe(1); // Orka says what it SHOULD hold
   });
 
-  it('laz.skipAdbRestore: the next run leaves ADB over TCP off until `adb tcpip 5444` (INC28)', () => {
-    const f = sim.faults.inject({ faultId: 'laz.skipAdbRestore' });
+  it('lazo.skipAdbRestore: the next run leaves ADB over TCP off until `adb tcpip 5444` (INC28)', () => {
+    const f = sim.faults.inject({ faultId: 'lazo.skipAdbRestore' });
     const fid = f.ok ? f.value.instanceId : '';
-    const r = sim.laz.start('dev-data-micro3', 2, 'player');
+    const r = sim.lazo.start('dev-data-micro3', 2, 'player');
     const id = r.ok ? r.value.runId : '';
-    runUntil(() => lab().laz.runs[id]!.step === 'done', 70_000);
-    expect(lab().laz.runs[id]!.log).not.toContain('laz: adb tcpip 5444 via adb-shelf-pi → OK');
+    runUntil(() => lab().lazo.runs[id]!.step === 'done', 70_000);
+    expect(lab().lazo.runs[id]!.log).not.toContain('lazo: adb tcpip 5444 via adb-shelf-pi → OK');
     expect(device('dev-data-micro3').adbTcpPort).toBeNull();
     expect(sim.faults.isResolved(fid)).toBe(false);
     const out = transact((root, ctx) => adbShell(root.lab, ctx, 'SIM-M3-000031', ['tcpip', '5444'], 'terminal'));
@@ -233,15 +233,15 @@ describe('Laz zero-touch OOBE and Ubi (Sim §3.17)', () => {
     expect(sim.faults.isResolved(fid)).toBe(true);
   });
 
-  it('a wrong Ubi route fails before de-provisioning (INC50)', () => {
-    sim.faults.inject({ faultId: 'merchant.ubiRouteWrong' });
-    const r = sim.laz.start('dev-gerty-compass', 7, 'player');
+  it('a wrong Ubo route fails before de-provisioning (INC50)', () => {
+    sim.faults.inject({ faultId: 'merchant.uboRouteWrong' });
+    const r = sim.lazo.start('dev-gerty-compass', 7, 'player');
     expect(r.ok).toBe(true);
-    const r2 = sim.laz.start('dev-seti-compass', 7, 'player');
+    const r2 = sim.lazo.start('dev-seti-compass', 7, 'player');
     const id = r2.ok ? r2.value.runId : '';
     run(2_100);
-    expect(lab().laz.runs[id]!).toMatchObject({ step: 'failed' });
-    expect(lab().laz.runs[id]!.log).toEqual(['ubi: routing merchant switch → WESTERS-CA-02', 'ubi: ERROR route us-east cannot resolve merchant WESTERS-CA-02']);
+    expect(lab().lazo.runs[id]!).toMatchObject({ step: 'failed' });
+    expect(lab().lazo.runs[id]!.log).toEqual(['ubo: routing merchant switch → WESTERLY-CA-02', 'ubo: ERROR route us-east cannot resolve merchant WESTERLY-CA-02']);
     expect(device('dev-seti-compass').provisioned).toBe(true);
   });
 });

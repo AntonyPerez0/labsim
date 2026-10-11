@@ -15,7 +15,7 @@ import type { NanoSaveResult } from './nano';
 import { parsePrompt, resolveShellPath } from './prompt';
 
 export const WORKSTATION_HOST = 'ws-17';
-const REPO_IDS: RepoId[] = ['gort', 'uia-remote', 'pigeon', 'orchestrator'];
+const REPO_IDS: RepoId[] = ['gorth', 'uia-relay', 'parrot', 'orchestrator'];
 
 /** D6 fallback: `${hostId}:${path}` → contents. */
 const sessionFiles = new Map<string, string>();

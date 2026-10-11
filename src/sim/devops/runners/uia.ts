@@ -1,10 +1,10 @@
 /**
- * uia-remote runner (Sim §3.19): handles (with the 5555 fallback, §3.15.3), setup safe state, click
+ * uia-relay runner (Sim §3.19): handles (with the 5555 fallback, §3.15.3), setup safe state, click
  * routing (xy_touch on gantry-covered displays, UI Automator elsewhere), the render race and
  * `waitForScreen()` (§3.19.5), code facts (§3.19.6) and the test plans (§3.19.4).
  */
 import type { TerminalDevice, RunnerStep, ScreenName } from '../../types';
-import { UIA_PATHS } from '../../seed/repos/uiaRemote';
+import { UIA_PATHS } from '../../seed/repos/uiaRelay';
 import { core } from '../coreRef';
 import { hasTeardown, javaSyntaxError, methodBody, openDirection, packageProblems, screenCompareNames, screenSync, usesDisplayId } from '../codefacts';
 import { familyOf } from '../config';
@@ -12,7 +12,7 @@ import {
   displayOf,
   isCoworker,
   now,
-  orcaScreenFor,
+  orkaScreenFor,
   out,
   pageObjectName,
   probeCovers,
@@ -27,7 +27,7 @@ import {
   TIMEOUT_MS,
   uiaClick,
   runnerAdb,
-  orcaActor,
+  orkaActor,
 } from './engine';
 import type { Outcome, RC, StepHandler } from './engine';
 
@@ -87,7 +87,7 @@ const ops: Record<string, StepHandler> = {
     return 'done';
   },
   uiaHeader(rc) {
-    out(rc, `[runner] uia-remote 4.2.0 · UI Automator ${rc.lab.flags.uiaVersion} · runType=${env(rc, 'RUN_TYPE')} · deviceType=${env(rc, 'DEVICE_FAMILY')}`);
+    out(rc, `[runner] uia-relay 4.2.0 · UI Automator ${rc.lab.flags.uiaVersion} · runType=${env(rc, 'RUN_TYPE')} · deviceType=${env(rc, 'DEVICE_FAMILY')}`);
     return 'done';
   },
   /** Compile check (CF12, CF09, missing classes) over the test sources. */
@@ -318,14 +318,14 @@ const ops: Record<string, StepHandler> = {
     if (step.args['log']) out(rc, String(step.args['log']));
     return 'done';
   },
-  /** Orca card action (armed on the probe for the payment prompt, Sim §3.6). */
+  /** Orka card action (armed on the probe for the payment prompt, Sim §3.6). */
   card(rc, step) {
     if (sv(rc, 'sent') !== undefined) return 'done';
     const r = rc.host.robot;
     const profile = String(step.args['profile'] || env(rc, 'CARD_PROFILE') || 'VISA_STD_SWIPE');
     const entry = (String(step.args['entry'] ?? '') || entryOf(rc, profile)) as 'SWIPE' | 'DIP' | 'TAP';
-    if (!r) return testFail(rc, step, 'CARD_ERROR', '[orca] 404 Not Found: no robot');
-    const res = core().cardAction(rc.lab, rc.ctx, r.name, entry, profile, orcaActor(rc));
+    if (!r) return testFail(rc, step, 'CARD_ERROR', '[orka] 404 Not Found: no robot');
+    const res = core().cardAction(rc.lab, rc.ctx, r.name, entry, profile, orkaActor(rc));
     if (!res.ok) return testFail(rc, step, 'CARD_ERROR', ...res.error.split('\n'));
     for (const l of res.value?.lines ?? []) out(rc, l);
     if (step.args['log']) out(rc, String(step.args['log']).replace('{entry}', entry.toLowerCase()).replace('{profile}', profile));
@@ -361,7 +361,7 @@ const ops: Record<string, StepHandler> = {
     }
     return 'done';
   },
-  /** Legacy OCR Screen Compare from a test (`orca.screenCompare("NAME")`). */
+  /** Legacy OCR Screen Compare from a test (`orka.screenCompare("NAME")`). */
   screenCompare(rc, step) {
     return ocrCompare(rc, step, String(step.args['name']));
   },
@@ -426,11 +426,11 @@ const ops: Record<string, StepHandler> = {
     out(rc, `[vision] GET ${url} → 200 (frame saved)`);
     return 'done';
   },
-  /** PayCore matrix line after each approved sale. */
-  paycoreLog(rc, step) {
+  /** PayCrest matrix line after each approved sale. */
+  paycrestLog(rc, step) {
     const t = target(rc, 'DEVICE');
     const auth = t?.device.order?.authCode ?? t?.device.lastReceiptDoc?.authCode ?? 'SIM000';
-    out(rc, `[paycore] ${step.args['profile']} → APPROVED (${auth})`);
+    out(rc, `[paycrest] ${step.args['profile']} → APPROVED (${auth})`);
     return 'done';
   },
 };
@@ -439,7 +439,7 @@ const APP_SCREEN: Record<string, ScreenName> = { Register: 'register', Orders: '
 const PO_FOR_SCREEN: Record<string, string> = { register: 'RegisterHomeScreen', 'review-order': 'ReviewOrderScreen', 'tender-select': 'PaymentScreen', 'payment-prompt': 'PaymentPromptScreen', 'waiting-for-customer': 'PaymentScreen', tip: 'TipScreen', 'receipt-options': 'ReceiptScreen', 'thank-you': 'ThankYouScreen', home: 'HomeScreen' };
 
 function entryOf(rc: RC, profile: string): string {
-  const p = Object.values(rc.lab.orca.cardProfiles).find((c) => c.name === profile);
+  const p = Object.values(rc.lab.orka.cardProfiles).find((c) => c.name === profile);
   return p?.entry ?? 'SWIPE';
 }
 
@@ -448,7 +448,7 @@ function click(rc: RC, role: string, text: string): { code: string; lines: strin
   const t = target(rc, role);
   if (!t) return { code: 'DEVICE_UNREACHABLE', lines: [`[runner] ${role} handle lost`] };
   if (probeCovers(rc, t.display) && !isCoworker(rc, t.handle)) {
-    const screen = orcaScreenFor(t.device, t.display);
+    const screen = orkaScreenFor(t.device, t.display);
     if (!screen) return { code: 'UI_NOT_FOUND', lines: [NF(text)] };
     const r = runnerXyTouch(rc, screen, text);
     if (!r.ok) return { code: 'XY_TOUCH_ERROR', lines: [r.line] };
@@ -479,7 +479,7 @@ function cartTexts(rc: RC, d: TerminalDevice, display: 'primary' | 'secondary'):
 
 function ocrCompare(rc: RC, step: RunnerStep, name: string): Outcome {
   if (sv(rc, 'ocr') === undefined) {
-    const r = core().screenCompare(rc.lab, rc.ctx, name, orcaActor(rc));
+    const r = core().screenCompare(rc.lab, rc.ctx, name, orkaActor(rc));
     if (!r.ok) return testFail(rc, step, 'OCR_CAPTURE', `[ocr] ${r.error}`);
     out(rc, r.value.line);
     if (!r.value.match) return testFail(rc, step, 'OCR_MISMATCH', `AssertionError: screenCompare ${name} returned false`);
@@ -528,11 +528,11 @@ function customer(rc: RC, step: RunnerStep): Outcome {
           .reverse()
           .map((l) => /CardReader: ((?:SWIPE|CHIP|NFC)_\w*ERROR.*)$/.exec(l)?.[1])
           .find(Boolean);
-        const lines = [`[callus] ${entryOf(rc, profile).toLowerCase()} ${profile} fired → ${readErr ? 'card read error' : (toast ?? 'no card event')}`];
+        const lines = [`[kallus] ${entryOf(rc, profile).toLowerCase()} ${profile} fired → ${readErr ? 'card read error' : (toast ?? 'no card event')}`];
         if (readErr) lines.push(`[device] ${readErr}`);
         return testFail(rc, step, 'CARD_ERROR', ...lines);
       }
-      if (step.args['log'] !== false) out(rc, `[callus] ${entryOf(rc, profile).toLowerCase()} ${profile} fired → OK`);
+      if (step.args['log'] !== false) out(rc, `[kallus] ${entryOf(rc, profile).toLowerCase()} ${profile} fired → OK`);
       return 'done';
     }
     case 'pin': {
@@ -551,7 +551,7 @@ function customer(rc: RC, step: RunnerStep): Outcome {
       }
       const k = svn(rc, 'k') ?? 0;
       if (k < keys.length) {
-        const screen = orcaScreenFor(t.device, t.display) ?? 'PIN_ENTRY';
+        const screen = orkaScreenFor(t.device, t.display) ?? 'PIN_ENTRY';
         const r = runnerXyTouch(rc, screen, keys[k]!);
         if (!r.ok) return testFail(rc, step, 'XY_TOUCH_ERROR', r.line);
         ssv(rc, 'k', k + 1);
@@ -745,7 +745,7 @@ function compileTest(test: string, p: UiaPlanInput, roles: string[]): RunnerStep
         logical.splice(logical.indexOf(ids[5]!), 1);
       } else {
         out.push(ui('charge', r, 'PaymentScreen', 'charge', 'Charge', 'tender-select', duoDev ? 'waiting-for-customer|payment-prompt' : 'payment-prompt|cash-discount-tender', null, '[DEVICE] Charge'));
-        out.push(S('card', R, 'card', { test, profile: '', logical: ids[4]!, log: '[DEVICE] orca → callus: {entry} {profile} … OK' }));
+        out.push(S('card', R, 'card', { test, profile: '', logical: ids[4]!, log: '[DEVICE] orka → kallus: {entry} {profile} … OK' }));
         out.push(S('payment prompt', C, 'cust', { role: c, seg: 'prompt', test, ...(duoDev ? { prefix: cp } : {}) }));
         out.push(S('card fired', C, 'cust', { role: c, seg: 'fired', test, profile: '' }));
         out.push(S('noTip', C, 'cust', { role: c, seg: 'tip', button: 'No Tip', test, logical: ids[5]! }));
@@ -766,7 +766,7 @@ function compileTest(test: string, p: UiaPlanInput, roles: string[]): RunnerStep
       out.push(S('MFD_O1 open Register', 'MFD', 'open', { role: 'MFD', app: 'Register', test, log: '[MFD_O1] open Register' }));
       out.push(ui('MFD_O1 addTaxItem5', 'MFD', 'RegisterHomeScreen', 'addTaxItem5', 'Tax Item 5', 'register', 'register', null, '[MFD_O1] add "Tax Item 5"'));
       out.push(ui('MFD_O1 reviewOrder', 'MFD', 'RegisterHomeScreen', 'reviewOrder', 'Review Order', 'register', 'review-order', null, '[MFD_O1] Review Order'));
-      out.push(S('MFD_O1 card', 'MFD', 'card', { test, entry: 'SWIPE', logical: o1, log: '[MFD_O1] orca → callus: load swipe card {profile} … OK' }));
+      out.push(S('MFD_O1 card', 'MFD', 'card', { test, entry: 'SWIPE', logical: o1, log: '[MFD_O1] orka → kallus: load swipe card {profile} … OK' }));
       const ocr = screenCompareNames(src);
       if (duo && ocr.includes('CFD_TOTAL')) out.push(S('CFD_O1 screenCompare', 'CFD', 'cfdTotals', { via: 'ocr', name: 'CFD_TOTAL', test, logical: c1 }));
       else out.push(S('CFD_O1 totals', 'CFD', 'cfdTotals', { via: 'uia', test, logical: c1, ...(duo ? { only: 'total' } : {}) }));
@@ -801,7 +801,7 @@ function compileTest(test: string, p: UiaPlanInput, roles: string[]): RunnerStep
       } else logical.splice(logical.indexOf(ids[1]!), 1);
       out.push(ui('pay', 'MFD', 'ReviewOrderScreen', 'pay', 'Pay', 'review-order', 'tender-select', null, '[MFD] Pay'));
       out.push(ui('charge', 'MFD', 'PaymentScreen', 'charge', 'Charge', 'tender-select', 'waiting-for-customer|payment-prompt', null, '[MFD] Charge'));
-      out.push(S('card', 'MFD', 'card', { test, entry: 'SWIPE', profile: 'VISA_STD_SWIPE', logical: ids[2]!, log: '[MFD] orca → callus: load swipe card {profile} … OK' }));
+      out.push(S('card', 'MFD', 'card', { test, entry: 'SWIPE', profile: 'VISA_STD_SWIPE', logical: ids[2]!, log: '[MFD] orka → kallus: load swipe card {profile} … OK' }));
       out.push(S('prompt', 'CFD', 'cust', { role: 'CFD', seg: 'prompt', test, prefix: '[CFD]' }));
       out.push(S('fired', 'CFD', 'cust', { role: 'CFD', seg: 'fired', test, profile: 'VISA_STD_SWIPE' }));
       out.push(S('CFD_TIP No Tip', 'CFD', 'cust', { role: 'CFD', seg: 'tip', button: 'No Tip', test }));
@@ -826,7 +826,7 @@ function compileTest(test: string, p: UiaPlanInput, roles: string[]): RunnerStep
       // CARD_PROFILE (job default INTERAC_CA_DIP); the entry follows the profile (Sim §3.6), so
       // INTERAC_CA_TAP taps — and under the contactless CVM limit the device asks for no PIN.
       const prof = p.env['CARD_PROFILE'] || 'INTERAC_CA_DIP';
-      out.push(S(`card ${prof}`, R, 'card', { test, profile: prof, logical: ids[4]!, log: '[DEVICE] orca → callus: {entry} {profile} … OK' }));
+      out.push(S(`card ${prof}`, R, 'card', { test, profile: prof, logical: ids[4]!, log: '[DEVICE] orka → kallus: {entry} {profile} … OK' }));
       out.push(S('prompt', R, 'cust', { role: r, seg: 'prompt', test }));
       out.push(S('fired', R, 'cust', { role: r, seg: 'fired', test, profile: prof }));
       out.push(S('PIN', R, 'cust', { role: r, seg: 'pin', pin: '1234', test, logical: ids[5]! }));
@@ -836,10 +836,10 @@ function compileTest(test: string, p: UiaPlanInput, roles: string[]): RunnerStep
       out.push(S('evidence', R, 'evidence', { test, logical: ids[8]! }));
       break;
     }
-    case 'PaycoreMatrixTest': {
+    case 'PaycrestMatrixTest': {
       const profiles = (p.env['CARD_PROFILE'] || 'VISA_STD_DIP').split(',').map((x) => x.trim()).filter(Boolean);
       for (const prof of profiles) {
-        const id = L(`paycore-${prof}`);
+        const id = L(`paycrest-${prof}`);
         out.push(S(`open Register (${prof})`, R, 'open', { role: r, app: 'Register', test }));
         out.push(ui('addTaxItem5', r, 'RegisterHomeScreen', 'addTaxItem5', 'Tax Item 5', 'register', 'register', null));
         out.push(ui('reviewOrder', r, 'RegisterHomeScreen', 'reviewOrder', 'Review Order', 'register', 'review-order', null));
@@ -850,7 +850,7 @@ function compileTest(test: string, p: UiaPlanInput, roles: string[]): RunnerStep
         out.push(S('fired', R, 'cust', { role: r, seg: 'fired', test, profile: prof, log: false }));
         out.push(S('noTip', R, 'cust', { role: r, seg: 'tip', button: 'No Tip', test }));
         out.push(S('approved', R, 'cust', { role: r, seg: 'approved', test }));
-        out.push(S(`[paycore] ${prof}`, R, 'paycoreLog', { profile: prof, test }));
+        out.push(S(`[paycrest] ${prof}`, R, 'paycrestLog', { profile: prof, test }));
         out.push(S('noReceipt', R, 'cust', { role: r, seg: 'receipt', button: 'No Receipt', test }));
         out.push(S('thanks', R, 'cust', { role: r, seg: 'thanks', test, logical: id }));
         out.push(S('goHome', R, 'keyHome', { role: r, silent: true }));

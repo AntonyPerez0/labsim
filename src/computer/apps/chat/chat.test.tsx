@@ -44,19 +44,19 @@ describe('LabChat', () => {
 
   it('shows quick replies from the provider and posts the chosen one with its ticket', async () => {
     act(() => sim.chat.post('dm:riley', 'riley', 'Is EVE fixed?', 'LAB-2231'));
-    setChatReplyProvider((ctx) => (ctx.channel === 'dm:riley' ? [{ id: 'R_WAIT_PING', label: 'R_WAIT_PING — wait for the next ping', text: "Orca hasn't re-pinged yet; it'll clear at the next health check", ticketId: 'LAB-2231' }] : []));
+    setChatReplyProvider((ctx) => (ctx.channel === 'dm:riley' ? [{ id: 'R_WAIT_PING', label: 'R_WAIT_PING — wait for the next ping', text: "Orka hasn't re-pinged yet; it'll clear at the next health check", ticketId: 'LAB-2231' }] : []));
     cap = captureActions();
     const host = makeRoutedHost(ChatApp, '/dm/riley');
     m = await mount(<host.Host />);
     expect(m.container.querySelector('textarea')!.getAttribute('placeholder')).toBe('Message Riley');
     await click(m.container.querySelector('[data-hint="chat.reply:R_WAIT_PING"]'));
     const ev = cap.of('chat.reply.chosen')[0]!;
-    expect(ev).toMatchObject({ channel: 'dm:riley', ticketId: 'LAB-2231', replyId: 'R_WAIT_PING', text: "Orca hasn't re-pinged yet; it'll clear at the next health check" });
+    expect(ev).toMatchObject({ channel: 'dm:riley', ticketId: 'LAB-2231', replyId: 'R_WAIT_PING', text: "Orka hasn't re-pinged yet; it'll clear at the next health check" });
     expect(typeof ev.messageId).toBe('string');
   });
 
   it('renders the mrkdwn subset', () => {
-    const parts = parseInline('*bold* and _it_ `code` <http://orca.lab.local:8080/robot|Robots> @engineer :red_circle:');
+    const parts = parseInline('*bold* and _it_ `code` <http://orka.lab.local:8080/robot|Robots> @engineer :red_circle:');
     expect(parts.map((p) => p.t)).toEqual(['bold', 'text', 'italic', 'text', 'code', 'text', 'link', 'text', 'mention', 'text']);
     expect(plainText(':red_circle: <http://x|label>')).toBe('🔴 label');
   });

@@ -9,7 +9,7 @@ export type Severity = 'P1' | 'P2' | 'P3';
 export type HeatLevel = 1 | 2 | 3 | 4 | 5;
 export type PipelineId = 'PL1' | 'PL2' | 'PL3' | 'PL4' | 'PL5' | 'PL6' | 'PL7' | 'PL8';
 export type ShiftKind = 'standard' | 'full' | 'daily' | 'weak-spot' | 'micro' | 'certification';
-export type ShiftEventId = 'firmware-rollout' | 'onboarding-day' | 'corporate-scan' | 'jared-lunch';
+export type ShiftEventId = 'firmware-rollout' | 'onboarding-day' | 'corporate-scan' | 'jaden-lunch';
 
 /* ───────────────────────────── Tickets (GP §2.3.4–§2.3.8) ───────────────────────────── */
 
@@ -29,7 +29,7 @@ export interface TicketBinding {
   rig: string | null;
   /** Human Readable Name (`WALL-E`). */
   hrn: string | null;
-  /** Every rig the incident affects (rack / Callus-box incidents). */
+  /** Every rig the incident affects (rack / Kallus-box incidents). */
   rigs: string[];
   /** Resolved parameters: pi host id, IPs, fuse id, box id, device ids, seeded truth … */
   vars: Record<string, string | number | boolean>;
@@ -53,11 +53,11 @@ export interface EscalationState {
   endpoint: string;
   sentAtS: number;
   outcome: 'queued' | 'pending' | 'accepted' | 'bounced';
-  /** Jared bounce: when the ticket returns to the player (sent + 20 s). */
+  /** Jaden bounce: when the ticket returns to the player (sent + 20 s). */
   returnsAtS: number | null;
-  /** Accepted: when Jared finishes the hands-on fix (60–90 s). */
-  jaredDoneAtS: number | null;
-  /** Jared's bounce hint / bark. */
+  /** Accepted: when Jaden finishes the hands-on fix (60–90 s). */
+  jadenDoneAtS: number | null;
+  /** Jaden's bounce hint / bark. */
   message: string | null;
 }
 
@@ -153,7 +153,7 @@ export interface TicketState {
 
 export interface PipelineState {
   id: PipelineId;
-  /** Jenkins job path (`Java/uia-remote-regression-flux`). */
+  /** Jenkins job path (`Java/uia-relay-regression-flux`). */
   job: string;
   active: boolean;
   activationOrder: number;
@@ -167,7 +167,7 @@ export interface PipelineState {
   params: Record<string, string>;
   lastResult: 'SUCCESS' | 'FAILURE' | 'BLOCKED' | null;
   lastRobot: string | null;
-  /** Latest console line for the HUD strip tooltip (`[orca] no Available FLUX_3 robot — build waiting in queue`). */
+  /** Latest console line for the HUD strip tooltip (`[orka] no Available FLUX_3 robot — build waiting in queue`). */
   lastConsoleLine: string | null;
   /** Run counter (PL1 alternates DEVICE_TYPE FLUX_3 / FLUX_4 by parity). */
   runIndex: number;
@@ -219,7 +219,7 @@ export interface ShiftEventState {
   /** Real seconds since shift start when it fires. */
   firesAtS: number;
   fired: boolean;
-  /** Effect window end (Jared at lunch: +120 s), else null. */
+  /** Effect window end (Jaden at lunch: +120 s), else null. */
   activeUntilS: number | null;
   /** Onboarding day: tickets left that come from Alex with misleading titles. */
   remaining: number;
@@ -294,9 +294,9 @@ export interface ShiftState {
   pipelinePoints: number;
   uptime: { attempts: number; gotRig: number };
   event: ShiftEventState | null;
-  /** Jared at lunch until (escalations queue). */
-  jaredAwayUntilS: number | null;
-  /** Ticket ids whose escalations wait for Jared. */
+  /** Jaden at lunch until (escalations queue). */
+  jadenAwayUntilS: number | null;
+  /** Ticket ids whose escalations wait for Jaden. */
   queuedEscalations: string[];
   plannedWorkTicketId: string | null;
   plan: PlannedSpawn[] | null;
@@ -305,7 +305,7 @@ export interface ShiftState {
   stats: ShiftStats;
   /** Consecutive real seconds with every active pipeline unblocked and green at H3+ (ACH20). */
   greenWallS: number;
-  /** Real seconds until Orca's next health check (HUD "Next health check 0:42"). */
+  /** Real seconds until Orka's next health check (HUD "Next health check 0:42"). */
   nextHealthCheckInS: number;
   /** Rules for this run (from the ShiftConfig, after realism). */
   rules: {

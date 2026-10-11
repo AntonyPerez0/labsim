@@ -413,7 +413,7 @@ function complete(lab: LabState, ctx: TxContext, partial: string): string[] {
   const win = !!h && (h.kind === 'minix' || h.kind === 'nuc');
   const startsWith = (xs: readonly string[]): string[] => xs.filter((x) => x.startsWith(token)).sort();
   if (!prev.length || (prev.length === 1 && prev[0] === 'sudo')) {
-    if (!token.includes('/')) return startsWith(rs ? (win ? WIN_COMMANDS : PI_COMMANDS) : [...WS_COMMANDS, ...(lab.repos['uia-remote'].local ? ['./gradlew'] : [])]);
+    if (!token.includes('/')) return startsWith(rs ? (win ? WIN_COMMANDS : PI_COMMANDS) : [...WS_COMMANDS, ...(lab.repos['uia-relay'].local ? ['./gradlew'] : [])]);
   }
   const head = prev[0] === 'sudo' ? prev[1] : prev[0];
   const argIdx = prev.length - (prev[0] === 'sudo' ? 1 : 0);

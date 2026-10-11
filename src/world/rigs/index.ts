@@ -1,6 +1,6 @@
 /**
- * `buildRigs` — the world-rigs builder (World §2–§5): touch racks A/B with their 8 rigs, the Callus
- * shelf with the Collis probes and Windows boxes, the tethered bench (MEGATRON / OPTIMUS), the ADB
+ * `buildRigs` — the world-rigs builder (World §2–§5): touch racks A/B with their 8 rigs, the Kallus
+ * shelf with the Kollis probes and Windows boxes, the tethered bench (MEGATRON / OPTIMUS), the ADB
  * shelf (DATA / TARS) and the build table. Static geometry is merged per material across the whole
  * area; moving parts are small per-rig groups; screws, V-wheels, NEMA-17s, limit switches, toggle
  * bats and every indicator LED are instanced. A per-frame binder reads `store.getState().lab`.
@@ -14,7 +14,7 @@ import { buildTouchRack, type RackHandles } from './rack';
 import { buildTouchRig, type TouchRigView } from './touchRig';
 import { TouchRigBinder } from './rigView';
 import { ScreenManager } from './screens';
-import { buildCallusShelf, type CallusHandles } from './callusShelf';
+import { buildKallusShelf, type KallusHandles } from './kallusShelf';
 import { buildTethered, type TetheredHandles } from './tethered';
 import { buildAdbShelf, type AdbHandles } from './adbShelf';
 import { buildBuildTable } from './buildTable';
@@ -33,7 +33,7 @@ export interface RigsWorld {
   views: TouchRigView[];
   binders: TouchRigBinder[];
   screens: ScreenManager;
-  callus: CallusHandles;
+  kallus: KallusHandles;
   tethered: TetheredHandles;
   adb: AdbHandles;
   dispose(): void;
@@ -69,8 +69,8 @@ export async function buildRigs(engine: Engine, onProgress: (p: number, label: s
     views.push(buildTouchRig(kit, def, serialsFor(lab, def.id)));
     if (i % 2 === 1) await yieldFrame();
   }
-  onProgress(0.7, 'Callus shelf…');
-  const callus = buildCallusShelf(kit);
+  onProgress(0.7, 'Kallus shelf…');
+  const kallus = buildKallusShelf(kit);
   onProgress(0.76, 'Tethered bench…');
   const tethered = buildTethered(kit, lab);
   onProgress(0.82, 'ADB shelf…');
@@ -126,9 +126,9 @@ export async function buildRigs(engine: Engine, onProgress: (p: number, label: s
   tethered.addScreens(screens);
   adb.addScreens(screens);
   const binders = views.map((v) => new TouchRigBinder(kit, v, engine));
-  const shelfBinder = bindShelves(kit, engine, racks, callus, tethered, adb);
+  const shelfBinder = bindShelves(kit, engine, racks, kallus, tethered, adb);
   onProgress(0.94, 'Interactions…');
-  const unregister = registerRigInteractions(engine, kit, { views, binders, racks, callus, tethered, adb, table, screens });
+  const unregister = registerRigInteractions(engine, kit, { views, binders, racks, kallus, tethered, adb, table, screens });
 
   // emissive LED strips / chip arrows: same hue-preserving rule as the LED lenses (world/ledTone.ts)
   const glow = [
@@ -155,7 +155,7 @@ export async function buildRigs(engine: Engine, onProgress: (p: number, label: s
     receipts.update(l);
   });
   current = {
-    kit, movingInst, racks, views, binders, screens, callus, tethered, adb,
+    kit, movingInst, racks, views, binders, screens, kallus, tethered, adb,
     dispose() {
       offFrame();
       unregister();

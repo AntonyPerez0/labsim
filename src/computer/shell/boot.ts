@@ -15,7 +15,7 @@ import { closeAllExcept, closeWindow, shell } from './wmStore';
 /**
  * Window hygiene that must run while the desktop is NOT mounted (the player starts a lesson from the 3D
  * world or the menu, not while seated): a new session closes every window but LabChat, and windows of
- * apps the lesson gating locks are closed — otherwise a Free Play Orca/Jenkins window stays open and
+ * apps the lesson gating locks are closed — otherwise a Free Play Orka/Jenkins window stays open and
  * usable inside a lesson that has only unlocked the Terminal.
  */
 function startWindowHygiene(): () => void {

@@ -137,12 +137,12 @@ export function fmtRateBp(bp: number): string {
   return `${(bp / 100).toFixed(2)}%`;
 }
 
-/** Orca coordinate formatting: one decimal (`22.0`, Sim §0.2). */
+/** Orka coordinate formatting: one decimal (`22.0`, Sim §0.2). */
 export function fmtMm(v: number): string {
   return (Math.round(v * 10) / 10).toFixed(1);
 }
 
-/** Round to one decimal place (Orca rows, Sim §6.6 #2). */
+/** Round to one decimal place (Orka rows, Sim §6.6 #2). */
 export function round1(v: number): number {
   return Math.round(v * 10) / 10;
 }

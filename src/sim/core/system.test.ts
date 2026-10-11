@@ -23,32 +23,32 @@ describe('presets (Sim §6.5, §4.4.2)', () => {
     }
     sim.reset({ preset: 'arcade', seed: 4242 });
     expect(lab().time).toMatchObject({ startHour: 8, nowMs: 8 * 3_600_000, timeScale: 5 });
-    expect(lab().orca.healthCheck.log[0]!.lines[0]).toMatch(/^2026-10-05 08:00:00 {2}health-check run #1 — /);
+    expect(lab().orka.healthCheck.log[0]!.lines[0]).toMatch(/^2026-10-05 08:00:00 {2}health-check run #1 — /);
   });
 
-  it('academy:M07 sets up the Orca editing lesson (HRN typo, swapped Flux 2, blank Tap URL, cleared tether, offsets)', () => {
+  it('academy:M07 sets up the Orka editing lesson (HRN typo, swapped Flux 2, blank Tap URL, cleared tether, offsets)', () => {
     sim.reset({ preset: 'academy:M07' });
     expect(robot('johnny-5').humanReadableName).toBe('JONNY-5');
     expect(robot('johnny-5').tapUrl).toBe('');
     expect(robot('optimus').mfdDeviceId).toBeNull();
     expect(robot('bumblebee').offsetYMm).toBe(1.5);
     expect(lab().rigs['johnny-5']!.deviceIds).toEqual(['dev-spare-flux2']);
-    expect(device('dev-spare-flux2')).toMatchObject({ ip: '10.42.30.15', orcaDeviceName: '', rigId: 'johnny-5', supply: { kind: 'ac-strip', targetId: 'STRIP-B', socket: 1 } });
+    expect(device('dev-spare-flux2')).toMatchObject({ ip: '10.42.30.15', orkaDeviceName: '', rigId: 'johnny-5', supply: { kind: 'ac-strip', targetId: 'STRIP-B', socket: 1 } });
     sim.tick(50);
     expect(device('dev-spare-flux2').power).toBe('booting');
     expect(device('dev-johnny-5-flux1')).toMatchObject({ power: 'off', rigId: 'storage-shelf', ip: '' });
     // The player creates the Device row (serial binding, Sim §1.15) and relinks Robot Device.
-    const id = sim.orca.saveDevice({ name: 'johnny-5-flux2', deviceType: 'FLUX_2', serial: 'SIM-F2-000015', ip: '10.42.30.15', label: 'Flux 2 (JOHNNY-5)' }, 'player');
+    const id = sim.orka.saveDevice({ name: 'johnny-5-flux2', deviceType: 'FLUX_2', serial: 'SIM-F2-000015', ip: '10.42.30.15', label: 'Flux 2 (JOHNNY-5)' }, 'player');
     expect(id.ok).toBe(true);
-    expect(device('dev-spare-flux2').orcaDeviceName).toBe('johnny-5-flux2');
-    expect(lab().orca.devices[id.ok ? id.value : 0]!.simDeviceId).toBe('dev-spare-flux2');
+    expect(device('dev-spare-flux2').orkaDeviceName).toBe('johnny-5-flux2');
+    expect(lab().orka.devices[id.ok ? id.value : 0]!.simDeviceId).toBe('dev-spare-flux2');
   });
 
   it('academy:M16 stages R2-D2 on Review Order with the CFD showing TOTAL $10.83 and CFD_TOTAL deleted', () => {
     sim.reset({ preset: 'academy:M16' });
     expect(device('dev-r2-d2-duet').display.screen).toBe('review-order');
     expect(device('dev-r2-d2-duet').secondaryDisplay!.screen).toBe('customer-cart');
-    expect(Object.values(lab().orca.screenCompareImages).some((c) => c.name === 'CFD_TOTAL')).toBe(false);
+    expect(Object.values(lab().orka.screenCompareImages).some((c) => c.name === 'CFD_TOTAL')).toBe(false);
   });
 });
 
@@ -57,8 +57,8 @@ describe('determinism (Sim §6.4, §6.6)', () => {
     fresh('test', 1234);
     sim.faults.inject({ faultId: 'fuse.blown', params: { fuse: '@random' } });
     sim.faults.applySetup({ op: 'device.stage', params: { device: 'dev-wall-e-flux3', stage: 'payment-prompt' } });
-    sim.orca.card('wall-e', 'SWIPE', 'VISA_STD_SWIPE', 'player');
-    sim.jenkins.build('Java/uia-remote-tethered-tax', { ROBOT_NAME: 'megatron' }, 'player');
+    sim.orka.card('wall-e', 'SWIPE', 'VISA_STD_SWIPE', 'player');
+    sim.jenkins.build('Java/uia-relay-tethered-tax', { ROBOT_NAME: 'megatron' }, 'player');
     run(30_000);
     sim.skipToNextHealthCheck();
     run(15_000);
@@ -118,11 +118,11 @@ describe('performance (Sim §6.2)', () => {
   });
 });
 
-describe('end-to-end: Jenkins ↔ Orca ↔ rigs (Sim §3.18, §3.19.4)', () => {
-  it('Java/uia-remote-tethered-tax on MEGATRON checks out the rig, drives MFD + CFD and finishes SUCCESS', () => {
+describe('end-to-end: Jenkins ↔ Orka ↔ rigs (Sim §3.18, §3.19.4)', () => {
+  it('Java/uia-relay-tethered-tax on MEGATRON checks out the rig, drives MFD + CFD and finishes SUCCESS', () => {
     fresh();
     const screens = new Set<string>();
-    const r = sim.jenkins.build('Java/uia-remote-tethered-tax', { ROBOT_NAME: 'megatron' }, 'player');
+    const r = sim.jenkins.build('Java/uia-relay-tethered-tax', { ROBOT_NAME: 'megatron' }, 'player');
     expect(r.ok).toBe(true);
     const id = r.ok ? r.value.buildId : '';
     const ev = collect('device.screenChanged', () => {
@@ -133,7 +133,7 @@ describe('end-to-end: Jenkins ↔ Orca ↔ rigs (Sim §3.18, §3.19.4)', () => {
     expect(b.result).toBe('SUCCESS');
     expect(b.console).toContain('Checked out robot megatron (named)');
     expect(b.console).toContain('[CFD_O1] total $10.83 ✓');
-    expect(b.console).toContain('[orca] released megatron → Available');
+    expect(b.console).toContain('[orka] released megatron → Available');
     expect(b.console.at(-1)).toBe('Finished: SUCCESS');
     for (const s of ['dev-megatron-mfd:register', 'dev-megatron-mfd:review-order', 'dev-megatron-cfd:customer-cart', 'dev-megatron-cfd:payment-prompt', 'dev-megatron-cfd:approved', 'dev-megatron-cfd:thank-you']) expect(screens.has(s), s).toBe(true);
     expect(robot('megatron').checkout).toBeNull();
@@ -143,7 +143,7 @@ describe('end-to-end: Jenkins ↔ Orca ↔ rigs (Sim §3.18, §3.19.4)', () => {
   it('the same build fails while the USB Pay Display cable is unseated: the CFD keeps waiting for the merchant (INC47-A)', () => {
     fresh();
     sim.faults.inject({ faultId: 'tether.linkDown', params: { robot: 'megatron' } });
-    const r = sim.jenkins.build('Java/uia-remote-tethered-tax', { ROBOT_NAME: 'megatron' }, 'player');
+    const r = sim.jenkins.build('Java/uia-relay-tethered-tax', { ROBOT_NAME: 'megatron' }, 'player');
     const id = r.ok ? r.value.buildId : '';
     runUntil(() => lab().jenkins.builds[id]?.state === 'finished', 200_000);
     const b = lab().jenkins.builds[id]!;
@@ -154,7 +154,7 @@ describe('end-to-end: Jenkins ↔ Orca ↔ rigs (Sim §3.18, §3.19.4)', () => {
     sim.device.reseatHub('dev-megatron-mfd', 'usb', 'player');
     run(2_000);
     expect(device('dev-megatron-cfd').display.screen).toBe('customer-idle');
-    const r2 = sim.jenkins.build('Java/uia-remote-tethered-tax', { ROBOT_NAME: 'megatron' }, 'player');
+    const r2 = sim.jenkins.build('Java/uia-relay-tethered-tax', { ROBOT_NAME: 'megatron' }, 'player');
     const id2 = r2.ok ? r2.value.buildId : '';
     runUntil(() => lab().jenkins.builds[id2]?.state === 'finished', 150_000);
     expect(lab().jenkins.builds[id2]!.result).toBe('SUCCESS');

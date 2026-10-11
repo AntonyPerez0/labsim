@@ -277,7 +277,7 @@
 .notebook__pin:hover { background: rgba(255, 255, 255, 0.07); color: var(--tx-1); }
 .notebook__pin.is-on { color: var(--gold); }
 .ev-src { flex: none; min-width: 56px; text-align: center; font-size: 9.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 6px; border-radius: 4px; background: rgba(255, 255, 255, 0.07); color: var(--tx-1); }
-.ev-src--orca, .ev-src--notes { background: rgba(74, 168, 255, 0.15); color: #9dd0ff; }
+.ev-src--orka, .ev-src--notes { background: rgba(74, 168, 255, 0.15); color: #9dd0ff; }
 .ev-src--jenkins { background: rgba(239, 75, 63, 0.14); color: #ff9c94; }
 .ev-src--led, .ev-src--meter { background: rgba(245, 179, 1, 0.15); color: #ffd25c; }
 .ev-src--terminal { background: rgba(67, 176, 42, 0.15); color: var(--lab-hi); }

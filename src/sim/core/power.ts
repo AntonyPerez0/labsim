@@ -213,8 +213,8 @@ function damage(lab: LabState, ctx: Ctx, loadId: string, terminal: DcTerminal): 
       ctx.emit('device.fried', { deviceId: d.id, cause });
     }
   }
-  if (load.collisId) {
-    const c = lab.collis[load.collisId];
+  if (load.kollisId) {
+    const c = lab.kollis[load.kollisId];
     if (c) {
       c.state = 'FRIED';
       c.damaged = true;
@@ -379,7 +379,7 @@ function mirrorSupply(lab: LabState, load: PowerLoad): void {
   const sup = { ...load.supply };
   if (load.hostId && lab.hosts[load.hostId]) lab.hosts[load.hostId]!.supply = sup;
   if (load.deviceId && lab.devices[load.deviceId]) lab.devices[load.deviceId]!.supply = { ...sup };
-  if (load.collisId && lab.collis[load.collisId]) lab.collis[load.collisId]!.supply = { ...sup };
+  if (load.kollisId && lab.kollis[load.kollisId]) lab.kollis[load.kollisId]!.supply = { ...sup };
 }
 
 function detach(lab: LabState, loadId: string): void {
@@ -451,7 +451,7 @@ export function plug(lab: LabState, ctx: Ctx, loadId: string, hookup: PowerHooku
     if (c === 'fry' && lab.config.damageModel === 'academy') {
       spark(lab, ctx, t.id, `${load.label} on ${nominal} V DC (${t.id})`);
       log(lab, 'power', 'warn', `academy: ${actor} touched ${load.label} to ${t.id} — spark, lead popped out`);
-      return err(`Spark! ${load.label} on ${nominal} V DC (${t.id}) — the lead popped out. LabSim devices and Collis probes draw an irregular 18 V and use their own bricks on AC power strips.`);
+      return err(`Spark! ${load.label} on ${nominal} V DC (${t.id}) — the lead popped out. LabSim devices and Kollis probes draw an irregular 18 V and use their own bricks on AC power strips.`);
     }
     target = { kind: 'dc-rail', targetId: t.id };
   }

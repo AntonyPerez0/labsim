@@ -78,7 +78,7 @@ function Output({ model, focused }: { model: VsModel; focused: boolean }) {
           </div>
         ))
       ) : (
-        <div className="vsc-dim">LSTR output appears here (Run and Debug ▶, or Check in Pigeon Practice).</div>
+        <div className="vsc-dim">LSTR output appears here (Run and Debug ▶, or Check in Parrot Practice).</div>
       )}
       {run && !run.done ? <div className="vsc-dim">…running</div> : null}
       <div ref={endRef} />

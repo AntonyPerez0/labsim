@@ -117,7 +117,7 @@ function ConfigBar({ text, onToggle, open }: { text: string; open: boolean; onTo
             <IcWarning size={14} /> config.properties ✗ {v.passed}/{v.total}
           </span>
         )}
-        <span className="ij-dim">uia-remote Config Assistant</span>
+        <span className="ij-dim">uia-relay Config Assistant</span>
         <button type="button" className="ij-link" style={{ marginLeft: 'auto' }} onClick={onToggle}>
           {open ? 'Hide details ⌃' : 'Show details ⌄'}
         </button>
@@ -248,7 +248,7 @@ export function EditorPane(props: EditorPaneProps) {
   const tabStatus = (id: string) => (gitRepo && props.canGit && !model.diffs.has(id) && !model.buffers.get(id)?.readOnly ? fileStatus(gitRepo, id, head) : 'unchanged');
   const errors = problems.filter((p) => p.severity === 'error').length;
   const warnings = problems.length - errors;
-  const isExample = buffer && repo === 'uia-remote' && buffer.path === 'config.properties.example' && files['config.properties'] === undefined;
+  const isExample = buffer && repo === 'uia-relay' && buffer.path === 'config.properties.example' && files['config.properties'] === undefined;
 
   return (
     <div className="ij-editorarea">
@@ -355,7 +355,7 @@ export function EditorPane(props: EditorPaneProps) {
           <div style={{ position: 'relative', flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
             <div
               className="ij-chip"
-              title={mode === 'none' && repo === 'pigeon' && buffer.path.endsWith('.json') ? 'Highlighting level: None (pigeon/.idea/inspectionProfiles)' : `${errors} error${errors === 1 ? '' : 's'}, ${warnings} warning${warnings === 1 ? '' : 's'}`}
+              title={mode === 'none' && repo === 'parrot' && buffer.path.endsWith('.json') ? 'Highlighting level: None (parrot/.idea/inspectionProfiles)' : `${errors} error${errors === 1 ? '' : 's'}, ${warnings} warning${warnings === 1 ? '' : 's'}`}
               role="button"
               tabIndex={-1}
               onClick={() => {
@@ -363,7 +363,7 @@ export function EditorPane(props: EditorPaneProps) {
                 model.changed();
               }}
             >
-              {mode === 'none' && repo === 'pigeon' && buffer.path.endsWith('.json') ? (
+              {mode === 'none' && repo === 'parrot' && buffer.path.endsWith('.json') ? (
                 <IcEye size={14} />
               ) : problems.length ? (
                 <>

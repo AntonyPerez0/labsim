@@ -23,8 +23,8 @@ export function routeForChannel(channel: string): string {
 }
 
 export const BOTS: Record<string, { name: string; color: string; glyph: string }> = {
-  'orca-health-check': { name: 'Orca', color: '#353d47', glyph: 'O' },
-  orca: { name: 'Orca', color: '#353d47', glyph: 'O' },
+  'orka-health-check': { name: 'Orka', color: '#353d47', glyph: 'O' },
+  orka: { name: 'Orka', color: '#353d47', glyph: 'O' },
   'jenkins-bot': { name: 'Jenkins', color: '#335061', glyph: 'J' },
   jenkins: { name: 'Jenkins', color: '#335061', glyph: 'J' },
   system: { name: 'LabChat', color: '#4a154b', glyph: 'L' },
@@ -82,11 +82,11 @@ export function channelTitle(channel: string, author?: string): string {
 
 export const CHANNEL_TOPICS: Record<string, string> = {
   '#lab-automation': 'Lab ops, tickets, coworkers',
-  '#orca-alerts': 'Health-check failures and recoveries (Orca)',
+  '#orka-alerts': 'Health-check failures and recoveries (Orka)',
   '#jenkins': 'Red builds',
 };
 
-export const DEFAULT_CHANNELS = ['#lab-automation', '#orca-alerts', '#jenkins'];
+export const DEFAULT_CHANNELS = ['#lab-automation', '#orka-alerts', '#jenkins'];
 
 /* ─────────────────────────────── mrkdwn subset ─────────────────────────────── */
 

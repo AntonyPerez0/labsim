@@ -1,8 +1,8 @@
 /**
- * Team & NPCs — the ONLY place real names appear (canon "People"). Rename here to anonymise the game.
+ * Team & NPCs — the ONLY place people's names appear (canon "People"). All names are fictional.
  *
- * Jared, Tate and David are real first names from the reference. Morgan (canon S04: "the presenter" who
- * created uia-remote), Riley, Sam and Alex (GP §0) are invented for the game. All in-game text uses names or
+ * Jaden, Nate and Devin stand in (renamed) for real people in the reference. Morgan (canon S04: "the presenter" who
+ * created uia-relay), Riley, Sam and Alex (GP §0) are invented for the game. All in-game text uses names or
  * they/them — never gendered pronouns.
  */
 import type { TeamMember } from './schema';
@@ -11,62 +11,62 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     key: 'morgan',
     name: 'Morgan',
-    role: 'Automation engineer · uia-remote author · your onboarding mentor',
+    role: 'Automation engineer · uia-relay author · your onboarding mentor',
     blurb:
-      'Morgan created uia-remote because no earlier framework could automate native tethered setups, and now runs your onboarding. Ask Morgan about uia-remote, ADB, config.properties, Pigeon and test design.',
+      'Morgan created uia-relay because no earlier framework could automate native tethered setups, and now runs your onboarding. Ask Morgan about uia-relay, ADB, config.properties, Parrot and test design.',
     color: '#1f8a8a',
     npcId: 'npc.morgan',
     kind: 'mentor',
     fromReference: false,
     illustrative: true,
-    askAbout: ['uia-remote structure and page objects', 'config.properties', 'ADB on port 5444', 'Pigeon (LSTR)', 'Stand Duet OCR and UI Automator 2.3'],
+    askAbout: ['uia-relay structure and page objects', 'config.properties', 'ADB on port 5444', 'Parrot (LSTR)', 'Stand Duet OCR and UI Automator 2.3'],
     voice: { wave: 'sine', hz: 520 },
     anchor: 'npc.morgan.desk',
     outfit: 'Teal hoodie, dark jeans, sticker-covered laptop',
   },
   {
-    key: 'jared',
-    name: 'Jared',
+    key: 'jaden',
+    name: 'Jaden',
     role: 'Hardware & lab lead',
     blurb:
-      'Jared builds the rigs, calibrated the whole lab to a true (0,0) origin, merges coordinate PRs and takes every Connection Failed hardware escalation. If it sparks, clicks or blinks, it is Jared\'s.',
+      'Jaden builds the rigs, calibrated the whole lab to a true (0,0) origin, merges coordinate PRs and takes every Connection Failed hardware escalation. If it sparks, clicks or blinks, it is Jaden\'s.',
     color: '#3b4148',
-    npcId: 'npc.jared',
+    npcId: 'npc.jaden',
     kind: 'mentor',
     fromReference: true,
-    askAbout: ['Connection Failed escalations (crashed Pi, Callus box offline)', 'power distribution and fuses', 'rig mechanics and Park All', 'coordinate PRs'],
+    askAbout: ['Connection Failed escalations (crashed Pi, Kallus box offline)', 'power distribution and fuses', 'rig mechanics and Park All', 'coordinate PRs'],
     voice: { wave: 'square', hz: 330, lowpassHz: 1500 },
-    anchor: 'npc.jared.bench',
+    anchor: 'npc.jaden.bench',
     outfit: 'Charcoal work shirt, black apron, safety glasses pushed up',
   },
   {
-    key: 'tate',
-    name: 'Tate',
-    role: 'Orca (Orchestrator) developer',
+    key: 'nate',
+    name: 'Nate',
+    role: 'Orka (Orchestrator) developer',
     blurb:
-      'Tate works on Orca: Tate built the robot-list filtering UI and added App ID, App Secret and API Key to Merchant Config so pipelines can export them for the Go SDK.',
+      'Nate works on Orka: Nate built the robot-list filtering UI and added App ID, App Secret and API Key to Merchant Config so pipelines can export them for the Go SDK.',
     color: '#23395d',
-    npcId: 'npc.tate',
+    npcId: 'npc.nate',
     kind: 'mentor',
     fromReference: true,
-    askAbout: ['robot statuses and checkouts', 'Orca entities and fields', 'Merchant Config', 'Jenkins env vars'],
+    askAbout: ['robot statuses and checkouts', 'Orka entities and fields', 'Merchant Config', 'Jenkins env vars'],
     voice: { wave: 'triangle', hz: 440 },
-    anchor: 'npc.tate.visit',
+    anchor: 'npc.nate.visit',
     outfit: 'Navy polo, coffee cup',
   },
   {
-    key: 'david',
-    name: 'David',
+    key: 'devin',
+    name: 'Devin',
     role: 'SDK frameworks lead',
     blurb:
-      'David oversees the SDK frameworks, including the Terminal SDK, and the dynamic JSON capability lookups they use to ask Orca for the right robot.',
+      'Devin oversees the SDK frameworks, including the Terminal SDK, and the dynamic JSON capability lookups they use to ask Orka for the right robot.',
     color: '#7a2430',
-    npcId: 'npc.david',
+    npcId: 'npc.devin',
     kind: 'mentor',
     fromReference: true,
-    askAbout: ['Robot Capabilities (dynamic JSON vs non-dynamic)', 'Go SDK pipelines', 'Laz and Ubi merchant switching', 'AI evaluations'],
+    askAbout: ['Robot Capabilities (dynamic JSON vs non-dynamic)', 'Go SDK pipelines', 'Lazo and Ubo merchant switching', 'AI evaluations'],
     voice: { wave: 'sine', hz: 392 },
-    anchor: 'npc.david.visit',
+    anchor: 'npc.devin.visit',
     outfit: 'Burgundy sweater, notebook',
   },
   {
@@ -87,9 +87,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     key: 'sam',
     name: 'Sam',
-    role: 'PayCore Team engineer',
+    role: 'PayCrest Team engineer',
     blurb:
-      'Sam runs PayCore\'s back-to-back Visa/Discover/AmEx card matrices on ROSIE, which must stay Unavailable so general jobs never overwrite its merchant profile.',
+      'Sam runs PayCrest\'s back-to-back Visa/Discover/AmEx card matrices on ROSIE, which must stay Unavailable so general jobs never overwrite its merchant profile.',
     color: '#5b6b3a',
     npcId: 'npc.sam',
     kind: 'coworker',
@@ -126,11 +126,11 @@ export const TEAM_MEMBERS: TeamMember[] = [
   },
 ];
 
-/** Lookup by key ("jared"). */
+/** Lookup by key ("jaden"). */
 export const TEAM: Record<string, TeamMember> = Object.fromEntries(TEAM_MEMBERS.map((m) => [m.key, m]));
 
 /** The four mentors in Academy order of appearance. */
-export const MENTOR_KEYS = ['morgan', 'jared', 'tate', 'david'] as const;
+export const MENTOR_KEYS = ['morgan', 'jaden', 'nate', 'devin'] as const;
 export type MentorKey = (typeof MENTOR_KEYS)[number];
 
 export function teamMember(keyOrNpcId: string): TeamMember | undefined {
@@ -145,4 +145,4 @@ export function personName(keyOrNpcId: string): string {
 }
 
 /** The hardware escalation contact (Connection Failed, Ref §3). */
-export const HARDWARE_LEAD = 'jared';
+export const HARDWARE_LEAD = 'jaden';

@@ -31,7 +31,7 @@ function m(id: number, name: string, displayName: string, merchantId: string, en
     appId: null,
     appSecret: null,
     apiKey: null,
-    ubiRoute: 'us-east',
+    uboRoute: 'us-east',
     notes: '',
     ...over,
   };
@@ -51,25 +51,25 @@ export function seedMerchants(): Record<number, MerchantConfig> {
       appId: 'app_sim_7f3a',
       appSecret: 'app_secret_sim_5d21',
       apiKey: 'key_sim_19c0e2',
-      notes: 'Go SDK credentials exported as APP_ID / APP_SECRET / API_KEY (Tate).',
+      notes: 'Go SDK credentials exported as APP_ID / APP_SECRET / API_KEY (Nate).',
     }),
-    m(4, 'PAYCORE-STANDALONE-01', 'PayCore Standalone 01', 'SIMMID0000401', 'stg', {
+    m(4, 'PAYCREST-STANDALONE-01', 'PayCrest Standalone 01', 'SIMMID0000401', 'stg', {
       tipsEnabled: false,
       tipPercents: [],
       pinBypass: false,
       qrReceiptsEnabled: false,
       signatureThresholdCents: 0,
-      owner: 'PayCore',
-      notes: 'PayCore card matrix — always sign swipes. Keep ROSIE/KRYTEN Unavailable.',
+      owner: 'PayCrest',
+      notes: 'PayCrest card matrix — always sign swipes. Keep ROSIE/KRYTEN Unavailable.',
     }),
-    m(5, 'PAYCORE-DINING-01', 'PayCore Dining Room', 'SIMMID0000501', 'stg', {
+    m(5, 'PAYCREST-DINING-01', 'PayCrest Dining Room', 'SIMMID0000501', 'stg', {
       tipPercents: [15, 18, 20],
       pinBypass: false,
       apps: ['LabSim Dining'],
-      owner: 'PayCore',
+      owner: 'PayCrest',
       notes: 'LabSim Dining provisioned (BENDER).',
     }),
-    m(6, 'WESTERS-CA-01', 'Westers Test Bed — CA 01', 'SIMMID0000601', 'dev1', {
+    m(6, 'WESTERLY-CA-01', 'Westerly Test Bed — CA 01', 'SIMMID0000601', 'dev1', {
       region: 'CA-CENTRAL',
       country: 'CA',
       currency: 'CAD',
@@ -80,11 +80,11 @@ export function seedMerchants(): Record<number, MerchantConfig> {
       qrReceiptsEnabled: false,
       signatureThresholdCents: null,
       acceptedBrands: CA,
-      owner: 'Westers',
-      ubiRoute: 'ca-central',
+      owner: 'Westerly',
+      uboRoute: 'ca-central',
       notes: 'Contact Canada — physical PIN entry required (Interac).',
     }),
-    m(7, 'WESTERS-CA-02', 'Westers Test Bed — CA 02', 'SIMMID0000602', 'qa', {
+    m(7, 'WESTERLY-CA-02', 'Westerly Test Bed — CA 02', 'SIMMID0000602', 'qa', {
       region: 'CA-CENTRAL',
       country: 'CA',
       currency: 'CAD',
@@ -95,8 +95,8 @@ export function seedMerchants(): Record<number, MerchantConfig> {
       qrReceiptsEnabled: false,
       signatureThresholdCents: null,
       acceptedBrands: CA,
-      owner: 'Westers',
-      ubiRoute: 'ca-central',
+      owner: 'Westerly',
+      uboRoute: 'ca-central',
     }),
   ];
   return Object.fromEntries(rows.map((r) => [r.id, r]));

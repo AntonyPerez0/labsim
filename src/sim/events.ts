@@ -25,7 +25,7 @@ import type {
   ScreenName,
 } from './types';
 
-export type OrcaEntityName =
+export type OrkaEntityName =
   | 'robot'
   | 'device'
   | 'capability'
@@ -79,8 +79,8 @@ declare module '@/core/events' {
     /** `by` = 'condition' (auto-clear) or the actor that called faults.clear. */
     'fault.cleared': { instanceId: string; faultId: string; by: string };
 
-    /* ── Orca (Sim §5.2) ── */
-    'orca.healthCheckRan': {
+    /* ── Orka (Sim §5.2) ── */
+    'orka.healthCheckRan': {
       atMs: number;
       /** = pinged. */
       checked: number;
@@ -95,7 +95,7 @@ declare module '@/core/events' {
       forced?: boolean;
     };
     /** NEW — run skipped because the DB is down (Sim §3.3.1). */
-    'orca.healthCheckAborted': { run: number; atMs: number; reason: 'db-down' };
+    'orka.healthCheckAborted': { run: number; atMs: number; reason: 'db-down' };
     'robot.statusChanged': { robotId: number; name: string; from: RobotStatus; to: RobotStatus; actor: string; reason?: string };
     'robot.noteAdded': { robotId: number; noteId: number; endpoint?: string; text: string; /* + */ kind?: 'HEALTH' | 'STATUS' | 'CONFIG' | 'MANUAL' };
     /** NEW — an identical consecutive failure collapsed into the newest note. */
@@ -104,9 +104,9 @@ declare module '@/core/events' {
     'robot.released': { robotId: number; name: string; buildId: string; statusAfter: RobotStatus };
     /** NEW — a build is waiting for a robot (or its skip reasons changed), Sim §3.4.2 #6. */
     'robot.checkoutWaiting': { buildId: string; jobId: string; label: string; reasons: string[] };
-    'orca.checkoutRejected': { buildId: string; jobId: string; reason: string; robotName?: string; /* + */ code?: FailureCode };
-    'orca.entitySaved': {
-      entity: OrcaEntityName;
+    'orka.checkoutRejected': { buildId: string; jobId: string; reason: string; robotName?: string; /* + */ code?: FailureCode };
+    'orka.entitySaved': {
+      entity: OrkaEntityName;
       id: number;
       action: 'create' | 'update' | 'delete';
       fields: string[];
@@ -114,7 +114,7 @@ declare module '@/core/events' {
       /* + */ diff?: Record<string, [unknown, unknown]>;
     };
     /** ADB_TOUCH: at injection; PHYSICAL_TAP: when the stroke completes; errors: at once with ok=false. */
-    'orca.xyTouch': {
+    'orka.xyTouch': {
       robotName: string;
       screen: string;
       button: string;
@@ -125,18 +125,18 @@ declare module '@/core/events' {
       hitButton: string | null;
       error?: string;
       /* + */ requestId?: string;
-      /* + */ orcaMode?: 'PHYSICAL_TAP' | 'ADB_TOUCH';
+      /* + */ orkaMode?: 'PHYSICAL_TAP' | 'ADB_TOUCH';
       /* + */ status?: number;
       /* + */ actor?: string;
       /* + */ target?: 'MFD' | 'CFD';
     };
     /** NEW — `/api/card/*` result (Sim §3.6). */
-    'orca.cardAction': { robotName: string; entry: CardEntry; profile: string; ok: boolean; armed: boolean; error?: string; actor: string };
-    /** NEW — gort → Orca screen-location sync (Sim §3.22.3). */
-    'orca.screenLocationsSynced': { deviceType: DeviceTypeCode; screen: string; path: string; commit: string; buttons: number };
+    'orka.cardAction': { robotName: string; entry: CardEntry; profile: string; ok: boolean; armed: boolean; error?: string; actor: string };
+    /** NEW — gorth → Orka screen-location sync (Sim §3.22.3). */
+    'orka.screenLocationsSynced': { deviceType: DeviceTypeCode; screen: string; path: string; commit: string; buttons: number };
     /** NEW — JDBC pool connected/disconnected (Sim §3.14.5). */
-    'orca.dbStateChanged': { connected: boolean };
-    'orca.rest': { method: string; path: string; status: number; actor: string };
+    'orka.dbStateChanged': { connected: boolean };
+    'orka.rest': { method: string; path: string; status: number; actor: string };
 
     /* ── Rigs (Sim §5.3) ── */
     'rig.command': { rigId: string; command: RigCommandName; actor: string; ok: boolean; error?: string };
@@ -258,7 +258,7 @@ declare module '@/core/events' {
     /** NEW — corporate agent tampering (GW11). */
     'host.securityTamper': { hostId: string; action: string; actor: string };
     /** NEW */
-    'host.schedTaskRan': { hostId: string; task: 'GortCardSync'; result: 0 | 1; commit: string | null; manual: boolean };
+    'host.schedTaskRan': { hostId: string; task: 'GorthCardSync'; result: 0 | 1; commit: string | null; manual: boolean };
 
     'adb.connected': { target: string; deviceId: string | null; coworker: boolean };
     'adb.disconnected': { target: string };
@@ -324,31 +324,31 @@ declare module '@/core/events' {
       /* + */ overlappedJenkins?: boolean;
     };
 
-    /* ── Cards, Laz/Ubi, vision, AI, chat, printers (Sim §5.8) ── */
-    'callus.cardLoaded': { collisId: string; profileId: number; ok: boolean; error?: string };
-    'collis.action': { collisId: string; entry: CardEntry; ok: boolean; error?: string };
+    /* ── Cards, Lazo/Ubo, vision, AI, chat, printers (Sim §5.8) ── */
+    'kallus.cardLoaded': { kollisId: string; profileId: number; ok: boolean; error?: string };
+    'kollis.action': { kollisId: string; entry: CardEntry; ok: boolean; error?: string };
     /** NEW */
-    'collis.stateChanged': { collisId: string; led: 'green' | 'amber' | 'off'; state: 'READY' | 'OFFLINE' | 'NO_LINK' | 'FAULT' };
+    'kollis.stateChanged': { kollisId: string; led: 'green' | 'amber' | 'off'; state: 'READY' | 'OFFLINE' | 'NO_LINK' | 'FAULT' };
     /** NEW */
-    'callus.armed': { collisId: string; profile: string; deviceId: string };
+    'kallus.armed': { kollisId: string; profile: string; deviceId: string };
     /** NEW */
-    'callus.armFired': { collisId: string; profile: string; deviceId: string; ok: boolean };
+    'kallus.armFired': { kollisId: string; profile: string; deviceId: string; ok: boolean };
     /** NEW */
-    'callus.armExpired': { collisId: string; profile: string; deviceId: string };
-    'callus.syncCompleted': { hostId: string; commit: string; /* + */ files?: number; /* + */ manual?: boolean };
+    'kallus.armExpired': { kollisId: string; profile: string; deviceId: string };
+    'kallus.syncCompleted': { hostId: string; commit: string; /* + */ files?: number; /* + */ manual?: boolean };
 
-    'laz.runStarted': { runId: string; deviceId: string; toMerchantId: number };
-    'laz.stepChanged': { runId: string; step: string };
-    'laz.runFinished': { runId: string; deviceId: string; ok: boolean; error?: string };
+    'lazo.runStarted': { runId: string; deviceId: string; toMerchantId: number };
+    'lazo.stepChanged': { runId: string; step: string };
+    'lazo.runFinished': { runId: string; deviceId: string; ok: boolean; error?: string };
     /** NEW */
-    'ubi.routed': { runId: string; merchant: string; route: string | null; ok: boolean; error?: string };
+    'ubo.routed': { runId: string; merchant: string; route: string | null; ok: boolean; error?: string };
 
     'ocr.ran': {
       compareId: number | null;
       text: string;
       expected: string | null;
       match: boolean | null;
-      /* + */ source?: 'orca' | 'runner' | 'pigeon' | 'gimp';
+      /* + */ source?: 'orka' | 'runner' | 'parrot' | 'gimp';
       /* + */ robotName?: string;
       /* + */ line?: string;
     };

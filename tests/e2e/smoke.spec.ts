@@ -107,7 +107,7 @@ test('Academy M01 starts and Space advances the first dialogue line', async () =
   expect(freshErrors(mark)).toEqual([]);
 });
 
-test('sitting at the workstation opens Orca with the robot list', async () => {
+test('sitting at the workstation opens Orka with the robot list', async () => {
   const mark = errors.length;
   // Leave the lesson for Free Play (the full lab, every app unlocked). Unlocking it is set-up only.
   await page.evaluate(() => {
@@ -133,8 +133,8 @@ test('sitting at the workstation opens Orca with the robot list', async () => {
   await expect.poll(() => state<string>('(s) => s.ui.overlay.kind'), { timeout: 30_000 }).toBe('computer');
   await expect(page.locator('.ws-root')).toBeVisible({ timeout: 30_000 });
 
-  await page.locator('[data-icon="orca"]').dblclick();
-  // Orca's robot list shows the seeded roster.
+  await page.locator('[data-icon="orka"]').dblclick();
+  // Orka's robot list shows the seeded roster.
   await expect(page.getByText('WALL-E', { exact: false }).first()).toBeVisible({ timeout: 60_000 });
   await expect(page.getByText('BUMBLEBEE', { exact: false }).first()).toBeVisible();
   expect(freshErrors(mark)).toEqual([]);
@@ -143,10 +143,10 @@ test('sitting at the workstation opens Orca with the robot list', async () => {
   await expect.poll(() => state<string>('(s) => s.ui.overlay.kind'), { timeout: 30_000 }).not.toBe('computer');
 });
 
-test('VS Code edits a Pigeon test: syntax problem shows, Pigeon Practice checks an exercise', async () => {
+test('VS Code edits a Parrot test: syntax problem shows, Parrot Practice checks an exercise', async () => {
   const mark = errors.length;
-  // Set-up only: the pigeon clone (normally done in Academy M15 or with Git: Clone).
-  await page.evaluate(() => (window as unknown as { __labsim: { sim: { git: { clone(r: string, a: string): unknown } } } }).__labsim.sim.git.clone('pigeon', 'player'));
+  // Set-up only: the parrot clone (normally done in Academy M15 or with Git: Clone).
+  await page.evaluate(() => (window as unknown as { __labsim: { sim: { git: { clone(r: string, a: string): unknown } } } }).__labsim.sim.git.clone('parrot', 'player'));
   await page.evaluate(() => (window as unknown as LabsimWindow).__labsim.engine.teleportPlayer([1.1, 0, 3.3], Math.PI, -1.0));
   await expect.poll(() => state<string | null>('(s) => s.ui.prompt?.label ?? null'), { timeout: 30_000 }).toBe('Your workstation');
   await page.keyboard.press('e');
@@ -172,7 +172,7 @@ test('VS Code edits a Pigeon test: syntax problem shows, Pigeon Practice checks 
   await expect(page.locator('.vsc-problems__row').first()).toContainText('Expected comma');
   await expect(page.locator('.vsc-problems__row').first()).toContainText('Ln 8');
 
-  // Pigeon Practice: start Comma Hunt, Check without fixing → failing goals.
+  // Parrot Practice: start Comma Hunt, Check without fixing → failing goals.
   await page.locator('[data-hint="vscode.activity:practice"]').click();
   await page.locator('[data-hint="vscode.practice.exercise:comma-hunt"]').click();
   await page.locator('[data-hint="vscode.practice.check"]').click();

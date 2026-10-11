@@ -5,7 +5,7 @@
  *
  *   rig.<rig>.<part>        rig.wall-e.tablet, rig.r2-d2.cfd, rig.megatron.dock-mfd
  *   rig.tethered.pi|webcam  rig.adb.pi|webcam   rig.rack-b.camera-pi
- *   collis.<rig>            callus.minix-01 | callus.minix-02 | callus.nuc-03 | callus.slot-4 | callus.monitor
+ *   kollis.<rig>            kallus.minix-01 | kallus.minix-02 | kallus.nuc-03 | kallus.slot-4 | kallus.monitor
  *   rack.a.rails.u<n>-left|right
  *   power.strip.<x>[.s<n>]  power.outlet.w<n>  power.fuse.<x>  power.reg.<x>  power.tap.<v>
  *   cam.<rig> | cam.tethered | cam.adb | cam.rack-b-mosaic | cam.bench-mosaic
@@ -112,8 +112,8 @@ export const SHELF_IDS = {
   rackBCameraPi: 'rig.rack-b.camera-pi',
 } as const;
 
-export function collisId(rigId: string): string {
-  return `collis.${rigId}`;
+export function kollisId(rigId: string): string {
+  return `kollis.${rigId}`;
 }
 
 export function cameraId(rigId: string): string {
@@ -164,4 +164,4 @@ export const WALL_BINS = {
   blue: { id: 'wall.bins.blue-cables', label: 'ETHERNET · USB', contents: ['Ethernet cable', 'USB-C lead', 'micro-USB lead'] },
 } as const;
 
-export const HISTORY_FRAMES = ['semi', 'sedi', 'ipx', 'paycore'] as const;
+export const HISTORY_FRAMES = ['semi', 'sedi', 'ipx', 'paycrest'] as const;

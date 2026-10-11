@@ -1,5 +1,5 @@
 /**
- * Resolve `{{jared}}`-style people tokens (names live only in `src/content/team.ts`) across an incident
+ * Resolve `{{jaden}}`-style people tokens (names live only in `src/content/team.ts`) across an incident
  * definition: plain strings everywhere, and the output of templated text functions / script-action
  * factories. Conditions, setups and binders are left untouched (they carry no people text).
  */
@@ -9,7 +9,7 @@ import type { IncidentDef } from '../../types';
 /** Keys whose function values produce display text (Templated). */
 const TEXT_FN_KEYS = new Set(['title', 'summary', 'text', 'wrongCallHint', 'endpointHint', 'byTheBook', 'handsOn', 'hints', 'verifyLabel']);
 /** Keys whose function values produce ScriptAction lists (resolved deeply). */
-const ACTION_FN_KEYS = new Set(['onSpawn', 'jaredFix']);
+const ACTION_FN_KEYS = new Set(['onSpawn', 'jadenFix']);
 /** Keys never walked (executable logic / data the runtime interprets). */
 const SKIP_KEYS = new Set(['success', 'setup', 'bind', 'truth', 'counters', 'walkthrough', 'marker', 'detect', 'when', 'endpoints']);
 

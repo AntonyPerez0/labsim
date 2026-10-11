@@ -223,7 +223,7 @@ export function routeFromParams(app: AppId, p: AppParams): string | null {
       return p.file ? `/project/${p.repo}/file/${p.file}` : buildRoute(APP_ROUTES.intellij.project, { repo: p.repo });
     case 'vscode':
       if (!p.repo && !p.file) return null;
-      return p.file ? `/folder/${p.repo ?? 'pigeon'}/file/${p.file}` : `/folder/${p.repo}`;
+      return p.file ? `/folder/${p.repo ?? 'parrot'}/file/${p.file}` : `/folder/${p.repo}`;
     case 'browser':
       return p.url ?? null;
     case 'camera': {
@@ -232,7 +232,7 @@ export function routeFromParams(app: AppId, p: AppParams): string | null {
         if (r.app === 'camera') return r.route + (p.robot ? `?robot=${encodeURIComponent(p.robot)}` : '');
       }
       if (p.robot) {
-        const robot = Object.values(getState().lab.orca.robots).find((x) => x.name === p.robot);
+        const robot = Object.values(getState().lab.orka.robots).find((x) => x.name === p.robot);
         const m = robot ? /^https?:\/\/([\d.]+):8081/.exec(robot.cameraStreamUrl) : null;
         if (m) return `${buildRoute(APP_ROUTES.camera.stream, { host: m[1] })}?robot=${encodeURIComponent(p.robot)}`;
       }

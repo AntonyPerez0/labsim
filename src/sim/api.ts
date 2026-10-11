@@ -6,7 +6,7 @@
  * Every mutating method runs inside `transact()`, validates input like the real system would, mutates
  * `LabState`, emits the domain events in `./events.ts`, and returns a plain result object.
  * Methods never throw for user mistakes — they return `{ ok: false, error }` with the exact message
- * the real tool would show (Orca validation text, git error, Jenkins error, …; Sim §3).
+ * the real tool would show (Orka validation text, git error, Jenkins error, …; Sim §3).
  *
  * Contract source: docs/design/40-simulation.md ("Sim"). Implementation: `./impl/` (sim-core) and
  * `./devops/` (sim-devops); the split is documented at the top of `./impl/index.ts`.
@@ -27,9 +27,9 @@ import type {
   JobParam,
   LabState,
   MerchantConfig,
-  OrcaDevice,
-  OrcaRobot,
-  OrcaScreen,
+  OrkaDevice,
+  OrkaRobot,
+  OrkaScreen,
   PowerHookup,
   RepoId,
   RigPart,
@@ -44,15 +44,15 @@ import type { RigCommandName } from './events';
 
 export type Result<T = undefined> = { ok: true; value: T } | { ok: false; error: string };
 
-/** Who performed an action — shown in Orca audits/notes and used by missions. People use team keys ("riley"). */
-export type Actor = 'player' | 'jenkins' | 'orca-health-check' | 'system' | 'mentor' | string;
+/** Who performed an action — shown in Orka audits/notes and used by missions. People use team keys ("riley"). */
+export type Actor = 'player' | 'jenkins' | 'orka-health-check' | 'system' | 'mentor' | string;
 
 export interface RestResponse {
   status: number;
   /** Response body as text (JSON compact, exactly as Sim §3.23 writes it). */
   body: string;
   headers?: Record<string, string>;
-  /** Simulated latency in ms (physical; for curl -v / timeouts). Async Orca calls answer after the motion time. */
+  /** Simulated latency in ms (physical; for curl -v / timeouts). Async Orka calls answer after the motion time. */
   latencyMs: number;
 }
 
@@ -67,13 +67,13 @@ export interface TerminalResult {
   exitCode: number;
   /** The terminal UI should clear its scrollback (e.g. `clear`). */
   clear?: boolean;
-  /** Prompt to show for the next line, e.g. "engineer@ws-17:~/IdeaProjects/uia-remote$ " or "pi@wall-e:~ $ ". */
+  /** Prompt to show for the next line, e.g. "engineer@ws-17:~/IdeaProjects/uia-relay$ " or "pi@wall-e:~ $ ". */
   prompt: string;
   /** If set, the command keeps producing output over time; poll `terminal.poll(jobId)`. */
   streamingJobId?: string;
 }
 
-/** Options of `orca.xyTouch` (NEW). */
+/** Options of `orka.xyTouch` (NEW). */
 export interface XyTouchOptions {
   /** Tethered pairs: which device ("MFD"/"CFD"); default by screen name prefix CFD_ (Sim §3.5.2 #3). */
   target?: 'MFD' | 'CFD';
@@ -86,23 +86,23 @@ export interface XyTouchResult {
   /** Final coordinate after applying legacy offsets (mm, one decimal). */
   xMm: number;
   yMm: number;
-  /** Legacy short mode. `orcaMode` is authoritative. */
+  /** Legacy short mode. `orkaMode` is authoritative. */
   mode: 'adb' | 'probe';
   /**
    * The button hit on the device's firmware layout, if already known (ADB_TOUCH: known at injection;
-   * PHYSICAL_TAP: null here — the `orca.xyTouch` event carries it when the stroke completes).
-   * Orca's REST response never says whether a button was hit (Sim §3.5.2 #8).
+   * PHYSICAL_TAP: null here — the `orka.xyTouch` event carries it when the stroke completes).
+   * Orka's REST response never says whether a button was hit (Sim §3.5.2 #8).
    */
   hitButton: string | null;
-  /** NEW — "req-<seq.request>"; correlates with the `orca.xyTouch` event and rig commands (`ref`). */
+  /** NEW — "req-<seq.request>"; correlates with the `orka.xyTouch` event and rig commands (`ref`). */
   requestId: string;
   /** NEW — 'PHYSICAL_TAP' | 'ADB_TOUCH' (authoritative). */
-  orcaMode: 'PHYSICAL_TAP' | 'ADB_TOUCH';
+  orkaMode: 'PHYSICAL_TAP' | 'ADB_TOUCH';
   /** NEW — 200. */
   status: number;
   /** NEW — exact JSON body, e.g. {"result":"OK","mode":"PHYSICAL_TAP","x_mm":22.0,"y_mm":58.5}. */
   body: string;
-  /** NEW — physical ms until Orca answers (move time + 200 ms for PHYSICAL_TAP; 120 ms for ADB_TOUCH). */
+  /** NEW — physical ms until Orka answers (move time + 200 ms for PHYSICAL_TAP; 120 ms for ADB_TOUCH). */
   respondsAfterMs: number;
   /** NEW — device display actually targeted. */
   deviceId: string;
@@ -127,9 +127,9 @@ export interface CheckoutRequest {
   tethered?: boolean;
   /** NEW — BACKEND_ENV (default "DEV1"). */
   environment?: string;
-  /** NEW — Jenkins build or Orca UI "Check out" button (default 'jenkins'). Manual errors are the UI toast texts. */
+  /** NEW — Jenkins build or Orka UI "Check out" button (default 'jenkins'). Manual errors are the UI toast texts. */
   kind?: 'jenkins' | 'manual';
-  /** NEW — file name of the dynamic source, for the `[orca] capabilities: … (dynamic: <file>)` line. */
+  /** NEW — file name of the dynamic source, for the `[orka] capabilities: … (dynamic: <file>)` line. */
   dynamicSource?: string;
 }
 
@@ -139,7 +139,7 @@ export type CheckoutOutcome =
   | { kind: 'wait'; label: string; reasons: string[]; lines: string[] }
   | { kind: 'fail'; code: FailureCode; lines: string[] };
 
-/** NEW — one row of Orca's Match preview (Sim §3.4.3). */
+/** NEW — one row of Orka's Match preview (Sim §3.4.3). */
 export interface MatchPreviewRow {
   robotId: number;
   robot: string;
@@ -156,12 +156,12 @@ export interface CardActionResult {
   profile: string;
   probe: string;
   /** "10.42.20.1:9000" */
-  callus: string;
-  /** Console lines produced (`[callus] …`, `[pi] cardprog …`). */
+  kallus: string;
+  /** Console lines produced (`[kallus] …`, `[pi] cardprog …`). */
   lines: string[];
   /** Armed for the payment prompt instead of firing (Sim §3.6 #9). */
   armed: boolean;
-  /** Physical ms until Orca answers (after the load). */
+  /** Physical ms until Orka answers (after the load). */
   respondsAfterMs: number;
   /** Exact JSON body. */
   body: string;
@@ -271,7 +271,7 @@ export interface FaultInfo {
   /** Topic tags (GP §4.8.1) for spaced repetition / the debrief. */
   tags: string[];
   /** NEW */
-  category: 'hosts' | 'power' | 'rigs' | 'devices' | 'cards' | 'merchants' | 'orca' | 'repos' | 'workstation' | 'jenkins';
+  category: 'hosts' | 'power' | 'rigs' | 'devices' | 'cards' | 'merchants' | 'orka' | 'repos' | 'workstation' | 'jenkins';
   /** NEW — which half implements it. */
   owner: 'core' | 'devops';
   /** NEW — human-readable clear predicate ("os == 'RUNNING'", "API only"). */
@@ -339,7 +339,7 @@ export interface SimApi {
   restore(state: LabState): void;
   /** Allowed 1, 2, 5, 10, 30 (others snap to the nearest, Sim §6.3). */
   setTimeScale(scale: number): void;
-  /** Game-clock jump to exactly the next Orca health check (it runs). Physical processes do not advance. */
+  /** Game-clock jump to exactly the next Orka health check (it runs). Physical processes do not advance. */
   skipToNextHealthCheck(): void;
   /** Set a lab flag, including its rollout effects (Sim §3.10, §2.10.2). */
   setFlag<K extends keyof LabState['flags']>(flag: K, value: LabState['flags'][K]): void;
@@ -352,30 +352,30 @@ export interface SimApi {
   /** NEW — valid preset names (Sim §6.5). */
   presets(): string[];
 
-  /* ── Orca (Orchestrator) ── */
-  orca: {
+  /* ── Orka (Orchestrator) ── */
+  orka: {
     /** Create/update with JHipster-like validation; CONFIG notes per changed field (Sim §3.3.4). */
-    saveRobot(robot: Partial<OrcaRobot> & { id?: number }, actor: Actor): Result<number>;
+    saveRobot(robot: Partial<OrkaRobot> & { id?: number }, actor: Actor): Result<number>;
     /** Manual status change (Sim §3.2.1); CONNECTION_FAILED is rejected. */
     setRobotStatus(robotId: number, status: RobotStatus, actor: Actor, reason?: string): Result;
     reserveRobot(robotId: number, who: string): Result;
     resolveNote(robotId: number, noteId: number, actor: Actor): Result;
-    /** NEW (apps D1) — Orca robot detail → Notes → Add note: a MANUAL note `<ts> <text> (<who>)` (Sim §2.3 sonny seed format). */
+    /** NEW (apps D1) — Orka robot detail → Notes → Add note: a MANUAL note `<ts> <text> (<who>)` (Sim §2.3 sonny seed format). */
     addNote?(robotId: number, text: string, actor: Actor): Result<number>;
     /** Binds `simDeviceId` by exact serial (Sim §1.15). */
-    saveDevice(device: Partial<OrcaDevice> & { id?: number }, actor: Actor): Result<number>;
+    saveDevice(device: Partial<OrkaDevice> & { id?: number }, actor: Actor): Result<number>;
     saveCapability(cap: Partial<RobotCapability> & { id?: number }, actor: Actor): Result<number>;
     saveMerchant(m: Partial<MerchantConfig> & { id?: number }, actor: Actor): Result<number>;
-    saveScreen(s: Partial<OrcaScreen> & { id?: number }, actor: Actor): Result<number>;
+    saveScreen(s: Partial<OrkaScreen> & { id?: number }, actor: Actor): Result<number>;
     saveScreenLocation(l: Partial<ScreenLocation> & { id?: number }, actor: Actor): Result<number>;
     saveCardProfile(c: Partial<CardProfile> & { id?: number }, actor: Actor): Result<number>;
     saveScreenCompareImage(c: Partial<ScreenCompareImage> & { id?: number }, actor: Actor): Result<number>;
     deleteEntity(entity: 'robot' | 'device' | 'capability' | 'merchant' | 'screen' | 'screenLocation' | 'cardProfile' | 'screenCompareImage', id: number, actor: Actor): Result;
     /** Run the 5-minute health-check procedure immediately (missions/tests; no gate). */
     runHealthCheckNow(): void;
-    /** NEW — Orca's tutorial "Force health check" button: gated by `config.forceHealthCheckAllowed` (`403 Force health check is disabled in this environment`). Authoritative name for the UI. */
+    /** NEW — Orka's tutorial "Force health check" button: gated by `config.forceHealthCheckAllowed` (`403 Force health check is disabled in this environment`). Authoritative name for the UI. */
     forceHealthCheck(actor: Actor): Result;
-    /** Checkout (Sim §3.4.2). `kind: 'manual'` = the Orca UI button; errors are the toast texts. A waiting result is an error "waiting: <label>". */
+    /** Checkout (Sim §3.4.2). `kind: 'manual'` = the Orka UI button; errors are the toast texts. A waiting result is an error "waiting: <label>". */
     checkout(req: CheckoutRequest): Result<{ robotId: number }>;
     /** Release + named auto-reset (Sim §3.4.5). */
     release(robotId: number, buildId: string): Result;
@@ -385,9 +385,9 @@ export interface SimApi {
     capabilityDocument(robotId: number): CapabilityDocument | null;
     /** POST /api/xy_touch — look up mm coordinates and fire an ADB touch or a physical probe tap (Sim §3.5). Errors are the exact HTTP-style texts. */
     xyTouch(robotName: string, screen: string, button: string, actor: Actor, opts?: XyTouchOptions): Result<XyTouchResult>;
-    /** Card actions via Callus → probe (Sim §3.6). Profile by id or exact name (widened). Error = console lines joined by "\n". */
+    /** Card actions via Kallus → probe (Sim §3.6). Profile by id or exact name (widened). Error = console lines joined by "\n". */
     card(robotName: string, entry: CardEntry, cardProfileId: number | string, actor: Actor): Result<CardActionResult | undefined>;
-    /** Simulated REST surface of Orca, the Pis, Callus, Ollama and Jenkins (Sim §3.23) — used by curl and Swagger. */
+    /** Simulated REST surface of Orka, the Pis, Kallus, Ollama and Jenkins (Sim §3.23) — used by curl and Swagger. */
     rest(method: string, path: string, body: string | null, actor: Actor): RestResponse;
   };
 
@@ -425,7 +425,7 @@ export interface SimApi {
     pressPower(deviceId: string, longPress: boolean, actor: Actor): Result;
     /** Hand-present a physical test card (player inventory). Profile by id or exact name (widened). */
     presentCard(deviceId: string, entry: CardEntry, cardProfileId: number | string, actor: Actor): Result;
-    /** Physically swap the device on a rig (old one to storage; Orca untouched). `opts.deviceId` picks the stored device to install. */
+    /** Physically swap the device on a rig (old one to storage; Orka untouched). `opts.deviceId` picks the stored device to install. */
     swapHardware(rigId: string, newType: DeviceTypeCode, actor: Actor, opts?: { deviceId?: string; storeAt?: string }): Result<{ deviceId: string }>;
     /** Debug/test escape hatch: set any field (validated only by type). Not for gameplay. */
     setDeviceField<K extends keyof TerminalDevice>(deviceId: string, key: K, value: TerminalDevice[K], actor: Actor): Result;
@@ -487,13 +487,13 @@ export interface SimApi {
     replaceEthernet(hostId: string, actor: Actor): Result;
     /** NEW — attach/detach a USB device ("webcam", "motor-pcb:<rig>", "smartstripe:<rig>"). */
     plugUsb(hostId: string, usbId: string, attached: boolean, actor: Actor): Result;
-    /** NEW — `schtasks /run /tn GortCardSync`. */
-    runSchedTask(hostId: string, task: 'GortCardSync', actor: Actor): Result;
+    /** NEW — `schtasks /run /tn GorthCardSync`. */
+    runSchedTask(hostId: string, task: 'GorthCardSync', actor: Actor): Result;
   };
 
-  /* ── Collis probes ── */
-  collis: {
-    reseatRibbon(collisId: string, actor: Actor): Result;
+  /* ── Kollis probes ── */
+  kollis: {
+    reseatRibbon(kollisId: string, actor: Actor): Result;
   };
 
   /* ── Cameras (NEW) ── */
@@ -569,14 +569,14 @@ export interface SimApi {
   /* ── Local test runs from IntelliJ (uses a config.properties) — sim-devops ── */
   runner: {
     /** `opts.configPath` = another config.properties (Code With Me, INC29); default the local clone's. */
-    runLocal(repo: 'uia-remote' | 'pigeon', testPath: string, actor: Actor, opts?: { configPath?: string }): Result<{ runId: string }>;
+    runLocal(repo: 'uia-relay' | 'parrot', testPath: string, actor: Actor, opts?: { configPath?: string }): Result<{ runId: string }>;
     stopLocal(runId: string): Result;
     /** Live console lines of a local run. Pure. */
     output(runId: string): { lines: string[]; done: boolean; passed: boolean | null };
   };
 
-  /* ── Laz Automation (zero-touch OOBE merchant switch) — sim-core ── */
-  laz: {
+  /* ── Lazo Automation (zero-touch OOBE merchant switch) — sim-core ── */
+  lazo: {
     start(deviceId: string, toMerchantId: number, actor: Actor): Result<{ runId: string }>;
   };
 
@@ -584,7 +584,7 @@ export interface SimApi {
   ocr: {
     /** Run Tesseract (Sim §3.12.2) on a crop of an image ref. Pure. */
     tesseract(imageRef: string, bbox: { x: number; y: number; w: number; h: number }): { text: string; confidence: number };
-    /** Run a Screen Compare Image check (capture → crop → OCR → exact match), Orca "Test". */
+    /** Run a Screen Compare Image check (capture → crop → OCR → exact match), Orka "Test". */
     compare(compareImageId: number): Result<{ text: string; expected: string; match: boolean }>;
     /** NEW — the frame model behind an image ref (GIMP, render2d). Pure. */
     frame(imageRef: string): Result<FrameModel>;

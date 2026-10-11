@@ -29,7 +29,7 @@ import './dashboard.css';
 export type SurfaceHost = 'tablet' | 'dashboard';
 
 export interface DashboardSurfaceProps {
-  /** Rig id = Orca robot Name ("wall-e"). */
+  /** Rig id = Orka robot Name ("wall-e"). */
   robotId: string;
   /** 'tablet' = the 3D status tablet overlay (USB reachability), 'dashboard' = the desktop app (network). */
   host: SurfaceHost;
@@ -89,14 +89,14 @@ function cache(k: string, v: { ok: boolean; netError: string | null; piIp: strin
   return v;
 }
 
-/** `Java/uia-remote-regression-flux #4120` or `Local run · TaxTest (ws-17)`. */
+/** `Java/uia-relay-regression-flux #4120` or `Local run · TaxTest (ws-17)`. */
 export function lockHolder(rig: RigState): string {
   const lab = getState().lab;
   if (rig.lockedBy?.kind === 'local') {
     const t = lab.workstation?.locallyRunningTest?.testName ?? rig.lockedBy.ref;
     return `Local run · ${t} (ws-17)`;
   }
-  const ref = rig.lockedBy?.ref ?? lab.orca.robots[rig.orcaRobotId]?.checkout?.buildId ?? '';
+  const ref = rig.lockedBy?.ref ?? lab.orka.robots[rig.orkaRobotId]?.checkout?.buildId ?? '';
   return ref.replace(/#(\d+)$/, ' #$1');
 }
 
@@ -184,8 +184,8 @@ function evalActive(rig: RigState, cond: string | undefined): boolean {
 export function DashboardSurface(props: DashboardSurfaceProps) {
   const { robotId, host } = props;
   const rig = useGame((s) => s.lab.rigs[robotId]);
-  const robot = useGame((s) => (rig ? s.lab.orca.robots[rig.orcaRobotId] : undefined));
-  const devices = useGame((s) => s.lab.orca.devices);
+  const robot = useGame((s) => (rig ? s.lab.orka.robots[rig.orkaRobotId] : undefined));
+  const devices = useGame((s) => s.lab.orka.devices);
   const piIp = useGame((s) => (rig?.piHostId ? (s.lab.hosts[rig.piHostId]?.ip ?? null) : null));
   const colourBlind = useGame((s) => (s.progress.settings?.colourBlind ?? 'off') !== 'off');
   const reachInfo = useControllerReach(robotId, host);
@@ -399,7 +399,7 @@ export function DashboardSurface(props: DashboardSurfaceProps) {
 
 function RobotTab(props: { rig: RigState; devices: Record<number, { name: string; deviceType: string; serial: string; ip: string }>; piIp: string | null }) {
   const { rig, devices, piIp } = props;
-  const robot = useGame((s) => s.lab.orca.robots[rig.orcaRobotId]);
+  const robot = useGame((s) => s.lab.orka.robots[rig.orkaRobotId]);
   const T = TABLET_ROBOT_TAB;
   const dev = robot?.deviceId != null ? devices[robot.deviceId] : undefined;
   const values: React.ReactNode[] = [

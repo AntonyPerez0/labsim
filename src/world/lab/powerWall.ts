@@ -3,7 +3,7 @@
  * MW-1, 24 V bus bars, the 12 V and three 5 V buck regulators, inline rack fuses, DC tap leads,
  * STRIP-W, line-end tags, safety sign, every wall outlet W1–W14 (§1.5 "Other wall outlets"), the
  * wiring looms (+ glow overlays for the M03 power trace), and the bench with the multimeter, the
- * spare fuse tray, the Flux 4 brick, the spare Collis probe and the desk fan.
+ * spare fuse tray, the Flux 4 brick, the spare Kollis probe and the desk fan.
  * Interactions and sim bindings live in `powerBind.ts`.
  */
 import { Group, Mesh, MeshStandardMaterial, Color, type Material } from 'three';
@@ -362,17 +362,17 @@ function buildBench(ctx: LabCtx, proxies: Map<string, Mesh>): Map<string, Group>
     ctx.statics.flushInto(pb, g);
     ctx.ia.proxy(g, 0.22, 0.05, 0.1, xf(0.06, 0.02, 0), 'proxy');
   }
-  // spare Collis probe + its AC brick
+  // spare Kollis probe + its AC brick
   {
-    const g = group('power.bench.collis-spare');
-    const cb = new StaticBatch('collis-spare');
-    cb.add(rboxGeo(0.15, 0.045, 0.11, 0.004, 2), mats.collisGrey, xf(0, 0.0225, 0));
+    const g = group('power.bench.kollis-spare');
+    const cb = new StaticBatch('kollis-spare');
+    cb.add(rboxGeo(0.15, 0.045, 0.11, 0.004, 2), mats.kollisGrey, xf(0, 0.0225, 0));
     addPrint(ctx.labels, cb, 0.07, 0.016, 280, 64, (gg, w, h) => drawPlate(gg, w, h, 'UL Transaction Security', { bg: '#ffffff', fg: '#222222' }), xf(0, 0.022, 0.0552));
     cb.box(0.012, 0.01, 0.004, mats.blackPlastic, 0.05, 0.02, 0.056, 0, 'none');
     cb.add(rboxGeo(0.09, 0.03, 0.05, 0.006, 1), mats.satinBlack, xf(-0.03, 0.015, -0.11));
     cb.add(tubeGeo([[-0.075, 0.015, -0.11], [-0.11, 0.01, -0.06], [-0.09, 0.008, 0.0], [-0.075, 0.02, 0.02]], 0.002, 5, 60), mats.cableBlack, null, 'none');
     ctx.statics.flushInto(cb, g);
-    ctx.leds.add({ pos: [getProp('power.bench.collis-spare').pos[0] - 0.05, 0.92, -4.6 + 0.0555], normal: [0, 0, 1], color: '#2bff6a', size: 0.003, level: 0 });
+    ctx.leds.add({ pos: [getProp('power.bench.kollis-spare').pos[0] - 0.05, 0.92, -4.6 + 0.0555], normal: [0, 0, 1], color: '#2bff6a', size: 0.003, level: 0 });
     ctx.ia.proxy(g, 0.17, 0.06, 0.24, xf(0, 0.025, -0.04), 'proxy');
   }
   // desk fan (stored on the under-shelf)

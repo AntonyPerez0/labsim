@@ -225,7 +225,7 @@ Git plugin                    MIT License`}
 
 const SAMPLE_STEPS: Record<string, string> = {
   'sh: Shell Script': "sh './gradlew connectedAndroidTest -Pclasses=HomeScreenTest'",
-  'git: Git': "git branch: 'main', url: 'git@github.com:labsim-lab/uia-remote.git'",
+  'git: Git': "git branch: 'main', url: 'git@github.com:labsim-lab/uia-relay.git'",
   'echo: Print Message': "echo 'Hello from the lab'",
   'archiveArtifacts: Archive the artifacts': "archiveArtifacts artifacts: 'app/build/reports/**', fingerprint: true",
   'junit: Archive JUnit-formatted test results': "junit 'app/build/outputs/androidTest-results/**/*.xml'",

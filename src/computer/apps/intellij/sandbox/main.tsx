@@ -1,7 +1,7 @@
 /**
  * SANDBOX ONLY — `sandbox-computer-ide.html`: IntelliJ and Terminal in fixed-size frames with a tiny window
  * manager (clipboard, notify, openApp, route state) over a fake lab. Query: `?view=ide|term|both`,
- * `&route=/project/uia-remote/file/...`, `&cloned=pigeon,gort,uia-remote`, `&real=1` (do not install the fakes).
+ * `&route=/project/uia-relay/file/...`, `&cloned=parrot,gorth,uia-relay`, `&real=1` (do not install the fakes).
  */
 import { StrictMode, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -18,7 +18,7 @@ const view = q.get('view') ?? 'ide';
 const realSim = q.get('real') === '1';
 if (!realSim) {
   installFakeSim();
-  seedFakeLab({ cloned: (q.get('cloned') ?? 'pigeon,gort,uia-remote').split(',').filter(Boolean) as RepoId[] });
+  seedFakeLab({ cloned: (q.get('cloned') ?? 'parrot,gorth,uia-relay').split(',').filter(Boolean) as RepoId[] });
 } else {
   // Real sim: clone what `cloned` lists, then drive the game clock like the game loop does (50 ms steps).
   for (const r of (q.get('cloned') ?? '').split(',').filter(Boolean) as RepoId[]) sim.git.clone(r, 'player');

@@ -31,28 +31,28 @@ afterEach(() => {
 describe('window manager (Apps §1.3)', () => {
   it('opens, re-targets a single-instance app and emits app.opened / app.navigated', () => {
     const ev = events();
-    const id = openApp('orca', { route: '/robot' });
-    expect(ev.opened).toEqual(['orca']);
-    expect(ev.nav).toEqual(['orca /robot']);
-    const again = openApp('orca', { route: '/robot/5/edit' });
+    const id = openApp('orka', { route: '/robot' });
+    expect(ev.opened).toEqual(['orka']);
+    expect(ev.nav).toEqual(['orka /robot']);
+    const again = openApp('orka', { route: '/robot/5/edit' });
     expect(again).toBe(id);
-    expect(ev.opened).toEqual(['orca', 'orca']);
-    expect(ev.nav.at(-1)).toBe('orca /robot/5/edit');
+    expect(ev.opened).toEqual(['orka', 'orka']);
+    expect(ev.nav.at(-1)).toBe('orka /robot/5/edit');
     expect(shell.getState().windows).toHaveLength(1);
     goBack(id);
-    expect(ev.nav.at(-1)).toBe('orca /robot');
+    expect(ev.nav.at(-1)).toBe('orka /robot');
     navigate(id, '/robot?status.in=AVAILABLE', { replace: true });
     expect(shell.getState().windows[0]!.history).toEqual(['/robot?status.in=AVAILABLE', '/robot/5/edit']);
     ev.stop();
   });
 
   it('opens one IntelliJ window per repo and maps app params to routes', () => {
-    const a = openApp('intellij', { repo: 'gort' });
-    const b = openApp('intellij', { repo: 'uia-remote', file: 'app/src/Main.java' });
+    const a = openApp('intellij', { repo: 'gorth' });
+    const b = openApp('intellij', { repo: 'uia-relay', file: 'app/src/Main.java' });
     expect(a).not.toBe(b);
-    expect(openApp('intellij', { repo: 'gort' })).toBe(a);
+    expect(openApp('intellij', { repo: 'gorth' })).toBe(a);
     expect(routeFromParams('chat', { channel: 'dm:riley' })).toBe('/dm/riley');
-    expect(routeFromParams('chat', { channel: '#orca-alerts' })).toBe('/channel/orca-alerts');
+    expect(routeFromParams('chat', { channel: '#orka-alerts' })).toBe('/channel/orka-alerts');
     expect(routeFromParams('dashboard', { robot: 'wall-e', tab: 'robot' })).toBe('/robot/wall-e/robot');
     expect(routeFromParams('camera', { url: 'http://10.42.10.40:8081/stream.mjpg', robot: 'seti' })).toBe('/stream/10.42.10.40?robot=seti');
   });
@@ -65,19 +65,19 @@ describe('window manager (Apps §1.3)', () => {
 
   it('clipboard writes the in-game clipboard and emits desktop.clipboard.copied', () => {
     const cap = captureActions();
-    clipboard.write('git@github.com:labsim-lab/gort.git', 'github');
-    expect(clipboard.read()).toBe('git@github.com:labsim-lab/gort.git');
-    expect(cap.of('desktop.clipboard.copied')[0]).toEqual({ text: 'git@github.com:labsim-lab/gort.git', sourceApp: 'github' });
+    clipboard.write('git@github.com:labsim-lab/gorth.git', 'github');
+    expect(clipboard.read()).toBe('git@github.com:labsim-lab/gorth.git');
+    expect(cap.of('desktop.clipboard.copied')[0]).toEqual({ text: 'git@github.com:labsim-lab/gorth.git', sourceApp: 'github' });
     cap.stop();
   });
 });
 
 describe('Desktop (Apps §1.1, §1.8, §1.10, §1.11)', () => {
   it('drains open requests queued before mount', async () => {
-    requestOpenApp('chat', { channel: '#orca-alerts' });
+    requestOpenApp('chat', { channel: '#orka-alerts' });
     m = await mount(<Desktop onExit={() => undefined} />);
     const w = shell.getState().windows.find((x) => x.app === 'chat');
-    expect(w?.route).toBe('/channel/orca-alerts');
+    expect(w?.route).toBe('/channel/orka-alerts');
   });
 
   it('Esc with nothing to close stands up: desktop.standUp + onExit', async () => {
@@ -125,13 +125,13 @@ describe('Desktop (Apps §1.1, §1.8, §1.10, §1.11)', () => {
 
   it('lesson gating: locked apps are refused and greyed', async () => {
     mutate((s) => {
-      s.session.computer.unlockedApps = ['orca'];
+      s.session.computer.unlockedApps = ['orka'];
     });
     m = await mount(<Desktop onExit={() => undefined} />);
     act(() => requestOpenApp('jenkins'));
     expect(shell.getState().windows.some((w) => w.app === 'jenkins')).toBe(false);
-    act(() => requestOpenApp('orca'));
-    expect(shell.getState().windows.some((w) => w.app === 'orca')).toBe(true);
+    act(() => requestOpenApp('orka'));
+    expect(shell.getState().windows.some((w) => w.app === 'orka')).toBe(true);
     expect(m.container.querySelector('[data-hint="desktop.taskbar:jenkins"]')).toBeNull();
     expect(m.container.querySelector('[data-hint="desktop.icon:jenkins"] .ws-icon-locked')).not.toBeNull();
     act(() =>

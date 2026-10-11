@@ -1,6 +1,6 @@
 /**
  * Canvas-2D renderers shared by the 3D world (as CanvasTextures on device screens / the status
- * tablet) and by the workstation apps (GIMP screenshots, camera viewer overlays, Orca previews).
+ * tablet) and by the workstation apps (GIMP screenshots, camera viewer overlays, Orka previews).
  * Pure Canvas2D + sim state — no three.js, no React. Implemented in `src/render2d/*`
  * (`deviceScreens/*.ts`, `tablet.ts`, `receipt.ts`, `shared/theme.ts`, `shared/labLogo.ts`).
  *
@@ -12,7 +12,7 @@
  */
 import type { QualityPreset } from '@/core/state';
 import type { RigCommandName } from '@/sim/events';
-import type { BannerColor, TerminalDevice, DeviceTypeCode, LabState, OrcaRobot, RigState } from '@/sim/types';
+import type { BannerColor, TerminalDevice, DeviceTypeCode, LabState, OrkaRobot, RigState } from '@/sim/types';
 
 /* ───────────────────────────── Fonts & palette (World §0.1, §4.1) ───────────────────────────── */
 
@@ -348,7 +348,7 @@ export const TABLET_ROBOT_TAB = {
   pitch: 48,
   labelStyle: { sizePx: 22, color: '#9fb3d6' },
   valueStyle: { sizePx: 24, color: '#ffffff' },
-  rows: ['Name', 'Human Readable Name', 'Orca status', 'Device', 'Device IP', 'Robot Pi', 'Camera', 'Last health check', 'Magnetic lock'] as readonly string[],
+  rows: ['Name', 'Human Readable Name', 'Orka status', 'Device', 'Device IP', 'Robot Pi', 'Camera', 'Last health check', 'Magnetic lock'] as readonly string[],
   statusChips: { AVAILABLE: '#2e9e4f', UNAVAILABLE: '#8b5cf6', OFFLINE: '#6b7280', CONNECTION_FAILED: '#dc2626', RESERVED: '#2563eb' } as Readonly<Record<string, string>>,
   miniMap: { rect: { x: 760, y: 200, w: 440, h: 300 } as PxRect, dotPx: 12, ok: '#39e46b', released: '#f2c12e', readoutBaseline: 540, homeBaseline: 572, homeText: 'Home = limit switches (0,0)' },
 } as const;
@@ -359,9 +359,9 @@ export const TABLET_LOCKOUT = {
   bg: 'rgba(8,12,22,0.80)',
   padlock: { x: 640, y: 330, sizePx: 96 },
   line1: { text: 'TEST IN PROGRESS — CONTROLS LOCKED', sizePx: 34, weight: 700, color: '#ffffff', baseline: 450 },
-  /** `<job> #<n>`, e.g. `Java/uia-remote-regression-flux #4120`. */
+  /** `<job> #<n>`, e.g. `Java/uia-relay-regression-flux #4120`. */
   line2: { sizePx: 24, color: '#b9c6dc', baseline: 492 },
-  line3: { text: 'Checked out via Orca · unlocks when the build finishes', sizePx: 20, color: '#8ea0bf', baseline: 528 },
+  line3: { text: 'Checked out via Orka · unlocks when the build finishes', sizePx: 20, color: '#8ea0bf', baseline: 528 },
   shakePx: 6,
   shakeMs: 200,
 } as const;
@@ -442,7 +442,7 @@ export interface Render2DApi {
   /** Draw a device display (primary MFD screen or the Duet's secondary CFD) filling the canvas. */
   drawDeviceDisplay(ctx: CanvasRenderingContext2D, lab: LabState, device: TerminalDevice, display: 'primary' | 'secondary', opts: DisplayRenderOptions): void;
   /** Draw the front status tablet dashboard (WALL-E style) for a rig (World §5, `TABLET_*`). */
-  drawTablet(ctx: CanvasRenderingContext2D, lab: LabState, rig: RigState, robot: OrcaRobot, opts: TabletRenderOptions): void;
+  drawTablet(ctx: CanvasRenderingContext2D, lab: LabState, rig: RigState, robot: OrkaRobot, opts: TabletRenderOptions): void;
   /** Draw a printed receipt (for Ollama / receipt validation and the printer paper strip). */
   drawReceipt(ctx: CanvasRenderingContext2D, text: string, opts: ReceiptRenderOptions): void;
   /** Height in px the receipt needs at `widthPx` (size the canvas / paper strip before drawing). */

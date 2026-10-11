@@ -106,7 +106,7 @@ export interface RackDef {
   readonly rotY: 0;
   /** Side doors are on the rack's OUTER side: −1 = −X face (Rack A), +1 = +X face (Rack B). */
   readonly doorSide: -1 | 1;
-  /** The side facing `shelf.callus` has no door (Collis ribbons and USB pass through). */
+  /** The side facing `shelf.kallus` has no door (Kollis ribbons and USB pass through). */
   readonly openSide: -1 | 1;
   /** Bay number → rig id. */
   readonly bays: Readonly<Record<BayNumber, string>>;
@@ -317,8 +317,8 @@ export function bayPartPositions(doorSide: -1 | 1): Record<string, { pos: Vec3; 
     /** Webcam on a gooseneck clamped to the left front post top. */
     webcamClamp: { pos: [-225, 425, -10] },
     webcamCamera: { pos: [-150, 410, -120] },
-    /** Collis ribbon enters through the open (Callus) side. */
-    collisRibbonEntry: { pos: [225 * -s, 30, -400] },
+    /** Kollis ribbon enters through the open (Kallus) side. */
+    kollisRibbonEntry: { pos: [225 * -s, 30, -400] },
     /** Side door hinge (rear post on the door side). */
     doorHinge: { pos: [241 * s, 0, -900] },
     tablet: { pos: [0, 110, FASCIA_MM.tablet.glassZ] },

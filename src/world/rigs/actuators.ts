@@ -1,7 +1,7 @@
 /**
  * Card / phone actuators of a touch rig (World §2.7, IMG-G): the printed dip tower (also the cable
  * tower, zip-tie slots, blue micro servo), the dip arm with its sector gear embossed `63`, hub
- * clamp bolts and the white Collis probe card on a grey ribbon; the NFC tap paddle (copper coil
+ * clamp bolts and the white Kollis probe card on a grey ribbon; the NFC tap paddle (copper coil
  * inlay) on its vertical pivot; the phone sled on an MGN9 rail with the power-button pusher.
  * Bay-local mm.
  */
@@ -75,13 +75,13 @@ export function buildActuators(kit: RigKit, b: B, bayRoot: Object3D, cfg: TouchD
   dip.add(extrudeG(shapeMm([[0, -13], [0, 13], [-100, 9], [-100, -9]]), 8, 1), m.blackPla, { p: [4, 0, 0], r: [0, -Math.PI / 2, 0] });
   for (const z of [-30, -60, -90]) dip.add(cylG(4.6, 1.6, 8), m.blackOxide, { p: [4.6, 0, z], r: [0, 0, Math.PI / 2] });
   // white card insert 54 × 85 × 0.6 (sticks out 60 beyond the arm tip, tip at 140)
-  const card = atlasRect(kit.decal, 'collis-card', 160, 256, (c, x, y, w, h) => {
+  const card = atlasRect(kit.decal, 'kollis-card', 160, 256, (c, x, y, w, h) => {
     c.fillStyle = '#f4f4f2';
     c.fillRect(x, y, w, h);
     c.fillStyle = '#9a9ea3';
     c.font = `600 ${w * 0.11}px Arial, sans-serif`;
     c.textAlign = 'center';
-    c.fillText('COLLIS PROBE', x + w / 2, y + h * 0.42);
+    c.fillText('KOLLIS PROBE', x + w / 2, y + h * 0.42);
     c.fillText('CARD', x + w / 2, y + h * 0.5);
     c.fillStyle = '#b9bcc0';
     c.fillRect(x + w * 0.2, y + h * 0.06, w * 0.6, h * 0.16);

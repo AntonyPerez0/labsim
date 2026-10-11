@@ -105,7 +105,7 @@ export function configItem(r: RosterRow, variant: ConfigData['variant']): DrillI
   if (variant === 'duet') facts.push('F193');
   return {
     id: `DR02:${variant}:${r.name}`,
-    tags: ['uia.config', 'adb.port', 'orca.tethered'],
+    tags: ['uia.config', 'adb.port', 'orka.tethered'],
     factIds: facts,
     teach: teach(
       `${r.name}: ${CONFIG_KEYS.map((k) => `${k}=${target[k]}`).filter((_, i) => i < 5).join(' · ')} …`,
@@ -217,7 +217,7 @@ export const DR02: DrillDef<ConfigData> = {
   id: 'DR02',
   name: 'config.properties Speed-Build',
   format: 'Build a full config.properties for a rig card; 3 files, 120 s',
-  tags: ['uia.config', 'adb.port', 'orca.tethered'],
+  tags: ['uia.config', 'adb.port', 'orka.tethered'],
   unlockedBy: ['M14'],
   durationS: 120,
   itemCount: 3,

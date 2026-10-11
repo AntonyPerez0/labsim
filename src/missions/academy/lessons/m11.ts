@@ -1,35 +1,35 @@
 /**
- * M11 — Jenkins: The Executor (Cur §2 M11). Mentor {{tate}}.
- * Setup (`academy:M11`, Sim §4.4.2): job `Java/uia-remote-regression-flux` has the saved parameter
+ * M11 — Jenkins: The Executor (Cur §2 M11). Mentor {{nate}}.
+ * Setup (`academy:M11`, Sim §4.4.2): job `Java/uia-relay-regression-flux` has the saved parameter
  * `DEVICE_TYPE=flux_3` (lower case) → checkout fails with `No enum constant …DeviceType.flux_3`.
  */
 import { c, on, p } from '../../types';
 import type { LessonDef } from '../../types';
 import { JOB, consoleOpened, finished, jobRoute, queued, say } from './helpers';
 
-const checkedOutNow = (robot: string) => (_: unknown, s: { lab: { orca?: { robots?: Record<number, { name: string; checkout: unknown }> } } }) =>
-  Object.values(s.lab.orca?.robots ?? {}).some((r) => r.name === robot && r.checkout !== null && r.checkout !== undefined);
+const checkedOutNow = (robot: string) => (_: unknown, s: { lab: { orka?: { robots?: Record<number, { name: string; checkout: unknown }> } } }) =>
+  Object.values(s.lab.orka?.robots ?? {}).some((r) => r.name === robot && r.checkout !== null && r.checkout !== undefined);
 
 /**
- * The release was seen in Orca: the player refreshed / used Orca after WALL-E was released, or was sitting at
+ * The release was seen in Orka: the player refreshed / used Orka after WALL-E was released, or was sitting at
  * the workstation when it happened (the Robots list is live, so watching it update counts too).
  */
 const releasedSeen = c.any(
-  c.sequence(on('robot.released', { name: 'wall-e' }), on('app.navigated', { app: 'orca' })),
-  c.sequence(on('robot.released', { name: 'wall-e' }), on('app.action', { app: 'orca' })),
+  c.sequence(on('robot.released', { name: 'wall-e' }), on('app.navigated', { app: 'orka' })),
+  c.sequence(on('robot.released', { name: 'wall-e' }), on('app.action', { app: 'orka' })),
   c.all(c.happened(on('robot.released', { name: 'wall-e' })), c.eq(p.overlay, 'computer')),
 );
 
 export const M11: LessonDef = {
   moduleId: 'M11',
-  mentor: 'tate',
-  setup: { preset: 'academy:M11', spawn: 'loc.workstation', apps: { unlock: ['jenkins', 'orca', 'chat'] } },
+  mentor: 'nate',
+  setup: { preset: 'academy:M11', spawn: 'loc.workstation', apps: { unlock: ['jenkins', 'orka', 'chat'] } },
   deck: 'deck.M11',
   manualChapters: ['Pipelines'],
   realLabChecklist: [
-    'Jenkins is the Executor: it triggers the pipeline, checks a robot out of Orca and injects the runtime environment variables. In CI nobody hand-edits config.',
+    'Jenkins is the Executor: it triggers the pipeline, checks a robot out of Orka and injects the runtime environment variables. In CI nobody hand-edits config.',
     'Legacy jobs are split by platform: Java jobs and iOS jobs. iOS Go SDK testing is active, so do not delete anything there.',
-    'Enum parameters such as DEVICE_TYPE must match Orca exactly, in ALL CAPS (FLUX_3). A lower-case value fails the checkout.',
+    'Enum parameters such as DEVICE_TYPE must match Orka exactly, in ALL CAPS (FLUX_3). A lower-case value fails the checkout.',
     "Read the console's environment block (RUN_TYPE, DEVICE_TYPE, ROBOT_NAME, PORT_NUMBER=5444, THEME=avocado, KERNEL_TYPE=CPA) when a run misbehaves.",
     'Run on an Unavailable rig by passing its exact unique Name in ROBOT_NAME.',
   ],
@@ -37,8 +37,8 @@ export const M11: LessonDef = {
     {
       id: 'M11.01',
       kind: 'dialogue',
-      speaker: 'tate',
-      text: 'Jenkins is the Executor. It triggers the pipeline, checks a robot out of Orca, and injects the runtime environment variables the test runner needs. In CI, nobody hand-edits config: Jenkins injects it.',
+      speaker: 'nate',
+      text: 'Jenkins is the Executor. It triggers the pipeline, checks a robot out of Orka, and injects the runtime environment variables the test runner needs. In CI, nobody hand-edits config: Jenkins injects it.',
       factIds: ['F015', 'F016', 'F094', 'F095', 'F189'],
     },
     {
@@ -58,14 +58,14 @@ export const M11: LessonDef = {
     {
       id: 'M11.03',
       kind: 'dialogue',
-      speaker: 'tate',
+      speaker: 'nate',
       text: "Legacy jobs are organised by platform: Java jobs here, iOS jobs there. The iOS runner is rarely touched, but iOS Go SDK testing is active, so don't delete anything.",
       factIds: ['F017', 'F203'],
     },
     {
       id: 'M11.04',
       kind: 'computer-task',
-      hud: 'Build Java/uia-remote-regression-flux with its saved parameters',
+      hud: 'Build Java/uia-relay-regression-flux with its saved parameters',
       app: 'jenkins',
       route: jobRoute(JOB.regressionFlux, 'build'),
       success: c.all(c.happened(finished(JOB.regressionFlux, 'FAILURE', 'ENUM_CASE')), consoleOpened(JOB.regressionFlux, 'FAILURE')),
@@ -79,8 +79,8 @@ export const M11: LessonDef = {
     {
       id: 'M11.05',
       kind: 'dialogue',
-      speaker: 'tate',
-      text: "Device Type is an enum in Orca, so the string has to match exactly. That's why our Jenkins env vars are ALL CAPS.",
+      speaker: 'nate',
+      text: "Device Type is an enum in Orka, so the string has to match exactly. That's why our Jenkins env vars are ALL CAPS.",
       factIds: ['F122'],
     },
     {
@@ -103,22 +103,22 @@ export const M11: LessonDef = {
     {
       id: 'M11.07',
       kind: 'computer-task',
-      hud: 'Check WALL-E in Orca while the build runs',
-      app: 'orca',
+      hud: 'Check WALL-E in Orka while the build runs',
+      app: 'orka',
       route: '/robot',
       success: c.all(
         c.any(
-          c.happened(on('app.navigated', { app: 'orca' }, checkedOutNow('wall-e'))),
-          c.happened(on('app.action', { app: 'orca' }, checkedOutNow('wall-e'))),
+          c.happened(on('app.navigated', { app: 'orka' }, checkedOutNow('wall-e'))),
+          c.happened(on('app.action', { app: 'orka' }, checkedOutNow('wall-e'))),
           c.wasTrue(c.all(c.truthy(p.robot('wall-e').checkedOutBy), c.eq(p.overlay, 'computer'))),
         ),
         releasedSeen,
       ),
       objectives: [
-        { id: 'M11.07.inuse', text: 'WALL-E: Available · in use by Jenkins', done: c.any(c.happened(on('app.navigated', { app: 'orca' }, checkedOutNow('wall-e'))), c.happened(on('app.action', { app: 'orca' }, checkedOutNow('wall-e')))) },
+        { id: 'M11.07.inuse', text: 'WALL-E: Available · in use by Jenkins', done: c.any(c.happened(on('app.navigated', { app: 'orka' }, checkedOutNow('wall-e'))), c.happened(on('app.action', { app: 'orka' }, checkedOutNow('wall-e')))) },
         { id: 'M11.07.free', text: 'After the build: no longer in use (refresh the list)', done: releasedSeen },
       ],
-      onComplete: [say('tate', 'Still Available the whole time. A checkout is not a status: Orca just marks the robot as in use by that build until it is released.')],
+      onComplete: [say('nate', 'Still Available the whole time. A checkout is not a status: Orka just marks the robot as in use by that build until it is released.')],
       factIds: ['F095', 'F101'],
     },
     {
@@ -128,13 +128,13 @@ export const M11: LessonDef = {
       app: 'jenkins',
       success: c.appAction('jenkins', 'jenkins.console.lineClicked', (d) => typeof d.text === 'string' && d.text.includes('PORT_NUMBER=5444')),
       showMe: [{ app: 'jenkins', target: 'jenkins.consoleOutput', action: 'click', caption: 'PORT_NUMBER=5444' }],
-      onComplete: [say('tate', 'PORT_NUMBER=5444, THEME=avocado, KERNEL_TYPE=CPA. On your laptop those live in config.properties; in CI, Jenkins injects them. {{morgan}} will make you live the 5444 story.')],
+      onComplete: [say('nate', 'PORT_NUMBER=5444, THEME=avocado, KERNEL_TYPE=CPA. On your laptop those live in config.properties; in CI, Jenkins injects them. {{morgan}} will make you live the 5444 story.')],
       factIds: ['F016', 'F189', 'F198'],
     },
     {
       id: 'M11.09',
       kind: 'computer-task',
-      hud: 'Run Java/uia-remote-regression-flux on ROSIE (Unavailable)',
+      hud: 'Run Java/uia-relay-regression-flux on ROSIE (Unavailable)',
       app: 'jenkins',
       route: jobRoute(JOB.regressionFlux, 'build'),
       success: c.happened(on('robot.checkedOut', { name: 'rosie', byName: true })),
@@ -148,7 +148,7 @@ export const M11: LessonDef = {
         {
           id: 'case',
           on: on('jenkins.buildQueued', { jobId: JOB.regressionFlux }, (pl) => /^rosie$/i.test(pl.params.ROBOT_NAME ?? '') && pl.params.ROBOT_NAME !== 'rosie'),
-          say: 'Exact unique Name, exactly as Orca has it: rosie.',
+          say: 'Exact unique Name, exactly as Orka has it: rosie.',
         },
       ],
       hints: [

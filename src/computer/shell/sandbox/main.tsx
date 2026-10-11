@@ -4,8 +4,8 @@
  *
  * Query:
  *  - `?preset=factory` sim preset (any of `sim.presets()`, e.g. `academy:M16`).
- *  - `?open=orca:/robot,dashboard` opens apps (app[:route]; gimp takes a file path).
- *  - `?clone=uia-remote,pigeon` clones repos for the player first.
+ *  - `?open=orka:/robot,dashboard` opens apps (app[:route]; gimp takes a file path).
+ *  - `?clone=uia-relay,parrot` clones repos for the player first.
  *  - `?tablet=wall-e` shows the tablet overlay instead of the desktop.
  *  - `?objectives=1` pins a sample objective; `?chat=1` posts sample LabChat messages.
  *  - `?tick=0` freezes time; `?step=100` game ms per 100 ms real tick.
@@ -49,18 +49,18 @@ const post = (channel: string, author: string, text: string, ticketId?: string) 
 };
 if (fake || q.get('chat') === '1') {
   post('#lab-automation', 'morgan', 'Morning all :wave: — new hire is sitting at *ws-17* today. Be nice.');
-  post('#lab-automation', 'jared', 'Rack B camera is back. If JOHNNY-5 looks blurry, reseat the USB before you open a ticket.');
+  post('#lab-automation', 'jaden', 'Rack B camera is back. If JOHNNY-5 looks blurry, reseat the USB before you open a ticket.');
   post('#lab-automation', 'riley', '@engineer can you check why EVE shows a yellow banner? Ticket incoming.', 'LAB-2231');
-  post('dm:morgan', 'morgan', 'Hey! Open Orca and filter the robot list to *Available*. Tell me how many there are.\n```\nhttp://orca.lab.local:8080/robot?status.in=AVAILABLE\n```');
+  post('dm:morgan', 'morgan', 'Hey! Open Orka and filter the robot list to *Available*. Tell me how many there are.\n```\nhttp://orka.lab.local:8080/robot?status.in=AVAILABLE\n```');
 }
 
 mutate((s) => {
   s.ui.overlay = q.get('tablet') ? { kind: 'tablet', robotId: q.get('tablet')! } : { kind: 'computer' };
   if (q.get('objectives')) {
     s.session.objectives = [
-      { id: 'o1', text: 'Filter the Orca robot list to Available', done: true },
+      { id: 'o1', text: 'Filter the Orka robot list to Available', done: true },
       { id: 'o2', text: 'Open EVE’s Notes and read the last health check', done: false },
-      { id: 'o3', text: 'Try to check out EVE from Orca', done: false },
+      { id: 'o3', text: 'Try to check out EVE from Orka', done: false },
     ];
   }
 });

@@ -75,7 +75,7 @@ describe('ticket lifecycle', () => {
     const r2 = missions.resolveTicket(t0.id);
     expect(r2.outcome).toBe('verifying');
     expect(r2.message).toMatch(/^Verifying… waiting for \d\d:\d\d health check$/);
-    fire('orca.healthCheckRan', { atMs: state().lab.time.nowMs, checked: 12, failedRobotIds: [], recoveredRobotIds: [] });
+    fire('orka.healthCheckRan', { atMs: state().lab.time.nowMs, checked: 12, failedRobotIds: [], recoveredRobotIds: [] });
     const t = state().session.tickets.find((x) => x.id === t0.id)!;
     expect(t.status).toBe('resolved');
     expect(t.score?.fastDiagnosis).toBe(true);
@@ -84,7 +84,7 @@ describe('ticket lifecycle', () => {
     expect(t.score!.total).toBe(t.score!.diagnosisBonus + t.score!.ackBonus + Math.round(200 * t.score!.timeFactor * t.score!.hintFactor * t.score!.comboFactor) + t.score!.processBonus - t.score!.penalties);
   });
 
-  it('escalates with the right cause and endpoint, Jared fixes it and the ticket auto-resolves', () => {
+  it('escalates with the right cause and endpoint, Jaden fixes it and the ticket auto-resolves', () => {
     registerIncidents([testIncident('INC91')]);
     completeModules('M01', 'M02', 'M03', 'M04');
     missions.startShift({ configId: 'shift-5', customSeed: 'esc', seedMode: 'custom' });
@@ -102,7 +102,7 @@ describe('ticket lifecycle', () => {
     const ok = missions.escalate(t0.id, { cause: 'A', endpoint });
     expect(ok.outcome).toBe('accepted');
     advance(95);
-    fire('orca.healthCheckRan', { atMs: state().lab.time.nowMs, checked: 12, failedRobotIds: [], recoveredRobotIds: [] });
+    fire('orka.healthCheckRan', { atMs: state().lab.time.nowMs, checked: 12, failedRobotIds: [], recoveredRobotIds: [] });
     expect(state().session.tickets[0]!.status).toBe('resolved');
   });
 });

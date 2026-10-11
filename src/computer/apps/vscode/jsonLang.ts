@@ -1,10 +1,10 @@
 /**
- * VS Code's built-in JSON language support, reduced to what the Pigeon workflow needs:
+ * VS Code's built-in JSON language support, reduced to what the Parrot workflow needs:
  *
  *  - `diagnoseJson(text)` — syntax problems with VS Code's wording and codes (`Expected comma json(514)`),
  *    reported where VS Code reports them: at the token AFTER a missing comma, which is why the real
  *    mistake is usually at the end of the previous line. Duplicate keys are warnings. VS Code knows
- *    nothing about Pigeon / LSTR, so an unknown action or a bad `${variable}` is never flagged here.
+ *    nothing about Parrot / LSTR, so an unknown action or a bad `${variable}` is never flagged here.
  *  - `tokenizeLine(...)` — syntax colouring + bracket-pair colours (depth carried across lines).
  */
 

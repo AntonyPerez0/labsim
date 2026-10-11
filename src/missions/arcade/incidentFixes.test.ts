@@ -54,8 +54,8 @@ function watch(id: string, b: IncidentBinding, vid = 'A'): () => boolean {
   };
 }
 
-const robotId = (name: string): number => Object.values(getState().lab.orca.robots).find((x) => x.name === name)!.id;
-const merchantId = (name: string): number => Object.values(getState().lab.orca.merchants).find((x) => x.name === name)!.id;
+const robotId = (name: string): number => Object.values(getState().lab.orka.robots).find((x) => x.name === name)!.id;
+const merchantId = (name: string): number => Object.values(getState().lab.orka.merchants).find((x) => x.name === name)!.id;
 
 /** Run a terminal line to completion (long-running jobs are polled while the sim ticks). */
 function term(line: string): string {
@@ -74,19 +74,19 @@ function term(line: string): string {
   return out;
 }
 
-/** Edit keys in the cloned uia-remote config.properties (what IntelliJ's editor does). */
+/** Edit keys in the cloned uia-relay config.properties (what IntelliJ's editor does). */
 function setConfig(s: SimApi, patch: Record<string, string>): void {
-  let text = String(getState().lab.repos['uia-remote']?.local?.files?.['config.properties'] ?? '');
+  let text = String(getState().lab.repos['uia-relay']?.local?.files?.['config.properties'] ?? '');
   for (const [k, v] of Object.entries(patch)) text = text.replace(new RegExp(`^${k}=.*$`, 'm'), `${k}=${v}`);
-  expect(s.git.writeFile('uia-remote', 'config.properties', text).ok).toBe(true);
+  expect(s.git.writeFile('uia-relay', 'config.properties', text).ok).toBe(true);
 }
 
-/** Write the RECEIPT_OPTIONS_5 rows the incident's success condition expects (the Orca-rows fix path). */
+/** Write the RECEIPT_OPTIONS_5 rows the incident's success condition expects (the Orka-rows fix path). */
 function applyScreenLocations(s: SimApi, b: IncidentBinding, id: string): void {
   const want: Record<string, { deviceType: string; screen: string; button: string; x?: number; y?: number }> = {};
   const walk = (c: Condition): void => {
     if (c.op === 'all' || c.op === 'any') c.of.forEach(walk);
-    if (c.op === 'cmp' && c.probe.p === 'orca.screenLocation' && typeof c.value === 'number') {
+    if (c.op === 'cmp' && c.probe.p === 'orka.screenLocation' && typeof c.value === 'number') {
       const pr = c.probe as unknown as { deviceType: string; screen: string; button: string; field: 'x' | 'y' };
       const k = `${pr.deviceType}|${pr.screen}|${pr.button}`;
       want[k] ??= { deviceType: pr.deviceType, screen: pr.screen, button: pr.button };
@@ -96,15 +96,15 @@ function applyScreenLocations(s: SimApi, b: IncidentBinding, id: string): void {
   walk(resolveVariant(INCIDENTS_BY_ID[id]!, 'A').success(b));
   expect(Object.keys(want).length).toBeGreaterThan(0);
   for (const w of Object.values(want)) {
-    const l = getState().lab.orca;
+    const l = getState().lab.orka;
     let scr = Object.values(l.screens).find((x) => x.deviceType === w.deviceType && x.name === w.screen);
     if (!scr) {
-      const r = s.orca.saveScreen({ name: w.screen, deviceType: w.deviceType as never, optionCount: 5, description: 'Receipt options (5)' }, 'player');
+      const r = s.orka.saveScreen({ name: w.screen, deviceType: w.deviceType as never, optionCount: 5, description: 'Receipt options (5)' }, 'player');
       expect(r.ok ? 'ok' : r.error).toBe('ok');
-      scr = getState().lab.orca.screens[r.ok ? r.value : -1]!;
+      scr = getState().lab.orka.screens[r.ok ? r.value : -1]!;
     }
-    const loc = Object.values(getState().lab.orca.screenLocations).find((x) => x.screenId === scr.id && x.button === w.button);
-    const r = s.orca.saveScreenLocation({ ...(loc ? { id: loc.id } : { screenId: scr.id, button: w.button }), xMm: w.x!, yMm: w.y! }, 'player');
+    const loc = Object.values(getState().lab.orka.screenLocations).find((x) => x.screenId === scr.id && x.button === w.button);
+    const r = s.orka.saveScreenLocation({ ...(loc ? { id: loc.id } : { screenId: scr.id, button: w.button }), xMm: w.x!, yMm: w.y! }, 'player');
     expect(r.ok ? 'ok' : r.error).toBe('ok');
   }
 }
@@ -140,8 +140,8 @@ const FIXES: Record<string, (s: SimApi, b: IncidentBinding) => void> = {
     tick(15);
   },
   INC14: (s, b) => {
-    const r = Object.values(getState().lab.orca.robots).find((x) => x.name === b.rig)!;
-    s.orca.saveRobot({ id: r.id, offsetXMm: 0, offsetYMm: 0 }, 'player');
+    const r = Object.values(getState().lab.orka.robots).find((x) => x.name === b.rig)!;
+    s.orka.saveRobot({ id: r.id, offsetXMm: 0, offsetYMm: 0 }, 'player');
   },
   INC15: (s, b) => {
     s.rig.setSwitch(b.rig!, 'motor', false, 'player');
@@ -177,8 +177,8 @@ const FIXES: Record<string, (s: SimApi, b: IncidentBinding) => void> = {
   },
   INC19: (s, b) => {
     const rig = b.rig!;
-    const robot = Object.values(getState().lab.orca.robots).find((x) => x.name === rig)!;
-    s.orca.setRobotStatus(robot.id, 'OFFLINE', 'player');
+    const robot = Object.values(getState().lab.orka.robots).find((x) => x.name === rig)!;
+    s.orka.setRobotStatus(robot.id, 'OFFLINE', 'player');
     s.rig.setSwitch(rig, 'motor', false, 'player');
     expect(s.rig.moveMotorUsb(rig, 'PI', 'player').ok).toBe(true);
     const pi = String(b.vars.pi);
@@ -191,7 +191,7 @@ const FIXES: Record<string, (s: SimApi, b: IncidentBinding) => void> = {
     tick(1);
     s.rig.command(rig, 'park.all', 'player');
     tick(20);
-    s.orca.setRobotStatus(robot.id, 'AVAILABLE', 'player');
+    s.orka.setRobotStatus(robot.id, 'AVAILABLE', 'player');
   },
   INC59: (s, b) => {
     const rig = b.rig!;
@@ -208,90 +208,90 @@ const FIXES: Record<string, (s: SimApi, b: IncidentBinding) => void> = {
     tick(20);
   },
   INC65: (s, b) => {
-    const r = Object.values(getState().lab.orca.robots).find((x) => x.name === b.rig)!;
-    s.orca.saveRobot({ id: r.id, tapUrl: `http://${String(b.vars.piIp)}:8000/tap` }, 'player');
+    const r = Object.values(getState().lab.orka.robots).find((x) => x.name === b.rig)!;
+    s.orka.saveRobot({ id: r.id, tapUrl: `http://${String(b.vars.piIp)}:8000/tap` }, 'player');
   },
   INC22: (s) => {
     const l = getState().lab;
-    const scr = Object.values(l.orca.screens).find((x) => x.deviceType === 'FLUX_1' && x.name === 'RECEIPT_OPTIONS_4')!;
-    const loc = Object.values(l.orca.screenLocations).find((x) => x.screenId === scr.id && x.button === 'Print')!;
-    s.orca.saveScreenLocation({ id: loc.id, yMm: 66.5 }, 'player');
+    const scr = Object.values(l.orka.screens).find((x) => x.deviceType === 'FLUX_1' && x.name === 'RECEIPT_OPTIONS_4')!;
+    const loc = Object.values(l.orka.screenLocations).find((x) => x.screenId === scr.id && x.button === 'Print')!;
+    s.orka.saveScreenLocation({ id: loc.id, yMm: 66.5 }, 'player');
   },
   INC36: (s) => {
-    const c = Object.values(getState().lab.orca.screenCompareImages).find((x) => x.name === 'CFD_TOTAL')!;
-    s.orca.saveScreenCompareImage({ id: c.id, bbox: { ...c.bbox, y: 298 } }, 'player');
+    const c = Object.values(getState().lab.orka.screenCompareImages).find((x) => x.name === 'CFD_TOTAL')!;
+    s.orka.saveScreenCompareImage({ id: c.id, bbox: { ...c.bbox, y: 298 } }, 'player');
   },
   INC45: (s, b) => {
     const l = getState().lab;
-    const r = Object.values(l.orca.robots).find((x) => x.name === b.rig)!;
-    const mfd = Object.values(l.orca.devices).find((x) => x.name === `${b.rig}-mfd`)!;
-    const cfd = Object.values(l.orca.devices).find((x) => x.name === `${b.rig}-cfd`)!;
-    s.orca.saveRobot({ id: r.id, mfdDeviceId: mfd.id, cfdDeviceId: cfd.id }, 'player');
+    const r = Object.values(l.orka.robots).find((x) => x.name === b.rig)!;
+    const mfd = Object.values(l.orka.devices).find((x) => x.name === `${b.rig}-mfd`)!;
+    const cfd = Object.values(l.orka.devices).find((x) => x.name === `${b.rig}-cfd`)!;
+    s.orka.saveRobot({ id: r.id, mfdDeviceId: mfd.id, cfdDeviceId: cfd.id }, 'player');
   },
   INC51: (s) => {
-    const m = Object.values(getState().lab.orca.merchants).find((x) => x.name === 'GO-SDK-US-01')!;
-    s.orca.saveMerchant({ id: m.id, apiKey: 'key_sim_19c0e2' }, 'player');
+    const m = Object.values(getState().lab.orka.merchants).find((x) => x.name === 'GO-SDK-US-01')!;
+    s.orka.saveMerchant({ id: m.id, apiKey: 'key_sim_19c0e2' }, 'player');
   },
   INC53: (s) => {
-    const cp = Object.values(getState().lab.orca.cardProfiles).find((x) => x.name === 'VISA_STD_DIP')!;
-    s.orca.saveCardProfile({ id: cp.id, gortPath: 'cards/emv/visa_std_dip.json' }, 'player');
+    const cp = Object.values(getState().lab.orka.cardProfiles).find((x) => x.name === 'VISA_STD_DIP')!;
+    s.orka.saveCardProfile({ id: cp.id, gorthPath: 'cards/emv/visa_std_dip.json' }, 'player');
   },
   INC54: (s, b) => {
-    s.host.runSchedTask(String(b.vars.box), 'GortCardSync', 'player');
+    s.host.runSchedTask(String(b.vars.box), 'GorthCardSync', 'player');
     tick(25);
   },
   INC60: (s) => {
-    s.host.startService('orca-vm', 'mysql', 'player');
+    s.host.startService('orka-vm', 'mysql', 'player');
     tick(20);
   },
   INC20: (s, b) => applyScreenLocations(s, b, 'INC20'),
   INC21: (s, b) => applyScreenLocations(s, b, 'INC21'),
   INC25: (s) => {
     const path = 'tests/sale/tip_sale_print.json';
-    expect(s.git.clone('pigeon', 'player').ok).toBe(true);
-    const lines = String(getState().lab.repos.pigeon!.local!.files[path]).split('\n');
+    expect(s.git.clone('parrot', 'player').ok).toBe(true);
+    const lines = String(getState().lab.repos.parrot!.local!.files[path]).split('\n');
     lines[7] = `${lines[7]!.replace(/,?\s*$/, '')},`;
     const text = lines.join('\n');
     JSON.parse(text);
-    expect(s.git.writeFile('pigeon', path, text).ok).toBe(true);
-    expect(s.git.stage('pigeon', [path]).ok).toBe(true);
-    expect(s.git.commit('pigeon', 'Fix missing comma after add tip', 'player').ok).toBe(true);
-    const r = s.git.push('pigeon');
+    expect(s.git.writeFile('parrot', path, text).ok).toBe(true);
+    expect(s.git.stage('parrot', [path]).ok).toBe(true);
+    expect(s.git.commit('parrot', 'Fix missing comma after add tip', 'player').ok).toBe(true);
+    const r = s.git.push('parrot');
     expect(r.ok ? 'ok' : r.error).toBe('ok');
   },
   INC55: (s, b) => {
-    const cp = Object.values(getState().lab.orca.cardProfiles).find((x) => x.name === 'VISA_STD_SWIPE')!;
-    s.orca.saveCardProfile({ id: cp.id, trackData: String(b.vars['truth.tracks']) }, 'player');
+    const cp = Object.values(getState().lab.orka.cardProfiles).find((x) => x.name === 'VISA_STD_SWIPE')!;
+    s.orka.saveCardProfile({ id: cp.id, trackData: String(b.vars['truth.tracks']) }, 'player');
   },
   INC23: (s) => {
     const path = 'go-sdk/tests/sale_receipt.json';
-    expect(s.git.clone('gort', 'player').ok).toBe(true);
-    expect(s.git.checkout('gort', 'fix/printer-capability', true).ok).toBe(true);
-    const json = JSON.parse(String(getState().lab.repos.gort!.local!.files[path])) as { capabilities: Record<string, unknown> };
+    expect(s.git.clone('gorth', 'player').ok).toBe(true);
+    expect(s.git.checkout('gorth', 'fix/printer-capability', true).ok).toBe(true);
+    const json = JSON.parse(String(getState().lab.repos.gorth!.local!.files[path])) as { capabilities: Record<string, unknown> };
     json.capabilities.printer = true;
-    expect(s.git.writeFile('gort', path, JSON.stringify(json, null, 2)).ok).toBe(true);
-    expect(s.git.stage('gort', [path]).ok).toBe(true);
-    expect(s.git.commit('gort', 'Restore printer capability', 'player').ok).toBe(true);
-    expect(s.git.push('gort').ok).toBe(true);
-    // gort main is protected: PR → reviewer merges
-    const pr = s.git.createPullRequest('gort', 'Restore printer capability', 'sale_receipt needs a printer', 'fix/printer-capability', 'player');
+    expect(s.git.writeFile('gorth', path, JSON.stringify(json, null, 2)).ok).toBe(true);
+    expect(s.git.stage('gorth', [path]).ok).toBe(true);
+    expect(s.git.commit('gorth', 'Restore printer capability', 'player').ok).toBe(true);
+    expect(s.git.push('gorth').ok).toBe(true);
+    // gorth main is protected: PR → reviewer merges
+    const pr = s.git.createPullRequest('gorth', 'Restore printer capability', 'sale_receipt needs a printer', 'fix/printer-capability', 'player');
     expect(pr.ok ? 'ok' : pr.error).toBe('ok');
     tick(60);
-    const merged = getState().lab.repos.gort!.pullRequests.find((x) => pr.ok && x.number === pr.value.number);
+    const merged = getState().lab.repos.gorth!.pullRequests.find((x) => pr.ok && x.number === pr.value.number);
     expect(merged?.state, 'reviewer merged the PR').toBe('merged');
   },
   INC34: (s) => {
     for (const reason of ['main-edit', 'missing-isScreenPresent', 'port-5555']) {
-      const r = s.git.comment('uia-remote', 431, { path: null, line: null, body: reason, reason }, 'player');
+      const r = s.git.comment('uia-relay', 431, { path: null, line: null, body: reason, reason }, 'player');
       expect(r.ok ? 'ok' : r.error).toBe('ok');
     }
-    expect(s.git.requestChanges('uia-remote', 431, 'player').ok).toBe(true);
+    expect(s.git.requestChanges('uia-relay', 431, 'player').ok).toBe(true);
   },
   INC07: (s) => {
-    s.orca.setRobotStatus(robotId('baymax'), 'OFFLINE', 'player');
+    s.orka.setRobotStatus(robotId('baymax'), 'OFFLINE', 'player');
   },
   INC09: (s, b) => {
-    s.orca.saveRobot({ id: robotId(b.rig!), cameraStreamUrl: String(b.vars.cameraUrl) }, 'player');
+    s.orka.saveRobot({ id: robotId(b.rig!), cameraStreamUrl: String(b.vars.cameraUrl) }, 'player');
   },
   INC11: (s, b) => {
     s.rig.command(b.rig!, 'park.all', 'player');
@@ -304,7 +304,7 @@ const FIXES: Record<string, (s: SimApi, b: IncidentBinding) => void> = {
     tick(20);
   },
   INC26: (s) => {
-    expect(s.jenkins.moveJob('iOS/pigeon-windows-tender', 'Java', 'player').ok).toBe(true);
+    expect(s.jenkins.moveJob('iOS/parrot-windows-tender', 'Java', 'player').ok).toBe(true);
   },
   INC28: () => {
     term('ssh pi@10.42.10.30');
@@ -319,12 +319,12 @@ const FIXES: Record<string, (s: SimApi, b: IncidentBinding) => void> = {
     setConfig(s, { deviceType: 'Flux' });
   },
   INC37: (s) => {
-    const c = Object.values(getState().lab.orca.screenCompareImages).find((x) => x.name === 'CFD_TOTAL')!;
-    s.orca.saveScreenCompareImage({ id: c.id, expectedText: 'Total $10.83' }, 'player');
+    const c = Object.values(getState().lab.orka.screenCompareImages).find((x) => x.name === 'CFD_TOTAL')!;
+    s.orka.saveScreenCompareImage({ id: c.id, expectedText: 'Total $10.83' }, 'player');
   },
   INC40: (s) => {
-    s.orca.setRobotStatus(robotId('rosie'), 'UNAVAILABLE', 'player');
-    expect(s.laz.start('dev-rosie-pocket', merchantId('PAYCORE-STANDALONE-01'), 'player').ok).toBe(true);
+    s.orka.setRobotStatus(robotId('rosie'), 'UNAVAILABLE', 'player');
+    expect(s.lazo.start('dev-rosie-pocket', merchantId('PAYCREST-STANDALONE-01'), 'player').ok).toBe(true);
     tick(120);
   },
   INC42: (s) => {
@@ -332,21 +332,21 @@ const FIXES: Record<string, (s: SimApi, b: IncidentBinding) => void> = {
     expect(r.ok ? 'ok' : r.error).toBe('ok');
     if (!r.ok) return;
     const serial = getState().lab.devices[r.value.deviceId]!.serial;
-    const d = s.orca.saveDevice({ name: 'johnny-5-flux2', deviceType: 'FLUX_2', serial, ip: '10.42.30.15', label: 'Flux 2 (JOHNNY-5)' }, 'player');
+    const d = s.orka.saveDevice({ name: 'johnny-5-flux2', deviceType: 'FLUX_2', serial, ip: '10.42.30.15', label: 'Flux 2 (JOHNNY-5)' }, 'player');
     expect(d.ok ? 'ok' : d.error).toBe('ok');
     if (!d.ok) return;
-    s.orca.saveRobot({ id: robotId('johnny-5'), deviceId: d.value }, 'player');
+    s.orka.saveRobot({ id: robotId('johnny-5'), deviceId: d.value }, 'player');
     tick(5);
   },
   INC43: (s) => {
-    const flux1 = Object.values(getState().lab.orca.devices).find((x) => x.name === 'johnny-5-flux1')!;
-    s.orca.saveRobot({ id: robotId('johnny-5'), deviceId: flux1.id }, 'player');
+    const flux1 = Object.values(getState().lab.orka.devices).find((x) => x.name === 'johnny-5-flux1')!;
+    s.orka.saveRobot({ id: robotId('johnny-5'), deviceId: flux1.id }, 'player');
   },
   INC44: (s) => {
-    s.orca.setRobotStatus(robotId('k-9'), 'OFFLINE', 'player');
+    s.orka.setRobotStatus(robotId('k-9'), 'OFFLINE', 'player');
   },
   INC46: (s) => {
-    s.orca.saveRobot({ id: robotId('tars'), mfdDeviceId: null, cfdDeviceId: null }, 'player');
+    s.orka.saveRobot({ id: robotId('tars'), mfdDeviceId: null, cfdDeviceId: null }, 'player');
   },
   INC47: (s) => {
     // the reseat verb toggles; only the MFD's hub-to-peer USB lead was knocked loose
@@ -358,9 +358,9 @@ const FIXES: Record<string, (s: SimApi, b: IncidentBinding) => void> = {
     expect(s.jenkins.configureScript(job.id, job.script.replace(/deviceType: '[A-Z_0-9]+'/, "deviceType: 'COMPASS'"), 'player').ok).toBe(true);
   },
   INC50: (s) => {
-    const id = merchantId('WESTERS-CA-02');
-    s.orca.saveMerchant({ id, ubiRoute: 'ca-central' }, 'player');
-    expect(s.laz.start('dev-seti-compass', id, 'player').ok).toBe(true);
+    const id = merchantId('WESTERLY-CA-02');
+    s.orka.saveMerchant({ id, uboRoute: 'ca-central' }, 'player');
+    expect(s.lazo.start('dev-seti-compass', id, 'player').ok).toBe(true);
     tick(120);
   },
   INC56: () => {
@@ -372,7 +372,7 @@ const FIXES: Record<string, (s: SimApi, b: IncidentBinding) => void> = {
     tick(60);
   },
   INC63: (s) => {
-    s.orca.saveRobot({ id: robotId('johnny-5'), humanReadableName: 'JOHNNY-5' }, 'player');
+    s.orka.saveRobot({ id: robotId('johnny-5'), humanReadableName: 'JOHNNY-5' }, 'player');
   },
 };
 

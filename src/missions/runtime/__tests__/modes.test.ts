@@ -80,7 +80,7 @@ describe('Free Play fault injector (GP §2.5)', () => {
       s.session.vars['fixed:INC95'] = true;
     });
     advance(0.5);
-    fire('orca.healthCheckRan', { atMs: state().lab.time.nowMs, checked: 12, failedRobotIds: [], recoveredRobotIds: [] });
+    fire('orka.healthCheckRan', { atMs: state().lab.time.nowMs, checked: 12, failedRobotIds: [], recoveredRobotIds: [] });
     const fp = state().session.freeplay!;
     expect(fp.injected[0]!.fixedAtMs).not.toBeNull();
     expect(state().progress.freeplay.fixesTotal).toBe(1);
@@ -97,7 +97,7 @@ describe('Free Play fault injector (GP §2.5)', () => {
       s.session.vars['fixed:INC96'] = true;
     });
     advance(0.5);
-    fire('orca.healthCheckRan', { atMs: state().lab.time.nowMs, checked: 12, failedRobotIds: [], recoveredRobotIds: [] });
+    fire('orka.healthCheckRan', { atMs: state().lab.time.nowMs, checked: 12, failedRobotIds: [], recoveredRobotIds: [] });
     expect(state().progress.freeplay.fixesTotal).toBe(1);
     expect(state().progress.xp).toBe(0);
   });

@@ -36,15 +36,15 @@ export function DashboardApp(props: AppProps) {
   const robotName = m?.params.name ?? null;
   const tab = (TABS.includes(m?.params.tab as DashboardTab) ? m!.params.tab : 'motion-control') as DashboardTab;
   const rigs = useGame((s) => s.lab.rigs);
-  const robots = useGame((s) => s.lab.orca.robots);
+  const robots = useGame((s) => s.lab.orka.robots);
   const [q, setQ] = useState('');
 
   const groups = useMemo(() => {
     const rows = Object.values(rigs)
       .filter((r) => r.hasGantry)
       .map((r) => {
-        const o = robots[r.orcaRobotId];
-        return { rig: r, name: r.id, hrn: o?.humanReadableName ?? r.id.toUpperCase(), rack: (o?.location ?? 'Unassigned').split(' · ')[0]!, id: r.orcaRobotId };
+        const o = robots[r.orkaRobotId];
+        return { rig: r, name: r.id, hrn: o?.humanReadableName ?? r.id.toUpperCase(), rack: (o?.location ?? 'Unassigned').split(' · ')[0]!, id: r.orkaRobotId };
       })
       .filter((x) => !q || x.name.includes(q.toLowerCase()) || x.hrn.toLowerCase().includes(q.toLowerCase()))
       .sort((a, b) => a.id - b.id);
@@ -53,7 +53,7 @@ export function DashboardApp(props: AppProps) {
     return [...map.entries()];
   }, [rigs, robots, q]);
 
-  const hrn = robotName ? (robots[rigs[robotName]?.orcaRobotId ?? -1]?.humanReadableName ?? robotName.toUpperCase()) : null;
+  const hrn = robotName ? (robots[rigs[robotName]?.orkaRobotId ?? -1]?.humanReadableName ?? robotName.toUpperCase()) : null;
   useEffect(() => {
     onTitle?.(hrn ? `LabSim Robot Dashboard — ${hrn}` : 'LabSim Robot Dashboard');
   }, [hrn, onTitle]);

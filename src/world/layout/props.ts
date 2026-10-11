@@ -128,7 +128,7 @@ const DESKS: PropPlacement[] = [
   p('desk.player.sticky-notes', 'sticky-notes', 'desks', [0.95, 0.741, 4.4], 180, '3 yellow notes 76 × 76 mm — 2 on the left monitor\'s lower bezel, 1 on the desk', {
     size: [0.076, 0.076, 0.001],
     spec: {
-      texts: ['ADB → :5444 (NOT 5555!)', 'orca.lab.local:8080 · jenkins.lab.local:8080', 'theme=avocado · kernelType=CPA'],
+      texts: ['ADB → :5444 (NOT 5555!)', 'orka.lab.local:8080 · jenkins.lab.local:8080', 'theme=avocado · kernelType=CPA'],
       onMonitor: 'desk.player.monitor-l',
     },
   }),
@@ -166,7 +166,7 @@ const RACK_ROW: PropPlacement[] = [
     size: [0.6, 1.0, 2.0],
     builder: 'rigs',
   }),
-  p('shelf.callus', 'shelf', 'rack-row', [-2.0, 0, -2.1], 0, '4-post perforated shelf aligned with the bays (§2.14)', { size: [0.6, 1.0, 1.95], builder: 'rigs' }),
+  p('shelf.kallus', 'shelf', 'rack-row', [-2.0, 0, -2.1], 0, '4-post perforated shelf aligned with the bays (§2.14)', { size: [0.6, 1.0, 1.95], builder: 'rigs' }),
   p('rack.b', 'rack', 'rack-row', [-1.4, 0, -2.1], 0, '42U open 4-post rack, touch robots JOHNNY-5, SETI, BAYMAX, ROSIE (doors on the east face)', {
     size: [0.6, 1.0, 2.0],
     builder: 'rigs',
@@ -177,7 +177,7 @@ const RACK_ROW: PropPlacement[] = [
   p('cart.tools', 'cart', 'rack-row', [-0.2, 0, -0.7], 20, 'Black 3-tier utility cart: open laptop (terminal decor), label tape, zip-tie bag, cable coil', {
     size: [0.75, 0.45, 0.95],
   }),
-  p('anchor.ruler.rack-a', 'anchor', 'rack-row', [-2.0, 0.995, -1.63], 0, 'Ruler spot used by M09 setup (front lip of Callus level 3)', {
+  p('anchor.ruler.rack-a', 'anchor', 'rack-row', [-2.0, 0.995, -1.63], 0, 'Ruler spot used by M09 setup (front lip of Kallus level 3)', {
     mount: 'surface',
     collider: false,
   }),
@@ -185,7 +185,7 @@ const RACK_ROW: PropPlacement[] = [
     size: [1.6, 1.2, 0.006],
     collider: false,
     adjusted: true,
-    note: 'Doc: "under the rack row" with no coordinates; placed in front of Rack A / Callus / Rack B.',
+    note: 'Doc: "under the rack row" with no coordinates; placed in front of Rack A / Kallus / Rack B.',
   }),
 ];
 
@@ -209,7 +209,7 @@ const POWER: PropPlacement[] = [
     size: [0.2, 0.12, 0.03],
   }),
   p('power.bench.flux4-psu', 'psu', 'power-wall', [-0.3, 0.9, -4.6], 15, 'New Flux 4 power brick (white, 18 V AC brick, 1.8 m cord)', { size: [0.11, 0.06, 0.032] }),
-  p('power.bench.collis-spare', 'device', 'power-wall', [0.2, 0.9, -4.6], 0, 'Spare Collis probe (grey, UL label) + its AC brick', { size: [0.15, 0.11, 0.045] }),
+  p('power.bench.kollis-spare', 'device', 'power-wall', [0.2, 0.9, -4.6], 0, 'Spare Kollis probe (grey, UL label) + its AC brick', { size: [0.15, 0.11, 0.045] }),
   p('power.bench.desk-fan', 'fan', 'power-wall', [0.55, 0.2, -4.7], 0, 'Desk fan (stored; INC17 moves it onto a strip)', { size: [0.25, 0.15, 0.32] }),
 ];
 
@@ -222,7 +222,7 @@ const SERVER_FAB: PropPlacement[] = [
   }),
   p('server.blade', 'server', 'server', [-3.7, 1.1, -4.72], 0, 'Open-top 4-GPU blade chassis; GPUs 1–2 on top, 3–4 hang below the 1.10 tier (lowest y 0.93)', {
     size: [0.8, 0.45, 0.12],
-    spec: { lowestY: 0.93, tag: 'GPU BLADE · 10.42.1.5 · VMs: ORCA / JENKINS / OLLAMA' },
+    spec: { lowestY: 0.93, tag: 'GPU BLADE · 10.42.1.5 · VMs: ORKA / JENKINS / OLLAMA' },
   }),
   p('server.switch', 'network-switch', 'server', [-3.7, 1.62, -4.75], 0, '24-port 1U switch, port LEDs, patch cables to tray', { size: [0.44, 0.21, 0.044] }),
   p('server.ups', 'ups', 'server', [-3.95, 0.12, -4.75], 0, 'Small UPS, green LED', { size: [0.15, 0.4, 0.22] }),
@@ -262,46 +262,46 @@ const SERVER_FAB: PropPlacement[] = [
   }),
 ];
 
-/* ───────────────────────────── Jared's bench, parts wall, Husky, storage (north-east) ───────────────────────────── */
+/* ───────────────────────────── Jaden's bench, parts wall, Husky, storage (north-east) ───────────────────────────── */
 
-const JARED: PropPlacement[] = [
-  p('bench.jared', 'bench', 'jared', [2.7, 0, -4.625], 0, 'Butcher-block top, grey-blue ESD mat (#5f7686, 1.20 × 0.60) on the left, 2 under-bench drawers', {
+const JADEN: PropPlacement[] = [
+  p('bench.jaden', 'bench', 'jaden', [2.7, 0, -4.625], 0, 'Butcher-block top, grey-blue ESD mat (#5f7686, 1.20 × 0.60) on the left, 2 under-bench drawers', {
     size: [3.0, 0.75, 0.9],
     spec: { topY: 0.9, matW: 1.2, matD: 0.6 },
   }),
-  p('jared.solder', 'instrument', 'jared', [1.7, 0.9, -4.55], 0, 'Soldering station (red/black, 7-seg `350`), iron in coil stand, brass sponge', { size: [0.16, 0.13, 0.1] }),
-  p('jared.magnifier-lamp', 'lamp', 'jared', [1.4, 0.9, -4.85], 0, 'Articulated lamp, ring LED (warm white emissive)', { spec: { reach: 0.6 } }),
-  p('jared.half-pcb', 'pcb', 'jared', [1.55, 0.9, -4.45], 0, 'Motor PCB in a third-hand tool, half soldered', { size: [0.1, 0.07, 0.002] }),
-  p('jared.scope', 'instrument', 'jared', [2.3, 0.9, -4.75], 0, 'Bench oscilloscope, 7" screen with an animated square/sine trace', {
+  p('jaden.solder', 'instrument', 'jaden', [1.7, 0.9, -4.55], 0, 'Soldering station (red/black, 7-seg `350`), iron in coil stand, brass sponge', { size: [0.16, 0.13, 0.1] }),
+  p('jaden.magnifier-lamp', 'lamp', 'jaden', [1.4, 0.9, -4.85], 0, 'Articulated lamp, ring LED (warm white emissive)', { spec: { reach: 0.6 } }),
+  p('jaden.half-pcb', 'pcb', 'jaden', [1.55, 0.9, -4.45], 0, 'Motor PCB in a third-hand tool, half soldered', { size: [0.1, 0.07, 0.002] }),
+  p('jaden.scope', 'instrument', 'jaden', [2.3, 0.9, -4.75], 0, 'Bench oscilloscope, 7" screen with an animated square/sine trace', {
     size: [0.32, 0.13, 0.16],
     spec: { screenPx: [256, 160] },
   }),
-  p('jared.bench-psu', 'instrument', 'jared', [2.75, 0.9, -4.78], 0, 'Bench PSU, readout `24.0V 0.35A`', { size: [0.13, 0.24, 0.16] }),
-  p('jared.bench-dmm', 'instrument', 'jared', [3.05, 0.9, -4.78], 0, 'Bench DMM (not a pickup)', { size: [0.22, 0.26, 0.09] }),
-  p('jared.bolt-bins', 'parts', 'jared', [3.3, 0.9, -4.48], 0, 'Two bins `2.5 mm` / `5 mm` + magnetic tray with 10 mixed bolts (M04 sorter)', { size: [0.3, 0.1, 0.05] }),
-  p('jared.label-maker', 'tool', 'jared', [3.65, 0.9, -4.5], 30, 'Label maker (Build Day)', { size: [0.07, 0.2, 0.05] }),
-  p('jared.wire-spools', 'parts', 'jared', [3.95, 0.9, -4.85], 0, 'Dispenser rod, 4 spools red/blue/green/white', { size: [0.3, 0.08, 0.12] }),
-  p('wall.bins', 'board', 'jared', [3.55, 1.5, -4.93], 0, 'Dark-grey louvred panel x 2.90–4.20, y 1.05–1.95, 4 rows × 5 stack bins: rows 1–2 red, rows 3–4 blue (IMG-R)', {
+  p('jaden.bench-psu', 'instrument', 'jaden', [2.75, 0.9, -4.78], 0, 'Bench PSU, readout `24.0V 0.35A`', { size: [0.13, 0.24, 0.16] }),
+  p('jaden.bench-dmm', 'instrument', 'jaden', [3.05, 0.9, -4.78], 0, 'Bench DMM (not a pickup)', { size: [0.22, 0.26, 0.09] }),
+  p('jaden.bolt-bins', 'parts', 'jaden', [3.3, 0.9, -4.48], 0, 'Two bins `2.5 mm` / `5 mm` + magnetic tray with 10 mixed bolts (M04 sorter)', { size: [0.3, 0.1, 0.05] }),
+  p('jaden.label-maker', 'tool', 'jaden', [3.65, 0.9, -4.5], 30, 'Label maker (Build Day)', { size: [0.07, 0.2, 0.05] }),
+  p('jaden.wire-spools', 'parts', 'jaden', [3.95, 0.9, -4.85], 0, 'Dispenser rod, 4 spools red/blue/green/white', { size: [0.3, 0.08, 0.12] }),
+  p('wall.bins', 'board', 'jaden', [3.55, 1.5, -4.93], 0, 'Dark-grey louvred panel x 2.90–4.20, y 1.05–1.95, 4 rows × 5 stack bins: rows 1–2 red, rows 3–4 blue (IMG-R)', {
     size: [1.3, 0.015, 0.9],
     mount: 'wall',
     wall: 'north',
   }),
-  p('wall.drawers', 'board', 'jared', [4.8, 1.4, -4.92], 0, 'Two 64-drawer organisers side by side (x 4.30–5.30, y 1.20–1.60) on wall brackets above the Husky chest', {
+  p('wall.drawers', 'board', 'jaden', [4.8, 1.4, -4.92], 0, 'Two 64-drawer organisers side by side (x 4.30–5.30, y 1.20–1.60) on wall brackets above the Husky chest', {
     size: [1.0, 0.16, 0.4],
     mount: 'wall',
     wall: 'north',
     spec: { units: 2, unitW: 0.5, drawersPerUnit: 64 },
   }),
-  p('jared.bench-light', 'light-bar', 'jared', [2.7, 1.02, -4.95], 0, 'Warm-white LED bar along the bench back edge', { size: [2.8, 0.02, 0.01], mount: 'wall', wall: 'north' }),
-  p('chest.husky', 'tool-chest', 'jared', [4.8, 0, -4.75], 0, 'Rolling tool cabinet, black body, chrome pulls, `HUSKY` badge top front, round emblem bottom door, 4 casters; drawers 1 (top) … 5', {
+  p('jaden.bench-light', 'light-bar', 'jaden', [2.7, 1.02, -4.95], 0, 'Warm-white LED bar along the bench back edge', { size: [2.8, 0.02, 0.01], mount: 'wall', wall: 'north' }),
+  p('chest.husky', 'tool-chest', 'jaden', [4.8, 0, -4.75], 0, 'Rolling tool cabinet, black body, chrome pulls, `HUSKY` badge top front, round emblem bottom door, 4 casters; drawers 1 (top) … 5', {
     size: [0.69, 0.46, 1.0],
     spec: { drawers: 5, drawer2: 'SPARE FLUX 2', drawer3: 'SPARE MICRO 3' },
   }),
-  p('cabinet.storage', 'cabinet', 'jared', [6.42, 0, -4.75], 0, 'Grey steel cabinet: lower doors locked (keypad), open upper shelves at 1.05/1.45 with LabSim boxes', {
+  p('cabinet.storage', 'cabinet', 'jaden', [6.42, 0, -4.75], 0, 'Grey steel cabinet: lower doors locked (keypad), open upper shelves at 1.05/1.45 with LabSim boxes', {
     size: [1.05, 0.45, 1.95],
-    spec: { shelves: [1.05, 1.45], sticker: 'SPARES — SIGN OUT WITH JARED' },
+    spec: { shelves: [1.05, 1.45], sticker: 'SPARES — SIGN OUT WITH JADEN' },
   }),
-  p('cabinet.storage.legacy-shelf', 'shelf', 'jared', [6.42, 1.05, -4.75], 0, 'Upper open shelf that holds the legacy Flux 1 after INC42', {
+  p('cabinet.storage.legacy-shelf', 'shelf', 'jaden', [6.42, 1.05, -4.75], 0, 'Upper open shelf that holds the legacy Flux 1 after INC42', {
     size: [1.0, 0.42, 0.02],
     mount: 'surface',
     collider: false,
@@ -359,12 +359,12 @@ const SOUTH: PropPlacement[] = [
     wall: 'south',
     spec: { titleY: 1.95, title: 'TEAM HISTORY' },
   }),
-  // Frames read left→right by a viewer facing south: Semi, Sedi, IPX, PayCore.
+  // Frames read left→right by a viewer facing south: Semi, Sedi, IPX, PayCrest.
   p('wall.history.semi', 'frame', 'south-wall', [4.55, 1.55, 4.98], 180, 'Black frame — SEMI TEAM', { size: [0.4, 0.02, 0.5], mount: 'wall', wall: 'south' }),
   p('wall.history.sedi', 'frame', 'south-wall', [4.05, 1.55, 4.98], 180, 'Black frame — SEDI (QA) TEAM', { size: [0.4, 0.02, 0.5], mount: 'wall', wall: 'south' }),
   p('wall.history.ipx', 'frame', 'south-wall', [3.55, 1.55, 4.98], 180, 'Black frame — IPX', { size: [0.4, 0.02, 0.5], mount: 'wall', wall: 'south' }),
-  p('wall.history.paycore', 'frame', 'south-wall', [3.05, 1.55, 4.98], 180, 'Black frame — PAYCORE', { size: [0.4, 0.02, 0.5], mount: 'wall', wall: 'south' }),
-  p('wall.history.match', 'plaque', 'south-wall', [3.75, 1.07, 4.98], 180, 'Plaque board with 5 plaques: Semi, Sedi, IPX, PayCore, Core OS (M18)', {
+  p('wall.history.paycrest', 'frame', 'south-wall', [3.05, 1.55, 4.98], 180, 'Black frame — PAYCREST', { size: [0.4, 0.02, 0.5], mount: 'wall', wall: 'south' }),
+  p('wall.history.match', 'plaque', 'south-wall', [3.75, 1.07, 4.98], 180, 'Plaque board with 5 plaques: Semi, Sedi, IPX, PayCrest, Core OS (M18)', {
     size: [2.1, 0.02, 0.25],
     mount: 'wall',
     wall: 'south',
@@ -376,7 +376,7 @@ const SOUTH: PropPlacement[] = [
 export interface LibraryItemDef {
   readonly id: string;
   readonly model: string;
-  /** Orca DeviceType; sealed "UPCOMING" boxes carry the type they announce. */
+  /** Orka DeviceType; sealed "UPCOMING" boxes carry the type they announce. */
   readonly deviceType: string;
   readonly item: string;
   readonly pos: Vec3;
@@ -442,7 +442,7 @@ export const PROPS: readonly PropPlacement[] = [
   ...RACK_ROW,
   ...POWER,
   ...SERVER_FAB,
-  ...JARED,
+  ...JADEN,
   ...WEST,
   ...EAST,
   ...SOUTH,

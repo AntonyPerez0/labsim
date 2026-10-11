@@ -24,7 +24,7 @@ import {
   type TabletRenderOptions,
   type TabletTab,
 } from './api';
-import type { BannerColor, LabState, OrcaRobot, RigState } from '@/sim/types';
+import type { BannerColor, LabState, OrkaRobot, RigState } from '@/sim/types';
 import { roundRectPath, shade } from './shared/theme';
 import { drawMark } from './shared/labLogo';
 import * as G from './shared/glyphs';
@@ -82,7 +82,7 @@ function fitFont(c: Ctx, text: string, weight: number, size: number, maxW: numbe
   return s;
 }
 
-function drawHeader(c: Ctx, rig: RigState, robot: OrcaRobot | null, o: TabletRenderOptions): void {
+function drawHeader(c: Ctx, rig: RigState, robot: OrkaRobot | null, o: TabletRenderOptions): void {
   const banner: BannerColor = rig.banner ?? 'green';
   c.fillStyle = gradientFor(c, o.wipe ? o.wipe.from : banner);
   c.fillRect(0, 0, L.header.w, L.header.h);
@@ -259,7 +259,7 @@ function drawUnreachable(c: Ctx, t: number): void {
   G.spinner(c, p.x + p.w / 2, p.y + p.h / 2 - 30, 26, ((t % 1000) / 1000) * Math.PI * 2, '#c9d2e3', 'rgba(201,210,227,0.2)');
 }
 
-function drawLockout(c: Ctx, robot: OrcaRobot | null, lab: LabState): void {
+function drawLockout(c: Ctx, robot: OrkaRobot | null, lab: LabState): void {
   const lo = TABLET_LOCKOUT;
   c.fillStyle = lo.bg;
   c.fillRect(lo.rect.x, lo.rect.y, lo.rect.w, lo.rect.h);
@@ -296,7 +296,7 @@ function drawSplash(c: Ctx): void {
   c.textAlign = 'left';
 }
 
-export function drawTablet(ctx: Ctx, lab: LabState, rig: RigState, robot: OrcaRobot | null, opts: TabletRenderOptions): void {
+export function drawTablet(ctx: Ctx, lab: LabState, rig: RigState, robot: OrkaRobot | null, opts: TabletRenderOptions): void {
   const c = ctx;
   const t = opts.timeMs ?? 0;
   c.save();

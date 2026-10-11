@@ -18,7 +18,7 @@ declare module '@/core/events' {
 }
 
 const APP_TITLES: Record<string, string> = {
-  orca: 'Orca',
+  orka: 'Orka',
   jenkins: 'Jenkins',
   github: 'GitHub',
   ollama: 'Ollama',

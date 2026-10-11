@@ -1,5 +1,5 @@
 /**
- * DR06 JSON Medic — an IntelliJ-style editor with no JSON inspections (Pigeon has no linter). Click the line
+ * DR06 JSON Medic — an IntelliJ-style editor with no JSON inspections (Parrot has no linter). Click the line
  * with the mistake (↑/↓ + Enter also work), then pick the fix (A–D). H pastes a known-good block beside the
  * file for comparison (−50). The LSTR console line, when shown, blames the line *after* a missing comma.
  */
@@ -155,7 +155,7 @@ export function View(props: DrillComponentProps) {
         </div>
         {data.console ? (
           <div className="dr06-console">
-            <span className="dr06-console__tag">Jenkins · Java/pigeon-android-sale-swipe</span>
+            <span className="dr06-console__tag">Jenkins · Java/parrot-android-sale-swipe</span>
             <code>{data.console}</code>
             <span className="dr06-console__fail">FAILURE</span>
           </div>

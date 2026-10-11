@@ -1,5 +1,5 @@
 /**
- * People tokens. Content strings never spell real names: they write `{{jared}}`, `{{tate}}`, `{{david}}`,
+ * People tokens. Content strings never spell real names: they write `{{jaden}}`, `{{nate}}`, `{{devin}}`,
  * `{{morgan}}`, `{{riley}}`, `{{sam}}`, `{{alex}}` and every exported data array is passed through
  * `resolvePeople()` once at module load, which substitutes the display name from team.ts. Renaming (or
  * anonymising) a person in team.ts therefore renames them everywhere.

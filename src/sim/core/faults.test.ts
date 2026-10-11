@@ -50,11 +50,11 @@ const CASES: Record<string, Case> = {
   },
   'eth.unplugged': { spec: { faultId: 'eth.unplugged', params: { host: 'pi-johnny-5' } }, fix: () => ok(sim.host.setEthernet('pi-johnny-5', true, 'player')) },
   'eth.damaged': { spec: { faultId: 'eth.damaged', params: { host: 'pi-baymax' } }, fix: () => ok(sim.host.replaceEthernet('pi-baymax', 'player')) },
-  'callus.down': { spec: { faultId: 'callus.down', params: { host: 'minix-01', mode: 'box-off' } }, fix: () => ok(sim.host.pressPowerButton('minix-01', false, 'player')), waitMs: 55_000 },
+  'kallus.down': { spec: { faultId: 'kallus.down', params: { host: 'minix-01', mode: 'box-off' } }, fix: () => ok(sim.host.pressPowerButton('minix-01', false, 'player')), waitMs: 55_000 },
   'nuc.diskFull': { spec: { faultId: 'nuc.diskFull', params: { host: 'minix-03' } } },
   'vm.serviceDown': { spec: { faultId: 'vm.serviceDown', params: { host: 'jenkins-vm', service: 'jenkins' } }, fix: () => ok(sim.host.startService('jenkins-vm', 'jenkins', 'player')), waitMs: 31_000 },
-  'orca.mysqlDown': { spec: { faultId: 'orca.mysqlDown' }, fix: () => ok(sim.host.startService('orca-vm', 'mysql', 'player')), waitMs: 21_000 },
-  'orca.appDown': { spec: { faultId: 'orca.appDown' }, fix: () => ok(sim.host.startService('orca-vm', 'orca', 'player')), waitMs: 21_000 },
+  'orka.mysqlDown': { spec: { faultId: 'orka.mysqlDown' }, fix: () => ok(sim.host.startService('orka-vm', 'mysql', 'player')), waitMs: 21_000 },
+  'orka.appDown': { spec: { faultId: 'orka.appDown' }, fix: () => ok(sim.host.startService('orka-vm', 'orka', 'player')), waitMs: 21_000 },
   'jenkins.down': { spec: { faultId: 'jenkins.down' }, fix: () => ok(sim.host.startService('jenkins-vm', 'jenkins', 'player')), waitMs: 31_000 },
   'ollama.down': { spec: { faultId: 'ollama.down' }, fix: () => ok(sim.host.startService('ollama-vm', 'ollama', 'player')), waitMs: 11_000 },
   'net.switchDown': { spec: { faultId: 'net.switchDown' } },
@@ -130,10 +130,10 @@ const CASES: Record<string, Case> = {
   'device.dead': { spec: { faultId: 'device.dead', params: { device: 'dev-k-9-duet2' } }, fix: () => ok(sim.device.swapHardware('k-9', 'MICRO_3', 'player', { deviceId: 'dev-spare-micro3' })) },
   'device.adbTcpReset': { spec: { faultId: 'device.adbTcpReset', params: { device: 'dev-data-micro3' } }, fix: () => transact((r, ctx) => adbShell(r.lab, ctx, 'SIM-M3-000031', ['tcpip', '5444'], 'terminal')), waitMs: 1_100 },
   'device.printerNoPaper': { spec: { faultId: 'device.printerNoPaper', params: { device: 'dev-wall-e-flux3' } }, fix: () => ok(sim.device.loadPaper('dev-wall-e-flux3', 'player')) },
-  'laz.skipAdbRestore': {
-    spec: { faultId: 'laz.skipAdbRestore' },
+  'lazo.skipAdbRestore': {
+    spec: { faultId: 'lazo.skipAdbRestore' },
     fix: () => {
-      ok(sim.laz.start('dev-data-micro3', 2, 'player'));
+      ok(sim.lazo.start('dev-data-micro3', 2, 'player'));
       run(60_000);
       transact((r, ctx) => adbShell(r.lab, ctx, 'SIM-M3-000031', ['tcpip', '5444'], 'terminal'));
     },
@@ -141,54 +141,54 @@ const CASES: Record<string, Case> = {
   },
   'receipt.qrRollout': { spec: { faultId: 'receipt.qrRollout', params: { deviceTypes: ['FLUX_4'], on: false } } },
   'tether.linkDown': { spec: { faultId: 'tether.linkDown', params: { robot: 'megatron', cable: 'usb' } }, fix: () => expect(sim.device.reseatHub('dev-megatron-mfd', 'usb', 'player')).toEqual({ ok: true, value: { seated: true } }), waitMs: 2_000 },
-  'collis.unpowered': { spec: { faultId: 'collis.unpowered', params: { probe: 'collis-wall-e' } }, fix: () => ok(sim.power.plug('psu-collis-wall-e', { kind: 'ac-strip', targetId: 'STRIP-C', socket: 1 }, 'player')), waitMs: 100 },
-  'collis.ribbonUnseated': { spec: { faultId: 'collis.ribbonUnseated', params: { probe: 'collis-eve' } }, fix: () => ok(sim.collis.reseatRibbon('collis-eve', 'player')), waitMs: 100 },
-  'callus.syncStale': { spec: { faultId: 'callus.syncStale' }, fix: () => ok(sim.host.runSchedTask('minix-02', 'GortCardSync', 'player')), waitMs: 21_000 },
-  'merchant.credentialBlank': { spec: { faultId: 'merchant.credentialBlank' }, fix: () => ok(sim.orca.saveMerchant({ id: 3, apiKey: 'key_sim_19c0e2' }, 'player')) },
-  'merchant.ubiRouteWrong': { spec: { faultId: 'merchant.ubiRouteWrong' }, fix: () => ok(sim.orca.saveMerchant({ id: 7, ubiRoute: 'ca-central' }, 'player')) },
-  'merchant.overwritten': { spec: { faultId: 'merchant.overwritten', params: { robot: 'rosie' } }, fix: () => ok(sim.laz.start('dev-rosie-pocket', 4, 'player')), waitMs: 60_000 },
-  'ubi.routeDown': { spec: { faultId: 'ubi.routeDown', params: { route: 'ca-central' } } },
-  'card.gortPathWrong': { spec: { faultId: 'card.gortPathWrong' }, fix: () => ok(sim.orca.saveCardProfile({ id: 2, gortPath: 'cards/emv/visa_std_dip.json' }, 'player')) },
-  'card.trackDataCorrupt': { spec: { faultId: 'card.trackDataCorrupt' }, fix: () => ok(sim.orca.saveCardProfile({ id: 1, trackData: '%B4111111111111111^SIM/VISA^30121010000000000000?;4111111111111111=3012101000000000?' }, 'player')) },
-  'orca.offsets': { spec: { faultId: 'orca.offsets', params: { robot: 'bumblebee' } }, fix: () => ok(sim.orca.saveRobot({ id: 3, offsetXMm: 0, offsetYMm: 0 }, 'player')) },
-  'orca.hrnTypo': { spec: { faultId: 'orca.hrnTypo', params: { robot: 'johnny-5' } }, fix: () => ok(sim.orca.saveRobot({ id: 5, humanReadableName: 'JOHNNY-5' }, 'player')) },
-  'orca.urlWrong': { spec: { faultId: 'orca.urlWrong', params: { robot: 'johnny-5' } }, fix: () => ok(sim.orca.saveRobot({ id: 5, tapUrl: 'http://10.42.10.15:8000/tap' }, 'player')) },
-  'orca.tetherCleared': {
-    spec: { faultId: 'orca.tetherCleared' },
+  'kollis.unpowered': { spec: { faultId: 'kollis.unpowered', params: { probe: 'kollis-wall-e' } }, fix: () => ok(sim.power.plug('psu-kollis-wall-e', { kind: 'ac-strip', targetId: 'STRIP-C', socket: 1 }, 'player')), waitMs: 100 },
+  'kollis.ribbonUnseated': { spec: { faultId: 'kollis.ribbonUnseated', params: { probe: 'kollis-eve' } }, fix: () => ok(sim.kollis.reseatRibbon('kollis-eve', 'player')), waitMs: 100 },
+  'kallus.syncStale': { spec: { faultId: 'kallus.syncStale' }, fix: () => ok(sim.host.runSchedTask('minix-02', 'GorthCardSync', 'player')), waitMs: 21_000 },
+  'merchant.credentialBlank': { spec: { faultId: 'merchant.credentialBlank' }, fix: () => ok(sim.orka.saveMerchant({ id: 3, apiKey: 'key_sim_19c0e2' }, 'player')) },
+  'merchant.uboRouteWrong': { spec: { faultId: 'merchant.uboRouteWrong' }, fix: () => ok(sim.orka.saveMerchant({ id: 7, uboRoute: 'ca-central' }, 'player')) },
+  'merchant.overwritten': { spec: { faultId: 'merchant.overwritten', params: { robot: 'rosie' } }, fix: () => ok(sim.lazo.start('dev-rosie-pocket', 4, 'player')), waitMs: 60_000 },
+  'ubo.routeDown': { spec: { faultId: 'ubo.routeDown', params: { route: 'ca-central' } } },
+  'card.gorthPathWrong': { spec: { faultId: 'card.gorthPathWrong' }, fix: () => ok(sim.orka.saveCardProfile({ id: 2, gorthPath: 'cards/emv/visa_std_dip.json' }, 'player')) },
+  'card.trackDataCorrupt': { spec: { faultId: 'card.trackDataCorrupt' }, fix: () => ok(sim.orka.saveCardProfile({ id: 1, trackData: '%B4111111111111111^SIM/VISA^30121010000000000000?;4111111111111111=3012101000000000?' }, 'player')) },
+  'orka.offsets': { spec: { faultId: 'orka.offsets', params: { robot: 'bumblebee' } }, fix: () => ok(sim.orka.saveRobot({ id: 3, offsetXMm: 0, offsetYMm: 0 }, 'player')) },
+  'orka.hrnTypo': { spec: { faultId: 'orka.hrnTypo', params: { robot: 'johnny-5' } }, fix: () => ok(sim.orka.saveRobot({ id: 5, humanReadableName: 'JOHNNY-5' }, 'player')) },
+  'orka.urlWrong': { spec: { faultId: 'orka.urlWrong', params: { robot: 'johnny-5' } }, fix: () => ok(sim.orka.saveRobot({ id: 5, tapUrl: 'http://10.42.10.15:8000/tap' }, 'player')) },
+  'orka.tetherCleared': {
+    spec: { faultId: 'orka.tetherCleared' },
     fix: () => {
-      const rows = Object.values(lab().orca.devices);
-      ok(sim.orca.saveRobot({ id: 10, mfdDeviceId: rows.find((d) => d.name === 'optimus-mfd')!.id, cfdDeviceId: rows.find((d) => d.name === 'optimus-cfd')!.id }, 'player'));
+      const rows = Object.values(lab().orka.devices);
+      ok(sim.orka.saveRobot({ id: 10, mfdDeviceId: rows.find((d) => d.name === 'optimus-mfd')!.id, cfdDeviceId: rows.find((d) => d.name === 'optimus-cfd')!.id }, 'player'));
     },
   },
-  'orca.tetherCloned': { spec: { faultId: 'orca.tetherCloned' }, fix: () => ok(sim.orca.saveRobot({ id: 12, mfdDeviceId: null, cfdDeviceId: null }, 'player')) },
-  'orca.screenLocationShift': {
-    spec: { faultId: 'orca.screenLocationShift', params: { deviceTypes: ['MICRO_3'] } },
+  'orka.tetherCloned': { spec: { faultId: 'orka.tetherCloned' }, fix: () => ok(sim.orka.saveRobot({ id: 12, mfdDeviceId: null, cfdDeviceId: null }, 'player')) },
+  'orka.screenLocationShift': {
+    spec: { faultId: 'orka.screenLocationShift', params: { deviceTypes: ['MICRO_3'] } },
     fix: () => {
-      const scr = Object.values(lab().orca.screens).find((s) => s.deviceType === 'MICRO_3' && s.name === 'RECEIPT_OPTIONS_5')!;
-      for (const l of Object.values(lab().orca.screenLocations).filter((x) => x.screenId === scr.id)) ok(sim.orca.saveScreenLocation({ id: l.id, yMm: l.yMm + 3 }, 'player'));
+      const scr = Object.values(lab().orka.screens).find((s) => s.deviceType === 'MICRO_3' && s.name === 'RECEIPT_OPTIONS_5')!;
+      for (const l of Object.values(lab().orka.screenLocations).filter((x) => x.screenId === scr.id)) ok(sim.orka.saveScreenLocation({ id: l.id, yMm: l.yMm + 3 }, 'player'));
     },
   },
-  'orca.screenLocationTypo': {
-    spec: { faultId: 'orca.screenLocationTypo' },
+  'orka.screenLocationTypo': {
+    spec: { faultId: 'orka.screenLocationTypo' },
     fix: () => {
-      const scr = Object.values(lab().orca.screens).find((s) => s.deviceType === 'FLUX_1' && s.name === 'RECEIPT_OPTIONS_4')!;
-      const l = Object.values(lab().orca.screenLocations).find((x) => x.screenId === scr.id && x.button === 'Print')!;
-      ok(sim.orca.saveScreenLocation({ id: l.id, yMm: 66.5 }, 'player'));
+      const scr = Object.values(lab().orka.screens).find((s) => s.deviceType === 'FLUX_1' && s.name === 'RECEIPT_OPTIONS_4')!;
+      const l = Object.values(lab().orka.screenLocations).find((x) => x.screenId === scr.id && x.button === 'Print')!;
+      ok(sim.orka.saveScreenLocation({ id: l.id, yMm: 66.5 }, 'player'));
     },
   },
-  'orca.missingReceiptMap': {
-    spec: { faultId: 'orca.missingReceiptMap', params: { deviceType: 'STAND_2018' } },
+  'orka.missingReceiptMap': {
+    spec: { faultId: 'orka.missingReceiptMap', params: { deviceType: 'STAND_2018' } },
     fix: () => {
-      const id = sim.orca.saveScreen({ name: 'RECEIPT_OPTIONS_5', deviceType: 'STAND_2018', description: 'Receipt options — 5 options' }, 'player');
+      const id = sim.orka.saveScreen({ name: 'RECEIPT_OPTIONS_5', deviceType: 'STAND_2018', description: 'Receipt options — 5 options' }, 'player');
       ok(id);
-      for (const b of firmwareTruth('STAND_2018', 'RECEIPT_OPTIONS_5')!) ok(sim.orca.saveScreenLocation({ screenId: id.ok ? id.value : 0, button: b.button, xMm: b.x, yMm: b.y }, 'player'));
+      for (const b of firmwareTruth('STAND_2018', 'RECEIPT_OPTIONS_5')!) ok(sim.orka.saveScreenLocation({ screenId: id.ok ? id.value : 0, button: b.button, xMm: b.x, yMm: b.y }, 'player'));
     },
   },
-  'orca.statusOverride': { spec: { faultId: 'orca.statusOverride', params: { robot: 'rosie', status: 'AVAILABLE' } }, fix: () => ok(sim.orca.setRobotStatus(8, 'UNAVAILABLE', 'player')) },
-  'orca.staleReservation': { spec: { faultId: 'orca.staleReservation' }, fix: () => ok(sim.orca.setRobotStatus(2, 'AVAILABLE', 'player')) },
-  'ocr.labelShift': { spec: { faultId: 'ocr.labelShift' }, fix: () => ok(sim.orca.saveScreenCompareImage({ id: 1, bbox: { x: 412, y: 298, w: 236, h: 44 } }, 'player')) },
-  'ocr.capitalisation': { spec: { faultId: 'ocr.capitalisation' }, fix: () => ok(sim.orca.saveScreenCompareImage({ id: 1, expectedText: 'Total $10.83' }, 'player')) },
-  'ocr.typo': { spec: { faultId: 'ocr.typo' }, fix: () => ok(sim.orca.saveScreenCompareImage({ id: 1, expectedText: 'TOTAL $10.83' }, 'player')) },
+  'orka.statusOverride': { spec: { faultId: 'orka.statusOverride', params: { robot: 'rosie', status: 'AVAILABLE' } }, fix: () => ok(sim.orka.setRobotStatus(8, 'UNAVAILABLE', 'player')) },
+  'orka.staleReservation': { spec: { faultId: 'orka.staleReservation' }, fix: () => ok(sim.orka.setRobotStatus(2, 'AVAILABLE', 'player')) },
+  'ocr.labelShift': { spec: { faultId: 'ocr.labelShift' }, fix: () => ok(sim.orka.saveScreenCompareImage({ id: 1, bbox: { x: 412, y: 298, w: 236, h: 44 } }, 'player')) },
+  'ocr.capitalisation': { spec: { faultId: 'ocr.capitalisation' }, fix: () => ok(sim.orka.saveScreenCompareImage({ id: 1, expectedText: 'Total $10.83' }, 'player')) },
+  'ocr.typo': { spec: { faultId: 'ocr.typo' }, fix: () => ok(sim.orka.saveScreenCompareImage({ id: 1, expectedText: 'TOTAL $10.83' }, 'player')) },
 };
 
 describe('core fault catalogue (Sim §4.3.1–§4.3.7)', () => {
@@ -240,7 +240,7 @@ describe('fault engine semantics (Sim §4.1)', () => {
   it("'@random' draws from the faults stream only (deterministic per seed, independent of other draws)", () => {
     const pick = (extraCurl: boolean) => {
       fresh('test', 7);
-      if (extraCurl) sim.orca.rest('GET', '/api/robots', null, 'player'); // devices-stream draws
+      if (extraCurl) sim.orka.rest('GET', '/api/robots', null, 'player'); // devices-stream draws
       const r = sim.faults.inject({ faultId: 'fuse.blown', params: { fuse: '@random' } });
       return r.ok ? lab().faults[0]!.target : r.error;
     };
@@ -253,22 +253,22 @@ describe('fault engine semantics (Sim §4.1)', () => {
     const before = JSON.stringify(sim.snapshot().faults);
     const r = sim.faults.injectAll([
       { faultId: 'pi.hung', params: { host: 'pi-wall-e' } },
-      { op: 'orca.setStatus', params: { robot: 'baymax', status: 'OFFLINE' } },
+      { op: 'orka.setStatus', params: { robot: 'baymax', status: 'OFFLINE' } },
       { faultId: 'fuse.blown', params: { fuse: 'F-NOPE' } },
     ]);
     expect(r).toEqual({ ok: false, error: "scenario item 3 (fuse.blown): fault fuse.blown: invalid param fuse='F-NOPE' (not one of F-RACKA-5V, F-RACKB-5V, F-BENCH-5V, F-NUC-12V)" });
     expect(JSON.stringify(sim.snapshot().faults)).toBe(before);
     expect(host('pi-wall-e').os).toBe('RUNNING');
     expect(robot('baymax').status).toBe('AVAILABLE');
-    const ok2 = sim.faults.injectAll([{ faultId: 'pi.hung', params: { host: 'pi-wall-e' } }, { op: 'orca.setStatus', params: { robot: 'baymax', status: 'OFFLINE' } }]);
+    const ok2 = sim.faults.injectAll([{ faultId: 'pi.hung', params: { host: 'pi-wall-e' } }, { op: 'orka.setStatus', params: { robot: 'baymax', status: 'OFFLINE' } }]);
     expect(ok2).toEqual({ ok: true, value: { instanceIds: ['f1'] } });
     expect(robot('baymax').status).toBe('OFFLINE');
-    expect(robot('baymax').notes[0]!.text).toBe('2026-10-05 09:00:00 STATUS Available → Offline (jared)');
+    expect(robot('baymax').notes[0]!.text).toBe('2026-10-05 09:00:00 STATUS Available → Offline (jaden)');
   });
 
   it('an API clear reverts only values nobody changed since (never stomps player work)', () => {
-    const r = sim.faults.inject({ faultId: 'orca.offsets', params: { robot: 'bumblebee', xMm: 0.5, yMm: 1.5 } });
-    sim.orca.saveRobot({ id: 3, offsetXMm: 0.2 }, 'player'); // player edits X only
+    const r = sim.faults.inject({ faultId: 'orka.offsets', params: { robot: 'bumblebee', xMm: 0.5, yMm: 1.5 } });
+    sim.orka.saveRobot({ id: 3, offsetXMm: 0.2 }, 'player'); // player edits X only
     sim.faults.clear(r.ok ? r.value.instanceId : '', 'mission');
     expect(robot('bumblebee')).toMatchObject({ offsetXMm: 0.2, offsetYMm: 0 });
   });
@@ -282,13 +282,13 @@ describe('fault engine semantics (Sim §4.1)', () => {
   });
 
   it('edit-style faults leave the real history (CONFIG note + audit by the NPC)', () => {
-    sim.faults.inject({ faultId: 'orca.hrnTypo', params: { robot: 'johnny-5' } });
+    sim.faults.inject({ faultId: 'orka.hrnTypo', params: { robot: 'johnny-5' } });
     expect(robot('johnny-5').notes[0]!.text).toBe('2026-10-05 09:00:00 CONFIG humanReadableName changed (alex)');
-    expect(lab().orca.audit.at(-1)).toMatchObject({ who: 'alex', action: 'UPDATE', entity: 'robot', entityId: 5 });
+    expect(lab().orka.audit.at(-1)).toMatchObject({ who: 'alex', action: 'UPDATE', entity: 'robot', entityId: 5 });
     run(2_000);
     expect(lab().rigs['johnny-5']!.tablet.hrnShown).toBe('JONNY-5');
-    sim.faults.inject({ faultId: 'orca.screenLocationTypo' });
-    expect(lab().orca.audit.at(-1)).toMatchObject({ who: 'bulk-import', action: 'UPDATE', entity: 'screenLocation', atMs: -28_200_000 });
+    sim.faults.inject({ faultId: 'orka.screenLocationTypo' });
+    expect(lab().orka.audit.at(-1)).toMatchObject({ who: 'bulk-import', action: 'UPDATE', entity: 'screenLocation', atMs: -28_200_000 });
   });
 
   it('device faults: unpowered device goes dark; k-9 dead Duet 2 never boots', () => {
@@ -314,11 +314,11 @@ describe('devops fault rows through the shared engine (Sim §4.3.8–§4.3.10)',
         const v = p.default ?? (p.example === '' ? undefined : p.example);
         if (v !== undefined) params[p.name] = p.kind === 'number' && typeof v === 'string' ? Number(v) : v;
       }
-      if (row.id === 'config.port5555' || row.id === 'config.value') sim.faults.applySetup({ op: 'repo.clone', params: { repo: 'uia-remote' } });
+      if (row.id === 'config.port5555' || row.id === 'config.value') sim.faults.applySetup({ op: 'repo.clone', params: { repo: 'uia-relay' } });
       if (row.id === 'config.value') sim.faults.applySetup({ op: 'config.write', params: { fixture: 'target', robot: 'megatron' } });
       if (row.id === 'config.port5555') sim.faults.applySetup({ op: 'config.write', params: { fixture: 'target', robot: 'megatron' } });
-      if (row.id === 'config.themeKernel') sim.faults.applySetup({ op: 'config.write', params: { fixture: 'target', robot: 'megatron', path: '~/CodeWithMe/alex/uia-remote/config.properties' } });
-      if (row.id === 'pigeon.missingComma' || row.id === 'pigeon.missingBracket') params.path = 'tests/sale/tip_sale_print.json';
+      if (row.id === 'config.themeKernel') sim.faults.applySetup({ op: 'config.write', params: { fixture: 'target', robot: 'megatron', path: '~/CodeWithMe/alex/uia-relay/config.properties' } });
+      if (row.id === 'parrot.missingComma' || row.id === 'parrot.missingBracket') params.path = 'tests/sale/tip_sale_print.json';
       const r = sim.faults.inject({ faultId: row.id, params });
       expect(r, `${row.id}: ${(r as { error?: string }).error}`).toMatchObject({ ok: true });
       const fid = r.ok ? r.value.instanceId : '';
@@ -331,7 +331,7 @@ describe('devops fault rows through the shared engine (Sim §4.3.8–§4.3.10)',
   it('jenkins.envCase: the saved lower-case DEVICE_TYPE fails ENUM_CASE; fixing the saved param resolves it', () => {
     const r = sim.faults.inject({ faultId: 'jenkins.envCase' });
     const fid = r.ok ? r.value.instanceId : '';
-    const job = sim.jenkins.job('Java/uia-remote-regression-flux')!;
+    const job = sim.jenkins.job('Java/uia-relay-regression-flux')!;
     expect(job.savedParams.DEVICE_TYPE).toBe('flux_3');
     ok(sim.jenkins.saveJob(job.id, { savedParams: { ...job.savedParams, DEVICE_TYPE: 'FLUX_3' } }, 'player'));
     expect(sim.faults.isResolved(fid)).toBe(true);

@@ -1,7 +1,7 @@
 /**
- * Interactables of the racks, Callus shelf, tethered bench, ADB shelf and build table (World §9.2):
+ * Interactables of the racks, Kallus shelf, tethered bench, ADB shelf and build table (World §9.2):
  * rail units (U1–U42 left/right, inspect `U<n>`), rack distribution (measure), Rack B camera Pi,
- * AC strips + sockets (switch / unplug / plug / measure), Collis probes (re-seat ribbon, PSU),
+ * AC strips + sockets (switch / unplug / plug / measure), Kollis probes (re-seat ribbon, PSU),
  * Windows boxes (power button, Ethernet), KVM console, tethered faces (look / tap), hubs (re-seat
  * USB / Ethernet / power), SmartStripe probes, shelf Pis and webcams, DATA / TARS, build table.
  */
@@ -12,7 +12,7 @@ import { sim } from '@/sim';
 import type { PowerHookup } from '@/sim/types';
 import {
   AC_STRIPS,
-  CALLUS_BOXES,
+  KALLUS_BOXES,
   RACKS,
   RACK_DISTRIBUTION,
   RACK_FRAME,
@@ -31,7 +31,7 @@ import { MM } from './kit/geom';
 import { hitBox } from './kit/moving';
 import { activeTool, cardVerbs, crosshairScreenMm, focusWithOverlay, reg, reseatAction, simCall, verb, type Verb } from './interactCommon';
 import type { RackHandles } from './rack';
-import type { CallusHandles } from './callusShelf';
+import type { KallusHandles } from './kallusShelf';
 import type { TetheredHandles } from './tethered';
 import type { AdbHandles } from './adbShelf';
 import type { BuildTableHandles } from './buildTable';
@@ -92,7 +92,7 @@ function registerStrip(engine: Engine, offs: (() => void)[], hits: Object3D, b: 
 
 export interface ShelfCtx {
   racks: RackHandles[];
-  callus: CallusHandles;
+  kallus: KallusHandles;
   tethered: TetheredHandles;
   adb: AdbHandles;
   table: BuildTableHandles | null;
@@ -130,7 +130,7 @@ export function registerShelves(engine: Engine, offs: (() => void)[], hits: Obje
   for (const r of c.racks) {
     const d = RACK_DISTRIBUTION.find((x) => x.rackId === r.rack.id)!;
     const L = r.rack.letter.toLowerCase();
-    const b = new B(c.callus.b.kit, r.frame.m);
+    const b = new B(c.kallus.b.kit, r.frame.m);
     reg(engine, offs, d.id, worldHit(hits, b, [0, 1910, (d.pos[2] - r.rack.pos[2]) * 1000], [300, 60, 70], `hit:${d.id}`), {
       verbs: () => [measureVerb(`rail-5v-${L}`)],
     });
@@ -144,14 +144,14 @@ export function registerShelves(engine: Engine, offs: (() => void)[], hits: Obje
       });
     }
   }
-  // ── Callus shelf ──
-  const cb = c.callus.b;
-  for (const [stripId, h] of Object.entries(c.callus.strips)) {
+  // ── Kallus shelf ──
+  const cb = c.kallus.b;
+  for (const [stripId, h] of Object.entries(c.kallus.strips)) {
     const sd = AC_STRIPS.find((s) => s.id === stripId)!;
     const sl: V3 = [(sd.pos[0] + 2.0) * 1000, sd.pos[1] * 1000, (sd.pos[2] + 2.1) * 1000];
     registerStrip(engine, offs, hits, cb, stripId, h.sockets.map(([x, y, z]) => [sl[0] + x, sl[1] + y, sl[2] + z] as V3), { p: [sl[0] - 100, sl[1], sl[2]], s: [50, 45, 50] });
   }
-  for (const bx of CALLUS_BOXES) {
+  for (const bx of KALLUS_BOXES) {
     const p: V3 = [bx.local[0] * 1000, bx.local[1] * 1000 + 25, bx.local[2] * 1000];
     reg(engine, offs, bx.id, worldHit(hits, cb, p, [120, 52, 120], `hit:${bx.id}`), {
       verbs: () => {
@@ -165,23 +165,23 @@ export function registerShelves(engine: Engine, offs: (() => void)[], hits: Obje
       },
     });
   }
-  const mon = c.callus.monitor;
-  reg(engine, offs, 'callus.monitor', hitBox(hits, 180, 120, 30, mon.mesh.matrix.clone(), 'hit:callus.monitor'), {
-    verbs: () => [verb('E', `Switch KVM (→ ${CALLUS_BOXES[(mon.kvm + 1) % CALLUS_BOXES.length]!.label})`, () => (mon.kvm = (mon.kvm + 1) % CALLUS_BOXES.length))],
+  const mon = c.kallus.monitor;
+  reg(engine, offs, 'kallus.monitor', hitBox(hits, 180, 120, 30, mon.mesh.matrix.clone(), 'hit:kallus.monitor'), {
+    verbs: () => [verb('E', `Switch KVM (→ ${KALLUS_BOXES[(mon.kvm + 1) % KALLUS_BOXES.length]!.label})`, () => (mon.kvm = (mon.kvm + 1) % KALLUS_BOXES.length))],
   });
-  for (const col of Object.values(c.callus.collis)) {
+  for (const col of Object.values(c.kallus.kollis)) {
     const p = col.local;
     // where the PSU was plugged before the player pulled it (re-plug goes back to the same socket)
     let lastSupply: PowerHookup | null = null;
     reg(engine, offs, col.worldId, worldHit(hits, cb, [p[0], p[1] + 24, p[2]], [130, 50, 130], `hit:${col.worldId}`), {
       verbs: () => {
-        const simId = findSimId(lab(), { collection: 'collis', ids: [col.simId] }, col.worldId) ?? col.simId;
-        const probe = findSimObject<{ supply?: PowerHookup; ribbonConnected?: boolean }>(lab(), { collection: 'collis', ids: [col.simId] }, col.worldId);
+        const simId = findSimId(lab(), { collection: 'kollis', ids: [col.simId] }, col.worldId) ?? col.simId;
+        const probe = findSimObject<{ supply?: PowerHookup; ribbonConnected?: boolean }>(lab(), { collection: 'kollis', ids: [col.simId] }, col.worldId);
         const loadId = `psu-${col.simId}`;
         const plugged = probe?.supply ? probe.supply.kind !== 'none' : true;
         const seated = probe?.ribbonConnected !== false;
-        // `collis.reseatRibbon` toggles the IDC header: a re-seat of a seated ribbon is out + back in
-        const toggle = () => simCall(engine, 'Collis probe', () => sim.collis.reseatRibbon(simId, 'player'));
+        // `kollis.reseatRibbon` toggles the IDC header: a re-seat of a seated ribbon is out + back in
+        const toggle = () => simCall(engine, 'Kollis probe', () => sim.kollis.reseatRibbon(simId, 'player'));
         const out: Verb[] = [
           verb('E', seated ? 'Re-seat rear ribbon' : 'Seat rear ribbon', () => {
             if (seated && !toggle().ok) return;
@@ -190,10 +190,10 @@ export function registerShelves(engine: Engine, offs: (() => void)[], hits: Obje
           verb('R', plugged ? 'Unplug PSU' : 'Plug PSU', () => {
             if (plugged) {
               lastSupply = probe?.supply ? { ...probe.supply } : null;
-              simCall(engine, 'Collis PSU', () => sim.power.unplug(loadId, 'player'));
+              simCall(engine, 'Kollis PSU', () => sim.power.unplug(loadId, 'player'));
             } else {
               const to = lastSupply && lastSupply.kind !== 'none' ? lastSupply : { kind: 'ac-strip' as const, targetId: 'STRIP-C', socket: 1 };
-              simCall(engine, 'Collis PSU', () => sim.power.plug(loadId, to, 'player'));
+              simCall(engine, 'Kollis PSU', () => sim.power.plug(loadId, to, 'player'));
             }
           }),
         ];

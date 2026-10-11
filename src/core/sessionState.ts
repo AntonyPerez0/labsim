@@ -30,7 +30,7 @@ export type GameMode =
  * Speaker / NPC keys = `TeamMember.key` in `src/content/team.ts` (display names resolve there).
  * World NPC ids are `npc.<id>` (`riley` is the curriculum's `npc.coworker`).
  */
-export type NpcKey = 'morgan' | 'jared' | 'tate' | 'david' | 'riley' | 'sam' | 'alex';
+export type NpcKey = 'morgan' | 'jaden' | 'nate' | 'devin' | 'riley' | 'sam' | 'alex';
 /** Ticket reporters (GP §2.3.4). */
 export type ReporterKey = NpcKey | 'jenkins-bot';
 
@@ -50,7 +50,7 @@ export interface PlayerPose {
 /** HUD marker / compass target. */
 export interface MarkerTarget {
   kind: 'location' | 'prop' | 'npc' | 'rig' | 'app';
-  /** `loc.rack-a`, a world prop id (`rig.wall-e.tablet`) or Cur alias (`prop.walle.tablet`), `npc.jared`, rig name, app id. */
+  /** `loc.rack-a`, a world prop id (`rig.wall-e.tablet`) or Cur alias (`prop.walle.tablet`), `npc.jaden`, rig name, app id. */
   id: string;
 }
 
@@ -363,11 +363,11 @@ export interface WeakSpotState {
  * through `setChatReplyProvider`. The desktop's objective pin reads `session.objectives`.
  */
 export interface ComputerGating {
-  /** Apps the desktop offers. `'all'` outside Academy (Cur M06: "Orca app unlocked with the Robots page"). */
+  /** Apps the desktop offers. `'all'` outside Academy (Cur M06: "Orka app unlocked with the Robots page"). */
   unlockedApps: 'all' | string[];
-  /** Per-app restrictions, e.g. `{ jenkins: { visibleJobs: ['Java/uia-remote-regression-flux'] }, orca: { pages: ['robots'] } }`. */
+  /** Per-app restrictions, e.g. `{ jenkins: { visibleJobs: ['Java/uia-relay-regression-flux'] }, orka: { pages: ['robots'] } }`. */
   restrictions: Record<string, Record<string, string[] | string | boolean>>;
-  /** Orca's tutorial **Force health check** header button (Academy & Free Play only; never Strict/cert/shift). */
+  /** Orka's tutorial **Force health check** header button (Academy & Free Play only; never Strict/cert/shift). */
   forceHealthCheckButton: boolean;
   /** Terminal tab-completion (Standard realism); history is always on. Effective realism: `session.realism`. */
   tabCompletion: boolean;

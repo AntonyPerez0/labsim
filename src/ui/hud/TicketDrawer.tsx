@@ -1,7 +1,7 @@
 /**
  * Ticket board (`tickets` overlay, `T`/`J`; non-pausing — the shift keeps running). Left: queue.
  * Right: the selected ticket — symptoms/summary, SLA, Diagnosis Call picker (GP §2.3.6), Escalate to
- * Jared form (cause + exact endpoint, GP §2.3.7), LabChat reply, File-bug / matching tasks, hints
+ * Jaden form (cause + exact endpoint, GP §2.3.7), LabChat reply, File-bug / matching tasks, hints
  * (Nudge → Pointer → Walkthrough), Resolve (GW16 if premature) and the verification line.
  */
 import { useEffect, useMemo, useState } from 'react';
@@ -68,7 +68,7 @@ export function TicketDrawer({ ticketId, panel }: { ticketId?: string; panel?: T
               <Icon name="clock" size={12} /> {mmss(shiftLeft)}
             </span>
             {nextHc !== null ? (
-              <span title="Next Orca health check">
+              <span title="Next Orka health check">
                 <Icon name="refresh" size={12} /> {mmss(nextHc)}
               </span>
             ) : null}
@@ -147,7 +147,7 @@ function TicketDetail({ ticket, panel }: { ticket: TicketState; panel: TicketPan
   const tabs: { id: TicketPanel; label: string; show: boolean }[] = [
     { id: 'detail', label: 'Details', show: true },
     { id: 'call', label: 'Call root cause', show: !!view.callOptions && t.canCall },
-    { id: 'escalate', label: `Escalate to ${personName('jared')}`, show: true },
+    { id: 'escalate', label: `Escalate to ${personName('jaden')}`, show: true },
     { id: 'reply', label: 'Reply', show: !!view.replies?.length },
     { id: 'task', label: view.task?.kind === 'bug' ? 'File bug' : 'Task', show: !!view.task },
   ];
@@ -202,7 +202,7 @@ function TicketDetail({ ticket, panel }: { ticket: TicketState; panel: TicketPan
       <div className="tixd__body">
         {tab === 'detail' ? (
           <>
-            <p className="tixd__summary">{t.summary || 'No further details were given. Start from the evidence: Orca Notes, the Jenkins console, the tablet and the LEDs.'}</p>
+            <p className="tixd__summary">{t.summary || 'No further details were given. Start from the evidence: Orka Notes, the Jenkins console, the tablet and the LEDs.'}</p>
             {t.verifying ? (
               <div className="tixd__verifying">
                 <Icon name="refresh" size={14} /> {t.verifying.label}
@@ -212,7 +212,7 @@ function TicketDetail({ ticket, panel }: { ticket: TicketState; panel: TicketPan
               <div className={`tixd__esc tixd__esc--${t.escalation.outcome}`}>
                 <Icon name="escalate" size={14} />
                 <div>
-                  <strong>Escalated to {personName('jared')}</strong> — {t.escalation.outcome}
+                  <strong>Escalated to {personName('jaden')}</strong> — {t.escalation.outcome}
                   <div className="mono dim">{t.escalation.endpoint}</div>
                   {t.escalation.message ? <div>{t.escalation.message}</div> : null}
                 </div>
@@ -237,10 +237,10 @@ function TicketDetail({ ticket, panel }: { ticket: TicketState; panel: TicketPan
             <div className="tixd__process">
               <div className="caps">By the book</div>
               <ol>
-                <li>Read the evidence first — Orca Notes, the Jenkins console, the tablet banner, LEDs.</li>
+                <li>Read the evidence first — Orka Notes, the Jenkins console, the tablet banner, LEDs.</li>
                 <li>Make your Diagnosis Call before you fix (fast correct calls build the combo).</li>
-                <li>Hardware Connection Failed? Escalate to {personName('jared')} with the exact endpoint — or fix it hands-on.</li>
-                <li>Resolve only once the fix is verified — a recovered robot shows in Orca only after the next 5-minute health check.</li>
+                <li>Hardware Connection Failed? Escalate to {personName('jaden')} with the exact endpoint — or fix it hands-on.</li>
+                <li>Resolve only once the fix is verified — a recovered robot shows in Orka only after the next 5-minute health check.</li>
               </ol>
             </div>
           </>
@@ -317,7 +317,7 @@ function EscalatePanel({ view }: { view: TicketView }) {
   return (
     <div className="tixd__panel">
       <p className="muted">
-        Connection Failed caused by hardware goes to {personName('jared')} — with the exact endpoint from the rig’s latest Orca Notes line (or your own terminal history) and the cause. Config problems are yours to fix.
+        Connection Failed caused by hardware goes to {personName('jaden')} — with the exact endpoint from the rig’s latest Orka Notes line (or your own terminal history) and the cause. Config problems are yours to fix.
       </p>
       <div className="tixd__form">
         <label className="tixd__label">Rig</label>
@@ -341,7 +341,7 @@ function EscalatePanel({ view }: { view: TicketView }) {
             if (r) setMsg(r.message);
           }}
         >
-          Send to {personName('jared')}
+          Send to {personName('jaden')}
         </Button>
         {sent ? <span className="muted">Escalation {t.escalation!.outcome}.</span> : null}
       </div>

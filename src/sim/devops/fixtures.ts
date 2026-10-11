@@ -1,10 +1,10 @@
 /**
- * Fixture texts used by setup ops and faults (Sim §4.4.4). Line numbers matter for the Pigeon ones.
+ * Fixture texts used by setup ops and faults (Sim §4.4.4). Line numbers matter for the Parrot ones.
  */
 import type { LabState } from '../types';
-import { SWIPE_SALE_PRINT } from '../seed/repos/pigeon';
+import { SWIPE_SALE_PRINT } from '../seed/repos/parrot';
 import { screenLocationFile, screenLocationPath, truthFor } from '../seed/repos/screenTruth';
-import { UIA_212_FILE, UIA_PATHS } from '../seed/repos/uiaRemote';
+import { UIA_212_FILE, UIA_PATHS } from '../seed/repos/uiaRelay';
 import { brokenConfig, renderConfig, targetConfig } from './config';
 
 /** Cur M14's "as found" file verbatim. */
@@ -21,7 +21,7 @@ backendEnv=DEV1
 robotName=megatron
 `;
 
-/** 28 lines; `pigeon.missingComma { line: 22 }` → `Unexpected string in JSON at line 23 column 7`. */
+/** 28 lines; `parrot.missingComma { line: 22 }` → `Unexpected string in JSON at line 23 column 7`. */
 export const M15_EXPANDED = `{
   "name": "Swipe sale with printed receipt",
   "connectionType": "USB",
@@ -58,7 +58,7 @@ export const M16_WITH_COMPARE = SWIPE_SALE_PRINT.replace(
   '    { "action": "assert home",    "params": {} },\n    { "action": "screenCompare", "params": { "x": 0, "y": 0, "w": 0, "h": 0, "expected": "TOTAL $10.83", "source": "webcam" } }\n',
 );
 
-/** `receipt5-fix:<TYPE>` / `gort-418`: the 5-option map for a type with its firmware values. */
+/** `receipt5-fix:<TYPE>` / `gorth-418`: the 5-option map for a type with its firmware values. */
 export function receipt5Fix(type: string): { path: string; text: string } | null {
   const t = truthFor(type, 'RECEIPT_OPTIONS_5');
   if (!t) return null;
@@ -107,7 +107,7 @@ export function resolveFixture(lab: LabState, id: string, opts: { robot?: string
       return { [opts.path ?? 'tests/sale/swipe_sale_print.json']: M15_EXPANDED };
     case id === 'm16-with-compare':
       return { [opts.path ?? 'tests/sale/swipe_sale_print.json']: M16_WITH_COMPARE };
-    case id === 'gort-418': {
+    case id === 'gorth-418': {
       const f = receipt5Fix('MICRO_3');
       return f ? { [f.path]: f.text } : null;
     }
@@ -134,4 +134,4 @@ export function resolveFixture(lab: LabState, id: string, opts: { robot?: string
   }
 }
 
-export const FIXTURE_IDS = ['m14-broken', 'target', 'broken', 'm15-expanded', 'm16-with-compare', 'gort-418', 'receipt5-fix:<TYPE>', 'uia-212-ai-receipt', 'uia-431-lockscreen'];
+export const FIXTURE_IDS = ['m14-broken', 'target', 'broken', 'm15-expanded', 'm16-with-compare', 'gorth-418', 'receipt5-fix:<TYPE>', 'uia-212-ai-receipt', 'uia-431-lockscreen'];

@@ -478,7 +478,7 @@ export function ProjectWindow(props: ProjectWindowProps) {
                       activePath={activeBuffer?.path ?? null}
                       fileProblems={fileProblems}
                       projectErrors={projectErrors}
-                      inspectionsDisabled={repo === 'pigeon' && (!activeBuffer || activeBuffer.path.endsWith('.json'))}
+                      inspectionsDisabled={repo === 'parrot' && (!activeBuffer || activeBuffer.path.endsWith('.json'))}
                       onGoto={(p, line, col) => openFile(model, p, { line, col })}
                     />
                   ) : model.bottomTool === 'git' ? (

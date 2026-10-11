@@ -23,7 +23,7 @@ export const QUIZ_M12: QuizQuestion[] = resolvePeople([
       "8080",
     ],
     answer: 1,
-    explanation: "The lab runs ADB over port 5444 (F026). 5555 is the standard ADB default (F199); 5037 is the port of the workstation's own ADB server; 8080 is the sim's Orca/Jenkins HTTP port (illustrative).",
+    explanation: "The lab runs ADB over port 5444 (F026). 5555 is the standard ADB default (F199); 5037 is the port of the workstation's own ADB server; 8080 is the sim's Orka/Jenkins HTTP port (illustrative).",
     factIds: ["F026"],
     tags: ["adb.port"],
   },

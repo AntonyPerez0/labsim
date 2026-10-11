@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 /**
  * IntelliJ app (Apps §4) mounted over the sandbox fake lab: welcome → Get from VCS clone, config.properties
- * validator + Ctrl+S save through sim.git.writeFile, ▶ Run → run.started / run.finished, pigeon JSON not inspected.
+ * validator + Ctrl+S save through sim.git.writeFile, ▶ Run → run.started / run.finished, parrot JSON not inspected.
  */
 import { act, useState } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
@@ -114,40 +114,40 @@ function capture() {
 }
 
 describe('IntelliJ IDEA', () => {
-  it('welcome lists clones and Get from VCS clones uia-remote', async () => {
-    seedFakeLab({ cloned: ['pigeon'] });
+  it('welcome lists clones and Get from VCS clones uia-relay', async () => {
+    seedFakeLab({ cloned: ['parrot'] });
     capture();
     vi.useFakeTimers();
     const m = await mountAt('/welcome');
-    expect(m.container.textContent).toContain('pigeon');
-    expect(m.container.textContent).not.toContain('~/IdeaProjects/uia-remote');
+    expect(m.container.textContent).toContain('parrot');
+    expect(m.container.textContent).not.toContain('~/IdeaProjects/uia-relay');
     const btn = [...m.container.querySelectorAll('button')].find((b) => b.textContent === 'Get from VCS')!;
     await act(async () => btn.click());
     const url = m.container.querySelector<HTMLInputElement>('#ij-vcs-url')!;
     await setValue(url, 'git@github.com:labsim-lab/nope.git');
     expect(m.container.textContent).toContain('Repository not found');
-    await setValue(url, 'git@github.com:labsim-lab/uia-remote.git');
-    expect(m.container.querySelector<HTMLInputElement>('#ij-vcs-dir')!.value).toBe('~/IdeaProjects/uia-remote');
+    await setValue(url, 'git@github.com:labsim-lab/uia-relay.git');
+    expect(m.container.querySelector<HTMLInputElement>('#ij-vcs-dir')!.value).toBe('~/IdeaProjects/uia-relay');
     const clone = [...m.container.querySelectorAll('button')].find((b) => b.textContent === 'Clone')!;
     await act(async () => clone.click());
-    expect(m.container.textContent).toContain('Cloning source repository git@github.com:labsim-lab/uia-remote.git');
+    expect(m.container.textContent).toContain('Cloning source repository git@github.com:labsim-lab/uia-relay.git');
     await act(async () => {
       vi.advanceTimersByTime(1300);
     });
-    expect(getState().lab.repos['uia-remote'].local).not.toBeNull();
-    expect(of('intellij.project.cloned')[0]).toMatchObject({ repo: 'uia-remote', url: 'git@github.com:labsim-lab/uia-remote.git', ok: true });
-    expect(of('intellij.project.opened')[0]).toMatchObject({ repo: 'uia-remote' });
-    expect(m.routes).toContain('/project/uia-remote');
+    expect(getState().lab.repos['uia-relay'].local).not.toBeNull();
+    expect(of('intellij.project.cloned')[0]).toMatchObject({ repo: 'uia-relay', url: 'git@github.com:labsim-lab/uia-relay.git', ok: true });
+    expect(of('intellij.project.opened')[0]).toMatchObject({ repo: 'uia-relay' });
+    expect(m.routes).toContain('/project/uia-relay');
   });
 
   it('validates and saves config.properties, then runs TaxTest', async () => {
-    seedFakeLab({ cloned: ['uia-remote', 'pigeon'] });
+    seedFakeLab({ cloned: ['uia-relay', 'parrot'] });
     capture();
-    const m = await mountAt('/project/uia-remote/file/config.properties');
+    const m = await mountAt('/project/uia-relay/file/config.properties');
     expect(of('intellij.configValidator.ran')[0]).toMatchObject({ passed: 5, total: 11 });
     expect(m.container.textContent).toContain('config.properties ✗ 5/11');
     const ta = m.container.querySelector<HTMLTextAreaElement>('.ij-input')!;
-    const good = getState().lab.repos['uia-remote'].local!.files['config.properties']
+    const good = getState().lab.repos['uia-relay'].local!.files['config.properties']
       .replace('standalone', 'tethered')
       .replace('customerFacingDeviceIp=', 'customerFacingDeviceIp=10.42.30.22')
       .replace('deviceType=Micro', 'deviceType=Stand')
@@ -156,8 +156,8 @@ describe('IntelliJ IDEA', () => {
       .replace('5555', '5444');
     await setValue(ta, good);
     await keydown(ta, 's', { ctrlKey: true });
-    expect(getState().lab.repos['uia-remote'].local!.files['config.properties']).toBe(good);
-    expect(of('intellij.file.saved')[0]).toMatchObject({ repo: 'uia-remote', path: 'config.properties', trigger: 'explicit', ok: true });
+    expect(getState().lab.repos['uia-relay'].local!.files['config.properties']).toBe(good);
+    expect(of('intellij.file.saved')[0]).toMatchObject({ repo: 'uia-relay', path: 'config.properties', trigger: 'explicit', ok: true });
     expect(of('intellij.configValidator.ran').pop()).toMatchObject({ passed: 11, total: 11, failures: [] });
     expect(m.container.textContent).toContain('config.properties ✓ 11/11');
     vi.useFakeTimers();
@@ -172,19 +172,19 @@ describe('IntelliJ IDEA', () => {
     expect(m.container.textContent).toContain('Process finished with exit code 0');
   });
 
-  it('never inspects pigeon JSON but flags gort JSON', async () => {
-    seedFakeLab({ cloned: ['pigeon', 'gort'] });
+  it('never inspects parrot JSON but flags gorth JSON', async () => {
+    seedFakeLab({ cloned: ['parrot', 'gorth'] });
     capture();
-    const m = await mountAt('/project/pigeon/file/tests/sale/swipe_sale_print.json');
+    const m = await mountAt('/project/parrot/file/tests/sale/swipe_sale_print.json');
     expect(m.container.querySelector('.ij-wave')).toBeNull();
-    expect(m.container.querySelector('.ij-chip')?.getAttribute('title')).toBe('Highlighting level: None (pigeon/.idea/inspectionProfiles)');
-    expect(of('intellij.file.opened')[0]).toMatchObject({ repo: 'pigeon', path: 'tests/sale/swipe_sale_print.json' });
+    expect(m.container.querySelector('.ij-chip')?.getAttribute('title')).toBe('Highlighting level: None (parrot/.idea/inspectionProfiles)');
+    expect(of('intellij.file.opened')[0]).toMatchObject({ repo: 'parrot', path: 'tests/sale/swipe_sale_print.json' });
     const ta = m.container.querySelector<HTMLTextAreaElement>('.ij-input')!;
     expect(ta.value).toContain('"store": "orderId" }\n');
     await act(async () => m.root.unmount());
     m.container.remove();
     mounted = null;
-    const g = await mountAt('/project/gort/file/cards/nfc/visa_std_tap.json');
+    const g = await mountAt('/project/gorth/file/cards/nfc/visa_std_tap.json');
     const gta = g.container.querySelector<HTMLTextAreaElement>('.ij-input')!;
     await setValue(gta, '{\n  "profile": "VISA_STD_TAP"\n  "entry": "TAP"\n}\n');
     // Inspections re-run on the IDE's debounced change tick (like IntelliJ's daemon).
@@ -195,23 +195,23 @@ describe('IntelliJ IDEA', () => {
   });
 
   it('creates config.properties from the example without re-render loops under an unstable onTitle host', async () => {
-    seedFakeLab({ cloned: ['uia-remote'] });
+    seedFakeLab({ cloned: ['uia-relay'] });
     mutate((st) => {
-      delete st.lab.repos['uia-remote'].local!.files['config.properties'];
+      delete st.lab.repos['uia-relay'].local!.files['config.properties'];
     });
     capture();
     const titleCalls: string[] = [];
-    const m = await mountAt('/project/uia-remote/file/config.properties.example', { titleCalls });
+    const m = await mountAt('/project/uia-relay/file/config.properties.example', { titleCalls });
     expect(m.container.textContent).toContain('config.properties not found — copy config.properties.example');
     const create = [...m.container.querySelectorAll('button')].find((b) => b.textContent === 'Create config.properties from example')!;
     await act(async () => create.click());
     await act(async () => {
       await new Promise((r) => setTimeout(r, 50));
     });
-    expect(getState().lab.repos['uia-remote'].local!.files['config.properties']).toBe(getState().lab.repos['uia-remote'].local!.files['config.properties.example']);
-    expect(m.routes[m.routes.length - 1]).toBe('/project/uia-remote/file/config.properties');
+    expect(getState().lab.repos['uia-relay'].local!.files['config.properties']).toBe(getState().lab.repos['uia-relay'].local!.files['config.properties.example']);
+    expect(m.routes[m.routes.length - 1]).toBe('/project/uia-relay/file/config.properties');
     expect(of('intellij.file.opened').map((d) => d.path)).toEqual(['config.properties.example', 'config.properties']);
     expect(titleCalls.length).toBeLessThan(6);
-    expect(titleCalls[titleCalls.length - 1]).toBe('uia-remote – config.properties');
+    expect(titleCalls[titleCalls.length - 1]).toBe('uia-relay – config.properties');
   });
 });

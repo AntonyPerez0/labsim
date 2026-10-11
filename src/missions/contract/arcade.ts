@@ -57,7 +57,7 @@ export interface ShiftConfig {
   strikesToEnd: number | null;
   forceHealthCheck: boolean;
   /** Pre-drawn incidents (cert: 5 or 8; Weak Spot: 3) instead of the heat spawner. */
-  incidents?: { count: number; draw: 'weighted' | 'uniform' | 'cert-mix'; simultaneousAtS?: number; requireCategories?: readonly ('hardware' | 'orca' | 'code-config')[] };
+  incidents?: { count: number; draw: 'weighted' | 'uniform' | 'cert-mix'; simultaneousAtS?: number; requireCategories?: readonly ('hardware' | 'orka' | 'code-config')[] };
   /** @deprecated v1 field (XP gate) — use `unlock`. */
   unlockXp: number;
   /** Menu difficulty pips 1–5. */
@@ -114,14 +114,14 @@ export interface PipelineDef {
 export interface ShiftEventDef {
   id: ShiftEventId;
   title: string;
-  /** HUD banner while active ("Jared: out to lunch"). */
+  /** HUD banner while active ("Jaden: out to lunch"). */
   banner?: string;
   /** Incident forced as the next ticket (needs remaining time ≥ its par). */
   forcesIncident?: string;
   /** Next N tickets from this reporter with misleading titles. */
   misleadingTickets?: { count: number; reporter: string };
   /** Escalations queue for this long. */
-  jaredAwayS?: number;
+  jadenAwayS?: number;
 }
 
 /** Daily Challenge (GP §4.6). */
@@ -196,7 +196,7 @@ export interface DrillComponentProps {
  *
  * @example
  * export const DR01: DrillDef = {
- *   id: 'DR01', name: 'Status Triage', format: 'Scenario card → press 1–5', tags: ['orca.status', 'orca.healthcheck'],
+ *   id: 'DR01', name: 'Status Triage', format: 'Scenario card → press 1–5', tags: ['orka.status', 'orka.healthcheck'],
  *   unlockedBy: ['M06'], durationS: 60, itemCount: null, medals: { bronze: 800, silver: 1500, gold: 2200 },
  *   items: STATUS_TRIAGE_ITEMS, scoring: 'standard',
  * };

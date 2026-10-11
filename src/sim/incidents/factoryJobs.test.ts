@@ -17,7 +17,7 @@ describe('factory: every Jenkins job is green', () => {
       const bad: string[] = [];
       for (const j of ids) {
         sim.reset({ preset: 'test', seed });
-        const params: Record<string, string> = j.includes('laz') ? { ROBOT_NAME: 'data', MERCHANT: 'AUTO-US-NOPIN-02' } : {};
+        const params: Record<string, string> = j.includes('lazo') ? { ROBOT_NAME: 'data', MERCHANT: 'AUTO-US-NOPIN-02' } : {};
         const r = sim.jenkins.build(j, params, 'player');
         if (!r.ok) {
           bad.push(`${j}: ${r.error}`);

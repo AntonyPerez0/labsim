@@ -1,5 +1,5 @@
 /**
- * Ticket lifecycle (GP §2.3.4–§2.3.8): ack, open, Diagnosis Call, escalation to Jared, resolve with
+ * Ticket lifecycle (GP §2.3.4–§2.3.8): ack, open, Diagnosis Call, escalation to Jaden, resolve with
  * deferred verification, LabChat replies, judgement tasks, hint tiers, SLA, scoring on resolve.
  * `NEW → ACKED → IN_PROGRESS → (ESCALATED →) VERIFYING → RESOLVED | HANDOVER | FAILED`.
  */
@@ -165,17 +165,17 @@ export function escalate(d: RootState, ctx: TxContext, id: string, cause: string
   if (!rt.def.escalatable) {
     raiseGw(d, ctx, 'GW12', { ticketId: id, detail: `Escalated ${rt.def.id}` });
     t.status = 'escalated';
-    t.escalation = { cause, endpoint, sentAtS: now, outcome: 'bounced', returnsAtS: now + ESCALATION_BOUNCE_S, jaredDoneAtS: null, message: "That's config, not hardware. Read the Notes and the Edit view." };
+    t.escalation = { cause, endpoint, sentAtS: now, outcome: 'bounced', returnsAtS: now + ESCALATION_BOUNCE_S, jadenDoneAtS: null, message: "That's config, not hardware. Read the Notes and the Edit view." };
     t.escalationsBounced++;
     ctx.emit('ticket.escalated', { ticketId: id, cause, endpoint, outcome: 'bounced', points: -100 });
     return { outcome: 'not-escalatable', points: sh?.rules.scoring ? -100 : 0, message: t.escalation.message! };
   }
-  if (sh?.jaredAwayUntilS !== null && sh?.jaredAwayUntilS !== undefined && now < sh.jaredAwayUntilS) {
+  if (sh?.jadenAwayUntilS !== null && sh?.jadenAwayUntilS !== undefined && now < sh.jadenAwayUntilS) {
     t.status = 'escalated';
-    t.escalation = { cause, endpoint, sentAtS: now, outcome: 'queued', returnsAtS: null, jaredDoneAtS: null, message: personText('{{jared}} is out to lunch — your escalation is queued.') };
+    t.escalation = { cause, endpoint, sentAtS: now, outcome: 'queued', returnsAtS: null, jadenDoneAtS: null, message: personText('{{jaden}} is out to lunch — your escalation is queued.') };
     if (!sh.queuedEscalations.includes(id)) sh.queuedEscalations.push(id);
     ctx.emit('ticket.escalated', { ticketId: id, cause, endpoint, outcome: 'queued', points: 0 });
-    return { outcome: 'queued', points: 0, message: personText('{{jared}} is out to lunch — your escalation is queued until lunch is over.') };
+    return { outcome: 'queued', points: 0, message: personText('{{jaden}} is out to lunch — your escalation is queued until lunch is over.') };
   }
   return judgeEscalation(d, ctx, t, rt, cause, endpoint, now);
 }
@@ -201,21 +201,21 @@ function judgeEscalation(d: RootState, ctx: TxContext, t: TicketState, rt: Ticke
   }
   if (causeOk && endpointOk) {
     const doneIn = 60 + nextInt(RT.rng, 0, 30);
-    t.escalation = { cause, endpoint, sentAtS, outcome: 'accepted', returnsAtS: null, jaredDoneAtS: now + doneIn, message: 'On it. Probably the Pi, or a Minix box running Callus. Same symptom.' };
+    t.escalation = { cause, endpoint, sentAtS, outcome: 'accepted', returnsAtS: null, jadenDoneAtS: now + doneIn, message: 'On it. Probably the Pi, or a Minix box running Kallus. Same symptom.' };
     if (sh) sh.stats.escalationsCorrect++;
     d.progress.stats.escalationsCorrect++;
     const st = d.progress.incidents[rt.def.id];
     if (st) st.escalations++;
-    barkById(d, ctx, 'BARK_JARED_04', 'ticket');
-    ctx.emit('npc.jaredFix', { ticketId: t.id, phase: 'started' });
-    ctx.emit('mission.npcAction', { npc: 'jared', action: 'walk-to', target: t.binding.rig ? `rig.${t.binding.rig}` : null });
+    barkById(d, ctx, 'BARK_JADEN_04', 'ticket');
+    ctx.emit('npc.jadenFix', { ticketId: t.id, phase: 'started' });
+    ctx.emit('mission.npcAction', { npc: 'jaden', action: 'walk-to', target: t.binding.rig ? `rig.${t.binding.rig}` : null });
     ctx.emit('ticket.escalated', { ticketId: t.id, cause, endpoint, outcome: 'accepted', points: 0 });
-    return { outcome: 'accepted', points: 0, message: personText('{{jared}} accepted the escalation and is walking over.') };
+    return { outcome: 'accepted', points: 0, message: personText('{{jaden}} accepted the escalation and is walking over.') };
   }
   const hint = !causeOk ? tpl(call?.wrongCallHint, rt.binding) || 'Read the Notes line again: which component answered?' : tpl(rt.def.escalation?.endpointHint, rt.binding) || 'Pick the exact endpoint from the rig\'s latest Notes line.';
-  t.escalation = { cause, endpoint, sentAtS, outcome: 'pending', returnsAtS: now + ESCALATION_BOUNCE_S, jaredDoneAtS: null, message: hint };
+  t.escalation = { cause, endpoint, sentAtS, outcome: 'pending', returnsAtS: now + ESCALATION_BOUNCE_S, jadenDoneAtS: null, message: hint };
   ctx.emit('ticket.escalated', { ticketId: t.id, cause, endpoint, outcome: 'pending', points: 0 });
-  return { outcome: 'pending', points: 0, message: personText('{{jared}} will check the escalation.') };
+  return { outcome: 'pending', points: 0, message: personText('{{jaden}} will check the escalation.') };
 }
 
 function bounce(d: RootState, ctx: TxContext, t: TicketState, rt: TicketRt): void {
@@ -235,18 +235,18 @@ function bounce(d: RootState, ctx: TxContext, t: TicketState, rt: TicketRt): voi
   }
   d.progress.stats.escalationsBounced++;
   if (rt.def.factIds?.length) demoteFacts(d, rt.def.factIds);
-  bark(d, ctx, 'jared', esc.message ?? 'Check the Notes again.', 'ticket');
+  bark(d, ctx, 'jaden', esc.message ?? 'Check the Notes again.', 'ticket');
   pushTeachCard(
     d,
     ctx,
-    { whatHappened: '{{jared}} bounced the escalation.', why: esc.message ?? '', doInstead: 'Re-read the Notes line and pick the matching cause and exact endpoint.', tag: rt.def.tags[0], factIds: rt.def.factIds ? [...rt.def.factIds] : [] },
+    { whatHappened: '{{jaden}} bounced the escalation.', why: esc.message ?? '', doInstead: 'Re-read the Notes line and pick the matching cause and exact endpoint.', tag: rt.def.tags[0], factIds: rt.def.factIds ? [...rt.def.factIds] : [] },
     { kind: 'escalation', ref: rt.def.id },
     t.id,
   );
   ctx.emit('ticket.escalated', { ticketId: t.id, cause: esc.cause, endpoint: esc.endpoint, outcome: 'bounced', points: sh?.rules.scoring ? -ESCALATION_BOUNCE_PENALTY : 0 });
 }
 
-/** Jared is back from lunch: judge the queued escalations. */
+/** Jaden is back from lunch: judge the queued escalations. */
 export function releaseQueuedEscalations(d: RootState, ctx: TxContext): void {
   const sh = shiftOf(d);
   if (!sh) return;
@@ -310,8 +310,8 @@ const RESOLVE_BARKS: Readonly<Record<string, string>> = {
   INC36: 'BARK_MORGAN_03',
   INC37: 'BARK_MORGAN_03',
   INC41: 'BARK_SAM_01',
-  INC49: 'BARK_DAVID_02',
-  INC51: 'BARK_DAVID_03',
+  INC49: 'BARK_DEVIN_02',
+  INC51: 'BARK_DEVIN_03',
 };
 
 /** Resolve now: score (GP §2.3.8), process bonuses, stats, mastery evidence, close. */
@@ -340,7 +340,7 @@ export function finishTicket(d: RootState, ctx: TxContext, t: TicketState, rt: T
         if (pb.check({ state: d, ticket: t, binding: rt.binding, events, escalated, rank: d.progress.rank })) {
           addBonus(d, ctx, pb.id, pb.points, t.id, pb.behaviour);
           processBonus += pb.points;
-          if (pb.id === 'PB07' && rt.def.tags.some((x) => x.startsWith('power.'))) barkById(d, ctx, 'BARK_JARED_03', 'ticket');
+          if (pb.id === 'PB07' && rt.def.tags.some((x) => x.startsWith('power.'))) barkById(d, ctx, 'BARK_JADEN_03', 'ticket');
         }
       } catch (err) {
         console.warn(`[missions] ${pb.id} check threw`, err);
@@ -530,7 +530,7 @@ export function tickTickets(d: RootState, ctx: TxContext): void {
     if (!rt) continue;
     sampleScope(rt.scope, d);
     t.fixedAtMs = rt.scope.fixedAtMs;
-    // SLA (frozen while verifying or with Jared).
+    // SLA (frozen while verifying or with Jaden).
     const frozen = t.status === 'verifying' || (t.status === 'escalated' && t.escalation?.outcome === 'accepted');
     if (!frozen) {
       t.slaSecondsLeft = t.slaS - (now - t.arrivedAtS);
@@ -551,15 +551,15 @@ export function tickTickets(d: RootState, ctx: TxContext): void {
     if (t.status === 'escalated' && esc) {
       if ((esc.outcome === 'pending' || esc.outcome === 'bounced') && esc.returnsAtS !== null && now >= esc.returnsAtS) bounce(d, ctx, t, rt);
       else if (esc.outcome === 'accepted') {
-        if (!rt.jaredFixRun && esc.jaredDoneAtS !== null && now >= esc.jaredDoneAtS) {
-          rt.jaredFixRun = true;
-          const actions = rt.def.escalation?.jaredFix(rt.binding) ?? [];
+        if (!rt.jadenFixRun && esc.jadenDoneAtS !== null && now >= esc.jadenDoneAtS) {
+          rt.jadenFixRun = true;
+          const actions = rt.def.escalation?.jadenFix(rt.binding) ?? [];
           runActions(d, ctx, actions, { binding: rt.binding, ownerId: t.id, ticketId: t.id });
-          for (const id of t.faultInstanceIds) simRun('faults.clear', (s) => s.faults.clear(id, 'jared'), { ok: false, error: '' });
-          ctx.emit('npc.jaredFix', { ticketId: t.id, phase: 'finished' });
-          ctx.emit('mission.npcAction', { npc: 'jared', action: 'idle', target: null });
+          for (const id of t.faultInstanceIds) simRun('faults.clear', (s) => s.faults.clear(id, 'jaden'), { ok: false, error: '' });
+          ctx.emit('npc.jadenFix', { ticketId: t.id, phase: 'finished' });
+          ctx.emit('mission.npcAction', { npc: 'jaden', action: 'idle', target: null });
         }
-        if (rt.jaredFixRun) {
+        if (rt.jadenFixRun) {
           sampleScope(rt.scope, d);
           if (scopeStatus(rt.scope, d).full) finishTicket(d, ctx, t, rt, 'escalation');
         }
@@ -592,8 +592,8 @@ function kickVerificationBuild(d: RootState, t: TicketState, rt: TicketRt, now: 
   const covered = robot ? pipelineCovers(d, robot) : !!shiftOf(d)?.rules.pipelines || !!d.session.freeplay?.pipelines;
   if (now - t.verifying.sinceS < (covered ? VERIFY_KICK_COVERED_S : VERIFY_KICK_UNCOVERED_S)) return;
   if (rt.verifyKickAtS !== undefined && now - rt.verifyKickAtS < VERIFY_KICK_REPEAT_S) return;
-  const orca = robot ? robotByName(d.lab, robot) : null;
-  if (robot && (!orca || orca.checkout)) return;
+  const orka = robot ? robotByName(d.lab, robot) : null;
+  if (robot && (!orka || orka.checkout)) return;
   const pl = PIPELINES.find((p) => (trig.pipeline ? p.id === trig.pipeline : robot ? p.eligibleRigs.includes(robot) : p.id === 'PL3'));
   const job = trig.jobs?.[0] ?? (trig.pipeline ? PIPELINE_JOBS[trig.pipeline] : pl?.job) ?? PIPELINE_JOBS.PL3;
   const params: Record<string, string> = { ...(pl ? pl.params(0) : {}) };
@@ -628,7 +628,7 @@ export function onTicketEvent(d: RootState, ctx: TxContext, e: LogEntry): void {
         raiseGw(d, ctx, 'GW16', { ticketId: t.id, detail: 'Verification failed' });
         ctx.emit('ticket.resolveRejected', { ticketId: t.id, reason: 'verification failed' });
       }
-    } else if (t.status === 'escalated' && t.escalation?.outcome === 'accepted' && rt.jaredFixRun && outcome === 'satisfied') {
+    } else if (t.status === 'escalated' && t.escalation?.outcome === 'accepted' && rt.jadenFixRun && outcome === 'satisfied') {
       finishTicket(d, ctx, t, rt, 'escalation');
     }
   }

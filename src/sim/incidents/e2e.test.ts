@@ -16,7 +16,7 @@ vi.setConfig({ testTimeout: 600_000 });
 /** What "all green" means: every observable health fact of the lab. */
 function signature(l: LabState): Record<string, string> {
   const out: Record<string, string> = {};
-  for (const r of Object.values(l.orca.robots)) out[`robot:${r.name}`] = r.status;
+  for (const r of Object.values(l.orka.robots)) out[`robot:${r.name}`] = r.status;
   for (const g of Object.values(l.rigs)) out[`banner:${g.id}`] = g.banner;
   for (const h of Object.values(l.hosts)) out[`host:${h.id}`] = h.os;
   for (const f of Object.values(l.power.fuses)) out[`fuse:${f.id}`] = f.blown ? 'BLOWN' : 'OK';
@@ -39,15 +39,15 @@ describe('end to end: factory → every runner → health check → five faults 
 
     // 1. One job per runner type, all green at factory.
     const jobs: [string, Record<string, string>, string][] = [
-      ['Java/uia-remote-regression-flux', { ROBOT_NAME: 'wall-e' }, 'uia-remote (standalone, physical taps)'],
-      ['Java/uia-remote-tethered-tax', { ROBOT_NAME: 'megatron' }, 'uia-remote (tethered MFD/CFD)'],
-      ['Java/uia-remote-duet-cfd', {}, 'uia-remote (Duet, OCR + UIA 2.3)'],
-      ['Java/pigeon-android-sale-swipe', { ROBOT_NAME: 'bumblebee' }, 'pigeon (Android LSTR)'],
-      ['Java/pigeon-windows-tender', {}, 'pigeon (Windows LSTR)'],
+      ['Java/uia-relay-regression-flux', { ROBOT_NAME: 'wall-e' }, 'uia-relay (standalone, physical taps)'],
+      ['Java/uia-relay-tethered-tax', { ROBOT_NAME: 'megatron' }, 'uia-relay (tethered MFD/CFD)'],
+      ['Java/uia-relay-duet-cfd', {}, 'uia-relay (Duet, OCR + UIA 2.3)'],
+      ['Java/parrot-android-sale-swipe', { ROBOT_NAME: 'bumblebee' }, 'parrot (Android LSTR)'],
+      ['Java/parrot-windows-tender', {}, 'parrot (Windows LSTR)'],
       ['Java/go-sdk-sale-smoke', {}, 'go-sdk'],
-      ['Java/laz-oobe-merchant-swap', { ROBOT_NAME: 'data', MERCHANT: 'AUTO-US-NOPIN-02' }, 'laz'],
+      ['Java/lazo-oobe-merchant-swap', { ROBOT_NAME: 'data', MERCHANT: 'AUTO-US-NOPIN-02' }, 'lazo'],
       ['Java/vision-poc-receipt-check', {}, 'vision (Ollama)'],
-      ['iOS/pigeon-ios-go-sdk-smoke', {}, 'ios'],
+      ['iOS/parrot-ios-go-sdk-smoke', {}, 'ios'],
     ];
     for (const [job, params, what] of jobs) {
       const b = build(job, params);
@@ -55,7 +55,7 @@ describe('end to end: factory → every runner → health check → five faults 
       expect(b.console.at(-1)).toBe('Finished: SUCCESS');
     }
     // Swap DATA back so the merchant matches the factory again.
-    expect(build('Java/laz-oobe-merchant-swap', { ROBOT_NAME: 'data', MERCHANT: 'AUTO-US-NOPIN-01' }).result).toBe('SUCCESS');
+    expect(build('Java/lazo-oobe-merchant-swap', { ROBOT_NAME: 'data', MERCHANT: 'AUTO-US-NOPIN-01' }).result).toBe('SUCCESS');
 
     // 2. A forced health check: every pinged rig answers as it did at factory.
     const block = healthNow();
@@ -68,17 +68,17 @@ describe('end to end: factory → every runner → health check → five faults 
       { faultId: 'fuse.blown', params: { fuse: 'F-RACKB-5V' } },
       { faultId: 'rig.lockReleased', params: { rig: 'bumblebee' } },
       { faultId: 'card.trackDataCorrupt', params: { profile: 'VISA_STD_SWIPE' } },
-      { faultId: 'jenkins.envCase', params: { job: 'Java/uia-remote-regression-flux', value: 'flux_3' } },
+      { faultId: 'jenkins.envCase', params: { job: 'Java/uia-relay-regression-flux', value: 'flux_3' } },
     );
     expect(ids).toHaveLength(5);
     run(1_000);
     nextHealthCheck();
     for (const r of ['eve', 'johnny-5', 'baymax', 'seti', 'rosie']) expect(robot(r).status, r).toBe('CONNECTION_FAILED');
     expect(lab().rigs['bumblebee']!.banner).toBe('yellow');
-    expect(build('Java/uia-remote-regression-flux').failureCode).toBe('ENUM_CASE');
-    const swipe = build('Java/pigeon-android-sale-swipe', { ROBOT_NAME: 'wall-e' });
+    expect(build('Java/uia-relay-regression-flux').failureCode).toBe('ENUM_CASE');
+    const swipe = build('Java/parrot-android-sale-swipe', { ROBOT_NAME: 'wall-e' });
     expect(swipe.console).toContain('LSTR step 4/9 "card swipe" … [device] SWIPE_ERROR: invalid track data');
-    expect(build('Java/uia-remote-regression-micro', { ROBOT_NAME: 'bumblebee' }).console).toContain('[orca] xy_touch bumblebee HOME/Register → 409 Conflict: LOCK_RELEASED (park required)');
+    expect(build('Java/uia-relay-regression-micro', { ROBOT_NAME: 'bumblebee' }).console).toContain('[orka] xy_touch bumblebee HOME/Register → 409 Conflict: LOCK_RELEASED (park required)');
     expect(ids.map((id) => sim.faults.isResolved(id))).toEqual([false, false, false, false, false]);
 
     // 4. Fix each through the SimApi, as a player would.
@@ -90,9 +90,9 @@ describe('end to end: factory → every runner → health check → five faults 
     sim.power.insertFuse('F-RACKB-5V', 10, 'player');
     sim.power.toggleRegulator('REG-5V-B', true, 'player');
     sim.rig.command('bumblebee', 'park.all', 'player');
-    const swipeProfile = Object.values(lab().orca.cardProfiles).find((c) => c.name === 'VISA_STD_SWIPE')!;
-    sim.orca.saveCardProfile({ id: swipeProfile.id, trackData: '%B4111111111111111^SIM/VISA^30121010000000000000?;4111111111111111=3012101000000000?' }, 'player');
-    const job = sim.jenkins.job('Java/uia-remote-regression-flux')!;
+    const swipeProfile = Object.values(lab().orka.cardProfiles).find((c) => c.name === 'VISA_STD_SWIPE')!;
+    sim.orka.saveCardProfile({ id: swipeProfile.id, trackData: '%B4111111111111111^SIM/VISA^30121010000000000000?;4111111111111111=3012101000000000?' }, 'player');
+    const job = sim.jenkins.job('Java/uia-relay-regression-flux')!;
     sim.jenkins.saveJob(job.id, { savedParams: { ...job.savedParams, DEVICE_TYPE: 'FLUX_3' } }, 'player');
     expect(runUntil(() => ['pi-eve', 'pi-johnny-5', 'pi-baymax', 'pi-seti', 'pi-rosie', 'pi-cam-rackb'].every((h) => lab().hosts[h]!.os === 'RUNNING'), 90_000)).toBeGreaterThan(0);
     run(21_000); // the fuse predicate holds 20 s
@@ -106,9 +106,9 @@ describe('end to end: factory → every runner → health check → five faults 
     for (const d of ['dev-wall-e-flux3', 'dev-bumblebee-micro3', 'dev-eve-flux4']) sim.device.pressKey(d, 'HOME', 'player');
     run(2_000);
     expect(signature(lab())).toEqual(green);
-    expect(build('Java/uia-remote-regression-flux').result).toBe('SUCCESS');
-    expect(build('Java/pigeon-android-sale-swipe', { ROBOT_NAME: 'wall-e' }).result).toBe('SUCCESS');
-    expect(build('Java/uia-remote-regression-micro', { ROBOT_NAME: 'bumblebee' }).result).toBe('SUCCESS');
+    expect(build('Java/uia-relay-regression-flux').result).toBe('SUCCESS');
+    expect(build('Java/parrot-android-sale-swipe', { ROBOT_NAME: 'wall-e' }).result).toBe('SUCCESS');
+    expect(build('Java/uia-relay-regression-micro', { ROBOT_NAME: 'bumblebee' }).result).toBe('SUCCESS');
     expect(signature(lab())).toEqual(green);
   });
 });
@@ -118,13 +118,13 @@ describe('API results never leak immer drafts', () => {
     sim.reset({ preset: 'test' });
     resetTerminalSessions();
     const results: unknown[] = [
-      sim.orca.checkout({ buildId: 'manual-1', jobId: 'manual', robotName: 'tars', environment: 'DEV1', kind: 'manual' }),
-      sim.orca.release(robot('tars').id, 'manual-1'),
-      sim.orca.matchPreview('{"deviceType":"FLUX_3"}'),
-      sim.orca.capabilityDocument(robot('wall-e').id),
-      sim.orca.xyTouch('tars', 'HOME', 'Register', 'player'),
-      sim.orca.card('wall-e', 'DIP', 'VISA_STD_DIP', 'player'),
-      sim.orca.rest('GET', '/api/robots', null, 'player'),
+      sim.orka.checkout({ buildId: 'manual-1', jobId: 'manual', robotName: 'tars', environment: 'DEV1', kind: 'manual' }),
+      sim.orka.release(robot('tars').id, 'manual-1'),
+      sim.orka.matchPreview('{"deviceType":"FLUX_3"}'),
+      sim.orka.capabilityDocument(robot('wall-e').id),
+      sim.orka.xyTouch('tars', 'HOME', 'Register', 'player'),
+      sim.orka.card('wall-e', 'DIP', 'VISA_STD_DIP', 'player'),
+      sim.orka.rest('GET', '/api/robots', null, 'player'),
       sim.rig.dragCarriage('wall-e', 25, 0, 'player'),
       sim.device.layout('dev-wall-e-flux3', 'primary'),
       sim.device.swapHardware('johnny-5', 'FLUX_2', 'player', { deviceId: 'dev-spare-flux2' }),
@@ -134,14 +134,14 @@ describe('API results never leak immer drafts', () => {
       sim.faults.catalogue(),
       sim.faults.setupCatalogue(),
       sim.faults.inject({ faultId: 'pi.hung', params: { host: 'pi-wall-e' } }),
-      sim.jenkins.build('Java/uia-remote-regression-flux', {}, 'player'),
-      sim.jenkins.recentBuilds('Java/uia-remote-regression-flux', 5),
+      sim.jenkins.build('Java/uia-relay-regression-flux', {}, 'player'),
+      sim.jenkins.recentBuilds('Java/uia-relay-regression-flux', 5),
       sim.terminal.exec('adb devices'),
-      sim.git.clone('uia-remote', 'player'),
+      sim.git.clone('uia-relay', 'player'),
       sim.ollama.ask('llava', 'hi', null, 'player'),
     ];
     run(2_000);
     for (const r of results) expect(() => JSON.stringify(r)).not.toThrow();
-    expect(sh('git -C ~/IdeaProjects/uia-remote status').length).toBeGreaterThan(0);
+    expect(sh('git -C ~/IdeaProjects/uia-relay status').length).toBeGreaterThan(0);
   });
 });

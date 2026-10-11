@@ -9,7 +9,7 @@ import { LIBRARY_ITEMS, LIBRARY_TRAYS, PROPS } from './props';
 import { AC_STRIPS, OUTLETS, POWER_TRACE, POWER_WALL_PARTS, RACK_DISTRIBUTION, stripSocketId } from './power';
 import { RACKS, RACK_FRAME, railUnitId } from './racks';
 import { ADB_RIGS, TETHERED_RIGS, TOUCH_RIGS } from './rigs';
-import { BUILD_TABLE_ITEMS, CALLUS_BOXES, CALLUS_FIXTURES, COLLIS_PROBES } from './shelves';
+import { BUILD_TABLE_ITEMS, KALLUS_BOXES, KALLUS_FIXTURES, KOLLIS_PROBES } from './shelves';
 import { SHELF_IDS, rigPartId, touchRigPartList } from './ids';
 import { INTERACTABLES } from './interactables';
 
@@ -36,7 +36,7 @@ export const PROP_ALIASES: Readonly<Record<string, string>> = {
   'prop.walle.limit-switch-y': 'rig.wall-e.limit-y',
   'prop.walle.dip-arm': 'rig.wall-e.dip-arm',
   'prop.walle.pi': 'rig.wall-e.pi',
-  'prop.bolt-bins': 'jared.bolt-bins',
+  'prop.bolt-bins': 'jaden.bolt-bins',
   ...libraryAliases,
   'prop.family-trays': 'library.trays',
   'prop.megatron.mfd': 'rig.megatron.mfd',
@@ -54,10 +54,10 @@ export const PROP_ALIASES: Readonly<Record<string, string>> = {
   'prop.multimeter': 'tool.multimeter',
   'prop.ac-strip': 'power.strip.w',
   'prop.flux4-psu-brick': 'power.bench.flux4-psu',
-  'prop.collis-probe-spare': 'power.bench.collis-spare',
-  'prop.nuc-03': 'callus.nuc-03',
-  'prop.minix-01': 'callus.minix-01',
-  'prop.collis-probe-a': 'collis.wall-e',
+  'prop.kollis-probe-spare': 'power.bench.kollis-spare',
+  'prop.nuc-03': 'kallus.nuc-03',
+  'prop.minix-01': 'kallus.minix-01',
+  'prop.kollis-probe-a': 'kollis.wall-e',
   'prop.eve.pi-power': 'rig.eve.pi-power',
   'prop.eve.device': 'rig.eve.device',
   'prop.seti.device': 'rig.seti.device',
@@ -74,7 +74,7 @@ export const PROP_ALIASES: Readonly<Record<string, string>> = {
   'prop.history.semi': 'wall.history.semi',
   'prop.history.sedi': 'wall.history.sedi',
   'prop.history.ipx': 'wall.history.ipx',
-  'prop.history.paycore': 'wall.history.paycore',
+  'prop.history.paycrest': 'wall.history.paycrest',
   'prop.history.match': 'wall.history.match',
 };
 
@@ -126,11 +126,11 @@ function collectPropIds(): string[] {
     }
   }
   for (const rig of TOUCH_RIGS) for (const part of touchRigPartList(rig)) add(rigPartId(rig.id, part));
-  COLLIS_PROBES.forEach((c) => add(c.id));
-  CALLUS_BOXES.forEach((b) => add(b.id));
-  add(CALLUS_FIXTURES.dist12v.id);
-  add(CALLUS_FIXTURES.monitor.id);
-  add(CALLUS_FIXTURES.spare24vLead.id);
+  KOLLIS_PROBES.forEach((c) => add(c.id));
+  KALLUS_BOXES.forEach((b) => add(b.id));
+  add(KALLUS_FIXTURES.dist12v.id);
+  add(KALLUS_FIXTURES.monitor.id);
+  add(KALLUS_FIXTURES.spare24vLead.id);
   for (const t of TETHERED_RIGS) {
     add(t.mfd.id);
     add(t.cfd.id);

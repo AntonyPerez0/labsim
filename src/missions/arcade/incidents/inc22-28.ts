@@ -1,7 +1,7 @@
 /**
  * GP §3.5 INC22–INC28: the misleading "select print" log, a printer test matched to a Flux Pocket,
- * GIMP coordinates for a Pigeon screen compare, a missing JSON comma, the misfiled iOS job, the port
- * 5555 coworker collision and ADB-over-TCP lost after a Laz OOBE.
+ * GIMP coordinates for a Parrot screen compare, a missing JSON comma, the misfiled iOS job, the port
+ * 5555 coworker collision and ADB-over-TCP lost after a Lazo OOBE.
  */
 import type { IncidentDef } from '../../types';
 import { c, on, p } from '../../types';
@@ -15,7 +15,7 @@ import {
   deviceIp,
   gw,
   hrn,
-  orcaSave,
+  orkaSave,
   rig,
   statusTo,
   sym,
@@ -39,21 +39,21 @@ export const INC22: IncidentDef = {
   rigs: { candidates: ['johnny-5'], default: 'johnny-5', scope: 'rig', describe: 'printer rigs (default JOHNNY-5, FLUX_1)' },
   escalatable: false,
   unlockedBy: 'M15',
-  tags: ['jenkins.logs', 'pigeon.lstr', 'orca.screens'],
+  tags: ['jenkins.logs', 'parrot.lstr', 'orka.screens'],
   factIds: ['F210', 'F211', 'F142'],
-  ticket: { title: (b) => `${hrn(b)}: Pigeon fails at 'select print'`, reporter: 'jenkins-bot', misleading: { title: (b) => `${hrn(b)}'s printer is out of paper?`, reporter: 'alex' } },
-  setup: () => ({ scenario: [F('orca.screenLocationTypo', { deviceType: '$T', screen: 'RECEIPT_OPTIONS_4', button: 'Print', yMm: 62.5 })] }),
+  ticket: { title: (b) => `${hrn(b)}: Parrot fails at 'select print'`, reporter: 'jenkins-bot', misleading: { title: (b) => `${hrn(b)}'s printer is out of paper?`, reporter: 'alex' } },
+  setup: () => ({ scenario: [F('orka.screenLocationTypo', { deviceType: '$T', screen: 'RECEIPT_OPTIONS_4', button: 'Print', yMm: 62.5 })] }),
   reveal: 'pipeline',
   symptoms: [
     sym('Jenkins', 'LSTR step 7/9 "select print" … waiting for printer payload … TIMEOUT after 60 s → FAILED at "select print"'),
     sym('Camera', 'Recorded playback for the build: the plunger hits the gap above "Print".'),
     sym('World', 'The printer has paper and a settings test-print works.'),
-    sym('Orca', 'The Print row shows "modified by bulk-import, yesterday".'),
+    sym('Orka', 'The Print row shows "modified by bulk-import, yesterday".'),
   ],
-  diagnosisPath: ['"select print" is only the last step attempted before the payload timeout.', 'The printer works.', 'The camera playback shows a miss.', 'The Orca row was edited by a bulk import — call it and fix it.'],
+  diagnosisPath: ['"select print" is only the last step attempted before the payload timeout.', 'The printer works.', 'The camera playback shows a miss.', 'The Orka row was edited by a bulk import — call it and fix it.'],
   hints: [
     'The log names the last step attempted, not necessarily what broke. Does the printer work?',
-    (b) => `Camera → ${hrn(b)} → recorded playback of the failed build. Then Orca → Screens → ${String(b.vars.deviceType)} → RECEIPT_OPTIONS_4 → Print.`,
+    (b) => `Camera → ${hrn(b)} → recorded playback of the failed build. Then Orka → Screens → ${String(b.vars.deviceType)} → RECEIPT_OPTIONS_4 → Print.`,
     (b) => {
       const t = truthMm(String(b.vars.deviceType), 'RECEIPT_OPTIONS_4', 'Print');
       return `Measure Print and set its Y to ${t ? t.y.toFixed(1) : 'the measured value'} mm (±0.5); Test tap; rebuild PL3 on ${hrn(b)}.`;
@@ -89,27 +89,27 @@ export const INC23: IncidentDef = {
   rigs: { candidates: ['vision'], default: 'vision', scope: 'rig', describe: 'PL6 (gets VISION, Flux Pocket)' },
   escalatable: false,
   unlockedBy: 'M08',
-  tags: ['orca.capabilities', 'hw.devices', 'go.sdk'],
+  tags: ['orka.capabilities', 'hw.devices', 'go.sdk'],
   factIds: ['F059', 'F060', 'F131', 'F132', 'F133'],
   processBonuses: ['PB02'],
   ticket: { title: 'go-sdk-sale-smoke red: printer not available', reporter: 'jenkins-bot' },
-  setup: () => ({ scenario: [F('gort.capabilityDropped', { key: 'printer' })] }),
+  setup: () => ({ scenario: [F('gorth.capabilityDropped', { key: 'printer' })] }),
   reveal: 'pipeline',
   symptoms: [
-    sym('Jenkins', '[orca] checkout → vision (FLUX_POCKET) OK … [go-sdk] PrintReceipt → PRINTER_NOT_AVAILABLE → Finished: FAILURE'),
-    sym('Orca', 'Robot Capabilities for vision: {"deviceType":"FLUX_POCKET","printer":false,…}; Match preview for the test lists vision, tars, data.'),
+    sym('Jenkins', '[orka] checkout → vision (FLUX_POCKET) OK … [go-sdk] PrintReceipt → PRINTER_NOT_AVAILABLE → Finished: FAILURE'),
+    sym('Orka', 'Robot Capabilities for vision: {"deviceType":"FLUX_POCKET","printer":false,…}; Match preview for the test lists vision, tars, data.'),
     sym('GitHub', 'The commit diff of go-sdk/tests/sale_receipt.json shows the removed "printer": true line.'),
   ],
   diagnosisPath: ['The checkout picked a Flux Pocket — which has no printer.', 'Robot Capabilities / Match preview: why does the Pocket match?', 'The test\'s dynamic JSON lost its printer requirement (GitHub history).', 'Call it and restore the capability.'],
   hints: [
     'Which robot did the build check out, and does that device have a printer?',
-    'Orca → Robot Capabilities → Match preview with the test\'s capabilities; then GitHub → gort → go-sdk/tests/sale_receipt.json history.',
+    'Orka → Robot Capabilities → Match preview with the test\'s capabilities; then GitHub → gorth → go-sdk/tests/sale_receipt.json history.',
     'Add "printer": true back to the test\'s "capabilities" object, push, and rebuild go-sdk-sale-smoke.',
   ],
   fix: { handsOn: 'IntelliJ or GitHub: add "printer": true back to the test\'s "capabilities" object → Match preview drops vision → rebuild.' },
   success: () =>
     c.all(
-      c.eq(p.gitFile('gort', 'go-sdk/tests/sale_receipt.json').json('/capabilities/printer'), true),
+      c.eq(p.gitFile('gorth', 'go-sdk/tests/sale_receipt.json').json('/capabilities/printer'), true),
       c.nextBuild({ pipeline: 'PL6', robots: ['data', 'tars'] }),
     ),
   diagnosisCall: dc(
@@ -123,12 +123,12 @@ export const INC23: IncidentDef = {
     wm('vision-unavailable', 'Set VISION Unavailable', 100, statusTo('vision', 'UNAVAILABLE'), teach('You hid a valid printerless rig.', 'Unavailable is for specialised rigs used by named jobs. (Ref §3)', 'Restore "printer": true in the test\'s capabilities.')),
     wm('pin-tars', 'Hardcode ROBOT_NAME=tars', 50, buildWith('Java/go-sdk-sale-smoke', (pp) => pp.ROBOT_NAME === 'tars'), teach('You bypassed capability matching.', 'Dynamic JSON lookups define capabilities inside the test and are parsed at runtime. (Ref §3)', 'Fix the capability in the test definition.')),
   ],
-  teaches: P('Ref §1: Flux 3, 4 and Pocket share one testing profile and the Pocket has no printer. Ref §3: dynamic JSON lookups live in the test definition and are parsed at runtime (SDK frameworks, {{david}}). The JSON key is "printer"; Orca matches it against the profile\'s hasPrinter.'),
+  teaches: P('Ref §1: Flux 3, 4 and Pocket share one testing profile and the Pocket has no printer. Ref §3: dynamic JSON lookups live in the test definition and are parsed at runtime (SDK frameworks, {{devin}}). The JSON key is "printer"; Orka matches it against the profile\'s hasPrinter.'),
 };
 
 export const INC24: IncidentDef = {
   id: 'INC24',
-  name: 'Extract coordinates with GIMP for a Pigeon screen compare',
+  name: 'Extract coordinates with GIMP for a Parrot screen compare',
   difficulty: 3,
   base: 400,
   parS: 300,
@@ -136,34 +136,34 @@ export const INC24: IncidentDef = {
   rigs: { candidates: ['eve'], default: 'eve', scope: 'rig', describe: 'ADB-visible rigs (default EVE)' },
   escalatable: false,
   unlockedBy: 'M16',
-  tags: ['pigeon.gimp', 'pigeon.json', 'adb.usage'],
+  tags: ['parrot.gimp', 'parrot.json', 'adb.usage'],
   factIds: ['F212', 'F030', 'F024', 'F205'],
-  ticket: { title: "New Pigeon test tests/sale/payment_success_compare.json needs its screenCompare block filled for 'Payment Successful'", reporter: 'morgan' },
-  setup: () => ({ scenario: [F('pigeon.screenCompareEmpty'), OP('device.stage', { device: '$DEV', stage: 'approved' })] }),
+  ticket: { title: "New Parrot test tests/sale/payment_success_compare.json needs its screenCompare block filled for 'Payment Successful'", reporter: 'morgan' },
+  setup: () => ({ scenario: [F('parrot.screenCompareEmpty'), OP('device.stage', { device: '$DEV', stage: 'approved' })] }),
   reveal: 'immediate',
   symptoms: [
-    sym('Jenkins', 'Java/pigeon-android-payment-compare [illus.]: LSTR screenCompare: empty region (0x0) → FAILURE'),
+    sym('Jenkins', 'Java/parrot-android-payment-compare [illus.]: LSTR screenCompare: empty region (0x0) → FAILURE'),
     sym('IDE', '{ "action": "screenCompare", "params": { "x": 0, "y": 0, "w": 0, "h": 0, "expected": "Payment Successful" } }'),
     sym('World', (b) => `${hrn(b)} shows the Payment Successful screen.`),
   ],
   diagnosisPath: ['The region is 0×0 — nothing to compare.', 'Take an ADB screencap of the device.', 'Open it in GIMP and select the text.', 'Copy Position and Size into the JSON; commit, push, rebuild.'],
   hints: [
-    'The compare block has no region yet. Where do Pigeon engineers get coordinates from?',
+    'The compare block has no region yet. Where do Parrot engineers get coordinates from?',
     (b) => `adb -s ${deviceIp(b)}:5444 exec-out screencap -p > payment_success.png, then GIMP → File → Open → Rectangle Select.`,
-    'Read Tool Options Position and Size around "Payment Successful", write them into the screenCompare params, commit, push and rebuild Java/pigeon-android-payment-compare.',
+    'Read Tool Options Position and Size around "Payment Successful", write them into the screenCompare params, commit, push and rebuild Java/parrot-android-payment-compare.',
   ],
   fix: {
     handsOn: (b) =>
       `adb -s ${deviceIp(b)}:5444 exec-out screencap -p > payment_success.png → GIMP File → Open → Rectangle Select around the text → Tool Options Position ${COMPARE_TRUTH.x}, ${COMPARE_TRUTH.y}, Size ${COMPARE_TRUTH.w} × ${COMPARE_TRUTH.h} → write { "x": ${COMPARE_TRUTH.x}, "y": ${COMPARE_TRUTH.y}, "w": ${COMPARE_TRUTH.w}, "h": ${COMPARE_TRUTH.h} } → commit, push, rebuild.`,
   },
   success: () => {
-    const f = p.gitFile('pigeon', COMPARE_FILE);
+    const f = p.gitFile('parrot', COMPARE_FILE);
     return c.all(
       c.approx(f.json('/actions/6/params/x') as never, COMPARE_TRUTH.x, 3),
       c.approx(f.json('/actions/6/params/y') as never, COMPARE_TRUTH.y, 3),
       c.approx(f.json('/actions/6/params/w') as never, COMPARE_TRUTH.w, 3),
       c.approx(f.json('/actions/6/params/h') as never, COMPARE_TRUTH.h, 3),
-      c.nextBuild({ jobs: ['Java/pigeon-android-payment-compare'] }),
+      c.nextBuild({ jobs: ['Java/parrot-android-payment-compare'] }),
     );
   },
   diagnosisCall: dc(
@@ -173,7 +173,7 @@ export const INC24: IncidentDef = {
     ['JSON syntax', 'The file parsed — the runner read the block and found an empty region.'],
   ),
   wrongButTempting: [
-    wm('guess', 'Guess the numbers', 50, on('jenkins.buildFinished', { jobId: 'Java/pigeon-android-payment-compare' }, (pl) => pl.result !== 'SUCCESS'), teach('The compare failed again.', 'Engineers open a screenshot in GIMP, draw a bounding box and copy its coordinates into the JSON. (Ref §5)', 'Screencap → GIMP → Rectangle Select → Tool Options.'), { repeatable: true }),
+    wm('guess', 'Guess the numbers', 50, on('jenkins.buildFinished', { jobId: 'Java/parrot-android-payment-compare' }, (pl) => pl.result !== 'SUCCESS'), teach('The compare failed again.', 'Engineers open a screenshot in GIMP, draw a bounding box and copy its coordinates into the JSON. (Ref §5)', 'Screencap → GIMP → Rectangle Select → Tool Options.'), { repeatable: true }),
     wm('webcam-snapshot', 'Use a webcam snapshot of an ADB-visible screen', 50, on('camera.snapshot', {}, (pl) => /eve/.test(pl.cameraId)), teach('Perspective and scale differ.', 'For an ADB-visible screen, the device screencap gives exact pixels. (Ref §1, §5)', 'adb exec-out screencap, then GIMP.')),
   ],
   teaches: 'Ref §5 GIMP coordinate extraction; Ref §1 GIMP and ADB.',
@@ -181,35 +181,35 @@ export const INC24: IncidentDef = {
 
 export const INC25: IncidentDef = {
   id: 'INC25',
-  name: 'Pigeon JSON missing comma',
+  name: 'Parrot JSON missing comma',
   difficulty: 2,
   base: 300,
   parS: 180,
   severity: 'P2',
-  rigs: { default: null, scope: 'none', describe: '— (repo pigeon)' },
+  rigs: { default: null, scope: 'none', describe: '— (repo parrot)' },
   escalatable: false,
   unlockedBy: 'M15',
-  tags: ['pigeon.json', 'pigeon.nolint', 'tools.github', 'pigeon.abstraction', 'arch.repos'],
+  tags: ['parrot.json', 'parrot.nolint', 'tools.github', 'parrot.abstraction', 'arch.repos'],
   factIds: ['F205', 'F206', 'F207', 'F208', 'F209', 'F204'],
   processBonuses: ['PB04'],
-  ticket: { title: P("Tip-sale Pigeon test dies instantly since {{alex}}'s 'add tip step' commit"), reporter: 'jenkins-bot' },
-  setup: () => ({ scenario: [F('pigeon.missingComma', { path: TIP_FILE, line: 8 }), OP('jenkins.startBuild', { job: 'Java/pigeon-android-tip-sale', by: 'jenkins' })] }),
+  ticket: { title: P("Tip-sale Parrot test dies instantly since {{alex}}'s 'add tip step' commit"), reporter: 'jenkins-bot' },
+  setup: () => ({ scenario: [F('parrot.missingComma', { path: TIP_FILE, line: 8 }), OP('jenkins.startBuild', { job: 'Java/parrot-android-tip-sale', by: 'jenkins' })] }),
   reveal: 'immediate',
   symptoms: [
-    sym('Jenkins', 'Java/pigeon-android-tip-sale [illus.]: LSTR ParseError: Unexpected token { in JSON at line 9 column 5 → FAILURE'),
-    sym('IDE', 'No error highlighting — the Pigeon project has no JSON inspections.'),
+    sym('Jenkins', 'Java/parrot-android-tip-sale [illus.]: LSTR ParseError: Unexpected token { in JSON at line 9 column 5 → FAILURE'),
+    sym('IDE', 'No error highlighting — the Parrot project has no JSON inspections.'),
     sym('Terminal', P("git log -1 --stat → {{alex}}'s commit; git diff HEAD~1 shows the new add tip block.")),
   ],
   diagnosisPath: ['The error points at line 9 — the break is the missing comma at the end of line 8.', 'Fix it (or paste a known-good action).', 'Commit, push, rebuild.'],
   hints: [
     'Parsers report where they gave up, not where you went wrong. Look just before that line.',
-    `Open pigeon/${TIP_FILE}: what ends line 8?`,
-    'Add the comma after the add tip action (or paste it from tests/_templates/known_good_actions.json), commit, push, rebuild Java/pigeon-android-tip-sale.',
+    `Open parrot/${TIP_FILE}: what ends line 8?`,
+    'Add the comma after the add tip action (or paste it from tests/_templates/known_good_actions.json), commit, push, rebuild Java/parrot-android-tip-sale.',
   ],
   fix: { handsOn: 'Add the comma, or paste the action from tests/_templates/known_good_actions.json (PB04); commit; push; rebuild.' },
   success: () => {
-    const f = p.gitFile('pigeon', TIP_FILE);
-    return c.all(c.truthy(f.parsesJson), c.contains(f.contents, '"add tip"'), c.nextBuild({ jobs: ['Java/pigeon-android-tip-sale'] }));
+    const f = p.gitFile('parrot', TIP_FILE);
+    return c.all(c.truthy(f.parsesJson), c.contains(f.contents, '"add tip"'), c.nextBuild({ jobs: ['Java/parrot-android-tip-sale'] }));
   },
   diagnosisCall: dc(
     'Malformed JSON (missing comma) — nothing lints it',
@@ -218,7 +218,7 @@ export const INC25: IncidentDef = {
     ['Runner crashed', 'The runner reported a precise ParseError with a line and column.'],
   ),
   wrongButTempting: [
-    wm('revert', 'git revert the commit', 0, on('git.committed', { repo: 'pigeon' }, (pl) => /^Revert/i.test(pl.message)), teach('Green, but the tip step is gone.', 'The ticket needs the tip test working, not removed.', 'Fix the comma and keep the add tip action.')),
+    wm('revert', 'git revert the commit', 0, on('git.committed', { repo: 'parrot' }, (pl) => /^Revert/i.test(pl.message)), teach('Green, but the tip step is gone.', 'The ticket needs the tip test working, not removed.', 'Fix the comma and keep the add tip action.')),
     wm('retype', 'Retype the file from scratch', 0, undefined, teach('Allowed, but slow.', 'Engineers survive the missing linter by copy-pasting working JSON blocks. (Ref §5)', 'Paste from tests/_templates/known_good_actions.json.')),
   ],
   teaches: 'Ref §5: JSON payload anatomy (name, connection type, 4–5 platforms, actions with parameters and stored outputs); no JSON linter; copy-paste survival; "card swipe" is abstracted per platform into an SDK request or a physical robot action.',
@@ -234,23 +234,23 @@ export const INC26: IncidentDef = {
   rigs: { default: null, scope: 'none', describe: '—' },
   escalatable: false,
   unlockedBy: 'M11',
-  tags: ['jenkins.folders', 'pigeon.lstr', 'go.sdk'],
+  tags: ['jenkins.folders', 'parrot.lstr', 'go.sdk'],
   factIds: ['F017', 'F203', 'F202'],
-  ticket: { title: 'Nightly Java run is missing pigeon-windows-tender — did someone delete it?', reporter: 'riley' },
-  setup: () => ({ scenario: [F('jenkins.jobMoved', { job: 'Java/pigeon-windows-tender', toFolder: 'iOS' })] }),
+  ticket: { title: 'Nightly Java run is missing parrot-windows-tender — did someone delete it?', reporter: 'riley' },
+  setup: () => ({ scenario: [F('jenkins.jobMoved', { job: 'Java/parrot-windows-tender', toFolder: 'iOS' })] }),
   reveal: 'immediate',
   symptoms: [
-    sym('Jenkins', 'The Java view lacks it; search finds iOS/pigeon-windows-tender.'),
-    sym('Jenkins', 'The iOS view otherwise holds iOS/pigeon-ios-go-sdk-smoke (ran today) and iOS/pigeon-ios-lstr-legacy [illus.] (last run 7 months ago).'),
+    sym('Jenkins', 'The Java view lacks it; search finds iOS/parrot-windows-tender.'),
+    sym('Jenkins', 'The iOS view otherwise holds iOS/parrot-ios-go-sdk-smoke (ran today) and iOS/parrot-ios-lstr-legacy [illus.] (last run 7 months ago).'),
   ],
   diagnosisPath: ['Search Jenkins for the job name.', 'It lives under the iOS folder.', 'Move it back to Java.'],
-  hints: ['Search before you recreate anything.', 'Jenkins search: pigeon-windows-tender. Which folder is it in?', 'Job ▸ Move ▸ Java.'],
+  hints: ['Search before you recreate anything.', 'Jenkins search: parrot-windows-tender. Which folder is it in?', 'Job ▸ Move ▸ Java.'],
   fix: { handsOn: 'Job ▸ Move ▸ Java.' },
   success: () =>
     c.all(
-      c.truthy(p.job('Java/pigeon-windows-tender').exists),
-      c.falsy(p.job('iOS/pigeon-windows-tender').exists),
-      c.label(c.happened(on('jenkins.jobMoved', { toJobId: 'Java/pigeon-windows-tender' })), 'Moved back to Java'),
+      c.truthy(p.job('Java/parrot-windows-tender').exists),
+      c.falsy(p.job('iOS/parrot-windows-tender').exists),
+      c.label(c.happened(on('jenkins.jobMoved', { toJobId: 'Java/parrot-windows-tender' })), 'Moved back to Java'),
     ),
   diagnosisCall: dc(
     'Filed under iOS; legacy jobs are split Java vs iOS',
@@ -259,8 +259,8 @@ export const INC26: IncidentDef = {
     ['Permissions', 'You can see and open the job. Look at its folder.'],
   ),
   wrongButTempting: [
-    wm('recreate', 'Recreate it', 50, on('jenkins.jobCreated', { jobId: 'Java/pigeon-windows-tender' }), teach('Now there are duplicates.', 'Jenkins separates legacy Java jobs from iOS jobs; this one was filed in the wrong folder. (Ref §1)', 'Move the existing job to Java.')),
-    wm('delete-ios', 'Delete the iOS copy first', 100, on('jenkins.jobDeleted', { jobId: 'iOS/pigeon-windows-tender' }), teach('Build history lost.', 'Moving keeps the history and numbers.', 'Job ▸ Move ▸ Java.')),
+    wm('recreate', 'Recreate it', 50, on('jenkins.jobCreated', { jobId: 'Java/parrot-windows-tender' }), teach('Now there are duplicates.', 'Jenkins separates legacy Java jobs from iOS jobs; this one was filed in the wrong folder. (Ref §1)', 'Move the existing job to Java.')),
+    wm('delete-ios', 'Delete the iOS copy first', 100, on('jenkins.jobDeleted', { jobId: 'iOS/parrot-windows-tender' }), teach('Build history lost.', 'Moving keeps the history and numbers.', 'Job ▸ Move ▸ Java.')),
   ],
   teaches: 'Ref §1: Jenkins separates legacy Java jobs from iOS jobs. Ref §5: the iOS runner is rarely touched while iOS Go testing is active.',
 };
@@ -279,7 +279,7 @@ export const INC27: IncidentDef = {
   factIds: ['F198', 'F199', 'F200', 'F026'],
   ticket: { title: 'SOMETHING IS TAPPING MY DESK FLUX BY ITSELF', reporter: 'riley' },
   setup: () => ({
-    scenario: [OP('repo.clone', { repo: 'uia-remote' }), OP('config.write', { fixture: 'target', robot: '$R' }), F('config.port5555'), OP('runner.startLocal', { test: 'SaleTest' })],
+    scenario: [OP('repo.clone', { repo: 'uia-relay' }), OP('config.write', { fixture: 'target', robot: '$R' }), F('config.port5555'), OP('runner.startLocal', { test: 'SaleTest' })],
   }),
   reveal: 'immediate',
   symptoms: [
@@ -303,7 +303,7 @@ export const INC27: IncidentDef = {
   diagnosisCall: dc(
     'portNumber 5555 — the runner fell back to a coworker\'s device',
     [P("{{riley}}'s Flux has malware"), 'The taps match your test\'s steps exactly. What is your runner connected to?'],
-    ['Orca routed to the wrong rig', 'Orca never chose this device — it is not a lab rig. Run adb devices.'],
+    ['Orka routed to the wrong rig', 'Orka never chose this device — it is not a lab rig. Run adb devices.'],
     ['Wrong deviceType', 'deviceType changes scrolling, not which device you connect to. Check portNumber.'],
   ),
   wrongButTempting: [
@@ -317,7 +317,7 @@ export const INC27: IncidentDef = {
 
 export const INC28: IncidentDef = {
   id: 'INC28',
-  name: 'ADB refused after a Laz OOBE',
+  name: 'ADB refused after a Lazo OOBE',
   difficulty: 3,
   base: 400,
   parS: 210,
@@ -325,7 +325,7 @@ export const INC28: IncidentDef = {
   rigs: { candidates: ['data'], default: 'data', scope: 'rig', describe: 'any rig after a merchant swap (default DATA)' },
   escalatable: false,
   unlockedBy: 'M08',
-  tags: ['adb.port', 'adb.usage', 'laz.oobe', 'hw.pi'],
+  tags: ['adb.port', 'adb.usage', 'lazo.oobe', 'hw.pi'],
   factIds: ['F026', 'F065', 'F046', 'F047'],
   ticket: { title: (b) => `${hrn(b)} red after the merchant swap: adb connect refused`, reporter: 'jenkins-bot' },
   setup: () => ({
@@ -335,7 +335,7 @@ export const INC28: IncidentDef = {
   symptoms: [
     sym('Jenkins', (b) => `[runner] adb connect ${deviceIp(b)}:5444 → failed to connect to '${deviceIp(b)}:5444': Connection refused`),
     sym('World', 'DATA already runs the new merchant (AUTO-US-NOPIN-02) after the OOBE.'),
-    sym('Orca', (b) => `${hrn(b)} Available (the shelf Pi is healthy).`),
+    sym('Orka', (b) => `${hrn(b)} Available (the shelf Pi is healthy).`),
     sym('World', (b) => `${hrn(b)} shows the new merchant's home screen.`),
   ],
   diagnosisPath: ['Refused (not timeout) ⇒ the device is up but nothing listens on 5444.', 'A recent OOBE wiped the device.', 'Call it and re-enable ADB over TCP from the shelf Pi.'],
@@ -349,30 +349,30 @@ export const INC28: IncidentDef = {
     c.all(c.eq(p.hwDevice(dev(b)).adbTcpPort, 5444), c.label(c.happened(on('device.adbTcpChanged', { deviceId: dev(b), port: 5444 })), 'ADB over TCP re-enabled'), c.nextBuild({ robots: [rig(b)] })),
   diagnosisCall: dc(
     'The OOBE wipe reset ADB-over-TCP — re-enable it on 5444',
-    ['Shelf Pi crashed', 'A crashed Pi fails its health check; Orca shows the rig Available.'],
+    ['Shelf Pi crashed', 'A crashed Pi fails its health check; Orka shows the rig Available.'],
     ['Port collision', '"Connection refused" on the lab port means nothing is listening there. What reset the device?'],
     ['Ethernet unplugged', 'An unplugged device times out. This one refuses — it is on the network.'],
   ),
   wrongButTempting: [
     gw('tcpip-5555', 'GW08', 'adb tcpip 5555'),
-    wm('orca-port', "Change Orca's ADB Service URL port", 100, orcaSave('robot', { fields: ['adbServiceUrl'] }), teach('Orca\'s URL was fine.', 'ADB in the lab runs over port 5444; the device simply stopped listening after the wipe. (Ref §1)', 'Re-enable ADB over TCP on 5444 from the Pi.')),
+    wm('orka-port', "Change Orka's ADB Service URL port", 100, orkaSave('robot', { fields: ['adbServiceUrl'] }), teach('Orka\'s URL was fine.', 'ADB in the lab runs over port 5444; the device simply stopped listening after the wipe. (Ref §1)', 'Re-enable ADB over TCP on 5444 from the Pi.')),
   ],
-  teaches: 'Ref §1: ADB on port 5444; the Pi handles ADB routing; Laz wipes and re-provisions the device.',
+  teaches: 'Ref §1: ADB on port 5444; the Pi handles ADB routing; Lazo wipes and re-provisions the device.',
   variants: [
     {
       id: 'B',
-      label: 'Real Laz run forgets to restore ADB',
+      label: 'Real Lazo run forgets to restore ADB',
       overrides: {
         setup: () => ({
           scenario: [
-            F('laz.skipAdbRestore', { device: '$DEV' }),
-            OP('jenkins.startBuild', { job: 'Java/laz-oobe-merchant-swap', params: { ROBOT_NAME: '$R', MERCHANT: 'AUTO-US-NOPIN-02' }, by: 'riley' }),
+            F('lazo.skipAdbRestore', { device: '$DEV' }),
+            OP('jenkins.startBuild', { job: 'Java/lazo-oobe-merchant-swap', params: { ROBOT_NAME: '$R', MERCHANT: 'AUTO-US-NOPIN-02' }, by: 'riley' }),
           ],
         }),
         symptoms: [
-          sym('Jenkins', 'Java/laz-oobe-merchant-swap: laz: de-provision · laz: wipe caches · laz: setup wizard 1/6…6/6 · laz: merchant active'),
+          sym('Jenkins', 'Java/lazo-oobe-merchant-swap: lazo: de-provision · lazo: wipe caches · lazo: setup wizard 1/6…6/6 · lazo: merchant active'),
           sym('Jenkins', (b) => `Next build: [runner] adb connect ${deviceIp(b)}:5444 → failed to connect to '${deviceIp(b)}:5444': Connection refused`),
-          sym('Orca', (b) => `${hrn(b)} Available (the shelf Pi is healthy).`),
+          sym('Orka', (b) => `${hrn(b)} Available (the shelf Pi is healthy).`),
         ],
       },
     },

@@ -1,20 +1,20 @@
-/** Fault catalogue §4.3.4 (LabSim devices, tethering) and §4.3.5 (Collis / SmartStripe probes, Callus files) — core. */
-import type { TerminalDevice, CollisProbe, LabState } from '../../types';
+/** Fault catalogue §4.3.4 (LabSim devices, tethering) and §4.3.5 (Kollis / SmartStripe probes, Kallus files) — core. */
+import type { TerminalDevice, KollisProbe, LabState } from '../../types';
 import { DEVICE_TYPE_CODES } from '../../types';
 import type { CoreFaultDef, Params, Record_ } from './helpers';
 import { info, list, nothing, num, ok, p, str, undoPatches, w } from './helpers';
 import { DEVICE_TYPES, isHandheld } from '../../seed/deviceTypes';
-import { mirrorCallusFiles } from '../../seed';
+import { mirrorKallusFiles } from '../../seed';
 import { devicePowerOff } from '../devices';
 import { setDeviceQrFirmware } from '../flags';
-import { gortCardFilesAt, gortMainCardFiles } from '../hosts';
-import { robotByName } from '../orca/status';
-import { rigOf } from '../orca/entities';
+import { gorthCardFilesAt, gorthMainCardFiles } from '../hosts';
+import { robotByName } from '../orka/status';
+import { rigOf } from '../orka/entities';
 
 const invalid = (id: string, name: string, v: string, reason: string) => ({ ok: false as const, error: `fault ${id}: invalid param ${name}='${v}' (${reason})` });
 const dev = (lab: LabState, params: Params, key = 'device'): TerminalDevice | undefined => lab.devices[str(params[key])];
 
-/** The PSU load that powers a device (`psu-<orca name>` / spares), or undefined (off-screen device). */
+/** The PSU load that powers a device (`psu-<orka name>` / spares), or undefined (off-screen device). */
 function deviceLoadId(lab: LabState, deviceId: string): string | undefined {
   for (const id of Object.keys(lab.power.loads).sort()) if (lab.power.loads[id]!.deviceId === deviceId) return id;
   return undefined;
@@ -56,25 +56,25 @@ function cableOf(mfd: TerminalDevice, cable: string): 'usb' | 'ethernet' {
   return mfd.payDisplayApp === 'USB_PAY_DISPLAY' ? 'usb' : 'ethernet';
 }
 
-/** Probe power input present (Collis PSU plugged / SmartStripe USB on the shelf Pi). */
-function probeSupplied(lab: LabState, c: CollisProbe): boolean {
+/** Probe power input present (Kollis PSU plugged / SmartStripe USB on the shelf Pi). */
+function probeSupplied(lab: LabState, c: KollisProbe): boolean {
   if (c.kind === 'smartstripe') {
     const host = c.supply.targetId ? lab.hosts[c.supply.targetId] : undefined;
     return !!host && host.usb.includes(`smartstripe:${c.rigId}`);
   }
-  const load = lab.power.loads[`psu-collis-${c.rigId}`];
-  if (load && load.collisId === c.id) return load.supply.kind !== 'none';
+  const load = lab.power.loads[`psu-kollis-${c.rigId}`];
+  if (load && load.kollisId === c.id) return load.supply.kind !== 'none';
   return c.supply.kind !== 'none';
 }
 
-const probeHealthy = (lab: LabState, c: CollisProbe): boolean => probeSupplied(lab, c) && c.powered && c.ribbonConnected && c.state === 'OK';
+const probeHealthy = (lab: LabState, c: KollisProbe): boolean => probeSupplied(lab, c) && c.powered && c.ribbonConnected && c.state === 'OK';
 
-/** Every `cards/**` file on gort `main` is present in the box's local clone. */
-function callusUpToDate(lab: LabState, hostId: string): boolean {
-  const local = lab.callus.localCardFiles[hostId];
+/** Every `cards/**` file on gorth `main` is present in the box's local clone. */
+function kallusUpToDate(lab: LabState, hostId: string): boolean {
+  const local = lab.kallus.localCardFiles[hostId];
   if (!local) return false;
   const have = new Set(local.files);
-  return gortMainCardFiles(lab).files.every((f) => have.has(f));
+  return gorthMainCardFiles(lab).files.every((f) => have.has(f));
 }
 
 export const DEVICE_FAULTS: CoreFaultDef[] = [
@@ -82,7 +82,7 @@ export const DEVICE_FAULTS: CoreFaultDef[] = [
     info: info('device.unpowered', 'Device brick unplugged', 'devices', [p('device', 'device', 'Runtime device id (dev-…)', { required: true, target: true, example: 'dev-eve-flux4' }), p('battery', 'number', 'Battery % left on handhelds', { default: 0 })], {
       tags: ['power.18v', 'power.rails', 'hw.devices'],
       clears: "power == 'on'",
-      symptoms: ['device dark', 'Orca stays Available (/health does not cover the device)', "builds adb: failed to connect to '10.42.30.12:5444': No route to host"],
+      symptoms: ['device dark', 'Orka stays Available (/health does not cover the device)', "builds adb: failed to connect to '10.42.30.12:5444': No route to host"],
       usedBy: ['INC17', 'P1-2'],
     }),
     validate(lab, params) {
@@ -129,9 +129,9 @@ export const DEVICE_FAULTS: CoreFaultDef[] = [
   },
   {
     info: info('device.adbTcpReset', 'ADB-over-TCP not re-enabled', 'devices', [p('device', 'device', 'Runtime device id', { required: true, target: true, example: 'dev-data-micro3' })], {
-      tags: ['adb.port', 'adb.usage', 'laz.oobe', 'hw.pi'],
+      tags: ['adb.port', 'adb.usage', 'lazo.oobe', 'hw.pi'],
       clears: 'adbTcpPort == 5444',
-      symptoms: ["adb connect 10.42.30.31:5444 → failed to connect to '10.42.30.31:5444': Connection refused", 'Orca Available; USB ADB from the Pi still lists the serial'],
+      symptoms: ["adb connect 10.42.30.31:5444 → failed to connect to '10.42.30.31:5444': Connection refused", 'Orka Available; USB ADB from the Pi still lists the serial'],
       usedBy: ['INC28'],
     }),
     validate(lab, params) {
@@ -167,24 +167,24 @@ export const DEVICE_FAULTS: CoreFaultDef[] = [
     isResolved: (lab, f) => !!lab.devices[f.target]?.printer.paper,
   },
   {
-    info: info('laz.skipAdbRestore', 'Laz forgets to restore ADB-over-TCP', 'devices', [p('device', 'device', 'Runtime device id', { target: true, default: 'dev-data-micro3' })], {
-      tags: ['laz.oobe', 'adb.port', 'adb.usage'],
-      clears: 'adbTcpPort == 5444 and a Laz run on the device has finished since injection',
-      symptoms: ['the next Laz run skips restore-adb silently', 'afterwards adbTcpPort = null: as device.adbTcpReset', 'the build console still ends laz: merchant active'],
+    info: info('lazo.skipAdbRestore', 'Lazo forgets to restore ADB-over-TCP', 'devices', [p('device', 'device', 'Runtime device id', { target: true, default: 'dev-data-micro3' })], {
+      tags: ['lazo.oobe', 'adb.port', 'adb.usage'],
+      clears: 'adbTcpPort == 5444 and a Lazo run on the device has finished since injection',
+      symptoms: ['the next Lazo run skips restore-adb silently', 'afterwards adbTcpPort = null: as device.adbTcpReset', 'the build console still ends lazo: merchant active'],
       usedBy: ['INC28'],
     }),
     validate(lab, params) {
       const d = dev(lab, params);
-      if (!d) return invalid('laz.skipAdbRestore', 'device', str(params.device), 'no such device');
+      if (!d) return invalid('lazo.skipAdbRestore', 'device', str(params.device), 'no such device');
       return ok(d.id);
     },
     apply() {
-      // No state write: while ACTIVE the next Laz run on the device skips `restore-adb` (core/laz.ts).
+      // No state write: while ACTIVE the next Lazo run on the device skips `restore-adb` (core/lazo.ts).
     },
     isResolved(lab, f) {
       const d = lab.devices[f.target];
       if (!d || d.adbTcpPort !== 5444) return false;
-      return Object.values(lab.laz.runs).some((r) => r.deviceId === f.target && r.startedMs >= f.injectedMs && (r.step === 'done' || r.step === 'failed'));
+      return Object.values(lab.lazo.runs).some((r) => r.deviceId === f.target && r.startedMs >= f.injectedMs && (r.step === 'done' || r.step === 'failed'));
     },
   },
   {
@@ -227,7 +227,7 @@ export const DEVICE_FAULTS: CoreFaultDef[] = [
   },
   {
     info: info('tether.linkDown', 'Pay-display link cable unseated', 'devices', [p('robot', 'robot', 'Tethered robot (MFD ≠ CFD)', { target: true, default: 'optimus' }), p('cable', 'string', 'Which hub cable (auto = by pay-display app)', { default: 'auto', values: ['auto', 'usb', 'ethernet'] })], {
-      tags: ['semi.paydisplay', 'orca.tethered', 'uia.taxtest'],
+      tags: ['semi.paydisplay', 'orka.tethered', 'uia.taxtest'],
       clears: "payDisplayLink == 'UP'",
       symptoms: ['CFD Waiting for merchant device…', 'MFD Charge → Connecting to customer display… then back to review-order after 30 s', 'TaxTest [CFD_O1] waitForScreen timed out (CustomerOrderScreen) → WAIT_TIMEOUT'],
       usedBy: ['INC47'],
@@ -255,22 +255,22 @@ export const DEVICE_FAULTS: CoreFaultDef[] = [
       return cables && pair.mfd.payDisplayLink === 'UP';
     },
   },
-  /* ── §4.3.5 Collis / SmartStripe probes and Callus files ── */
+  /* ── §4.3.5 Kollis / SmartStripe probes and Kallus files ── */
   {
-    info: info('collis.unpowered', 'Probe unpowered', 'cards', [p('probe', 'probe', 'Collis / SmartStripe probe id', { required: true, target: true, example: 'collis-wall-e' })], {
-      tags: ['hw.collis', 'power.18v', 'cards.callus'],
+    info: info('kollis.unpowered', 'Probe unpowered', 'cards', [p('probe', 'probe', 'Kollis / SmartStripe probe id', { required: true, target: true, example: 'kollis-wall-e' })], {
+      tags: ['hw.kollis', 'power.18v', 'cards.kallus'],
       clears: "powered && ribbonConnected && state == 'OK'",
-      symptoms: ['LED off', 'Callus /status {"id":"collis-wall-e","state":"OFFLINE"}', '[callus] probe collis-wall-e: PROBE_OFFLINE'],
+      symptoms: ['LED off', 'Kallus /status {"id":"kollis-wall-e","state":"OFFLINE"}', '[kallus] probe kollis-wall-e: PROBE_OFFLINE'],
       usedBy: ['INC18-A'],
     }),
     validate(lab, params) {
-      const c = lab.collis[str(params.probe)];
-      if (!c) return invalid('collis.unpowered', 'probe', str(params.probe), 'no such probe');
-      if (!probeSupplied(lab, c)) return nothing('collis.unpowered', `${c.id} is already unpowered`);
+      const c = lab.kollis[str(params.probe)];
+      if (!c) return invalid('kollis.unpowered', 'probe', str(params.probe), 'no such probe');
+      if (!probeSupplied(lab, c)) return nothing('kollis.unpowered', `${c.id} is already unpowered`);
       return ok(c.id);
     },
     apply(lab, ctx, params, record) {
-      const c = lab.collis[str(params.probe)]!;
+      const c = lab.kollis[str(params.probe)]!;
       if (c.kind === 'smartstripe') {
         const host = lab.hosts[c.supply.targetId!]!;
         const usbId = `smartstripe:${c.rigId}`;
@@ -278,66 +278,66 @@ export const DEVICE_FAULTS: CoreFaultDef[] = [
         ctx.emit('host.usbChanged', { hostId: host.id, usbId, attached: false });
         return;
       }
-      const lid = `psu-collis-${c.rigId}`;
-      if (lab.power.loads[lid]?.collisId === c.id) {
+      const lid = `psu-kollis-${c.rigId}`;
+      if (lab.power.loads[lid]?.kollisId === c.id) {
         unplugLoad(lab, record, lid);
         ctx.emit('power.unplugged', { loadId: lid });
       }
-      w(lab, record, ['collis', c.id, 'supply'], { kind: 'none', targetId: null });
+      w(lab, record, ['kollis', c.id, 'supply'], { kind: 'none', targetId: null });
     },
     isResolved(lab, f) {
-      const c = lab.collis[f.target];
+      const c = lab.kollis[f.target];
       return !!c && probeHealthy(lab, c);
     },
   },
   {
-    info: info('collis.ribbonUnseated', 'Rear ribbon unseated', 'cards', [p('probe', 'probe', 'Collis probe id', { required: true, target: true, example: 'collis-eve' })], {
-      tags: ['hw.collis', 'cards.callus'],
+    info: info('kollis.ribbonUnseated', 'Rear ribbon unseated', 'cards', [p('probe', 'probe', 'Kollis probe id', { required: true, target: true, example: 'kollis-eve' })], {
+      tags: ['hw.kollis', 'cards.kallus'],
       clears: "powered && ribbonConnected && state == 'OK'",
       symptoms: ['LED amber', '/status NO_LINK', 'PROBE_NO_LINK'],
       usedBy: ['INC18-B'],
     }),
     validate(lab, params) {
-      const c = lab.collis[str(params.probe)];
-      if (!c) return invalid('collis.ribbonUnseated', 'probe', str(params.probe), 'no such probe');
-      if (c.kind !== 'collis') return invalid('collis.ribbonUnseated', 'probe', c.id, 'a SmartStripe probe has no ribbon');
-      if (!c.ribbonConnected) return nothing('collis.ribbonUnseated', `${c.id} ribbon is already unseated`);
+      const c = lab.kollis[str(params.probe)];
+      if (!c) return invalid('kollis.ribbonUnseated', 'probe', str(params.probe), 'no such probe');
+      if (c.kind !== 'kollis') return invalid('kollis.ribbonUnseated', 'probe', c.id, 'a SmartStripe probe has no ribbon');
+      if (!c.ribbonConnected) return nothing('kollis.ribbonUnseated', `${c.id} ribbon is already unseated`);
       return ok(c.id);
     },
     apply(lab, _ctx, params, record) {
-      w(lab, record, ['collis', str(params.probe), 'ribbonConnected'], false);
+      w(lab, record, ['kollis', str(params.probe), 'ribbonConnected'], false);
     },
     isResolved(lab, f) {
-      const c = lab.collis[f.target];
+      const c = lab.kollis[f.target];
       return !!c && probeHealthy(lab, c);
     },
   },
   {
-    info: info('callus.syncStale', 'Box missed GortCardSync', 'cards', [p('host', 'host', 'Windows box running Callus', { target: true, default: 'minix-02' }), p('commit', 'string', 'gort commit the box last synced', { default: '9f02a1b' })], {
-      tags: ['cards.callus', 'cards.diptap', 'tools.terminal'],
-      clears: 'localCardFiles[host].files ⊇ every cards/** file on gort main',
-      symptoms: ['[callus] map cards/nfc/interac_ca_tap.json → C:\\gort\\cards\\nfc\\interac_ca_tap.json · FileNotFoundException (The system cannot find the path specified)', 'schtasks /query /tn GortCardSync → next run 10/06/2026 10:00:00 Ready', 'dir C:\\gort\\cards\\nfc lacks the file'],
+    info: info('kallus.syncStale', 'Box missed GorthCardSync', 'cards', [p('host', 'host', 'Windows box running Kallus', { target: true, default: 'minix-02' }), p('commit', 'string', 'gorth commit the box last synced', { default: '9f02a1b' })], {
+      tags: ['cards.kallus', 'cards.diptap', 'tools.terminal'],
+      clears: 'localCardFiles[host].files ⊇ every cards/** file on gorth main',
+      symptoms: ['[kallus] map cards/nfc/interac_ca_tap.json → C:\\gorth\\cards\\nfc\\interac_ca_tap.json · FileNotFoundException (The system cannot find the path specified)', 'schtasks /query /tn GorthCardSync → next run 10/06/2026 10:00:00 Ready', 'dir C:\\gorth\\cards\\nfc lacks the file'],
       usedBy: ['INC54'],
     }),
     validate(lab, params) {
       const h = lab.hosts[str(params.host)];
-      if (!h || !lab.callus.localCardFiles[h.id] || !h.schedTasks.GortCardSync) return invalid('callus.syncStale', 'host', str(params.host), 'no such Callus box');
-      if (!callusUpToDate(lab, h.id)) return nothing('callus.syncStale', `${h.id} is already behind gort main`);
-      const files = gortCardFilesAt(lab, str(params.commit) || '9f02a1b');
-      if (gortMainCardFiles(lab).files.every((f) => files.includes(f))) return nothing('callus.syncStale', `gort ${str(params.commit)} already has every card file on main`);
+      if (!h || !lab.kallus.localCardFiles[h.id] || !h.schedTasks.GorthCardSync) return invalid('kallus.syncStale', 'host', str(params.host), 'no such Kallus box');
+      if (!kallusUpToDate(lab, h.id)) return nothing('kallus.syncStale', `${h.id} is already behind gorth main`);
+      const files = gorthCardFilesAt(lab, str(params.commit) || '9f02a1b');
+      if (gorthMainCardFiles(lab).files.every((f) => files.includes(f))) return nothing('kallus.syncStale', `gorth ${str(params.commit)} already has every card file on main`);
       return ok(h.id);
     },
     apply(lab, _ctx, params, record) {
       const hid = str(params.host);
       const commit = str(params.commit) || '9f02a1b';
-      w(lab, record, ['callus', 'localCardFiles', hid], { syncedCommit: commit, syncedAtMs: -50_380_000, files: gortCardFilesAt(lab, commit) });
-      w(lab, record, ['hosts', hid, 'schedTasks', 'GortCardSync', 'lastRunMs'], -50_400_000);
-      mirrorCallusFiles(lab, hid);
+      w(lab, record, ['kallus', 'localCardFiles', hid], { syncedCommit: commit, syncedAtMs: -50_380_000, files: gorthCardFilesAt(lab, commit) });
+      w(lab, record, ['hosts', hid, 'schedTasks', 'GorthCardSync', 'lastRunMs'], -50_400_000);
+      mirrorKallusFiles(lab, hid);
     },
-    isResolved: (lab, f) => callusUpToDate(lab, f.target),
+    isResolved: (lab, f) => kallusUpToDate(lab, f.target),
     revert(lab, _ctx, f) {
       undoPatches(lab, f);
-      mirrorCallusFiles(lab, f.target);
+      mirrorKallusFiles(lab, f.target);
     },
   },
 ];

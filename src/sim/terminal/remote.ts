@@ -1,7 +1,7 @@
 /**
  * Remote shells over ssh (Apps §5.4): Robot Pis (Raspberry Pi OS, `pi@<rig>:~ $`), Windows / Minix boxes
  * (cmd.exe over OpenSSH, `automation@MINIX-01 C:\Users\automation>`, plus `powershell`) and the VMs
- * (Ubuntu 22.04, `automation@orca:~$`). Physical effects go through CoreServices.
+ * (Ubuntu 22.04, `automation@orka:~$`). Physical effects go through CoreServices.
  */
 import type { Host, LabState, ServiceState } from '../types';
 import { core } from '../devops/coreRef';
@@ -28,7 +28,7 @@ const SVC: Record<string, SvcInfo> = {
   'adb-service': { desc: 'ADB routing service (USB → TCP 5444)', pid: 701, exec: '/usr/bin/adb -a -P 5037 server nodaemon', proc: 'adb' },
   cardprog: { desc: 'Card programmer (Wine)', pid: 903, exec: '/usr/bin/wine C:\\CardProg\\CardProgrammer.exe', proc: 'wine' },
   sshd: { desc: 'OpenBSD Secure Shell server', pid: 588, exec: '/usr/sbin/sshd -D', proc: 'sshd', unit: 'ssh' },
-  orca: { desc: 'Orca (Spring Boot)', pid: 1204, exec: '/usr/bin/java -Xmx2g -jar /opt/orca/orca.jar --spring.profiles.active=prod', proc: 'java' },
+  orka: { desc: 'Orka (Spring Boot)', pid: 1204, exec: '/usr/bin/java -Xmx2g -jar /opt/orka/orka.jar --spring.profiles.active=prod', proc: 'java' },
   mysql: { desc: 'MySQL Community Server', pid: 987, exec: '/usr/sbin/mysqld', proc: 'mysqld' },
   jenkins: { desc: 'Jenkins Continuous Integration Server', pid: 1102, exec: '/usr/bin/java -Djava.awt.headless=true -jar /usr/share/java/jenkins.war --webroot=/var/cache/jenkins/war --httpPort=8080', proc: 'java' },
   ollama: { desc: 'Ollama Service', pid: 1311, exec: '/usr/local/bin/ollama serve', proc: 'ollama' },
@@ -463,12 +463,12 @@ function winExists(h: Host, abs: string): 'file' | 'dir' | null {
     if (pl === lower) return p.endsWith('\\') ? 'dir' : 'file';
     if (pl.startsWith(`${lower}\\`)) return 'dir';
   }
-  if (['c:\\users', 'c:\\users\\automation', 'c:\\windows', 'c:\\windows\\temp', 'c:\\programdata', 'c:\\gort', 'c:\\program files'].includes(lower)) return 'dir';
+  if (['c:\\users', 'c:\\users\\automation', 'c:\\windows', 'c:\\windows\\temp', 'c:\\programdata', 'c:\\gorth', 'c:\\program files'].includes(lower)) return 'dir';
   return null;
 }
 
 function cardMtime(lab: LabState, h: Host): number {
-  return lab.callus.localCardFiles[h.id]?.syncedAtMs ?? h.schedTasks['GortCardSync']?.lastRunMs ?? -31_180_000;
+  return lab.kallus.localCardFiles[h.id]?.syncedAtMs ?? h.schedTasks['GorthCardSync']?.lastRunMs ?? -31_180_000;
 }
 
 function winDir(lab: LabState, h: Host, abs: string): CmdResult {
@@ -506,7 +506,7 @@ function scQuery(h: Host, name: string): CmdResult {
   const s = h.services[key]!;
   const pending = s.running && s.startedPhysMs !== null && s.startedPhysMs > 0 && false;
   const state = s.running ? (pending ? '2  START_PENDING' : '4  RUNNING') : '1  STOPPED';
-  const svcName = key === 'callus' ? 'Callus' : key === 'corporate-agent' ? 'SecAgent' : key;
+  const svcName = key === 'kallus' ? 'Kallus' : key === 'corporate-agent' ? 'SecAgent' : key;
   return ok(
     L(`SERVICE_NAME: ${svcName}`),
     L('        TYPE               : 10  WIN32_OWN_PROCESS'),
@@ -537,7 +537,7 @@ function schtasks(sh: Sh, h: Host, argv: string[]): CmdResult {
   }
   if (lower.includes('/run')) {
     if (!task) return fail(1, E('ERROR: The system cannot find the file specified.'));
-    const r = core().runSchedTask(sh.lab, sh.ctx, h.id, 'GortCardSync', 'player');
+    const r = core().runSchedTask(sh.lab, sh.ctx, h.id, 'GorthCardSync', 'player');
     if (!r.ok) return fail(1, E(`ERROR: ${r.error}`));
     return ok(L(`SUCCESS: Attempted to run the scheduled task "${task.name}".`));
   }
@@ -604,7 +604,7 @@ export function windowsCommand(sh: Sh, rs: RemoteSession, argv: string[], stdin:
         if (verb === 'stop' && !s.running) return fail(1062, L('[SC] ControlService FAILED 1062:'), L(''), L('The service has not been started.'), L(''));
         const r = core().hostService(lab, sh.ctx, h.id, key, verb, 'player');
         if (!r.ok) return fail(1, E(r.error));
-        const svcName = key === 'callus' ? 'Callus' : key;
+        const svcName = key === 'kallus' ? 'Kallus' : key;
         return ok(L(''), L(`SERVICE_NAME: ${svcName}`), L('        TYPE               : 10  WIN32_OWN_PROCESS'), L(`        STATE              : ${verb === 'start' ? '2  START_PENDING' : '3  STOP_PENDING'}`), L('                                (NOT_STOPPABLE, NOT_PAUSABLE, IGNORES_SHUTDOWN)'), L('        WIN32_EXIT_CODE    : 0  (0x0)'), L('        SERVICE_EXIT_CODE  : 0  (0x0)'), L('        CHECKPOINT         : 0x0'), L('        WAIT_HINT          : 0x7d0'));
       }
       return fail(1, E('DESCRIPTION:'), E('        SC is a command line program used for communicating with the'), E('        Service Control Manager and services.'));
@@ -660,8 +660,8 @@ function powershell(sh: Sh, rs: RemoteSession, h: Host, argv: string[]): CmdResu
       const key = Object.keys(h.services).find((k) => k.toLowerCase() === name.toLowerCase() || (name.toLowerCase() === 'SecAgent' && k === 'corporate-agent'));
       if (!key) return fail(1, E(`Get-Service : Cannot find any service with service name '${name}'.`));
       const s = h.services[key]!;
-      const disp = key === 'callus' ? 'Callus' : key === 'corporate-agent' ? 'SecAgent' : key;
-      return ok(L(''), L('Status   Name               DisplayName'), L('------   ----               -----------'), L(`${(s.running ? 'Running' : 'Stopped').padEnd(8)} ${disp.padEnd(18)} ${key === 'callus' ? 'Callus card emulation service' : key === 'corporate-agent' ? 'corporate Security Agent' : disp}`), L(''));
+      const disp = key === 'kallus' ? 'Kallus' : key === 'corporate-agent' ? 'SecAgent' : key;
+      return ok(L(''), L('Status   Name               DisplayName'), L('------   ----               -----------'), L(`${(s.running ? 'Running' : 'Stopped').padEnd(8)} ${disp.padEnd(18)} ${key === 'kallus' ? 'Kallus card emulation service' : key === 'corporate-agent' ? 'corporate Security Agent' : disp}`), L(''));
     }
     case 'get-childitem':
     case 'ls':

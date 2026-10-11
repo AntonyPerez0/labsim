@@ -31,7 +31,7 @@ export interface LogData {
 
 /** Evidence sources that read like logs (preferred), then the rest. */
 const LOG_SOURCES: SymptomSource[] = ['Notes', 'Jenkins', 'Terminal', 'IDE', 'GitHub', 'Ollama', 'GIMP'];
-const OTHER_SOURCES: SymptomSource[] = ['Tablet', 'LED', 'Camera', 'Orca', 'LabChat', 'World'];
+const OTHER_SOURCES: SymptomSource[] = ['Tablet', 'LED', 'Camera', 'Orka', 'LabChat', 'World'];
 
 export function eligibleIncidents(state: RootState | null): IncidentDef[] {
   return INCIDENTS.filter((i) => i.diagnosisCall !== 'none' && i.symptoms.length > 0 && moduleUnlocked(state, i.unlockedBy));
@@ -80,7 +80,7 @@ export function buildLogItem(def: IncidentDef, state: RootState | null, rng: Rng
 /** Fallback when the incident catalogue is unavailable: the M15 select-print case (Ref §5, F210/F211). */
 const SELECT_PRINT: DrillItem<LogData> = {
   id: 'DR18:select-print',
-  tags: ['jenkins.logs', 'pigeon.json', 'orca.screens'],
+  tags: ['jenkins.logs', 'parrot.json', 'orka.screens'],
   factIds: ['F210', 'F211'],
   teach: teach('Root cause: outdated screen coordinates — the arm missed Print', 'A failure at "select print" is the last step attempted before the runner timed out waiting for a printer payload, usually because outdated coordinates made the arm miss the Print button.', { ref: 'Ref §5', factIds: ['F210', 'F211'] }),
   data: {
@@ -122,7 +122,7 @@ export const DR18: DrillDef<LogData> = {
   id: 'DR18',
   name: 'Log Detective',
   format: 'Evidence snippet (Notes line, Jenkins tail, terminal output, IDE trace, git diff) → true root cause of 4',
-  tags: ['jenkins.logs', 'orca.notes', 'orca.status.connfailed', 'tools.terminal', 'tools.intellij', 'tools.github', 'adb.usage', 'pigeon.json'],
+  tags: ['jenkins.logs', 'orka.notes', 'orka.status.connfailed', 'tools.terminal', 'tools.intellij', 'tools.github', 'adb.usage', 'parrot.json'],
   unlockedBy: ['M15'],
   durationS: 90,
   itemCount: null,

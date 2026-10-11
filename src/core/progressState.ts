@@ -41,7 +41,7 @@ export type MasteryLabel = 'new' | 'weak' | 'learning' | 'mastered';
 
 /** Where a piece of evidence was seen (GP §3.4 symptom prefixes, plus the multimeter). */
 export type EvidenceSource =
-  | 'orca'
+  | 'orka'
   | 'notes'
   | 'jenkins'
   | 'tablet'
@@ -366,8 +366,8 @@ export interface ProgressState {
     xpToday: number;
     xpTodayDay: number;
   };
-  /** VS Code → Pigeon Practice: per exercise id, how often it was solved and the best time (real seconds). */
-  pigeonPractice: Record<string, { solved: number; bestS: number; lastDay: number }>;
+  /** VS Code → Parrot Practice: per exercise id, how often it was solved and the best time (real seconds). */
+  parrotPractice: Record<string, { solved: number; bestS: number; lastDay: number }>;
 
   /* ── Certification ── */
   certs: Partial<Record<CertExamId, CertRecord>>;

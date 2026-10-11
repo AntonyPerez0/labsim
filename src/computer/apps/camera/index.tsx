@@ -1,5 +1,5 @@
 /**
- * Lab Cameras — MJPEG stream viewer (docs/design/50-computer-apps.md §8): stream list from the Orca robots'
+ * Lab Cameras — MJPEG stream viewer (docs/design/50-computer-apps.md §8): stream list from the Orka robots'
  * Camera Stream URLs, live / mosaic player, wall view, snapshots, recordings with tap analysis.
  * Also exports the recorder and the image materializer started by `initComputer()` (Apps §1.6, §8.6).
  */
@@ -141,7 +141,7 @@ function Sidebar(props: { streams: StreamInfo[]; page: CamPage; navigate(r: stri
 export function CameraApp(props: AppProps) {
   const route = props.route ?? props.params?.route ?? '/';
   const page = useMemo(() => parse(route), [route]);
-  const robots = useGame((s) => s.lab.orca.robots);
+  const robots = useGame((s) => s.lab.orka.robots);
   const streams = useMemo(() => listStreams(robots), [robots]);
   const { onTitle, navigate: nav, windowId } = props;
   const wm = props.wm ?? getWindowManager();

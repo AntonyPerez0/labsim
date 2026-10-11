@@ -4,29 +4,29 @@
  */
 import type { GitCommit, GitRepo, LabState, PullRequest, RepoId } from '../../types';
 import { padSha, stampToMs } from '../../devops/util';
-import { GORT } from './gort';
+import { GORTH } from './gorth';
 import { ORCHESTRATOR } from './orchestrator';
-import { PIGEON } from './pigeon';
+import { PARROT } from './parrot';
 import type { RepoSeed, SeedCommit } from './types';
-import { UIA_REMOTE } from './uiaRemote';
+import { UIA_RELAY } from './uiaRelay';
 
 export const REPO_SEEDS: Record<RepoId, RepoSeed> = {
-  gort: GORT,
-  'uia-remote': UIA_REMOTE,
-  pigeon: PIGEON,
+  gorth: GORTH,
+  'uia-relay': UIA_RELAY,
+  parrot: PARROT,
   orchestrator: ORCHESTRATOR,
 };
 
 /** `main` rejects direct pushes on these repos (Sim §3.22.1). */
 export const PROTECTED_MAIN: Record<RepoId, boolean> = {
-  gort: GORT.protectedMain,
-  'uia-remote': UIA_REMOTE.protectedMain,
-  pigeon: PIGEON.protectedMain,
+  gorth: GORTH.protectedMain,
+  'uia-relay': UIA_RELAY.protectedMain,
+  parrot: PARROT.protectedMain,
   orchestrator: ORCHESTRATOR.protectedMain,
 };
 
 /** PR owner reviewer (Sim §3.22.2). */
-export const REPO_OWNER: Record<RepoId, string> = { gort: 'jared', 'uia-remote': 'morgan', pigeon: 'morgan', orchestrator: 'tate' };
+export const REPO_OWNER: Record<RepoId, string> = { gorth: 'jaden', 'uia-relay': 'morgan', parrot: 'morgan', orchestrator: 'nate' };
 
 function applyChanges(tree: Record<string, string>, changes: Record<string, string | null>): void {
   for (const [p, v] of Object.entries(changes)) {
@@ -123,5 +123,5 @@ export function seedRepos(lab: Pick<LabState, 'time'>): Record<RepoId, GitRepo> 
 
 /** Next PR number per repo after the factory PRs. */
 export function seedPrNumbers(): Record<RepoId, number> {
-  return { gort: 420, 'uia-remote': 432, pigeon: 12, orchestrator: 82 };
+  return { gorth: 420, 'uia-relay': 432, parrot: 12, orchestrator: 82 };
 }

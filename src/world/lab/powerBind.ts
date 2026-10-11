@@ -38,7 +38,7 @@ const FUSE_TOOL = 'spare-fuse-5v' as const;
 function carriedPlug(): { id: string; label: string; ref: string } | null {
   const c = store.getState().session.items.carried;
   if (!c || !c.ref) return null;
-  if (!['flux4-psu-brick', 'collis-probe-spare', 'device', 'pi', 'pi-spare'].includes(c.id)) return null;
+  if (!['flux4-psu-brick', 'kollis-probe-spare', 'device', 'pi', 'pi-spare'].includes(c.id)) return null;
   return { id: c.id, label: c.label, ref: c.ref };
 }
 
@@ -343,7 +343,7 @@ export function bindPowerWall(ctx: LabCtx, rig: PowerWallRig): void {
           key: 'E',
           label: 'Plug in',
           show: () => !!carriedPlug(),
-          blocked: () => 'LabSim / Collis bricks go on an AC strip socket',
+          blocked: () => 'LabSim / Kollis bricks go on an AC strip socket',
           run: () => undefined,
         },
         { key: 'E', label: 'Measure V~', tool: MULTIMETER, run: () => probe(engine, pos, o.label, `WALL-${o.n}`, `outlet:w${o.n}`) },
@@ -375,10 +375,10 @@ export function bindPowerWall(ctx: LabCtx, rig: PowerWallRig): void {
     const l = findSimObject<{ id: string }>(lab(), { collection: 'power.loads', ids } as SimRef, propId);
     return l?.id ?? ids[0]!;
   };
-  // Sim load ids: the M03 preset adds `psu-flux4-new` / `psu-collis-spare` (`power.addLoad`, no propId).
+  // Sim load ids: the M03 preset adds `psu-flux4-new` / `psu-kollis-spare` (`power.addLoad`, no propId).
   const pickup: [string, Parameters<typeof carry>[0], string, string[]][] = [
     ['power.bench.flux4-psu', 'flux4-psu-brick', 'Flux 4 power brick', ['psu-flux4-new', 'brick-flux4-spare']],
-    ['power.bench.collis-spare', 'collis-probe-spare', 'Spare Collis probe', ['psu-collis-spare', 'collis-spare']],
+    ['power.bench.kollis-spare', 'kollis-probe-spare', 'Spare Kollis probe', ['psu-kollis-spare', 'kollis-spare']],
     ['power.bench.desk-fan', 'device', 'Desk fan', ['desk-fan']],
   ];
   for (const [id, item, label, fallback] of pickup) {

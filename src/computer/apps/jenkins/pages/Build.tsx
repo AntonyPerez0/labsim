@@ -53,7 +53,7 @@ function useNeighbours(job: JenkinsJob | null, b: JenkinsBuild | null) {
 /** Opens Lab Cameras on this build's recording when the robot has a camera (Apps §8.6). */
 function useCameraLink(b: JenkinsBuild | null): (() => void) | null {
   const { wm } = useJk();
-  const url = useGame((s) => (b?.robotId != null ? s.lab.orca.robots[b.robotId]?.cameraStreamUrl ?? '' : ''));
+  const url = useGame((s) => (b?.robotId != null ? s.lab.orka.robots[b.robotId]?.cameraStreamUrl ?? '' : ''));
   if (!b || !url || !wm) return null;
   return () => wm.openApp('camera', { recordingBuildId: b.id });
 }
@@ -132,10 +132,10 @@ function BuildStageRow(props: { build: JenkinsBuild }) {
 export function BuildPage(props: { jobId: string; number: string }) {
   const { job, build } = useBuild(props.jobId, props.number);
   const jenkins = useGame((s) => s.lab.jenkins);
-  const robot = useGame((s) => (build?.robotId != null ? s.lab.orca.robots[build.robotId] ?? null : null));
+  const robot = useGame((s) => (build?.robotId != null ? s.lab.orka.robots[build.robotId] ?? null : null));
   const robotType = useGame((s) => {
     const dId = robot?.deviceId;
-    return dId != null ? s.lab.orca.devices?.[dId]?.deviceType ?? null : null;
+    return dId != null ? s.lab.orka.devices?.[dId]?.deviceType ?? null : null;
   });
   const repos = useGame((s) => s.lab.repos);
   const now = useNowSec();
@@ -172,7 +172,7 @@ export function BuildPage(props: { jobId: string; number: string }) {
                     Revision: <code>{rev}</code>
                   </div>
                   <div>
-                    Repository: <code>{repo?.remoteUrl ?? `git@github.com:labsim-lab/${job.testRef?.repo ?? 'uia-remote'}.git`}</code>
+                    Repository: <code>{repo?.remoteUrl ?? `git@github.com:labsim-lab/${job.testRef?.repo ?? 'uia-relay'}.git`}</code>
                   </div>
                   <ul style={{ margin: '4px 0 0 18px', padding: 0 }}>
                     <li>refs/remotes/origin/{build.params.BRANCH || 'main'}</li>

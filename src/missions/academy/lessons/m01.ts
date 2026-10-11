@@ -1,6 +1,6 @@
 /**
  * M01 — Welcome to the Lab: Orientation & Safety (Cur §2 M01). Mentor {{morgan}}.
- * Setup: preset `academy:M01` starts scripted build `Java/uia-remote-regression-flux #4120` on WALL-E
+ * Setup: preset `academy:M01` starts scripted build `Java/uia-relay-regression-flux #4120` on WALL-E
  * (`rig.testRunning`, tablet locked); the runner clears it after step 7 (Sim §4.4.2).
  */
 import { c, on, p } from '../../types';
@@ -18,14 +18,14 @@ export const M01: LessonDef = {
     'Never fight a running robot: while a test is active the control dashboard locks you out. Wait for the job.',
     'Find each rig\'s POWER panel (MAIN and MOTOR) and use the rack-unit numbers on the rails to say where things are.',
     'All the matte-black fixtures were printed in-house on the Prusa and Bambu Lab printers.',
-    'LabSim terminals and Collis probes go on the commercial AC power strips, never the DC rails. Broken rig? Tell {{jared}}.',
+    'LabSim terminals and Kollis probes go on the commercial AC power strips, never the DC rails. Broken rig? Tell {{jaden}}.',
   ],
   steps: [
     {
       id: 'M01.01',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: "Welcome to the LabSim automation lab! I'm {{morgan}}. I built uia-remote, and today I'm your onboarding buddy. Everything in this room exists to press buttons on LabSim devices so humans don't have to.",
+      text: "Welcome to the LabSim automation lab! I'm {{morgan}}. I built uia-relay, and today I'm your onboarding buddy. Everything in this room exists to press buttons on LabSim devices so humans don't have to.",
       factIds: ['F244'],
     },
     { id: 'M01.02', kind: 'walk-to', hud: 'Walk to Touch Rack A', location: 'loc.rack-a' },
@@ -33,7 +33,7 @@ export const M01: LessonDef = {
       id: 'M01.03',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: 'Meet WALL-E. Every rig here is named after a famous robot. Orca tracks a pool of 40-plus rigs, and a dozen of them live in this room.',
+      text: 'Meet WALL-E. Every rig here is named after a famous robot. Orka tracks a pool of 40-plus rigs, and a dozen of them live in this room.',
       factIds: ['F115', 'F073'],
     },
     {
@@ -49,7 +49,7 @@ export const M01: LessonDef = {
       id: 'M01.05',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: "That's the front-mounted status tablet, the robot's face. The name across the top comes straight from Orca.",
+      text: "That's the front-mounted status tablet, the robot's face. The name across the top comes straight from Orka.",
       factIds: ['F089'],
     },
     {
@@ -139,8 +139,8 @@ export const M01: LessonDef = {
           lines: [
             '1. Never touch a robot while a test is running.',
             '2. If you move an arm by hand, Park All before you walk away.',
-            '3. LabSim terminals and Collis probes go on the AC power strips — never the DC rails.',
-            '4. Broken rig? Tell {{jared}}.',
+            '3. LabSim terminals and Kollis probes go on the AC power strips — never the DC rails.',
+            '4. Broken rig? Tell {{jaden}}.',
           ],
         },
         { do: 'unlockManual', entryIds: ['lab-tour'] },

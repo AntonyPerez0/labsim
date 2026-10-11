@@ -71,7 +71,7 @@ export const RANKS: RankDef[] = resolvePeople<RankDef[]>([
     certTitle: 'Lab Lead',
     extraGate: '≥ 45 of 54 Academy stars (CERT-R5 eligibility already requires Leitner mastery ≥ 90 % and a Full Shift ratio ≥ 0.80)',
     shiftDifficultyCap: 5,
-    cosmetic: '{{jared}} hands you the label maker; name plate on the lab door',
+    cosmetic: '{{jaden}} hands you the label maker; name plate on the lab door',
   },
 ]);
 

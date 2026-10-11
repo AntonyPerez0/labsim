@@ -1,7 +1,7 @@
 # LabSim
 
 LabSim is a browser-based, first-person 3D training simulator of the LabSim automation lab. New engineers walk
-the lab, read rig status tablets, park robots, chase power faults, sit at the workstation (Orca, Jenkins,
+the lab, read rig status tablets, park robots, chase power faults, sit at the workstation (Orka, Jenkins,
 GitHub, IntelliJ, terminal, LabChat …) and learn the real workflows through guided lessons, timed shifts,
 drills, flashcards and a certification exam. Everything runs in the browser: no backend, no model files (all
 geometry is procedural), and progress is saved in `localStorage`.
@@ -95,7 +95,7 @@ portraits, chat, the Field Manual). In-game text refers to people by name or the
 ## Before making this repository public
 
 This project was built for internal training and contains internal names and branding: LabSim product names
-and the LabSim logo mark, internal tool and service names (Orca, uia-remote, Pigeon, Callus, Collis, …), real
+and the LabSim logo mark, internal tool and service names (Orka, uia-relay, Parrot, Kallus, Kollis, …), real
 first names of team members in `src/content/team.ts`, and internal details in
 `docs/reference/REMOVED-internal-reference.md`. **Review and anonymise names, branding and internal details
 (team names, host names, repository names, URLs, ports) before publishing the repository.**

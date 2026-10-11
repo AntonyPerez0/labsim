@@ -4,17 +4,17 @@
  *
  * ── Ownership split ───────────────────────────────────────────────────────────────────────────────
  *
- * sim-core  (physical lab + Orca)                       sim-devops (software side)
+ * sim-core  (physical lab + Orka)                       sim-devops (software side)
  * ─────────────────────────────────────────────────     ──────────────────────────────────────────
  * files: src/sim/impl/**, src/sim/core/**,              files: src/sim/devops/**, src/sim/terminal/**,
  *   src/sim/seed/* (except repos/, jenkins.ts),           src/sim/seed/repos/**, src/sim/seed/jenkins.ts
  *   src/sim/text/*, initialState.ts, builders.ts
  * SimApi: lifecycle (tick/reset/snapshot/restore/load/   SimApi: git, jenkins, runner, ollama, terminal
- *   time/flags/config), orca, rig, device, power, host,    (createDevopsApi)
- *   collis, camera, laz, ocr, printer3d, chat, faults
- * State written: time, rng*, config, flags, orca,        State written: repos, jenkins, local, ollama,
+ *   time/flags/config), orka, rig, device, power, host,    (createDevopsApi)
+ *   kollis, camera, lazo, ocr, printer3d, chat, faults
+ * State written: time, rng*, config, flags, orka,        State written: repos, jenkins, local, ollama,
  *   rigs, devices, hosts, network, workstation (adb,       workstation.configProperties, seq.build/run/
- *   files), power, collis, callus, laz, ubi, printer3d,    ollama/commit/pr, orca.pendingSyncs (push only)
+ *   files), power, kollis, kallus, lazo, ubo, printer3d,    ollama/commit/pr, orka.pendingSyncs (push only)
  *   chat, faults, timers, log, seq (rest), captures
  * Tick slots (Sim §3.1.1): 1–8 and 13–16                 Tick slots: 9–12 via tickDevops()
  * Faults: §4.3.1–§4.3.7 rows + the engine (§4.1)         Faults: §4.3.8–§4.3.10 rows (DEVOPS_FAULTS)
@@ -83,10 +83,10 @@ const SYSTEMS_BEFORE_DEVOPS: SystemStep[] = [
   (lab) => C.networkStep(lab),
   C.rigsStep,
   C.devicesStep,
-  C.collisStep,
-  C.orcaStep,
+  C.kollisStep,
+  C.orkaStep,
 ];
-const SYSTEMS_AFTER_DEVOPS: SystemStep[] = [C.lazStep, (lab, ctx) => C.printer3dStep(lab, ctx), (lab, ctx) => C.faultsStep(lab, ctx), housekeepingStep];
+const SYSTEMS_AFTER_DEVOPS: SystemStep[] = [C.lazoStep, (lab, ctx) => C.printer3dStep(lab, ctx), (lab, ctx) => C.faultsStep(lab, ctx), housekeepingStep];
 
 function runSubstep(lab: LabState, ctx: TxContext, dtGameMs: number, dtPhysMs: number): void {
   const sub: SubStep = { dtGameMs, dtPhysMs, prevNowMs: lab.time.nowMs };
@@ -116,7 +116,7 @@ function elide(lines: string[], cap: number): void {
 function applyCaps(lab: LabState): void {
   keepLast(lab.log, lab.config.logCap);
   keepLast(lab.chat.messages, 200);
-  for (const robot of Object.values(lab.orca.robots)) {
+  for (const robot of Object.values(lab.orka.robots)) {
     if (robot.notes.length > 50) {
       const ids = robot.notes.map((n) => n.id).sort((a, b) => a - b);
       const cut = ids[robot.notes.length - 50 - 1]!;
@@ -124,8 +124,8 @@ function applyCaps(lab: LabState): void {
     }
     keepLast(robot.statusHistory, 100);
   }
-  keepLast(lab.orca.healthCheck.log, 50);
-  keepLast(lab.orca.audit, 500);
+  keepLast(lab.orka.healthCheck.log, 50);
+  keepLast(lab.orka.audit, 500);
   // Local IntelliJ runs: keep every running one and the newest 30 finished (run-<seq>), console cap 400.
   const finishedRuns = Object.values(lab.local.runs)
     .filter((r) => r.state === 'finished')
@@ -135,7 +135,7 @@ function applyCaps(lab: LabState): void {
   keepLast(lab.ollama.requests, 30);
   keepLast(lab.power.sparks, 10);
   for (const host of Object.values(lab.hosts)) for (const lines of Object.values(host.journal)) keepLast(lines, 50);
-  for (const lines of Object.values(lab.callus.log)) keepLast(lines, 50);
+  for (const lines of Object.values(lab.kallus.log)) keepLast(lines, 50);
   for (const device of Object.values(lab.devices)) keepLast(device.logcat, 200);
   for (const build of Object.values(lab.jenkins.builds)) elide(build.console, 400);
   for (const job of Object.values(lab.jenkins.jobs)) {
@@ -156,13 +156,13 @@ function applyCaps(lab: LabState): void {
 function setStartHour(lab: LabState, startHour: number): void {
   lab.time.startHour = startHour;
   lab.time.nowMs = startHour * HOUR_MS;
-  lab.orca.healthCheck.lastRunMs = lab.time.nowMs;
-  lab.orca.healthCheck.nextRunMs = nextHealthBoundary(lab.time.nowMs, lab.time.healthAnchorMs);
+  lab.orka.healthCheck.lastRunMs = lab.time.nowMs;
+  lab.orka.healthCheck.nextRunMs = nextHealthBoundary(lab.time.nowMs, lab.time.healthAnchorMs);
 }
 
 const REQUIRED_KEYS: (keyof LabState)[] = [
-  'version', 'time', 'rng', 'rngStreams', 'config', 'flags', 'orca', 'rigs', 'devices', 'hosts', 'network', 'workstation', 'power',
-  'collis', 'callus', 'repos', 'jenkins', 'local', 'laz', 'ubi', 'ollama', 'printer3d', 'chat', 'faults', 'timers', 'log', 'seq',
+  'version', 'time', 'rng', 'rngStreams', 'config', 'flags', 'orka', 'rigs', 'devices', 'hosts', 'network', 'workstation', 'power',
+  'kollis', 'kallus', 'repos', 'jenkins', 'local', 'lazo', 'ubo', 'ollama', 'printer3d', 'chat', 'faults', 'timers', 'log', 'seq',
 ];
 
 /** Validate + migrate a saved lab (Sim §6.4). Exported for tests. */
@@ -188,7 +188,7 @@ export function migrateLabState(raw: unknown): Result<{ state: LabState; migrate
     const lab = createInitialLabState(typeof old.rng?.seed === 'number' ? old.rng.seed : DEFAULT_SEED);
     if (typeof old.time?.startHour === 'number') setStartHour(lab, old.time.startHour);
     if (typeof old.time?.nowMs === 'number') lab.time.nowMs = old.time.nowMs;
-    lab.orca.healthCheck.nextRunMs = nextHealthBoundary(lab.time.nowMs, lab.time.healthAnchorMs);
+    lab.orka.healthCheck.nextRunMs = nextHealthBoundary(lab.time.nowMs, lab.time.healthAnchorMs);
     if (typeof old.time?.timeScale === 'number') lab.time.timeScale = C.snapScale(old.time.timeScale);
     lab.flags = { ...lab.flags, ...(old.flags ?? {}), cfdLayoutV2Toggle: false };
     lab.time.dateLabel = 'MON, OCT 5';
@@ -228,7 +228,7 @@ const coreServices: CoreServices = {
   checkout: (lab, ctx, req) => C.checkout(lab, ctx, req),
   release: (lab, ctx, robotId, buildId) => C.release(lab, ctx, robotId, buildId),
   capabilityDocument: (lab, robotId) => {
-    const r = lab.orca.robots[robotId];
+    const r = lab.orka.robots[robotId];
     return r ? C.capabilityDocument(lab, r) : null;
   },
   matchPreview: (lab, caps, env) => C.matchPreview(lab, caps, env),
@@ -254,7 +254,7 @@ const coreServices: CoreServices = {
   adbConnect: (lab, ctx, target) => C.adbConnect(lab, ctx, target),
   adbShell: (lab, ctx, target, argv, by) => C.adbShell(lab, ctx, target, argv, by),
   uiDump: (lab, deviceId, display) => C.uiDump(lab, deviceId, display),
-  startLaz: (lab, ctx, deviceId, toMerchantId, opts) => C.startLaz(lab, ctx, deviceId, toMerchantId, opts),
+  startLazo: (lab, ctx, deviceId, toMerchantId, opts) => C.startLazo(lab, ctx, deviceId, toMerchantId, opts),
   hostService: (lab, ctx, hostId, service, action, actor) => C.hostService(lab, ctx, hostId, service, action, String(actor)),
   hostReboot: (lab, ctx, hostId) => C.hostReboot(lab, ctx, hostId),
   hostWriteFile: (lab, ctx, hostId, path, contents, actor) => C.hostWriteFile(lab, ctx, hostId, path, contents, String(actor)),

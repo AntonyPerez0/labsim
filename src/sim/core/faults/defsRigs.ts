@@ -117,7 +117,7 @@ export const RIG_FAULTS: CoreFaultDef[] = [
   rigFault(
     'rig.solenoidLoose',
     'Solenoid connector loose',
-    { tags: ['hw.rigbom', 'hw.tablet', 'orca.xytouch', 'arch.flow'], usedBy: ['INC15'], symptoms: ['gantry moves, plunger never drops', 'Orca still answers 200 PHYSICAL_TAP', '[runner] waitForScreen timed out: PaymentScreen', 'connector visibly hanging'], clears: "solenoidConnector == 'SEATED'" },
+    { tags: ['hw.rigbom', 'hw.tablet', 'orka.xytouch', 'arch.flow'], usedBy: ['INC15'], symptoms: ['gantry moves, plunger never drops', 'Orka still answers 200 PHYSICAL_TAP', '[runner] waitForScreen timed out: PaymentScreen', 'connector visibly hanging'], clears: "solenoidConnector == 'SEATED'" },
     (rig) => (rig.solenoidConnector === 'SEATED' ? null : `${rig.id} solenoid connector is already loose`),
     (lab, rig, _p, rec) => w(lab, rec, ['rigs', rig.id, 'solenoidConnector'], 'LOOSE'),
     (_lab, rig) => rig.solenoidConnector === 'SEATED',
@@ -125,7 +125,7 @@ export const RIG_FAULTS: CoreFaultDef[] = [
   rigFault(
     'rig.dipArmMisaligned',
     'Dip arm one tooth off',
-    { params: [p('teeth', 'number', 'Tooth offset −3…3, ≠ 0', { default: 1 })], tags: ['hw.collis', 'hw.rigbom', 'hw.tablet', 'cards.diptap'], usedBy: ['INC16'], symptoms: ['Callus loads fine, then [device] CHIP_READ_ERROR', 'toast Card read error, try again', 'the card strikes the bezel', 'arm index mark one tooth off the "63" mark'], clears: 'dipArmToothOffset == 0' },
+    { params: [p('teeth', 'number', 'Tooth offset −3…3, ≠ 0', { default: 1 })], tags: ['hw.kollis', 'hw.rigbom', 'hw.tablet', 'cards.diptap'], usedBy: ['INC16'], symptoms: ['Kallus loads fine, then [device] CHIP_READ_ERROR', 'toast Card read error, try again', 'the card strikes the bezel', 'arm index mark one tooth off the "63" mark'], clears: 'dipArmToothOffset == 0' },
     (rig, _lab, params) => {
       const t = num(params.teeth, 1);
       if (!Number.isInteger(t) || t === 0 || Math.abs(t) > 3) return `invalid:invalid param teeth='${str(params.teeth)}' (not one of -3, -2, -1, 1, 2, 3)`;
@@ -166,7 +166,7 @@ export const RIG_FAULTS: CoreFaultDef[] = [
   ),
   {
     info: info('rig.webcamMisaimed', 'Webcam knocked off aim', 'rigs', [rigP('Rig with its own webcam'), p('yawDeg', 'number', 'Yaw error (°)', { default: 6.0 }), p('pitchDeg', 'number', 'Pitch error (°)', { default: 4.0 })], {
-      tags: ['vision.camera', 'orca.screencompare'],
+      tags: ['vision.camera', 'orka.screencompare'],
       clears: 'aimedOk (both offsets within ±1.5°, rig.aimWebcam)',
       symptoms: ['labels shift +6.67 px/° yaw and +6.25 px/° pitch (6°/4° = +40/+25 px)', 'Screen Compare crops clip'],
       usedBy: ['FP'],
@@ -190,7 +190,7 @@ export const RIG_FAULTS: CoreFaultDef[] = [
   },
   {
     info: info('rig.motionOnNuc', 'Motion control moved to a Windows box', 'rigs', [p('rig', 'rig', 'Touch rig (bumblebee)', { required: true, target: true, default: 'bumblebee' }), p('host', 'host', 'Windows box that takes the motor PCB', { default: 'nuc-03' })], {
-      tags: ['hw.nuc', 'hw.pi', 'orca.status.connfailed', 'orca.status.offline'],
+      tags: ['hw.nuc', 'hw.pi', 'orka.status.connfailed', 'orka.status.offline'],
       clears: "motionHost == 'PI' && controller.yaml says motion: local && robot-controller (re)started after that file's last write",
       symptoms: ['with NUC-03 full: /health → 502 Bad Gateway {"error":"motion upstream 10.42.20.3:9100 error: No space left on device"}', 'xy_touch 502 Bad Gateway: motion upstream …', 'a USB cable labelled BUMBLEBEE MOTION runs from the NUC to the motor PCB'],
       usedBy: ['INC19'],
@@ -239,9 +239,9 @@ export const RIG_FAULTS: CoreFaultDef[] = [
     },
   },
   {
-    info: info('rig.rebuild', 'Rig under rebuild (Jared)', 'rigs', [p('rig', 'rig', 'Touch rig being rebuilt', { required: true, target: true, default: 'baymax' })], {
-      tags: ['orca.status.offline', 'hw.rigbom'],
-      clears: 'API only (Jared finishes the rebuild; revert restores assembly, door, lead, ADB)',
+    info: info('rig.rebuild', 'Rig under rebuild (Jaden)', 'rigs', [p('rig', 'rig', 'Touch rig being rebuilt', { required: true, target: true, default: 'baymax' })], {
+      tags: ['orka.status.offline', 'hw.rigbom'],
+      clears: 'API only (Jaden finishes the rebuild; revert restores assembly, door, lead, ADB)',
       symptoms: ['if the rig is not Offline: next check connect timed out → Connection Failed', "adb: failed to connect to '10.42.30.16:5444': Connection refused", 'after the Pi boots taps get 409 Conflict: MOTION_FAULT (GANTRY INCOMPLETE (rebuild in progress))'],
       usedBy: ['INC07', 'INC05-B'],
       apiOnly: true,
@@ -270,7 +270,7 @@ export const RIG_FAULTS: CoreFaultDef[] = [
     },
     isResolved: () => false,
     revert(lab, _ctx, f) {
-      // Jared finishes: restore the recorded leaves (door, lead, ADB) and complete the gantry.
+      // Jaden finishes: restore the recorded leaves (door, lead, ADB) and complete the gantry.
       undoPatches(lab, f);
       const rig = lab.rigs[f.target];
       if (rig) {

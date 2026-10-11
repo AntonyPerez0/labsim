@@ -4,15 +4,15 @@
  * Owns (state): `repos`, `jenkins`, `local`, `ollama` (+ the GitHub PR / NPC-review bookkeeping
  * inside `repos`), `workstation.configProperties` (parsed view), `workstation.cwd/shellHistory/sshHostId`
  * (terminal session), `seq.build/run/ollama/commit/pr`.
- * Owns (behaviour): Jenkins scheduler + stage machine (Sim §3.18), runners — uia-remote (§3.19),
- * Pigeon LSTR (§3.20), Go SDK / vision / iOS (§3.21) — local IntelliJ runs, Ollama (§3.21.2),
+ * Owns (behaviour): Jenkins scheduler + stage machine (Sim §3.18), runners — uia-relay (§3.19),
+ * Parrot LSTR (§3.20), Go SDK / vision / iOS (§3.21) — local IntelliJ runs, Ollama (§3.21.2),
  * git/GitHub + scripted reviewers (§3.22.1–§3.22.2), the terminal interpreter (apps doc §5; uses
  * CoreServices for everything physical), code facts (§3.19.6), and the devops fault rows
  * (§4.3.8–§4.3.10) + devops setup ops (§4.4.1 "devops").
  * Tick slot: steps 9–12 of Sim §3.1.1 — one call to `tickDevops` per sub-step. Timer kind prefixes
  * owned here: DEVOPS_TIMER_PREFIXES.
  *
- * Everything physical (Orca, rigs, devices, hosts, power, Callus, Laz) is sim-core; devops reaches it
+ * Everything physical (Orka, rigs, devices, hosts, power, Kallus, Lazo) is sim-core; devops reaches it
  * only through `CoreServices` (bound by `src/sim/impl/index.ts` at module load) or by reading state.
  * This file is the cross-half CONTRACT plus the assembly of the implementation files next to it.
  */
@@ -56,7 +56,7 @@ import { ask as ollamaAsk, complete as ollamaComplete } from './ollama';
 import { createTerminal } from '../terminal';
 // Side-effect imports: register runner step handlers.
 import './runners/uia';
-import './runners/pigeon';
+import './runners/parrot';
 import './runners/other';
 
 export { bindCoreServices, core } from './coreRef';
@@ -89,10 +89,10 @@ export const DEVOPS_SETUP_OP_IDS = [
 
 /** Fault ids implemented by devops (Sim §4.3.8–§4.3.10). */
 export const DEVOPS_FAULT_IDS = [
-  'gort.capabilityDropped',
-  'pigeon.missingComma',
-  'pigeon.missingBracket',
-  'pigeon.screenCompareEmpty',
+  'gorth.capabilityDropped',
+  'parrot.missingComma',
+  'parrot.missingBracket',
+  'parrot.screenCompareEmpty',
   'uia.waitForScreenStub',
   'uia.scrollSwapped',
   'uia.missingScreenMethods',
@@ -141,10 +141,10 @@ export interface CoreServices {
   resolve(lab: LabState, target: string): { hostId: string | null; deviceId: string | null; ip: string | null };
   /** Mutates the damaged-cable attempt counter and draws LAN latency from the `devices` stream. */
   reach(lab: LabState, ctx: TxContext, fromHostId: string, target: string, port: number | null): ReachResult;
-  /** HTTP to Orca (:8080 on orca-vm), Robot Pis (:8000, :8081), Callus (:9000) — Sim §3.23. Ollama and Jenkins are devops. */
+  /** HTTP to Orka (:8080 on orka-vm), Robot Pis (:8000, :8081), Kallus (:9000) — Sim §3.23. Ollama and Jenkins are devops. */
   http(lab: LabState, ctx: TxContext, req: { method: string; url: string; body: string | null; fromHostId: string; actor: Actor }): RestResponse;
 
-  /* Orca (Sim §3.2–§3.6, §3.12) */
+  /* Orka (Sim §3.2–§3.6, §3.12) */
   /** Pure `DeviceType.valueOf` check (exact, case-sensitive). */
   isDeviceTypeConstant(raw: string): boolean;
   checkout(lab: LabState, ctx: TxContext, req: CheckoutRequest): CheckoutOutcome;
@@ -153,7 +153,7 @@ export interface CoreServices {
   matchPreview(lab: LabState, caps: Record<string, string | boolean>, environment: string): MatchPreviewRow[];
   xyTouch(lab: LabState, ctx: TxContext, robotName: string, screen: string, button: string, actor: Actor, opts?: XyTouchOptions): Result<XyTouchResult>;
   cardAction(lab: LabState, ctx: TxContext, robotName: string, entry: CardEntry, profile: string, actor: Actor): Result<CardActionResult | undefined>;
-  /** Orca Screen Compare by name (runner `orca.screenCompare(name)`): result + the exact `[ocr] …` line. */
+  /** Orka Screen Compare by name (runner `orka.screenCompare(name)`): result + the exact `[ocr] …` line. */
   screenCompare(lab: LabState, ctx: TxContext, name: string, actor: Actor): Result<{ text: string; expected: string; match: boolean; line: string }>;
   tesseract(lab: LabState, imageRef: string, bbox: { x: number; y: number; w: number; h: number }): { text: string; confidence: number };
 
@@ -167,14 +167,14 @@ export interface CoreServices {
   adbShell(lab: LabState, ctx: TxContext, target: string, argv: string[], by: 'terminal' | 'runner'): AdbShellResult;
   /** UI Automator hierarchy XML of a display (2.2: primary only; 2.3: displayId 1 = Duet CFD), Sim §3.11. */
   uiDump(lab: LabState, deviceId: string, display: 'primary' | 'secondary'): string;
-  startLaz(lab: LabState, ctx: TxContext, deviceId: string, toMerchantId: number, opts: { buildId: string | null; actor: Actor }): Result<{ runId: string }>;
+  startLazo(lab: LabState, ctx: TxContext, deviceId: string, toMerchantId: number, opts: { buildId: string | null; actor: Actor }): Result<{ runId: string }>;
 
   /* Hosts (Sim §3.14) */
   hostService(lab: LabState, ctx: TxContext, hostId: string, service: string, action: 'start' | 'stop' | 'restart', actor: Actor): Result;
   hostReboot(lab: LabState, ctx: TxContext, hostId: string, actor: Actor): Result;
   hostWriteFile(lab: LabState, ctx: TxContext, hostId: string, path: string, contents: string, actor: Actor): Result;
   hostDeletePath(lab: LabState, ctx: TxContext, hostId: string, path: string, actor: Actor): Result;
-  runSchedTask(lab: LabState, ctx: TxContext, hostId: string, task: 'GortCardSync', actor: Actor): Result;
+  runSchedTask(lab: LabState, ctx: TxContext, hostId: string, task: 'GorthCardSync', actor: Actor): Result;
 
   /* Shared utilities */
   postChat(lab: LabState, ctx: TxContext, channel: string, author: string, text: string, ticketId?: string): void;

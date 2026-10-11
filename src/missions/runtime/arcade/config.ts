@@ -31,7 +31,7 @@ export const SHIFT_CONFIGS: readonly ShiftConfig[] = [
     id: 'shift-5',
     kind: 'standard',
     title: '5-minute Shift',
-    description: 'Five real minutes, heat up to H3. Tickets, pipelines, and Orca’s 5-minute health check coming round every real minute (the lab runs at 5×).',
+    description: 'Five real minutes, heat up to H3. Tickets, pipelines, and Orka’s 5-minute health check coming round every real minute (the lab runs at 5×).',
     lengthMinutes: 5,
     realSeconds: 300,
     heatCap: 3,
@@ -118,7 +118,7 @@ export const SHIFT_CONFIGS: readonly ShiftConfig[] = [
     id: 'cert-r4',
     kind: 'certification',
     title: 'CERT-R4 practical shift',
-    description: 'Five incidents in 20 game minutes at time scale 1: at least one hardware, one Orca and one code/config incident. All resolved, at most 1 strike.',
+    description: 'Five incidents in 20 game minutes at time scale 1: at least one hardware, one Orka and one code/config incident. All resolved, at most 1 strike.',
     lengthMinutes: 20,
     realSeconds: 1200,
     timeScale: 1,
@@ -130,7 +130,7 @@ export const SHIFT_CONFIGS: readonly ShiftConfig[] = [
     hints: false,
     diagnosisCall: false,
     strikesToEnd: 2,
-    incidents: { count: 5, draw: 'cert-mix', requireCategories: ['hardware', 'orca', 'code-config'] },
+    incidents: { count: 5, draw: 'cert-mix', requireCategories: ['hardware', 'orka', 'code-config'] },
     difficulty: 4,
   },
   {
@@ -250,7 +250,7 @@ export const PIPELINES: readonly PipelineDef[] = [
   {
     id: 'PL8',
     job: PIPELINE_JOBS.PL8,
-    requirement: personText("named ROBOT_NAME=rosie ({{sam}}'s PayCore job)"),
+    requirement: personText("named ROBOT_NAME=rosie ({{sam}}'s PayCrest job)"),
     params: () => ({ ROBOT_NAME: 'rosie' }),
     eligibleRigs: ['rosie'],
     activationOrder: 'always',
@@ -267,7 +267,7 @@ export const SHIFT_EVENTS: readonly ShiftEventDef[] = [
   { id: 'firmware-rollout', title: 'Firmware rollout', banner: 'Firmware rollout today', forcesIncident: 'INC20' },
   { id: 'onboarding-day', title: 'Onboarding day', banner: 'Onboarding day: the new hire is filing tickets', misleadingTickets: { count: 2, reporter: 'alex' } },
   { id: 'corporate-scan', title: 'corporate security scan', banner: 'corporate security scan in progress', forcesIncident: 'INC19' },
-  { id: 'jared-lunch', title: personText('{{jared}} at lunch'), banner: '{{jared}}: out to lunch', jaredAwayS: 120 },
+  { id: 'jaden-lunch', title: personText('{{jaden}} at lunch'), banner: '{{jaden}}: out to lunch', jadenAwayS: 120 },
 ];
 
 /** Static rig roster (GP §3.1) used when the lab lacks a value; the live lab always wins. */
@@ -287,14 +287,14 @@ export interface RosterRig {
 }
 
 export const ROSTER: Readonly<Record<string, RosterRig>> = {
-  'wall-e': { hrn: 'WALL-E', roles: ['touch', 'collis', 'flexgen3', 'printer'], pi: 'pi-wall-e', piIp: '10.42.10.11', device: 'wall-e-flux3', deviceIp: '10.42.30.11', deviceType: 'FLUX_3', box: 'minix-01', rack: 'rack-a', fuse: 'F-RACKA-5V', camera: 'cam-wall-e', cameraUrl: 'http://10.42.10.11:8081/stream.mjpg' },
-  eve: { hrn: 'EVE', roles: ['touch', 'collis', 'flexgen3', 'printer', 'legacy-nuc-motion'], pi: 'pi-eve', piIp: '10.42.10.12', device: 'eve-flux4', deviceIp: '10.42.30.12', deviceType: 'FLUX_4', box: 'minix-01', rack: 'rack-a', fuse: 'F-RACKA-5V', camera: 'cam-eve', cameraUrl: 'http://10.42.10.12:8081/stream.mjpg' },
-  bumblebee: { hrn: 'BUMBLEBEE', roles: ['touch', 'collis', 'micro', 'printer'], pi: 'pi-bumblebee', piIp: '10.42.10.13', device: 'bumblebee-micro3', deviceIp: '10.42.30.13', deviceType: 'MICRO_3', box: 'minix-01', rack: 'rack-a', fuse: 'F-RACKA-5V', camera: 'cam-bumblebee', cameraUrl: 'http://10.42.10.13:8081/stream.mjpg' },
-  'r2-d2': { hrn: 'R2-D2', roles: ['touch', 'collis', 'duet', 'ocr'], pi: 'pi-r2-d2', piIp: '10.42.10.14', device: 'r2-d2-duet', deviceIp: '10.42.30.14', deviceType: 'STAND_DUET', box: 'minix-01', rack: 'rack-a', fuse: 'F-RACKA-5V', camera: 'cam-r2-d2', cameraUrl: 'http://10.42.10.14:8081/stream.mjpg' },
-  'johnny-5': { hrn: 'JOHNNY-5', roles: ['touch', 'collis', 'flux-legacy', 'printer'], pi: 'pi-johnny-5', piIp: '10.42.10.15', device: 'johnny-5-flux1', deviceIp: '10.42.30.15', deviceType: 'FLUX_1', box: 'minix-02', rack: 'rack-b', fuse: 'F-RACKB-5V', camera: 'cam-rackb', cameraUrl: 'http://10.42.10.40:8081/stream.mjpg' },
-  baymax: { hrn: 'BAYMAX', roles: ['touch', 'collis', 'printer', 'rebuild', 'build'], pi: 'pi-baymax', piIp: '10.42.10.16', device: 'baymax-st2018', deviceIp: '10.42.30.16', deviceType: 'STAND_2018', box: 'minix-02', rack: 'rack-b', fuse: 'F-RACKB-5V', camera: 'cam-rackb', cameraUrl: 'http://10.42.10.40:8081/stream.mjpg' },
-  seti: { hrn: 'SETI', roles: ['touch', 'collis', 'canada', 'physical-pin'], pi: 'pi-seti', piIp: '10.42.10.17', device: 'seti-compass', deviceIp: '10.42.30.17', deviceType: 'COMPASS', box: 'minix-02', rack: 'rack-b', fuse: 'F-RACKB-5V', camera: 'cam-rackb', cameraUrl: 'http://10.42.10.40:8081/stream.mjpg' },
-  rosie: { hrn: 'ROSIE', roles: ['touch', 'collis', 'paycore', 'printerless', 'flexgen3'], pi: 'pi-rosie', piIp: '10.42.10.18', device: 'rosie-pocket', deviceIp: '10.42.30.18', deviceType: 'FLUX_POCKET', box: 'minix-02', rack: 'rack-b', fuse: 'F-RACKB-5V', camera: 'cam-rackb', cameraUrl: 'http://10.42.10.40:8081/stream.mjpg' },
+  'wall-e': { hrn: 'WALL-E', roles: ['touch', 'kollis', 'flexgen3', 'printer'], pi: 'pi-wall-e', piIp: '10.42.10.11', device: 'wall-e-flux3', deviceIp: '10.42.30.11', deviceType: 'FLUX_3', box: 'minix-01', rack: 'rack-a', fuse: 'F-RACKA-5V', camera: 'cam-wall-e', cameraUrl: 'http://10.42.10.11:8081/stream.mjpg' },
+  eve: { hrn: 'EVE', roles: ['touch', 'kollis', 'flexgen3', 'printer', 'legacy-nuc-motion'], pi: 'pi-eve', piIp: '10.42.10.12', device: 'eve-flux4', deviceIp: '10.42.30.12', deviceType: 'FLUX_4', box: 'minix-01', rack: 'rack-a', fuse: 'F-RACKA-5V', camera: 'cam-eve', cameraUrl: 'http://10.42.10.12:8081/stream.mjpg' },
+  bumblebee: { hrn: 'BUMBLEBEE', roles: ['touch', 'kollis', 'micro', 'printer'], pi: 'pi-bumblebee', piIp: '10.42.10.13', device: 'bumblebee-micro3', deviceIp: '10.42.30.13', deviceType: 'MICRO_3', box: 'minix-01', rack: 'rack-a', fuse: 'F-RACKA-5V', camera: 'cam-bumblebee', cameraUrl: 'http://10.42.10.13:8081/stream.mjpg' },
+  'r2-d2': { hrn: 'R2-D2', roles: ['touch', 'kollis', 'duet', 'ocr'], pi: 'pi-r2-d2', piIp: '10.42.10.14', device: 'r2-d2-duet', deviceIp: '10.42.30.14', deviceType: 'STAND_DUET', box: 'minix-01', rack: 'rack-a', fuse: 'F-RACKA-5V', camera: 'cam-r2-d2', cameraUrl: 'http://10.42.10.14:8081/stream.mjpg' },
+  'johnny-5': { hrn: 'JOHNNY-5', roles: ['touch', 'kollis', 'flux-legacy', 'printer'], pi: 'pi-johnny-5', piIp: '10.42.10.15', device: 'johnny-5-flux1', deviceIp: '10.42.30.15', deviceType: 'FLUX_1', box: 'minix-02', rack: 'rack-b', fuse: 'F-RACKB-5V', camera: 'cam-rackb', cameraUrl: 'http://10.42.10.40:8081/stream.mjpg' },
+  baymax: { hrn: 'BAYMAX', roles: ['touch', 'kollis', 'printer', 'rebuild', 'build'], pi: 'pi-baymax', piIp: '10.42.10.16', device: 'baymax-st2018', deviceIp: '10.42.30.16', deviceType: 'STAND_2018', box: 'minix-02', rack: 'rack-b', fuse: 'F-RACKB-5V', camera: 'cam-rackb', cameraUrl: 'http://10.42.10.40:8081/stream.mjpg' },
+  seti: { hrn: 'SETI', roles: ['touch', 'kollis', 'canada', 'physical-pin'], pi: 'pi-seti', piIp: '10.42.10.17', device: 'seti-compass', deviceIp: '10.42.30.17', deviceType: 'COMPASS', box: 'minix-02', rack: 'rack-b', fuse: 'F-RACKB-5V', camera: 'cam-rackb', cameraUrl: 'http://10.42.10.40:8081/stream.mjpg' },
+  rosie: { hrn: 'ROSIE', roles: ['touch', 'kollis', 'paycrest', 'printerless', 'flexgen3'], pi: 'pi-rosie', piIp: '10.42.10.18', device: 'rosie-pocket', deviceIp: '10.42.30.18', deviceType: 'FLUX_POCKET', box: 'minix-02', rack: 'rack-b', fuse: 'F-RACKB-5V', camera: 'cam-rackb', cameraUrl: 'http://10.42.10.40:8081/stream.mjpg' },
   megatron: { hrn: 'MEGATRON', roles: ['tethered', 'dev1'], pi: 'pi-tethered', piIp: '10.42.10.20', device: 'megatron-mfd', deviceIp: '10.42.30.21', deviceType: 'STAND_2', box: 'minix-02', rack: 'rack-t', fuse: 'F-BENCH-5V', camera: 'cam-tethered', cameraUrl: 'http://10.42.10.20:8081/stream.mjpg' },
   optimus: { hrn: 'OPTIMUS', roles: ['tethered', 'stg'], pi: 'pi-tethered', piIp: '10.42.10.20', device: 'optimus-mfd', deviceIp: '10.42.30.23', deviceType: 'MICRO_3', box: 'minix-02', rack: 'rack-t', fuse: 'F-BENCH-5V', camera: 'cam-tethered', cameraUrl: 'http://10.42.10.20:8081/stream.mjpg' },
   data: { hrn: 'DATA', roles: ['adb-only', 'micro', 'printer'], pi: 'pi-adb-shelf', piIp: '10.42.10.30', device: 'data-micro3', deviceIp: '10.42.30.31', deviceType: 'MICRO_3', box: null, rack: 'adb-shelf', fuse: 'F-BENCH-5V', camera: null, cameraUrl: null },
@@ -303,5 +303,5 @@ export const ROSTER: Readonly<Record<string, RosterRig>> = {
   'k-9': { hrn: 'K-9', roles: ['adb-only', 'printerless'], pi: 'pi-k-9', piIp: '10.42.10.51', device: 'k-9-duet2', deviceIp: '10.42.30.51', deviceType: 'STAND_DUET_2', box: null, rack: 'rack-c', fuse: null, camera: null, cameraUrl: null },
 };
 
-/** Physically modelled rigs (Arcade binds incidents to these; VISION and K-9 are Orca-only). */
+/** Physically modelled rigs (Arcade binds incidents to these; VISION and K-9 are Orka-only). */
 export const MODELLED_RIGS: readonly string[] = ['wall-e', 'eve', 'bumblebee', 'r2-d2', 'johnny-5', 'baymax', 'seti', 'rosie', 'megatron', 'optimus', 'data', 'tars'];

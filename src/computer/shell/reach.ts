@@ -80,8 +80,8 @@ export function reachErrorShort(r: Exclude<ReachResult, 'ok'>): string {
 /** The (host, port) a browser-hosted app's page needs (Apps §0.5 per-app list); null = always reachable. */
 export function appEndpoint(app: string, lab: LabState): { host: string; port: number | null } | null {
   switch (app) {
-    case 'orca':
-      return { host: 'orca.lab.local', port: 8080 };
+    case 'orka':
+      return { host: 'orka.lab.local', port: 8080 };
     case 'jenkins':
       return { host: 'jenkins.lab.local', port: 8080 };
     case 'ollama':

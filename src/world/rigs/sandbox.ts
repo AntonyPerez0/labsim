@@ -28,7 +28,7 @@ const VIEWS: Record<string, { pos: V3; look: V3; fov?: number }> = {
   'rack-a': { pos: [-2.6, 1.3, 0.4], look: [-2.6, 1.0, -2.1], fov: 60 },
   'rack-row': { pos: [-0.5, 1.6, 1.2], look: [-2.0, 1.1, -2.2], fov: 60 },
   'rack-b': { pos: [-1.4, 1.3, 0.4], look: [-1.4, 1.0, -2.1], fov: 60 },
-  callus: { pos: [-2.0, 1.4, -0.6], look: [-2.0, 1.0, -2.1], fov: 60 },
+  kallus: { pos: [-2.0, 1.4, -0.6], look: [-2.0, 1.0, -2.1], fov: 60 },
   adb: { pos: [0.85, 1.4, -0.4], look: [0.85, 0.9, -1.9], fov: 60 },
   tethered: { pos: [2.4, 1.45, -0.6], look: [2.4, 1.15, -2.05], fov: 60 },
   'build-table': { pos: [-4.4, 1.7, 2.0], look: [-4.4, 0.9, 0.6], fov: 60 },
@@ -64,7 +64,7 @@ function seedDemoLab(): void {
     let n = 1;
     for (const r of TOUCH_RIGS) {
       const cfg = deviceConfigFor(r);
-      const devId = `dev-${r.sim.orcaDeviceNames[0]}`;
+      const devId = `dev-${r.sim.orkaDeviceNames[0]}`;
       lab.rigs[r.id] = createRigState(r.id, n++, r.simKind, {
         gantry: { ...createRigState('x', 0, 'touch').gantry, maxXMm: cfg.maxMm[0], maxYMm: cfg.maxMm[1] },
         deviceIds: [devId],
@@ -90,7 +90,7 @@ function seedDemoLab(): void {
       lab.devices[cfd] = createTerminalDevice(cfd, r.cfd.deviceType, { rigId: r.id, role: 'cfd', display: createDisplayState('customer-idle', { rev: 1, brightness: 0.04 }) });
     }
     for (const r of ADB_RIGS) {
-      const id = `dev-${r.sim.orcaDeviceNames[0]}`;
+      const id = `dev-${r.sim.orkaDeviceNames[0]}`;
       lab.rigs[r.id] = createRigState(r.id, n++, 'adb', { deviceIds: [id] });
       lab.devices[id] = createTerminalDevice(id, r.deviceType, { rigId: r.id, display: createDisplayState(r.id === 'data' ? 'customer-cart' : 'home', { rev: 1 }) });
     }
@@ -324,7 +324,7 @@ async function boot(): Promise<void> {
         if (what.locked) r.dashboardLocked = true;
         if (what.tab) r.tablet = { ...r.tablet, tab: what.tab };
         const def = TOUCH_RIGS.find((x) => x.id === what.rig);
-        render2d.drawTablet(ctx, lab, r, { id: 1, name: what.rig, humanReadableName: def?.hrn ?? what.rig.toUpperCase(), status: 'AVAILABLE', checkout: what.locked ? { buildId: 'Java/uia-remote-regression-flux#4120', jobId: 'Java/uia-remote-regression-flux' } : null } as never, { widthPx: 1280, heightPx: 800, timeMs: performance.now() });
+        render2d.drawTablet(ctx, lab, r, { id: 1, name: what.rig, humanReadableName: def?.hrn ?? what.rig.toUpperCase(), status: 'AVAILABLE', checkout: what.locked ? { buildId: 'Java/uia-relay-regression-flux#4120', jobId: 'Java/uia-relay-regression-flux' } : null } as never, { widthPx: 1280, heightPx: 800, timeMs: performance.now() });
         return;
       }
       const dev = createTerminalDevice('flat', what.type, {

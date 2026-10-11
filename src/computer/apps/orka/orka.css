@@ -1,0 +1,1169 @@
+/* Orchestrator — JHipster 7 + Bootstrap 5 look (Apps §2.1). Prefix: orka- */
+.orka-root {
+  --orka-primary: #0d6efd;
+  --orka-success: #198754;
+  --orka-info: #0dcaf0;
+  --orka-warning: #ffc107;
+  --orka-danger: #dc3545;
+  --orka-secondary: #6c757d;
+  --orka-light: #f8f9fa;
+  --orka-border: #dee2e6;
+  --orka-body: #212529;
+  --orka-font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', 'Liberation Sans', Arial, sans-serif;
+  --orka-mono: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: #fff;
+  color: var(--orka-body);
+  font: 400 14px/1.5 var(--orka-font);
+  text-align: left;
+  user-select: text;
+  -webkit-user-select: text;
+  container-type: inline-size;
+  container-name: orka;
+}
+/* JHipster hides row-button labels below the md breakpoint (d-none d-md-inline). */
+@container orka (max-width: 1440px) {
+  .orka-btn-label {
+    display: none;
+  }
+}
+.orka-root *,
+.orka-root *::before,
+.orka-root *::after {
+  box-sizing: border-box;
+}
+.orka-root a,
+.orka-link {
+  color: var(--orka-primary);
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+}
+.orka-link:hover {
+  color: #0a58ca;
+}
+.orka-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+.orka-main {
+  flex: 1;
+  padding: 16px;
+}
+.orka-footer {
+  height: 32px;
+  flex: none;
+  padding: 6px 16px;
+  background: var(--orka-light);
+  border-top: 1px solid var(--orka-border);
+  color: var(--orka-secondary);
+  font-size: 12px;
+}
+
+/* ── Navbar ── */
+.orka-navbar {
+  height: 56px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: #353d47;
+  color: #fff;
+  position: relative;
+  z-index: 20;
+}
+.orka-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  margin-right: auto;
+}
+.orka-brand-title {
+  font-size: 20px;
+  line-height: 1.1;
+  color: #fff;
+}
+.orka-brand-version {
+  display: block;
+  font-size: 10px;
+  color: #bbbbbb;
+  line-height: 1.2;
+}
+.orka-nav {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+.orka-nav-item {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.orka-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  padding: 0 12px;
+  color: rgba(255, 255, 255, 0.55);
+  background: transparent;
+  border: 0;
+  font: 14px var(--orka-font);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.orka-nav-link:hover,
+.orka-nav-link-active {
+  color: #fff;
+}
+.orka-caret::after {
+  content: '';
+  display: inline-block;
+  margin-left: 4px;
+  vertical-align: 2px;
+  border-top: 5px solid;
+  border-right: 4px solid transparent;
+  border-left: 4px solid transparent;
+}
+.orka-dropdown {
+  position: absolute;
+  top: calc(100% - 4px);
+  right: 0;
+  min-width: 220px;
+  padding: 8px 0;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  z-index: 30;
+  max-height: 70vh;
+  overflow: auto;
+}
+.orka-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 5px 16px;
+  border: 0;
+  background: transparent;
+  color: var(--orka-body);
+  font: 14px var(--orka-font);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.orka-dropdown-item:hover:not(:disabled) {
+  background: #e9ecef;
+}
+.orka-dropdown-item:disabled {
+  color: #adb5bd;
+  cursor: default;
+}
+.orka-dropdown-item svg {
+  width: 14px;
+  color: #6c757d;
+}
+.orka-dropdown-divider {
+  height: 0;
+  margin: 6px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+}
+.orka-tutorial-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 12px;
+  padding: 3px 10px;
+  border: 1px solid #f5b301;
+  border-radius: 14px;
+  background: rgba(245, 179, 1, 0.08);
+  color: #f5b301;
+  font: 600 12px var(--orka-font);
+  line-height: 1.2;
+  cursor: pointer;
+}
+.orka-tutorial-btn small {
+  font-size: 10px;
+  font-weight: 400;
+  opacity: 0.85;
+}
+.orka-tutorial-btn:hover {
+  background: rgba(245, 179, 1, 0.18);
+}
+.orka-pad {
+  margin-left: 4px;
+  color: #f5b301;
+}
+
+/* ── Typography ── */
+.orka-root h1,
+.orka-root h2,
+.orka-root h3,
+.orka-root h4,
+.orka-root h5 {
+  margin: 0 0 8px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.orka-root h1 {
+  font-size: 2.1rem;
+}
+.orka-root h2 {
+  font-size: 1.6rem;
+}
+.orka-root h4 {
+  font-size: 1.25rem;
+}
+.orka-root h5 {
+  font-size: 1.05rem;
+}
+.orka-root p {
+  margin: 0 0 12px;
+}
+.orka-root hr {
+  margin: 12px 0;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+}
+.orka-lead {
+  font-size: 1.15rem;
+  font-weight: 300;
+}
+.orka-muted {
+  color: var(--orka-secondary);
+}
+.orka-small {
+  font-size: 12px;
+}
+.orka-mono {
+  font-family: var(--orka-mono);
+  font-size: 12.5px;
+}
+.orka-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.orka-heading h2 {
+  margin: 0 auto 0 0;
+}
+
+/* ── Buttons ── */
+.orka-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font: 400 14px/1.5 var(--orka-font);
+  color: #fff;
+  background: var(--orka-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  user-select: none;
+}
+.orka-btn:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+.orka-btn:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.35);
+}
+.orka-btn-sm {
+  padding: 2px 8px;
+  font-size: 12.25px;
+  border-radius: 3px;
+}
+.orka-btn-primary {
+  background: #0d6efd;
+  border-color: #0d6efd;
+}
+.orka-btn-primary:hover:not(:disabled) {
+  background: #0b5ed7;
+}
+.orka-btn-secondary {
+  background: #6c757d;
+  border-color: #6c757d;
+}
+.orka-btn-secondary:hover:not(:disabled) {
+  background: #5c636a;
+}
+.orka-btn-info {
+  background: #0dcaf0;
+  border-color: #0dcaf0;
+  color: #000;
+}
+.orka-btn-info:hover:not(:disabled) {
+  background: #31d2f2;
+}
+.orka-btn-danger {
+  background: #dc3545;
+  border-color: #dc3545;
+}
+.orka-btn-danger:hover:not(:disabled) {
+  background: #bb2d3b;
+}
+.orka-btn-success {
+  background: #198754;
+  border-color: #198754;
+}
+.orka-btn-warning {
+  background: #ffc107;
+  border-color: #ffc107;
+  color: #000;
+}
+.orka-btn-outline-secondary {
+  background: transparent;
+  border-color: #6c757d;
+  color: #6c757d;
+}
+.orka-btn-outline-secondary:hover:not(:disabled) {
+  background: #6c757d;
+  color: #fff;
+}
+.orka-btn-outline {
+  background: #fff;
+  color: var(--orka-c, #6c757d);
+  border-color: var(--orka-c, #6c757d);
+}
+.orka-btn-outline.orka-on {
+  background: var(--orka-c);
+  color: #fff;
+}
+.orka-btn-link {
+  background: transparent;
+  color: var(--orka-primary);
+  border-color: transparent;
+  text-decoration: underline;
+}
+.orka-btn-group {
+  display: inline-flex;
+  position: relative;
+}
+.orka-btn-group > .orka-btn + .orka-btn {
+  margin-left: -1px;
+}
+.orka-btn-group > .orka-btn:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.orka-btn-group > .orka-btn:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.orka-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  white-space: nowrap;
+}
+.orka-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+/* ── Badges / chips ── */
+.orka-badge {
+  display: inline-block;
+  padding: 3px 7px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  background: #6c757d;
+  white-space: nowrap;
+  vertical-align: 1px;
+}
+.orka-pill {
+  border-radius: 50rem;
+  padding: 4px 9px;
+}
+.orka-bg-info {
+  background: #0dcaf0;
+  color: #000;
+}
+.orka-bg-success {
+  background: #198754;
+}
+.orka-bg-danger {
+  background: #dc3545;
+}
+.orka-bg-primary {
+  background: #0d6efd;
+}
+.orka-bg-warning {
+  background: #ffc107;
+  color: #000;
+}
+.orka-bg-dark {
+  background: #212529;
+}
+.orka-bg-secondary {
+  background: #6c757d;
+}
+.orka-bg-light {
+  background: #f8f9fa;
+  color: #212529;
+  border: 1px solid var(--orka-border);
+}
+
+/* ── Alerts ── */
+.orka-alerts {
+  margin-bottom: 4px;
+}
+.orka-alert {
+  position: relative;
+  padding: 12px 40px 12px 16px;
+  margin-bottom: 12px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  white-space: pre-wrap;
+}
+.orka-alert-success {
+  color: #0f5132;
+  background: #d1e7dd;
+  border-color: #badbcc;
+}
+.orka-alert-danger {
+  color: #842029;
+  background: #f8d7da;
+  border-color: #f5c2c7;
+}
+.orka-alert-warning {
+  color: #664d03;
+  background: #fff3cd;
+  border-color: #ffecb5;
+}
+.orka-alert-info {
+  color: #055160;
+  background: #cff4fc;
+  border-color: #b6effb;
+}
+.orka-alert-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  opacity: 0.55;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.orka-alert-close:hover {
+  opacity: 0.9;
+}
+.orka-alert pre {
+  margin: 6px 0 0;
+  white-space: pre-wrap;
+  font: 12.5px var(--orka-mono);
+}
+
+/* ── Cards ── */
+.orka-card {
+  background: #fff;
+  border: 1px solid var(--orka-border);
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.orka-card-title {
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.orka-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.orka-col {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* ── Tables ── */
+.orka-table-wrap {
+  overflow-x: auto;
+}
+.orka-table {
+  width: 100%;
+  margin-bottom: 12px;
+  border-collapse: collapse;
+  color: var(--orka-body);
+  vertical-align: top;
+}
+.orka-table th,
+.orka-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--orka-border);
+  text-align: left;
+  vertical-align: middle;
+}
+.orka-table thead th {
+  border-bottom: 2px solid #c6cbd1;
+  font-weight: 600;
+  vertical-align: bottom;
+}
+.orka-table td:last-child {
+  white-space: nowrap;
+}
+.orka-table-striped tbody tr:nth-of-type(odd) > * {
+  background: rgba(0, 0, 0, 0.05);
+}
+.orka-table tbody tr:hover > * {
+  background: rgba(0, 0, 0, 0.075);
+}
+.orka-table-fixed {
+  table-layout: fixed;
+}
+.orka-table-fixed td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.orka-sort {
+  cursor: pointer;
+  user-select: none;
+}
+.orka-sort-icon {
+  margin-left: 4px;
+  color: #adb5bd;
+  font-size: 11px;
+}
+.orka-sort-active .orka-sort-icon {
+  color: #000;
+}
+.orka-row-flash > * {
+  animation: orka-flash 0.6s ease-out;
+}
+@keyframes orka-flash {
+  0% {
+    background: #fff3cd;
+  }
+}
+.orka-sub {
+  display: block;
+  font-size: 12px;
+  color: #6c757d;
+}
+.orka-ok {
+  color: #198754;
+}
+.orka-fail {
+  color: #dc3545;
+}
+.orka-grey {
+  color: #6c757d;
+}
+.orka-pagination {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+}
+.orka-pagination button {
+  min-width: 36px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--orka-border);
+  margin-left: -1px;
+  background: #fff;
+  color: var(--orka-primary);
+  font: 14px var(--orka-font);
+  cursor: pointer;
+}
+.orka-pagination button:first-child {
+  border-radius: 4px 0 0 4px;
+}
+.orka-pagination button:last-child {
+  border-radius: 0 4px 4px 0;
+}
+.orka-pagination button.orka-page-active {
+  background: var(--orka-primary);
+  border-color: var(--orka-primary);
+  color: #fff;
+  position: relative;
+}
+.orka-pagination button:disabled {
+  color: #6c757d;
+  cursor: default;
+}
+.orka-count {
+  text-align: center;
+  color: var(--orka-body);
+}
+
+/* ── Forms ── */
+.orka-form-group {
+  margin-bottom: 12px;
+}
+.orka-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  font-weight: 400;
+}
+.orka-help {
+  display: inline-grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #6c757d;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: help;
+}
+.orka-control {
+  display: block;
+  width: 100%;
+  height: 31px;
+  padding: 4px 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background: #fff;
+  color: var(--orka-body);
+  font: 14px var(--orka-font);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+textarea.orka-control {
+  height: auto;
+  min-height: 56px;
+  resize: vertical;
+}
+select.orka-control {
+  padding-right: 24px;
+}
+.orka-control:focus {
+  outline: 0;
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+}
+.orka-control:disabled,
+.orka-control[readonly] {
+  background: #e9ecef;
+}
+.orka-control.orka-invalid {
+  border-color: #dc3545;
+}
+.orka-control.orka-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+}
+.orka-control.orka-mono {
+  font-family: var(--orka-mono);
+  font-size: 13px;
+}
+.orka-invalid-msg {
+  display: block;
+  margin-top: 2px;
+  color: #dc3545;
+  font-size: 12.25px;
+}
+.orka-form-text {
+  display: block;
+  margin-top: 2px;
+  color: #6c757d;
+  font-size: 12.25px;
+}
+.orka-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 14px;
+  cursor: pointer;
+}
+.orka-check input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+}
+.orka-inputgroup {
+  display: flex;
+}
+.orka-inputgroup .orka-control {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.orka-inputgroup .orka-btn {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  height: 31px;
+}
+.orka-grid2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0 16px;
+}
+.orka-filterbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px 14px;
+}
+.orka-filterbar .orka-form-group {
+  margin: 0;
+}
+.orka-filterbar select.orka-control {
+  width: auto;
+  min-width: 170px;
+}
+
+/* ── Entity details ── */
+.orka-dl {
+  display: grid;
+  grid-template-columns: minmax(160px, 28%) 1fr;
+  margin: 0 0 12px;
+}
+.orka-dl dt,
+.orka-dl dd {
+  margin: 0;
+  padding: 8px 0;
+  border-bottom: 1px solid #eeeeee;
+}
+.orka-dl dt {
+  font-weight: 700;
+  padding-right: 12px;
+}
+.orka-dl dd {
+  word-break: break-word;
+}
+
+/* ── Notes ── */
+.orka-notes {
+  margin-top: 20px;
+}
+.orka-note {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 8px 10px;
+  border: 1px solid var(--orka-border);
+  border-radius: 4px;
+  margin-bottom: 6px;
+  background: #fff;
+}
+.orka-note-resolved {
+  opacity: 0.55;
+}
+.orka-note-text {
+  flex: 1;
+  min-width: 0;
+  font: 12.5px/1.45 var(--orka-mono);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.orka-kind-HEALTH {
+  background: #dc3545;
+}
+.orka-kind-STATUS {
+  background: #6c757d;
+}
+.orka-kind-CONFIG {
+  background: #0d6efd;
+}
+.orka-kind-MANUAL {
+  background: #212529;
+}
+
+/* ── Modal ── */
+.orka-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 64px;
+}
+.orka-modal {
+  width: min(500px, 92%);
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  animation: orka-modal-in 0.2s ease-out;
+}
+@keyframes orka-modal-in {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+}
+.orka-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--orka-border);
+}
+.orka-modal-header h4 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+.orka-modal-body {
+  padding: 16px;
+}
+.orka-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--orka-border);
+}
+
+/* ── Status menu / popover ── */
+.orka-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 2px);
+  z-index: 25;
+  min-width: 200px;
+  padding: 6px 0;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+.orka-popover {
+  position: absolute;
+  z-index: 25;
+  right: 0;
+  top: calc(100% + 6px);
+  width: 360px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  white-space: normal;
+}
+.orka-popover-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* ── Tabs ── */
+.orka-tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--orka-border);
+  margin-bottom: 16px;
+}
+.orka-tab {
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: 6px 6px 0 0;
+  margin-bottom: -1px;
+  background: transparent;
+  color: var(--orka-primary);
+  font: 14px var(--orka-font);
+  cursor: pointer;
+}
+.orka-tab:hover {
+  border-color: #e9ecef #e9ecef var(--orka-border);
+}
+.orka-tab-active {
+  color: #495057;
+  background: #fff;
+  border-color: var(--orka-border) var(--orka-border) #fff;
+}
+
+/* ── Home ── */
+.orka-home {
+  display: flex;
+  gap: 24px;
+}
+.orka-home-left {
+  flex: 0 0 240px;
+}
+.orka-home-right {
+  flex: 1;
+  min-width: 0;
+}
+.orka-home-right td.orka-mono {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+/* Bootstrap stacks col-md-3 / col-md-9 below the md breakpoint; the whale gets out of the way. */
+@container orka (max-width: 900px) {
+  .orka-home-left {
+    display: none;
+  }
+}
+.orka-statcards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin: 12px 0 16px;
+}
+.orka-statcard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--orka-border);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+.orka-statcard:hover {
+  border-color: #adb5bd;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+.orka-statcard-n {
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* ── Error page / codebox ── */
+.orka-codebox {
+  position: relative;
+  padding: 10px 12px;
+  border: 1px solid var(--orka-border);
+  border-radius: 4px;
+  background: #f8f9fa;
+  font: 12.5px/1.5 var(--orka-mono);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.orka-logline {
+  font: 12.5px/1.55 var(--orka-mono);
+  white-space: pre-wrap;
+}
+.orka-log-fail {
+  color: #b02a37;
+}
+.orka-log-recovered {
+  color: #198754;
+}
+.orka-log-skipped {
+  color: #6c757d;
+}
+.orka-log-reserved {
+  color: #0b5ed7;
+}
+
+/* ── Screen outline ── */
+.orka-outline {
+  flex: none;
+}
+.orka-outline text {
+  font-family: var(--orka-font);
+}
+
+/* ── Swagger UI ── */
+.orka-sw {
+  font-family: sans-serif;
+  color: #3b4151;
+}
+.orka-sw-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.orka-sw-head h2 {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 600;
+  color: #3b4151;
+  font-family: sans-serif;
+}
+.orka-sw-ver {
+  padding: 2px 6px;
+  border-radius: 57px;
+  background: #7d8492;
+  color: #fff;
+  font-size: 10px;
+  font-family: sans-serif;
+  font-weight: 700;
+  vertical-align: super;
+}
+.orka-sw-oas {
+  background: #89bf04;
+}
+.orka-sw-servers {
+  margin: 16px 0 20px;
+  padding: 14px 0;
+  background: #fff;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
+  padding-left: 14px;
+}
+.orka-sw-tag {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 14px 0 6px;
+  padding: 10px 6px;
+  border: 0;
+  border-bottom: 1px solid rgba(59, 65, 81, 0.3);
+  background: transparent;
+  color: #3b4151;
+  font: 700 22px sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+.orka-sw-tag small {
+  margin-left: 10px;
+  font-size: 13px;
+  font-weight: 400;
+}
+.orka-sw-op {
+  margin: 0 0 10px;
+  border: 1px solid var(--sw-c);
+  border-radius: 4px;
+  background: var(--sw-bg);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.19);
+}
+.orka-sw-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 5px;
+  border: 0;
+  background: transparent;
+  font: 14px sans-serif;
+  color: #3b4151;
+  text-align: left;
+  cursor: pointer;
+}
+.orka-sw-method {
+  min-width: 80px;
+  padding: 6px 0;
+  border-radius: 3px;
+  background: var(--sw-c);
+  color: #fff;
+  font: 700 14px sans-serif;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+.orka-sw-path {
+  font: 600 16px monospace;
+  word-break: break-all;
+}
+.orka-sw-desc {
+  font-size: 13px;
+  color: #3b4151;
+}
+.orka-sw-body {
+  padding: 10px 20px 16px;
+  border-top: 1px solid var(--sw-c);
+}
+.orka-sw-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px -20px;
+  padding: 8px 20px;
+  background: hsla(0, 0%, 100%, 0.8);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font: 700 14px sans-serif;
+}
+.orka-sw-btn {
+  padding: 5px 23px;
+  border: 2px solid #888;
+  border-radius: 4px;
+  background: transparent;
+  font: 700 14px sans-serif;
+  color: #3b4151;
+  cursor: pointer;
+}
+.orka-sw-btn-cancel {
+  border-color: #ff6060;
+  color: #ff6060;
+}
+.orka-sw-execute {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px 40px;
+  border: 2px solid #4990e2;
+  border-radius: 4px;
+  background: #4990e2;
+  color: #fff;
+  font: 700 14px sans-serif;
+  cursor: pointer;
+}
+.orka-sw-pre {
+  margin: 4px 0 10px;
+  padding: 10px;
+  border-radius: 4px;
+  background: #333;
+  color: #fff;
+  font: 600 12px/1.5 monospace;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.orka-sw-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.orka-sw-table th {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(59, 65, 81, 0.2);
+  text-align: left;
+  font-size: 12px;
+}
+.orka-sw-table td {
+  padding: 8px 10px 8px 0;
+  vertical-align: top;
+}
+.orka-sw textarea {
+  width: 100%;
+  min-height: 110px;
+  padding: 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background: #fff;
+  font: 600 12px monospace;
+}
+.orka-sw input {
+  padding: 6px 8px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font: 13px monospace;
+}
+
+/* ── Login ── */
+.orka-login {
+  max-width: 420px;
+}

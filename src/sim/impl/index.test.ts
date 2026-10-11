@@ -12,8 +12,8 @@ describe('initial state (Sim §1, §2.1)', () => {
     const s = createInitialLabState();
     expect(s.version).toBe(LAB_STATE_VERSION);
     expect(s.time).toMatchObject({ nowMs: 9 * 3_600_000, physMs: 0, timeScale: 1, epochDate: '2026-10-05', dateLabel: 'MON, OCT 5', healthAnchorMs: 0 });
-    expect(s.orca.healthCheck.nextRunMs).toBe(9 * 3_600_000 + HEALTH_CHECK_INTERVAL_MS);
-    expect(Object.keys(s.repos).sort()).toEqual(['gort', 'orchestrator', 'pigeon', 'uia-remote']);
+    expect(s.orka.healthCheck.nextRunMs).toBe(9 * 3_600_000 + HEALTH_CHECK_INTERVAL_MS);
+    expect(Object.keys(s.repos).sort()).toEqual(['gorth', 'orchestrator', 'parrot', 'uia-relay']);
     expect(s.jenkins.executors).toBe(8);
     expect(s.flags.receiptQrFeature).toBe(true);
     expect(JSON.parse(JSON.stringify(s))).toEqual(s);
@@ -53,7 +53,7 @@ describe('sim lifecycle (Sim §6)', () => {
     expect(lab().config).toMatchObject({ mode: 'arcade', damageModel: 'arcade', pipelinesEnabled: true, forceHealthCheckAllowed: false });
     expect(lab().time.nowMs).toBe(8 * 3_600_000);
     expect(lab().time.timeScale).toBe(5);
-    expect(lab().orca.healthCheck.nextRunMs).toBe(8 * 3_600_000 + 300_000);
+    expect(lab().orka.healthCheck.nextRunMs).toBe(8 * 3_600_000 + 300_000);
   });
 
   it('unknown presets fall back to factory with an error log', () => {
@@ -153,6 +153,6 @@ describe('sim lifecycle (Sim §6)', () => {
 
   it('forceHealthCheck honours the tutorial gate', () => {
     sim.reset({ preset: 'arcade' });
-    expect(sim.orca.forceHealthCheck('player')).toEqual({ ok: false, error: '403 Force health check is disabled in this environment' });
+    expect(sim.orka.forceHealthCheck('player')).toEqual({ ok: false, error: '403 Force health check is disabled in this environment' });
   });
 });

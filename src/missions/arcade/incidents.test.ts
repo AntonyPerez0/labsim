@@ -69,7 +69,7 @@ describe('incident catalogue', () => {
 
   it('canonical Visa tracks equal the factory swipe profile', () => {
     freshLab();
-    const prof = Object.values(getState().lab.orca.cardProfiles).find((x) => x.name === 'VISA_STD_SWIPE');
+    const prof = Object.values(getState().lab.orka.cardProfiles).find((x) => x.name === 'VISA_STD_SWIPE');
     expect(prof?.trackData).toBe(CANONICAL_VISA_TRACKS);
   });
 
@@ -118,7 +118,7 @@ describe('scenarios inject on a fresh Arcade lab', () => {
       ...(def.replies?.options ?? []).flatMap((o) => [o.text, o.teach?.why ?? '', o.teach?.doInstead ?? '']),
       ...def.wrongButTempting.flatMap((w) => [w.text, w.teach?.whatHappened ?? '', w.teach?.why ?? '', w.teach?.doInstead ?? '']),
       ...(def.onSpawn?.(b) ?? []).map((a) => JSON.stringify(a)),
-      ...(def.escalation ? def.escalation.jaredFix(b).map((a) => JSON.stringify(a)) : []),
+      ...(def.escalation ? def.escalation.jadenFix(b).map((a) => JSON.stringify(a)) : []),
     ];
     for (const s of def.symptoms) expect(tpl(s.text, b)).not.toBe('');
     for (const h of def.hints) expect(tpl(h, b)).not.toBe('');

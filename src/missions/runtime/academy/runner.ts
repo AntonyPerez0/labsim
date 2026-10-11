@@ -303,7 +303,7 @@ function activateStep(d: RootState, ctx: TxContext): void {
       } else ac.fastForwardOffered = d.session.realism !== 'strict';
       break;
     case 'interact':
-      // Conversation with a person (`npc.*` target, e.g. escalate to Jared): the lab has no NPC bodies to
+      // Conversation with a person (`npc.*` target, e.g. escalate to Jaden): the lab has no NPC bodies to
       // press E on, so the person "comes over" and the choice list opens right away.
       if (step.choices?.length && step.target.startsWith('npc.')) {
         createStepScopes(d, step);
@@ -398,7 +398,7 @@ function healthCheckSinceStep(): boolean {
   for (let i = RT.log.length - 1; i >= 0; i--) {
     const e = RT.log[i]!;
     if (e.seq < L.stepStartSeq) return false;
-    if (e.type === 'orca.healthCheckRan') return true;
+    if (e.type === 'orka.healthCheckRan') return true;
   }
   return false;
 }

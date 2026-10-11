@@ -1,6 +1,6 @@
 /**
  * South wall team-history wall (World §1.4 "South wall", §6.4, §9.2): `TEAM HISTORY` title vinyl,
- * four black frames (Semi, Sedi, IPX, PayCore) and the plaque board for the M18 match game.
+ * four black frames (Semi, Sedi, IPX, PayCrest) and the plaque board for the M18 match game.
  */
 import { MeshStandardMaterial } from 'three';
 import { HISTORY_FRAMES, getProp } from '../layout';
@@ -45,7 +45,7 @@ export function buildSouthWall(ctx: LabCtx): void {
   const brassPlate = ctx.mats.brass;
   b.at(pm.pos[0], pm.pos[1], FACE_Z, ROT, () => {
     b.box(pw, ph, 0.02, walnut, 0, 0, 0.01);
-    const names = ['Semi', 'Sedi', 'IPX', 'PayCore', 'Core OS'];
+    const names = ['Semi', 'Sedi', 'IPX', 'PayCrest', 'Core OS'];
     names.forEach((n, i) => {
       const x = -pw / 2 + 0.2 + i * ((pw - 0.4) / 4);
       b.box(0.3, 0.14, 0.004, brassPlate, x, 0, 0.022);

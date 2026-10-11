@@ -6,8 +6,8 @@ import { Dialog } from './Dialog';
 import { IcFolder, IcIdeaLogo } from './icons';
 import { GetFromVcsDialog } from './VcsDialog';
 
-const REPOS: RepoId[] = ['gort', 'uia-remote', 'pigeon', 'orchestrator'];
-const BADGE: Record<string, string> = { gort: '#2f7d6b', 'uia-remote': '#8a5a2b', pigeon: '#5e4a8a', orchestrator: '#2b5d8a' };
+const REPOS: RepoId[] = ['gorth', 'uia-relay', 'parrot', 'orchestrator'];
+const BADGE: Record<string, string> = { gorth: '#2f7d6b', 'uia-relay': '#8a5a2b', parrot: '#5e4a8a', orchestrator: '#2b5d8a' };
 
 export function Welcome({ onOpen, vcsUrl, notice }: { onOpen(repo: RepoId, cloned: boolean): void; vcsUrl?: string; notice?: string | null }) {
   const cloned = useGameShallow((s) => REPOS.filter((r) => !!s.lab.repos?.[r]?.local));
@@ -36,7 +36,7 @@ export function Welcome({ onOpen, vcsUrl, notice }: { onOpen(repo: RepoId, clone
       <div className="ij-welcome-main">
         {nav !== 'Projects' ? (
           <div className="ij-welcome-empty">
-            {nav === 'Customize' ? 'Color theme: Darcula · IDE font: 13 · Keymap: Windows' : nav === 'Plugins' ? 'Installed: Git, JUnit, Maven, uia-remote Config Assistant' : 'Learn IntelliJ IDEA — onboarding tours are not available offline.'}
+            {nav === 'Customize' ? 'Color theme: Darcula · IDE font: 13 · Keymap: Windows' : nav === 'Plugins' ? 'Installed: Git, JUnit, Maven, uia-relay Config Assistant' : 'Learn IntelliJ IDEA — onboarding tours are not available offline.'}
           </div>
         ) : (
           <>

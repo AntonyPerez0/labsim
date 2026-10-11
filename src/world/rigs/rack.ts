@@ -1,6 +1,6 @@
 /**
  * Touch-robot racks A and B (World §2.1–§2.3, §2.8 rack top) and the generic 4-post shelving unit
- * used by the Callus shelf, the ADB shelf and the tethered bench (§2.12–§2.14).
+ * used by the Kallus shelf, the ADB shelf and the tethered bench (§2.12–§2.14).
  *
  * Rack-local frame (mm): origin = footprint centre on the floor, +X right (facing the front), +Y up,
  * +Z toward the aisle. Front rail plane z +450, rear −450.
@@ -147,7 +147,7 @@ export function buildTouchRack(kit: RigKit, rack: RackDef): RackHandles {
   return { rack, frame, dist: { led5v, led24v }, strip, cameraPi };
 }
 
-/** Generic black 4-post shelving unit (Callus / ADB / tethered): posts + stretchers + levels. */
+/** Generic black 4-post shelving unit (Kallus / ADB / tethered): posts + stretchers + levels. */
 export function buildShelfUnit(
   kit: RigKit,
   originM: readonly [number, number, number],

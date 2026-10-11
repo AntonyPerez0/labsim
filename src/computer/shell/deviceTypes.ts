@@ -1,6 +1,6 @@
 /**
- * Device Type metrics as Orca's enum shows them (Sim §2.2). Local copy for the UI until the sim exports
- * `DEVICE_TYPES` (src/sim/seed/deviceTypes.ts); used by Orca (info line, screen outline) and the dashboard
+ * Device Type metrics as Orka's enum shows them (Sim §2.2). Local copy for the UI until the sim exports
+ * `DEVICE_TYPES` (src/sim/seed/deviceTypes.ts); used by Orka (info line, screen outline) and the dashboard
  * mini-map.
  */
 import type { DeviceTypeCode, TestingProfile } from '@/sim/types';

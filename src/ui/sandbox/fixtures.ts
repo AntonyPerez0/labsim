@@ -39,15 +39,15 @@ function seedProgress(s: RootState): void {
   p.shifts.gradeCounts = { S: 0, A: 2, B: 3, C: 1, D: 0 };
   p.achievements = { ACH01: { unlockedAtDay: 20000, unlockedAt: Date.now() - 86_400_000 * 3 }, ACH08: { unlockedAtDay: 20001, unlockedAt: Date.now() - 86_400_000 } };
   p.stats = { ...p.stats, incidentsResolved: 23, fastDiagnoses: 9, escalationsCorrect: 6, escalationsBounced: 1, fusesReplaced: 4, robotsParked: 17, flashcardsReviewed: 212, drillRounds: 22, shiftsCompleted: 6, playSeconds: 4 * 3600 + 1260 };
-  p.fieldManual.read = ['lab-tour', 'orca-statuses'];
-  p.fieldManual.unlocked = ['lab-tour', 'orca-statuses', 'adb-port-5444'];
+  p.fieldManual.read = ['lab-tour', 'orka-statuses'];
+  p.fieldManual.unlocked = ['lab-tour', 'orka-statuses', 'adb-port-5444'];
   const now = Date.now();
   FLASHCARDS.slice(0, 64).forEach((c, i) => {
     p.leitner[c.id] = { box: 1 + (i % 5), dueDay: 0, due: now, lastReviewed: now, streak: i % 3, introducedDay: 0 };
   });
   for (const [tag, m] of [
-    ['orca.status', 0.82],
-    ['orca.status.connfailed', 0.71],
+    ['orka.status', 0.82],
+    ['orka.status.connfailed', 0.71],
     ['power.fuses', 0.88],
     ['power.18v', 0.5],
     ['adb.port', 0.34],
@@ -109,9 +109,9 @@ function ticket(over: Partial<TicketState> & Pick<TicketState, 'id' | 'incidentI
 }
 
 const TICKETS: TicketState[] = [
-  ticket({ id: 'LAB-4127', incidentId: 'INC01', title: 'WALL-E failed checkout — Connection Failed', severity: 'P1', reporter: 'jenkins-bot', robotId: 'wall-e', status: 'in-progress', ackedAtS: 33, startedAtS: 35, slaSecondsLeft: 118, sla: 'amber', summary: 'Java/uia-remote-regression-flux #4131 could not check out WALL-E: the robot is blocked from checkouts (Connection Failed).' }),
+  ticket({ id: 'LAB-4127', incidentId: 'INC01', title: 'WALL-E failed checkout — Connection Failed', severity: 'P1', reporter: 'jenkins-bot', robotId: 'wall-e', status: 'in-progress', ackedAtS: 33, startedAtS: 35, slaSecondsLeft: 118, sla: 'amber', summary: 'Java/uia-relay-regression-flux #4131 could not check out WALL-E: the robot is blocked from checkouts (Connection Failed).' }),
   ticket({ id: 'LAB-2210', incidentId: 'INC27', title: 'SOMETHING IS TAPPING MY DESK FLUX BY ITSELF', severity: 'P1', reporter: 'riley', robotId: null, basePoints: 350, slaSecondsLeft: 241, summary: 'My desk Flux keeps opening Register and adding “Tax Item 5”. I didn’t touch it!' }),
-  ticket({ id: 'LAB-7783', incidentId: 'INC39', title: 'uia-remote-regression-flux fails at checkout', severity: 'P1', reporter: 'jenkins-bot', robotId: null, basePoints: 200, parS: 120, slaS: 180, slaSecondsLeft: 31, sla: 'red', notYetTaught: true }),
+  ticket({ id: 'LAB-7783', incidentId: 'INC39', title: 'uia-relay-regression-flux fails at checkout', severity: 'P1', reporter: 'jenkins-bot', robotId: null, basePoints: 200, parS: 120, slaS: 180, slaSecondsLeft: 31, sla: 'red', notYetTaught: true }),
 ];
 
 function shiftState(): RootState['session']['shift'] {
@@ -146,7 +146,7 @@ function shiftState(): RootState['session']['shift'] {
     bonuses: [],
     pipelines: (['PL1', 'PL2', 'PL3', 'PL4', 'PL5'] as const).map((id, i) => ({
       id,
-      job: ['Java/uia-remote-regression-flux', 'Java/uia-remote-tethered-tax', 'Java/pigeon-android-sale-swipe', 'Java/uia-remote-regression-micro', 'Java/contact-canada-pin-sale'][i]!,
+      job: ['Java/uia-relay-regression-flux', 'Java/uia-relay-tethered-tax', 'Java/parrot-android-sale-swipe', 'Java/uia-relay-regression-micro', 'Java/contact-canada-pin-sale'][i]!,
       active: true,
       activationOrder: i + 1,
       phase: i === 0 ? 'blocked' : i === 1 ? 'running' : 'waiting',
@@ -157,7 +157,7 @@ function shiftState(): RootState['session']['shift'] {
       params: {},
       lastResult: i === 0 ? 'BLOCKED' : i === 2 ? 'SUCCESS' : i === 3 ? 'FAILURE' : null,
       lastRobot: i === 2 ? 'eve' : i === 3 ? 'bumblebee' : null,
-      lastConsoleLine: i === 0 ? '[orca] no Available FLUX_3 robot — build waiting in queue' : null,
+      lastConsoleLine: i === 0 ? '[orka] no Available FLUX_3 robot — build waiting in queue' : null,
       runIndex: 3,
       attempts: 8,
       gotRig: 6,
@@ -169,7 +169,7 @@ function shiftState(): RootState['session']['shift'] {
     pipelinePoints: 60,
     uptime: { attempts: 31, gotRig: 28 },
     event: null,
-    jaredAwayUntilS: null,
+    jadenAwayUntilS: null,
     queuedEscalations: [],
     plannedWorkTicketId: null,
     plan: null,
@@ -187,17 +187,17 @@ function shiftState(): RootState['session']['shift'] {
 const RESULT: ActivityResult = {
   kind: 'academy',
   activityId: 'M06',
-  title: 'M06 · Orca Architecture & the Five Robot Statuses',
+  title: 'M06 · Orka Architecture & the Five Robot Statuses',
   passed: true,
   points: 0,
   xp: 395,
   accuracy: 1,
   durationSeconds: 1140,
   takeaways: [
-    'Read a robot’s status in Orca and know which of the five statuses lets Jenkins check it out.',
+    'Read a robot’s status in Orka and know which of the five statuses lets Jenkins check it out.',
     'Open the robot’s Notes to find the failed health-check endpoint and its error.',
     'Wait for the next 5-minute health check before calling a fix verified.',
-    'Escalate a crashed Pi or offline Callus box to Jared with the exact endpoint.',
+    'Escalate a crashed Pi or offline Kallus box to Jaden with the exact endpoint.',
   ],
   newAchievements: ['ACH04'],
   xpBreakdown: [
@@ -212,13 +212,13 @@ const RESULT: ActivityResult = {
       id: 'tc1',
       whatHappened: 'You overrode a failed health check.',
       why: 'Connection Failed blocks checkouts for a reason; the next ping will flip it back. (Ref §3)',
-      doInstead: 'Find the cause or escalate to Jared with the endpoint.',
+      doInstead: 'Find the cause or escalate to Jaden with the endpoint.',
       ref: 'Ref §3',
       factIds: [],
       practiceDrillId: 'DR01',
       trigger: { kind: 'academy', ref: 'GW24' },
       ticketId: null,
-      masteryChange: { tag: 'orca.status.connfailed', before: 0.71, after: 0.55 },
+      masteryChange: { tag: 'orka.status.connfailed', before: 0.71, after: 0.55 },
       createdAtS: 0,
       collapsed: false,
     },
@@ -240,18 +240,18 @@ const VIEW_OPTIONS: Record<string, { id: string; text: string }[]> = {
     { id: 'A', text: 'Pi board hung — needs a power cycle' },
     { id: 'B', text: 'Ethernet cable unplugged' },
     { id: 'C', text: 'Rack A 5 V fuse blown' },
-    { id: 'D', text: 'Callus box offline' },
+    { id: 'D', text: 'Kallus box offline' },
   ],
   INC27: [
     { id: 'A', text: 'portNumber 5555 — the runner fell back to a coworker’s device' },
     { id: 'B', text: 'Riley’s Flux has malware' },
-    { id: 'C', text: 'Orca routed to the wrong rig' },
+    { id: 'C', text: 'Orka routed to the wrong rig' },
     { id: 'D', text: 'Wrong deviceType' },
   ],
   INC39: [
     { id: 'A', text: 'The env var value isn’t the exact ALL-CAPS enum' },
     { id: 'B', text: 'No Flux rigs available' },
-    { id: 'C', text: 'Orca down' },
+    { id: 'C', text: 'Orka down' },
     { id: 'D', text: 'Wrong folder' },
   ],
 };
@@ -278,7 +278,7 @@ function installMissionMocks(): void {
         escalatable: t.incidentId === 'INC01',
         endpointCandidates: t.incidentId === 'INC01' ? ['http://10.42.10.11:8000/health'] : [],
         nextHintTier: 1,
-        hints: t.incidentId === 'INC01' ? ['Orca keeps a log for every robot. Start there.'] : [],
+        hints: t.incidentId === 'INC01' ? ['Orka keeps a log for every robot. Start there.'] : [],
         verifyingLabel: null,
         slaFraction: t.slaS ? t.slaSecondsLeft / t.slaS : 0,
       };
@@ -329,7 +329,7 @@ export function applyScene(scene: SceneId): void {
         s.session.activeTool = 'multimeter';
         s.session.items.fuses = { '5': 1, '7.5': 0, '10': 2, '15': 0 };
         s.session.objectives = [
-          { id: 'o1', text: 'Open Orca and filter the robot list to Connection Failed', done: true },
+          { id: 'o1', text: 'Open Orka and filter the robot list to Connection Failed', done: true },
           { id: 'o2', text: 'Open WALL-E’s Notes and find the failed health-check endpoint', done: false },
           { id: 'o3', text: 'Check the Pi’s LEDs on WALL-E’s shelf', done: false, progress: [1, 2] },
         ];
@@ -359,15 +359,15 @@ export function applyScene(scene: SceneId): void {
         };
         s.session.dialogue = {
           id: 'M06.07.d1',
-          speaker: 'tate',
-          text: 'Orca pings every robot’s Pi every five minutes. No answer, and the robot goes to Connection Failed — blocked from checkouts until the next ping succeeds. The Notes tab tells you exactly which endpoint failed and why.',
+          speaker: 'nate',
+          text: 'Orka pings every robot’s Pi every five minutes. No answer, and the robot goes to Connection Failed — blocked from checkouts until the next ping succeeds. The Notes tab tells you exactly which endpoint failed and why.',
           requiresAck: true,
           shownAtS: 0,
         };
         s.ui.prompt = { label: 'Raspberry Pi — WALL-E', verbs: [{ key: 'E', label: 'Unplug Pi power lead' }, { key: 'F', label: 'Probe 5 V input (needs multimeter)', disabled: false }, { key: 'R', label: 'Reseat Ethernet (needs Ethernet cable)', disabled: true }] };
         s.ui.toasts = [
-          { id: 't1', kind: 'xp', title: '+25 XP', body: 'Step complete: open Orca’s robot list', createdAtMs: NOW },
-          { id: 't2', kind: 'manual', title: 'New Field Manual entry', body: 'Orca: the five robot statuses', createdAtMs: NOW },
+          { id: 't1', kind: 'xp', title: '+25 XP', body: 'Step complete: open Orka’s robot list', createdAtMs: NOW },
+          { id: 't2', kind: 'manual', title: 'New Field Manual entry', body: 'Orka: the five robot statuses', createdAtMs: NOW },
         ];
         s.ui.overlay = scene === 'pause' ? { kind: 'pause' } : scene === 'notebook' ? { kind: 'notebook' } : { kind: 'none' };
         s.session.notebook.evidence = [
@@ -399,7 +399,7 @@ export function applyScene(scene: SceneId): void {
             practiceDrillId: 'DR01',
             trigger: { kind: 'gw', ref: 'GW17' },
             ticketId: 'LAB-4127',
-            masteryChange: { tag: 'orca.healthcheck', before: 0.71, after: 0.58 },
+            masteryChange: { tag: 'orka.healthcheck', before: 0.71, after: 0.58 },
             createdAtS: 260,
             collapsed: false,
           },
@@ -440,7 +440,7 @@ export function applyScene(scene: SceneId): void {
         s.session.activeTool = scene === 'ruler' ? 'ruler' : 'hand';
         s.ui.overlay = {
           kind: 'inspect',
-          propId: scene === 'board-arch' ? 'wall.whiteboard' : scene === 'board-roadmap' ? 'wall.roadmap' : scene === 'board-history' ? 'wall.history.match' : scene === 'board-bolts' ? 'jared.bolt-bins' : 'rig.eve.device',
+          propId: scene === 'board-arch' ? 'wall.whiteboard' : scene === 'board-roadmap' ? 'wall.roadmap' : scene === 'board-history' ? 'wall.history.match' : scene === 'board-bolts' ? 'jaden.bolt-bins' : 'rig.eve.device',
         };
         break;
       case 'computer':

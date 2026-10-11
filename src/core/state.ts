@@ -224,7 +224,7 @@ export type CarriedItemId =
   | 'cradle-new'
   | 'cradle-cracked'
   | 'flux4-psu-brick'
-  | 'collis-probe-spare'
+  | 'kollis-probe-spare'
   | 'receipt'
   | 'device'
   | 'pi'
@@ -340,7 +340,7 @@ export interface Toast {
   icon?: string;
 }
 
-/** Sticky HUD banner, e.g. "Jared: out to lunch", "Progress won't be saved", "Verifying… waiting for 08:20 health check". */
+/** Sticky HUD banner, e.g. "Jaden: out to lunch", "Progress won't be saved", "Verifying… waiting for 08:20 health check". */
 export interface Banner {
   id: string;
   kind: 'info' | 'warning' | 'error';
@@ -435,7 +435,7 @@ export function createDefaultProgress(): ProgressState {
     daily: { lastRankedDateKey: null, rankedCount: 0, history: [] },
     penalties: {},
     freeplay: { fixesTotal: 0, xpToday: 0, xpTodayDay: 0 },
-    pigeonPractice: {},
+    parrotPractice: {},
     certs: {},
     fieldManual: { unlocked: [], bookmarks: [], read: [] },
     notebook: { notes: '', pinnedEvidence: [] },

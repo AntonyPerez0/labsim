@@ -77,7 +77,7 @@ export function createJob(lab: LabState, ctx: TxContext, spec: { folder: string;
         folder: spec.folder,
         name: spec.name,
         description: '',
-        runner: 'pigeon',
+        runner: 'parrot',
         platform: 'android',
         params: [],
         capabilityLookup: 'NON_DYNAMIC',

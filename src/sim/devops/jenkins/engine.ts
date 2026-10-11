@@ -6,7 +6,7 @@
 import type { TxContext } from '@/core/store';
 import { isDraft, original } from 'immer';
 import { ro } from '../../core/ro';
-import type { BuildResult, BuildStage, JenkinsBuild, JenkinsJob, LabState, OrcaRobot, RepoId, RunnerKind } from '../../types';
+import type { BuildResult, BuildStage, JenkinsBuild, JenkinsJob, LabState, OrkaRobot, RepoId, RunnerKind } from '../../types';
 import { TRIGGER_JOBS } from '../../seed/jenkins';
 import { core } from '../coreRef';
 import { deviceRow } from '../config';
@@ -17,11 +17,11 @@ import { draw, fmtSec } from '../util';
 import { advanceRunner, newRunner, runnerDone, runnerPassed, runnerUnstable, stopRunner } from '../runners/engine';
 import type { RC, RunnerHost } from '../runners/engine';
 import { compileGoSdkPlan, compileIosPlan, compileVisionPlan } from '../runners/other';
-import { compilePigeonPlan } from '../runners/pigeon';
+import { compileParrotPlan } from '../runners/parrot';
 import { compileUiaPlan, testNeedsPin, testsFromScript } from '../runners/uia';
 import { parseScript, scriptVar } from './script';
 
-export const ORCA_URL = 'http://orca.lab.local:8080';
+export const ORKA_URL = 'http://orka.lab.local:8080';
 const HISTORY_CAP = 20;
 
 /* ────────────────────────────── helpers ────────────────────────────── */
@@ -44,12 +44,12 @@ export function startedByLine(triggeredBy: string): string {
   return `Started by user ${triggeredBy.charAt(0).toUpperCase()}${triggeredBy.slice(1)}`;
 }
 
-type StageName = 'Checkout SCM' | 'Resolve capabilities' | 'Checkout robot' | 'Verify robot' | 'Merchant' | 'Inject environment' | 'Run tests' | 'Release robot' | 'Publish results' | 'Laz OOBE' | 'Trigger Java jobs';
+type StageName = 'Checkout SCM' | 'Resolve capabilities' | 'Checkout robot' | 'Verify robot' | 'Merchant' | 'Inject environment' | 'Run tests' | 'Release robot' | 'Publish results' | 'Lazo OOBE' | 'Trigger Java jobs';
 
 export function stagesFor(job: JenkinsJob): StageName[] {
   if (TRIGGER_JOBS.has(job.id)) return ['Trigger Java jobs'];
-  if (job.runner === 'laz') return ['Checkout robot', 'Laz OOBE', 'Release robot'];
-  const hasRobot = /orca\.checkout\(/.test(job.script);
+  if (job.runner === 'lazo') return ['Checkout robot', 'Lazo OOBE', 'Release robot'];
+  const hasRobot = /orka\.checkout\(/.test(job.script);
   if (!hasRobot) return ['Checkout SCM', 'Run tests', 'Publish results'];
   const s: StageName[] = ['Checkout SCM', 'Resolve capabilities', 'Checkout robot', 'Verify robot'];
   if (job.merchantPolicy !== 'none') s.push('Merchant');
@@ -60,7 +60,7 @@ export function stagesFor(job: JenkinsJob): StageName[] {
 export function repoForJob(job: JenkinsJob): RepoId {
   if (job.testRef) return job.testRef.repo;
   const m = /git url:\s*'git@github\.com:labsim-lab\/([\w-]+)\.git'/.exec(job.script);
-  return (m?.[1] as RepoId | undefined) ?? (job.runner === 'go-sdk' ? 'gort' : 'uia-remote');
+  return (m?.[1] as RepoId | undefined) ?? (job.runner === 'go-sdk' ? 'gorth' : 'uia-relay');
 }
 
 const v = (b: JenkinsBuild, k: string): string | undefined => b.runner.vars[`j.${k}`];
@@ -72,8 +72,8 @@ function say(b: JenkinsBuild, ...lines: string[]): void {
   b.console.push(...lines);
 }
 
-function robotOf(lab: LabState, b: JenkinsBuild): OrcaRobot | null {
-  return b.robotId != null ? (lab.orca.robots[b.robotId] ?? null) : null;
+function robotOf(lab: LabState, b: JenkinsBuild): OrkaRobot | null {
+  return b.robotId != null ? (lab.orka.robots[b.robotId] ?? null) : null;
 }
 
 /* ────────────────────────────── build creation ────────────────────────────── */
@@ -110,7 +110,7 @@ export function queueBuild(lab: LabState, ctx: TxContext, jobId: string, params:
     triggeredBy,
     cursor: 0,
     waitUntilMs: null,
-    runner: newRunner(job.runner === 'gort-sync' ? 'uia-remote' : job.runner, []),
+    runner: newRunner(job.runner === 'gorth-sync' ? 'uia-relay' : job.runner, []),
     local: false,
   };
   lab.jenkins.builds[id] = build;
@@ -189,13 +189,13 @@ function stageCheckoutScm(sc: SC): StageOutcome {
   return timed(sc, 'scm', 4_000) ? 'done' : 'poll';
 }
 
-/** The test definition / dynamic capability file from the checked-out tree (or gort main). */
+/** The test definition / dynamic capability file from the checked-out tree (or gorth main). */
 function readRepoFile(sc: SC, path: string): string | undefined {
   const { lab, b } = sc;
-  const repoId = (v(b, 'scmRepo') ?? 'uia-remote') as RepoId;
+  const repoId = (v(b, 'scmRepo') ?? 'uia-relay') as RepoId;
   const tree = treeView(lab.repos[repoId], v(b, 'scmSha') ?? null);
   if (tree[path] !== undefined) return tree[path];
-  return lab.repos['gort']?.files[path];
+  return lab.repos['gorth']?.files[path];
 }
 
 function stageResolveCaps(sc: SC): StageOutcome {
@@ -225,10 +225,10 @@ function stageResolveCaps(sc: SC): StageOutcome {
 
 function stageCheckoutRobot(sc: SC): StageOutcome {
   const { lab, ctx, b, job } = sc;
-  if (job.runner === 'laz' && v(b, 's.lazcheck') === undefined) {
-    if (!b.params['ROBOT_NAME']) return { fail: 'LAZ_FAILED', lines: ['ERROR: ROBOT_NAME is required for Laz merchant swaps'] };
-    if (!b.params['MERCHANT']) return { fail: 'LAZ_FAILED', lines: ['ERROR: MERCHANT is required for Laz merchant swaps'] };
-    setv(b, 's.lazcheck', 1);
+  if (job.runner === 'lazo' && v(b, 's.lazocheck') === undefined) {
+    if (!b.params['ROBOT_NAME']) return { fail: 'LAZO_FAILED', lines: ['ERROR: ROBOT_NAME is required for Lazo merchant swaps'] };
+    if (!b.params['MERCHANT']) return { fail: 'LAZO_FAILED', lines: ['ERROR: MERCHANT is required for Lazo merchant swaps'] };
+    setv(b, 's.lazocheck', 1);
   }
   if (b.robotId != null) return timed(sc, 'co', 1_000) ? 'done' : 'poll';
   const pollAt = v(b, 's.pollAt');
@@ -236,7 +236,7 @@ function stageCheckoutRobot(sc: SC): StageOutcome {
     const since = Number(v(b, 's.waitSince'));
     const lastPrint = Number(v(b, 's.lastStill') ?? since);
     if (lab.time.physMs - lastPrint >= 60_000) {
-      say(b, `[orca] still waiting (${Math.round((lab.time.physMs - since) / 1000)} s)…`);
+      say(b, `[orka] still waiting (${Math.round((lab.time.physMs - since) / 1000)} s)…`);
       setv(b, 's.lastStill', lab.time.physMs);
     }
     return 'poll';
@@ -302,7 +302,7 @@ function stageVerifyRobot(sc: SC): StageOutcome {
 }
 
 /** Devices of the checked-out robot, MFD first (Sim §3.17.1). */
-function robotDevices(lab: LabState, robot: OrcaRobot): string[] {
+function robotDevices(lab: LabState, robot: OrkaRobot): string[] {
   const ids: string[] = [];
   const add = (rowId: number | null): void => {
     const row = deviceRow(lab, rowId);
@@ -315,23 +315,23 @@ function robotDevices(lab: LabState, robot: OrcaRobot): string[] {
   return ids;
 }
 
-/** Merchant stage / Laz OOBE stage (Sim §3.17.1). */
+/** Merchant stage / Lazo OOBE stage (Sim §3.17.1). */
 function stageMerchant(sc: SC, force: boolean): StageOutcome {
   const { lab, ctx, b, job } = sc;
   const robot = robotOf(lab, b);
   const merchantName = b.params['MERCHANT'] ?? '';
   if (!robot || (!merchantName && !force)) return 'done';
-  const merchant = Object.values(lab.orca.merchants).find((m) => m.name === merchantName) ?? null;
+  const merchant = Object.values(lab.orka.merchants).find((m) => m.name === merchantName) ?? null;
   const devices = robotDevices(lab, robot);
   if (job.merchantPolicy === 'assert' && !force) {
     for (const d of devices) {
       const dev = lab.devices[d];
-      const has = dev?.merchantConfigId != null ? (lab.orca.merchants[dev.merchantConfigId]?.name ?? '') : '';
-      if (has !== merchantName) return { fail: 'MERCHANT_MISMATCH', lines: [`[paycore] merchant mismatch: expected ${merchantName}, got ${has || '(none)'}`] };
+      const has = dev?.merchantConfigId != null ? (lab.orka.merchants[dev.merchantConfigId]?.name ?? '') : '';
+      if (has !== merchantName) return { fail: 'MERCHANT_MISMATCH', lines: [`[paycrest] merchant mismatch: expected ${merchantName}, got ${has || '(none)'}`] };
     }
     return 'done';
   }
-  if (!merchant) return { fail: 'UBI_ROUTE', lines: [`ubi: ERROR merchant ${merchantName} not found`] };
+  if (!merchant) return { fail: 'UBO_ROUTE', lines: [`ubo: ERROR merchant ${merchantName} not found`] };
   let i = Number(v(b, 's.dev') ?? 0);
   while (i < devices.length) {
     const deviceId = devices[i]!;
@@ -340,27 +340,27 @@ function stageMerchant(sc: SC, force: boolean): StageOutcome {
       const dev = lab.devices[deviceId];
       if (dev && dev.merchantConfigId === merchant.id) {
         // One line per rig (a tethered pair shares the merchant).
-        if (v(b, 's.skipSaid') === undefined) say(b, `laz: merchant already active (${merchant.name}) — skipped`);
+        if (v(b, 's.skipSaid') === undefined) say(b, `lazo: merchant already active (${merchant.name}) — skipped`);
         setv(b, 's.skipSaid', 1);
         setv(b, 's.dev', ++i);
         continue;
       }
-      const r = core().startLaz(lab, ctx, deviceId, merchant.id, { buildId: b.id, actor: 'jenkins' });
-      if (!r.ok) return { fail: r.error.startsWith('ubi:') ? 'UBI_ROUTE' : 'LAZ_FAILED', lines: [r.error] };
+      const r = core().startLazo(lab, ctx, deviceId, merchant.id, { buildId: b.id, actor: 'jenkins' });
+      if (!r.ok) return { fail: r.error.startsWith('ubo:') ? 'UBO_ROUTE' : 'LAZO_FAILED', lines: [r.error] };
       setv(b, `s.run${i}`, r.value.runId);
       setv(b, `s.log${i}`, 0);
       return 'poll';
     }
-    const run = lab.laz.runs[runId];
-    if (!run) return { fail: 'LAZ_FAILED', lines: ['laz: ERROR run lost'] };
+    const run = lab.lazo.runs[runId];
+    if (!run) return { fail: 'LAZO_FAILED', lines: ['lazo: ERROR run lost'] };
     const printed = Number(v(b, `s.log${i}`) ?? 0);
     if (run.log.length > printed) {
       say(b, ...run.log.slice(printed));
       setv(b, `s.log${i}`, run.log.length);
     }
     if (run.step === 'failed') {
-      const err = run.error ?? run.log[run.log.length - 1] ?? 'laz: ERROR';
-      return { fail: /^ubi:/.test(err) || run.log.some((l) => /^ubi: ERROR/.test(l)) ? 'UBI_ROUTE' : 'LAZ_FAILED', lines: run.log.length > printed ? [] : [] };
+      const err = run.error ?? run.log[run.log.length - 1] ?? 'lazo: ERROR';
+      return { fail: /^ubo:/.test(err) || run.log.some((l) => /^ubo: ERROR/.test(l)) ? 'UBO_ROUTE' : 'LAZO_FAILED', lines: run.log.length > printed ? [] : [] };
     }
     if (run.step !== 'done') return 'poll';
     setv(b, 's.dev', ++i);
@@ -392,11 +392,11 @@ export function computeEnv(lab: LabState, b: JenkinsBuild): { env: Record<string
   }
   env['MERCHANT'] = b.params['MERCHANT'] ?? '';
   env['CARD_PROFILE'] = b.params['CARD_PROFILE'] ?? '';
-  const m = Object.values(lab.orca.merchants).find((x) => x.name === env['MERCHANT']);
+  const m = Object.values(lab.orka.merchants).find((x) => x.name === env['MERCHANT']);
   env['APP_ID'] = m?.appId ?? '';
   env['APP_SECRET'] = m?.appSecret ?? '';
   env['API_KEY'] = m?.apiKey ?? '';
-  env['ORCA_URL'] = ORCA_URL;
+  env['ORKA_URL'] = ORKA_URL;
   const masked = { ...env };
   for (const k of ['APP_SECRET', 'API_KEY', 'UNLOCK_PASSCODE']) if (masked[k]) masked[k] = '****';
   return { env, masked };
@@ -411,7 +411,7 @@ function stageInjectEnv(sc: SC): StageOutcome {
     if (env['RUN_TYPE'] !== undefined) {
       for (const k of ['RUN_TYPE', 'DEVICE_TYPE', 'ROBOT_NAME', 'PORT_NUMBER', 'THEME', 'KERNEL_TYPE']) say(b, `[env] ${k}=${env[k]}`);
     }
-    const m = Object.values(lab.orca.merchants).find((x) => x.name === env['MERCHANT']);
+    const m = Object.values(lab.orka.merchants).find((x) => x.name === env['MERCHANT']);
     if (m && (m.appId || m.appSecret || m.apiKey)) say(b, `[env] APP_ID=${masked['APP_ID']} APP_SECRET=${masked['APP_SECRET']} API_KEY=${masked['API_KEY']}`);
     setv(b, 's.done', 1);
   }
@@ -439,17 +439,17 @@ function compileRun(sc: SC, host: RunnerHost): void {
   const { b, job } = sc;
   const kind: RunnerKind = job.runner;
   let steps;
-  if (kind === 'uia-remote') {
+  if (kind === 'uia-relay') {
     const tests = testsFromScript(job.script, job.testRef?.path ?? null);
     say(b, `+ ./gradlew connectedAndroidTest -Pclasses=${tests.join(',')}`, 'Starting a Gradle Daemon (subsequent builds will be faster)');
     steps = compileUiaPlan({ tests, env: host.env, tree: host.tree, local: false });
     b.runner.vars['j.tests'] = String(tests.length);
-  } else if (kind === 'pigeon') {
+  } else if (kind === 'parrot') {
     const file = scriptVar(job.script, 'testFile') ?? job.testRef?.path ?? '';
     const platform = job.platform === 'windows' ? 'WINDOWS' : job.platform === 'rest' ? 'REST' : job.platform === 'ios' ? 'IOS' : 'ANDROID';
     say(b, `+ lstr run --platform ${platform} ${file}`);
     const text = host.tree[file];
-    steps = text === undefined ? compilePigeonPlan('', file, platform, host.env, false).slice(0, 0).concat([{ id: 'nf', label: 'load', role: 'DEVICE', op: 'lstrFail', args: { code: 'JSON_PARSE', lines: `LSTR ParseError: file not found ${file}` } }]) : compilePigeonPlan(text, file, platform, host.env, false);
+    steps = text === undefined ? compileParrotPlan('', file, platform, host.env, false).slice(0, 0).concat([{ id: 'nf', label: 'load', role: 'DEVICE', op: 'lstrFail', args: { code: 'JSON_PARSE', lines: `LSTR ParseError: file not found ${file}` } }]) : compileParrotPlan(text, file, platform, host.env, false);
   } else if (kind === 'go-sdk') {
     const file = job.testRef?.path ?? 'go-sdk/tests/sale_receipt.json';
     say(b, `+ go run ./go-sdk/cmd/gosdk-run ${file}`);
@@ -463,7 +463,7 @@ function compileRun(sc: SC, host: RunnerHost): void {
     steps = compileIosPlan(host.tree[file], file);
   }
   const keep = Object.fromEntries(Object.entries(b.runner.vars).filter(([k]) => k.startsWith('j.')));
-  b.runner = newRunner(kind === 'gort-sync' ? 'uia-remote' : kind, steps, keep);
+  b.runner = newRunner(kind === 'gorth-sync' ? 'uia-relay' : kind, steps, keep);
 }
 
 function stageRunTests(sc: SC): StageOutcome {
@@ -473,9 +473,9 @@ function stageRunTests(sc: SC): StageOutcome {
     compileRun(sc, host);
     setv(b, 's.compiled', 1);
     setv(b, 'ranTests', 1);
-    if (job.runner === 'uia-remote') return { wait: 10_000 };
+    if (job.runner === 'uia-relay') return { wait: 10_000 };
   }
-  if (job.runner === 'uia-remote' && v(b, 's.banner') === undefined) {
+  if (job.runner === 'uia-relay' && v(b, 's.banner') === undefined) {
     say(b, '> Task :app:connectedDebugAndroidTest');
     setv(b, 's.banner', 1);
   }
@@ -495,7 +495,7 @@ function stageRunTests(sc: SC): StageOutcome {
       return 'poll';
     }
   }
-  if (job.runner === 'uia-remote') {
+  if (job.runner === 'uia-relay') {
     if (runnerPassed(b.runner)) say(b, `BUILD SUCCESSFUL in ${Math.round((lab.time.physMs - Number(v(b, 'stageStart'))) / 1000)}s`);
     else say(b, '> Task :app:connectedDebugAndroidTest FAILED', `BUILD FAILED in ${Math.round((lab.time.physMs - Number(v(b, 'stageStart'))) / 1000)}s`);
   }
@@ -520,8 +520,8 @@ function stagePublish(sc: SC): StageOutcome {
   const { b, job } = sc;
   if (v(b, 'ranTests') === undefined) return 'skip';
   if (v(b, 's.done') === undefined) {
-    const total = job.runner === 'uia-remote' ? Number(b.runner.vars['_tests'] ?? v(b, 'tests') ?? 1) : 1;
-    const failed = job.runner === 'uia-remote' ? Number(b.runner.vars['_testsFailed'] ?? (v(b, 'testsFailed') ? 1 : 0)) : v(b, 'testsFailed') ? 1 : 0;
+    const total = job.runner === 'uia-relay' ? Number(b.runner.vars['_tests'] ?? v(b, 'tests') ?? 1) : 1;
+    const failed = job.runner === 'uia-relay' ? Number(b.runner.vars['_testsFailed'] ?? (v(b, 'testsFailed') ? 1 : 0)) : v(b, 'testsFailed') ? 1 : 0;
     say(b, `Tests: ${Math.max(total, failed)}, Failures: ${failed}, Errors: 0, Skipped: 0`);
     setv(b, 's.done', 1);
   }
@@ -555,7 +555,7 @@ function runStage(sc: SC, name: StageName): StageOutcome {
       return stageVerifyRobot(sc);
     case 'Merchant':
       return stageMerchant(sc, false);
-    case 'Laz OOBE':
+    case 'Lazo OOBE':
       return stageMerchant(sc, true);
     case 'Inject environment':
       return stageInjectEnv(sc);

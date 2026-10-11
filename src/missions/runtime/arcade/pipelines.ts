@@ -59,7 +59,7 @@ export function setActivePipelines(pls: PipelineState[], heat: HeatLevel): void 
 }
 
 function robotStatus(d: RootState, rig: string): RobotStatus {
-  return robotByName(d.lab, rig)?.status ?? (ROSTER[rig]?.roles.includes('paycore') ? 'UNAVAILABLE' : 'AVAILABLE');
+  return robotByName(d.lab, rig)?.status ?? (ROSTER[rig]?.roles.includes('paycrest') ? 'UNAVAILABLE' : 'AVAILABLE');
 }
 
 /** Rigs busy with another pipeline run or a non-pipeline checkout. */
@@ -110,13 +110,13 @@ function attempt(d: RootState, ctx: TxContext, sh: PipelineHost, p: PipelineStat
     const st = robotStatus(d, r);
     return (st === 'AVAILABLE' || (named && st === 'UNAVAILABLE')) && !busy(d, r, p.id);
   });
-  const reasons = def.eligibleRigs.map((r) => `[orca] candidate ${r}: ${statusLabel(robotStatus(d, r))}${busy(d, r, p.id) ? ' (in use)' : ''} — skipped`);
+  const reasons = def.eligibleRigs.map((r) => `[orka] candidate ${r}: ${statusLabel(robotStatus(d, r))}${busy(d, r, p.id) ? ' (in use)' : ''} — skipped`);
   if (!candidates.length) {
     p.blocked++;
     p.phase = 'blocked';
     p.lastResult = 'BLOCKED';
     const type = params.DEVICE_TYPE ?? '';
-    emitAttempt(ctx, p, null, true, reasons.length ? `${reasons.join('\n')}\n[orca] no Available ${type ? `${type} ` : ''}robot — build waiting in queue` : `[orca] no Available robot — build waiting in queue`);
+    emitAttempt(ctx, p, null, true, reasons.length ? `${reasons.join('\n')}\n[orka] no Available ${type ? `${type} ` : ''}robot — build waiting in queue` : `[orka] no Available robot — build waiting in queue`);
     if (sh.scoring) addScore(d, ctx, PIPELINE_BLOCKED, `${p.id} blocked`, null);
     return;
   }
@@ -132,10 +132,10 @@ function attempt(d: RootState, ctx: TxContext, sh: PipelineHost, p: PipelineStat
   p.runEndsInS = def.runS;
   p.runIndex++;
   const type = params.DEVICE_TYPE ? ` (${params.DEVICE_TYPE})` : '';
-  emitAttempt(ctx, p, robot, false, named ? `Checked out robot ${robot} (named)` : `[orca] checkout → ${robot}${type} OK`);
+  emitAttempt(ctx, p, robot, false, named ? `Checked out robot ${robot} (named)` : `[orka] checkout → ${robot}${type} OK`);
   const job = def.job;
   const buildParams: Record<string, string> = { ...params };
-  // A verification run: name the rig so Orca checks out exactly the one whose fix is waiting.
+  // A verification run: name the rig so Orka checks out exactly the one whose fix is waiting.
   if (awaiting && !named) {
     const type = robotDeviceType(d.lab, awaiting);
     if (type) buildParams.DEVICE_TYPE = type;
@@ -156,7 +156,7 @@ function finish(d: RootState, ctx: TxContext, sh: PipelineHost, p: PipelineState
   if (robot) p.greenStreak[robot] = result === 'SUCCESS' ? (p.greenStreak[robot] ?? 0) + 1 : 0;
   if (result === 'SUCCESS') p.green++;
   else p.red++;
-  p.lastConsoleLine = `${robot ? `[orca] released ${robot} → ${statusLabel(robotStatus(d, robot))}\n` : ''}Finished: ${result}`;
+  p.lastConsoleLine = `${robot ? `[orka] released ${robot} → ${statusLabel(robotStatus(d, robot))}\n` : ''}Finished: ${result}`;
   sh.pipelinePoints += points;
   d.progress.stats.pipelinesRun++;
   if (points) addScore(d, ctx, points, `${p.id} ${result === 'SUCCESS' ? 'green' : 'red'}`, null);
@@ -230,7 +230,7 @@ export function onPipelineEvent(d: RootState, ctx: TxContext, e: LogEntry, host:
   const sh = host;
   if (!sh) return;
   if (e.type === 'robot.checkedOut') {
-    // Orca (not the pipeline model) picks the robot of an unnamed build: follow the real checkout.
+    // Orka (not the pipeline model) picks the robot of an unnamed build: follow the real checkout.
     const pl = e.payload as { buildId?: string; name?: string };
     const p = sh.pipelines.find((x) => x.buildId && x.buildId === pl.buildId && x.phase === 'running');
     if (p && pl.name && p.robot !== pl.name) p.robot = pl.name;

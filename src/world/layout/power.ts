@@ -62,7 +62,7 @@ export const POWER_WALL_PARTS: readonly PowerWallPart[] = [
     { collection: 'power.terminals', ids: ['T-24V-SPARE'] }),
   part('power.tap.12v', 'tap', -1.15, 1.45, [20, 400, 12], ['12V'], 'Dangling DC tap lead with barrel plug — yellow tag', { collection: 'power.terminals', ids: ['T-12V-SPARE'] }),
   part('power.tap.5v', 'tap', -0.95, 1.45, [20, 400, 12], ['5V'], 'Dangling DC tap lead with barrel plug — blue tag', { collection: 'power.terminals', ids: ['T-5V-SPARE'] }),
-  part('power.strip.w', 'strip', 0.35, 1.2, [450, 50, 45], ['AC STRIP — LABSIM / COLLIS ONLY'], '6-outlet commercial metal strip, illuminated red rocker; cord to W4 (curriculum prop.ac-strip)',
+  part('power.strip.w', 'strip', 0.35, 1.2, [450, 50, 45], ['AC STRIP — LABSIM / KOLLIS ONLY'], '6-outlet commercial metal strip, illuminated red rocker; cord to W4 (curriculum prop.ac-strip)',
     { collection: 'power.strips', ids: ['STRIP-W'] }),
   part('power.tag.nuc', 'tag', -0.8, 2.2, [60, 25, 1], ['→ NUC SHELF (12V)'], 'Clickable line-end tag (power-trace node 7)'),
   part('power.tag.pi', 'tag', 0.0, 2.2, [60, 25, 1], ['→ PI SHELVES (5V)'], 'Clickable line-end tag (power-trace node 8)'),
@@ -121,8 +121,8 @@ export const OUTLETS: readonly OutletDef[] = [
   outlet(2, [-1.25, 1.05, -4.966], 0, 'power-board', 'power.strip.a, power.strip.c1'),
   outlet(3, [-0.25, 1.05, -4.966], 0, 'power-board', 'power.strip.b, power.strip.c2'),
   outlet(4, [0.65, 1.05, -4.966], 0, 'power-board', 'power.strip.w'),
-  outlet(5, [1.6, 1.05, -5.0], 0, 'north', 'above bench.jared — power.strip.t, power.strip.d'),
-  outlet(6, [2.6, 1.05, -5.0], 0, 'north', 'above bench.jared'),
+  outlet(5, [1.6, 1.05, -5.0], 0, 'north', 'above bench.jaden — power.strip.t, power.strip.d'),
+  outlet(6, [2.6, 1.05, -5.0], 0, 'north', 'above bench.jaden'),
   outlet(7, [-3.7, 0.4, -5.0], 0, 'north', 'behind shelf.server'),
   outlet(8, [-5.97, 1.05, -5.0], 0, 'north', 'above bench.fab, in the gap between the printers (doc −6.20 sat hidden behind the Prusa)'),
   outlet(9, [-6.1, 0.4, 5.0], 180, 'south', 'under desk.coworker-1'),
@@ -147,7 +147,7 @@ export interface AcStripDef {
   readonly pos: Vec3;
   /** Front (sockets) facing, degrees. */
   readonly rotY: number;
-  /** Body W × H × D mm (long axis = local X; 250 mm compact strips on the Callus shelf fit between its posts). */
+  /** Body W × H × D mm (long axis = local X; 250 mm compact strips on the Kallus shelf fit between its posts). */
   readonly sizeMm: Vec3;
   /** Wall outlet its cord runs to (decor routing; the sim decides what is actually plugged). */
   readonly cordTo: string;
@@ -160,43 +160,43 @@ const strip = (s: AcStripDef): AcStripDef => s;
 
 export const AC_STRIPS: readonly AcStripDef[] = [
   strip({
-    id: 'power.strip.a', name: 'STRIP-A', tape: 'STRIP-A — LABSIM / COLLIS ONLY', host: 'rack.a',
+    id: 'power.strip.a', name: 'STRIP-A', tape: 'STRIP-A — LABSIM / KOLLIS ONLY', host: 'rack.a',
     // rack-local (0, 1.885…1.929, −0.47), 1U at the rear, facing the rear aisle
     pos: [-2.6, 1.907, -2.57], rotY: 180, sizeMm: [482, 44, 60], cordTo: 'power.outlet.w2', sockets: 6,
     sim: { collection: 'power.strips', ids: ['STRIP-A'] },
   }),
   strip({
-    id: 'power.strip.b', name: 'STRIP-B', tape: 'STRIP-B — LABSIM / COLLIS ONLY', host: 'rack.b',
+    id: 'power.strip.b', name: 'STRIP-B', tape: 'STRIP-B — LABSIM / KOLLIS ONLY', host: 'rack.b',
     pos: [-1.4, 1.907, -2.57], rotY: 180, sizeMm: [482, 44, 60], cordTo: 'power.outlet.w3', sockets: 6,
     sim: { collection: 'power.strips', ids: ['STRIP-B'] },
   }),
   strip({
-    id: 'power.strip.c1', name: 'STRIP-C1', tape: 'STRIP-C1 — COLLIS RACK A', host: 'shelf.callus',
+    id: 'power.strip.c1', name: 'STRIP-C1', tape: 'STRIP-C1 — KOLLIS RACK A', host: 'shelf.kallus',
     // shelf-local (−0.15, L1 0.100, −0.40), lying on the level, sockets up
     pos: [-2.15, 0.1225, -2.5], rotY: 0, sizeMm: [250, 45, 50], cordTo: 'power.outlet.w2', sockets: 6,
     sim: { collection: 'power.strips', ids: ['STRIP-C', 'STRIP-C1'] },
-    note: 'Sim seeds one STRIP-C for all Collis PSUs; C2 binds only if the sim adds it.',
+    note: 'Sim seeds one STRIP-C for all Kollis PSUs; C2 binds only if the sim adds it.',
   }),
   strip({
-    id: 'power.strip.c2', name: 'STRIP-C2', tape: 'STRIP-C2 — COLLIS RACK B', host: 'shelf.callus',
+    id: 'power.strip.c2', name: 'STRIP-C2', tape: 'STRIP-C2 — KOLLIS RACK B', host: 'shelf.kallus',
     pos: [-1.85, 0.1225, -2.5], rotY: 0, sizeMm: [250, 45, 50], cordTo: 'power.outlet.w3', sockets: 6,
     sim: { collection: 'power.strips', ids: ['STRIP-C2'] },
   }),
   strip({
-    id: 'power.strip.t', name: 'STRIP-T', tape: 'STRIP-T — LABSIM / COLLIS ONLY', host: 'rack.t',
+    id: 'power.strip.t', name: 'STRIP-T', tape: 'STRIP-T — LABSIM / KOLLIS ONLY', host: 'rack.t',
     // S0 (top y 0.10), rear
     pos: [2.4, 0.1225, -2.4], rotY: 0, sizeMm: [450, 45, 50], cordTo: 'power.outlet.w5', sockets: 6,
     sim: { collection: 'power.strips', ids: ['STRIP-T'] },
   }),
   strip({
-    id: 'power.strip.d', name: 'STRIP-D', tape: 'STRIP-D — LABSIM / COLLIS ONLY', host: 'shelf.adb',
+    id: 'power.strip.d', name: 'STRIP-D', tape: 'STRIP-D — LABSIM / KOLLIS ONLY', host: 'shelf.adb',
     // lower tier (top 0.45) rear
     pos: [0.85, 0.4725, -2.12], rotY: 0, sizeMm: [450, 45, 50], cordTo: 'power.outlet.w5', sockets: 6,
     sim: { collection: 'power.strips', ids: ['STRIP-D'] },
     note: 'Sim puts DATA/TARS bricks on STRIP-T; STRIP-D binds only if the sim adds it.',
   }),
   strip({
-    id: 'power.strip.w', name: 'STRIP-W', tape: 'AC STRIP — LABSIM / COLLIS ONLY', host: 'wall.power',
+    id: 'power.strip.w', name: 'STRIP-W', tape: 'AC STRIP — LABSIM / KOLLIS ONLY', host: 'wall.power',
     pos: [0.35, 1.2, -4.9435], rotY: 0, sizeMm: [450, 50, 45], cordTo: 'power.outlet.w4', sockets: 6,
     sim: { collection: 'power.strips', ids: ['STRIP-W'] },
   }),
@@ -276,7 +276,7 @@ export function powerProbePoints(): ProbePointDef[] {
     out.push({ id: `mp.rackdist.${r}.5v`, on: d.id, pointId: `rail-5v-${r}`, altPointId: `rail-5v-${r}` });
     out.push({ id: `mp.rackdist.${r}.24v`, on: d.id, pointId: 'rail-24v', altPointId: 'rail-24v' });
   }
-  out.push({ id: 'mp.callus.12v', on: 'callus.dist-12v', pointId: 'rail-12v', altPointId: 'rail-12v' });
+  out.push({ id: 'mp.kallus.12v', on: 'kallus.dist-12v', pointId: 'rail-12v', altPointId: 'rail-12v' });
   for (const s of AC_STRIPS) {
     out.push({ id: `mp.strip.${s.id.split('.').pop()}`, on: s.id, pointId: s.sim.ids[0]!, altPointId: `strip:${s.id}` });
   }

@@ -159,10 +159,10 @@ export function toMenu(d: RootState, ctx: TxContext): void {
   if (was !== 'menu' && !d.session.result) ctx.emit('session.ended', { mode: was, activityId: id, passed: false });
 }
 
-/** Real seconds until Orca's next health check at the current time scale. */
+/** Real seconds until Orka's next health check at the current time scale. */
 export function healthCheckInS(s: RootState): number {
   const t = s.lab.time;
-  const next = s.lab.orca?.healthCheck?.nextRunMs;
+  const next = s.lab.orka?.healthCheck?.nextRunMs;
   const anchor = t.healthAnchorMs ?? 0;
   const interval = HEALTH_CHECK_INTERVAL_MS ?? 300_000;
   const target = typeof next === 'number' && next > t.nowMs ? next : t.nowMs + (interval - ((((t.nowMs - anchor) % interval) + interval) % interval || interval));

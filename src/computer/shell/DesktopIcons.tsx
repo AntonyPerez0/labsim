@@ -9,7 +9,7 @@ import { LOCKED_TEXT } from './gating';
 import { wmApi } from './wmStore';
 
 type IconId = AppId | 'recycle';
-const ICON_ORDER: IconId[] = ['files', 'browser', 'orca', 'jenkins', 'github', 'intellij', 'vscode', 'terminal', 'gimp', 'camera', 'ollama', 'chat', 'dashboard', 'cardreader', 'recycle'];
+const ICON_ORDER: IconId[] = ['files', 'browser', 'orka', 'jenkins', 'github', 'intellij', 'vscode', 'terminal', 'gimp', 'camera', 'ollama', 'chat', 'dashboard', 'cardreader', 'recycle'];
 const CELL_W = 84;
 const CELL_H = 92;
 const ORIGIN = 12;

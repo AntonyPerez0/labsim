@@ -82,7 +82,7 @@ export function createLabMats(engine: Engine) {
     cableWhite: g('cableWhite', () => std('#f0f0ee', 0.55)),
     cableBlack: g('cableBlack', () => std('#151515', 0.55)),
     paperWhite: g('paperWhite', () => std('#fbfbf8', 0.85)),
-    collisGrey: g('collisGrey', () => std('#a9acaf', 0.55, 0.35)),
+    kollisGrey: g('kollisGrey', () => std('#a9acaf', 0.55, 0.35)),
     deviceGreyBack: g('deviceGreyBack', () => std('#5b5f63', 0.5)),
     smokedPlastic: g('smokedPlastic', () => phys('#2a2a2c', 0.25, { transparent: true, opacity: 0.7 })),
     // smoky clear polystyrene: reads dark-ish against the contents like the IMG-R organisers

@@ -1,6 +1,6 @@
 /**
  * One touch rig in its bay (World §2.2–§2.10): fascia, gantry, actuators, cradle + LabSim device,
- * Raspberry Pi, bay fuse, motor PCB, device AC brick, webcam, braided sleeve, wiring loom, Collis
+ * Raspberry Pi, bay fuse, motor PCB, device AC brick, webcam, braided sleeve, wiring loom, Kollis
  * ribbon, side door. Returns the handles the binder animates (`TouchRigView`).
  */
 import { Group, Mesh, Object3D, type Matrix4 } from 'three';
@@ -208,7 +208,7 @@ export function buildTouchRig(kit: RigKit, def: TouchRigDef, serials: Readonly<R
   const drivers = [0, 1, 2].map((i) => pb.led([-30 + i * 22 + 6, 9, 2.2], 1.2, '#ff2614', 6));
   // grey 25-way ribbon from the DB-25 down to the loom
   pb.tube(m.ribbonGrey, [[0, 36, 8], [0, 60, 20], [s * 20, 40, 60], [s * 40, -190, 120]], 6, 4);
-  // grey USB lead tagged `<HRN> MOTION` from the PCB's USB-B through the open side to the Callus
+  // grey USB lead tagged `<HRN> MOTION` from the PCB's USB-B through the open side to the Kallus
   // shelf — shown only while the sim has the motor PCB on a Windows box (rig.motionHost ≠ 'PI', INC19)
   const motionCable = kit.moving(`motion-cable:${def.id}`, kit.root, false);
   const mb = new B(kit, frame.m, motionCable.batch, motionCable.batch);
@@ -222,8 +222,8 @@ export function buildTouchRig(kit: RigKit, def: TouchRigDef, serials: Readonly<R
     const o = (i - 1.5) * 2.4;
     b.tube(m.wire(c), [[pcbP[0] + o, pcbP[1] - 35, pcbP[2] + 6], [pcbP[0] * 0.6 + o, 10, -700], [40 + o, 8, -300], [10 + o, 8, -80], [10, 40 + o, -48 + o], [10, 120, -48 + o], [10, 235, -48 + o]], 2, 4);
   });
-  // ── Collis ribbon enters through the open (Callus) side to the dip tower ──
-  const ce = parts.collisRibbonEntry!.pos;
+  // ── Kollis ribbon enters through the open (Kallus) side to the dip tower ──
+  const ce = parts.kollisRibbonEntry!.pos;
   b.add(tubeG([[ce[0] - s * 20, 30, ce[2]], [ce[0] * 0.5, 8, ce[2] + 100], [30, 8, -120], [32, 60, -70], [32, 200, -70]], 3, 4, 4), m.ribbonGrey, {}, true);
   // ── braided sleeve along the front edge of the bay floor, then up the door-side rear post ──
   b.tube(m.braidedSleeve, [[-s * 215, 12, -12], [0, 13, -12], [s * 200, 12, -14], [s * 222, 20, -120], [s * 228, 20, -600], [s * 232, 40, -870], [s * 232, 440, -878]], 24, 8, false);

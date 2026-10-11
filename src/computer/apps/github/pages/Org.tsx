@@ -111,7 +111,7 @@ export function OrgPage(props: { tab: 'overview' | 'repositories' }) {
             <div className="gh-box" style={{ padding: 16 }}>
               <h3 style={{ fontSize: 14, fontWeight: 600, marginBottom: 8 }}>People</h3>
               <p className="gh-muted" style={{ fontSize: 12, margin: 0 }}>
-                The lab team: hardware, Orca, SDK frameworks and automation engineers.
+                The lab team: hardware, Orka, SDK frameworks and automation engineers.
               </p>
             </div>
           </div>

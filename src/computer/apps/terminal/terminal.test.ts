@@ -40,8 +40,8 @@ describe('lineEditor', () => {
 
 describe('prompt', () => {
   it('parses bash, Pi, cmd and PowerShell prompts', () => {
-    const p = parsePrompt('engineer@ws-17:~/IdeaProjects/uia-remote$ ');
-    expect(p).toMatchObject({ shell: 'bash', user: 'engineer', host: 'ws-17', path: '~/IdeaProjects/uia-remote' });
+    const p = parsePrompt('engineer@ws-17:~/IdeaProjects/uia-relay$ ');
+    expect(p).toMatchObject({ shell: 'bash', user: 'engineer', host: 'ws-17', path: '~/IdeaProjects/uia-relay' });
     expect(p.segments.map((s) => s.kind)).toEqual(['userhost', 'plain', 'path', 'plain']);
     expect(parsePrompt('pi@wall-e:~ $ ')).toMatchObject({ shell: 'bash', user: 'pi', host: 'wall-e', path: '~' });
     expect(parsePrompt('automation@MINIX-01 C:\\Users\\automation>')).toMatchObject({ shell: 'cmd', host: 'MINIX-01' });
@@ -50,7 +50,7 @@ describe('prompt', () => {
     expect(titleFromPrompt('automation@MINIX-01 C:\\Users\\automation>')).toBe('automation@MINIX-01: C:\\Users\\automation');
   });
   it('resolves shell paths', () => {
-    expect(resolveShellPath('config.properties', 'engineer@ws-17:~/IdeaProjects/uia-remote$ ')).toBe('~/IdeaProjects/uia-remote/config.properties');
+    expect(resolveShellPath('config.properties', 'engineer@ws-17:~/IdeaProjects/uia-relay$ ')).toBe('~/IdeaProjects/uia-relay/config.properties');
     expect(resolveShellPath('/etc/robot-controller/controller.yaml', 'pi@wall-e:~ $ ')).toBe('/etc/robot-controller/controller.yaml');
     expect(resolveShellPath('../x', 'pi@wall-e:~ $ ')).toBe('/home/x');
   });

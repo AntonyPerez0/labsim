@@ -127,9 +127,9 @@ export function Explorer({ model }: { model: VsModel }) {
           </button>
         </div>
       </RootSection>
-      <RootSection model={model} root="practice" title="PIGEON-PRACTICE" files={practice} scm={new Map()}>
+      <RootSection model={model} root="practice" title="PARROT-PRACTICE" files={practice} scm={new Map()}>
         <div className="vsc-empty">
-          <p>Exercises you start in Pigeon Practice appear here.</p>
+          <p>Exercises you start in Parrot Practice appear here.</p>
         </div>
       </RootSection>
     </div>
@@ -331,8 +331,8 @@ export function RunView({ model }: { model: VsModel }) {
     <div className="vsc-view">
       <div className="vsc-view__title">RUN AND DEBUG</div>
       <div className="vsc-view__pad">
-        {model.repo !== 'pigeon' ? (
-          <p className="vsc-dim">LSTR tests live in the pigeon folder. Open it to run them.</p>
+        {model.repo !== 'parrot' ? (
+          <p className="vsc-dim">LSTR tests live in the parrot folder. Open it to run them.</p>
         ) : (
           <>
             <button type="button" className="vsc-btn vsc-btn--block" data-hint="vscode.runButton" disabled={!current || running} onClick={() => current && runLocal(model, current)}>

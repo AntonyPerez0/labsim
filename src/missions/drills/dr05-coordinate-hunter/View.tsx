@@ -65,7 +65,7 @@ export function View(props: DrillComponentProps) {
     if (!it || !sel || st) return;
     const streak = getState().session.drill?.streak ?? 0;
     const sc = huntPoints(sel, it.data.rect, streak, mode, !!bonus?.ok);
-    const detail = `edge error ${sc.e.toFixed(1)} px${bonus && !bonus.ok ? ` · ${mode === 'B' ? 'mm conversion off' : 'Pigeon block wrong'}` : ''}`;
+    const detail = `edge error ${sc.e.toFixed(1)} px${bonus && !bonus.ok ? ` · ${mode === 'B' ? 'mm conversion off' : 'Parrot block wrong'}` : ''}`;
     d.stage({ correct: sc.correct, pointsOverride: sc.points, detail: sc.correct ? undefined : detail }, { drawn: sel, e: sc.e, edgePts: sc.edgePts, bonus });
   };
 
@@ -258,7 +258,7 @@ export function View(props: DrillComponentProps) {
             ) : null}
             {step === 'bonus' && !st && mode === 'C' ? (
               <div className="dr05-bonus">
-                <div className="dr05-bonus__title">Pigeon screenCompare params</div>
+                <div className="dr05-bonus__title">Parrot screenCompare params</div>
                 <textarea
                   ref={(el) => {
                       bonusRef.current = el;
@@ -276,7 +276,7 @@ export function View(props: DrillComponentProps) {
                   }}
                 />
                 <div className="dr05-bonus__hint">
-                  <Kbd k="Ctrl ⏎" size="sm" /> submit · no linter in Pigeon
+                  <Kbd k="Ctrl ⏎" size="sm" /> submit · no linter in Parrot
                 </div>
               </div>
             ) : null}

@@ -11,7 +11,7 @@
 > **This doc owns:** where everything stands, the physical rig roster (which device sits in which bay), what every
 > object looks like (mm-accurate), device-screen and tablet layouts (the "firmware truth" that touches hit), materials,
 > lighting, post-processing, audio recipes, interaction verbs, performance budgets.
-> **It does not own:** IP addresses, serials, host names, Orca rows (sim doc); lesson scripts (10-curriculum); incident
+> **It does not own:** IP addresses, serials, host names, Orka rows (sim doc); lesson scripts (10-curriculum); incident
 > rules, scoring, controls philosophy (20-gameplay). The world binds to sim objects by **id** (`RigState.id`,
 > `Host.id`, `TerminalDevice.id`, `Fuse.id` …) and to props by `propId`, never by IP.
 
@@ -29,7 +29,7 @@
 | Player / camera yaw | `0` = looking north (−Z, three.js camera default); positive yaw turns left (CCW seen from above): `90` = looking west. |
 | Position columns | `(x, y, z)` = centre of the footprint at its **base** (floor props: y = 0; wall-mounted: y = centre height unless stated). |
 | Footprint `W × D × H` | W along the prop's local X, D along local Z (front–back), H up. Metres unless the column says mm. |
-| Prop ids | Lowercase, dot-separated, kebab-case segments: `<group>.<instance>[.<part>]` — e.g. `rack.a`, `rig.wall-e.tablet`, `power.fuse.5v-b`, `desk.player.chair`. Rig segments reuse the Orca system name (`wall-e`, `r2-d2`, `johnny-5`). All ids live in `src/world/layout.ts` (`PROP_IDS`); curriculum `prop.*` ids are aliases (§1.10, exported as `PROP_ALIASES`). |
+| Prop ids | Lowercase, dot-separated, kebab-case segments: `<group>.<instance>[.<part>]` — e.g. `rack.a`, `rig.wall-e.tablet`, `power.fuse.5v-b`, `desk.player.chair`. Rig segments reuse the Orka system name (`wall-e`, `r2-d2`, `johnny-5`). All ids live in `src/world/layout.ts` (`PROP_IDS`); curriculum `prop.*` ids are aliases (§1.10, exported as `PROP_ALIASES`). |
 | Location ids | `loc.*` exactly as listed in §1.3 (superset of 10-curriculum §0.5). |
 | † | **Illustrative (sim-only) detail** — the reference is silent. Same meaning as `[illus.]` in 20-gameplay. Every † string a trainee could mistake for real-world truth is badged "Illustrative" in the Field Manual. |
 | Colours | sRGB hex. Emissive intensities are in three.js units on top of the colour. |
@@ -41,43 +41,43 @@
 | # | Decision | Why / what other docs must do |
 |---|---|---|
 | D1 | **Physical roster = 10-curriculum §0.4 device assignments** (see §2.10). Rack A: WALL-E (Flux 3), EVE (Flux 4), R2-D2 (Stand Duet), BUMBLEBEE (Micro 3). Rack B: JOHNNY-5 (Flux 1 → Flux 2), SETI (Compass), BAYMAX (Stand 2018), ROSIE (Flux Pocket). Tethered: MEGATRON (MFD Stand 2 + CFD Micro 2, DEV1), OPTIMUS (MFD Micro 3 + CFD Micro 3, STG). ADB: DATA (Micro 3), TARS (Flux 4). | Lessons are written against these devices; 20-gameplay §3.1 says the world doc owns placement and incidents bind by role tag. Role-tag remap in §0.3. |
-| D2 | **Power topology (physical):** wall 120 V AC → one Mean Well `MW-1` (LRS-600-24) → central **24 V DC rail** (bus bar on the power wall) → step-down regulators on the power wall: `REG-12V` (label "12V DC · NUC") and three `REG-5V-A/-B/-C` (label "5V DC · 10A") → inline rack fuses `F-12V`, `F-5V-A`, `F-5V-B`, `F-5V-C` → cable tray → rack-top 5 V distribution block → per-bay **MAIN** switch → per-bay inline fuse `F-<RIG>-5V` → Raspberry Pi. 24 V also runs (unfused branch, per rack) to each bay's **MOTOR** switch → motor PCB. LabSim devices and Collis probes use their own AC bricks on commercial AC strips (Ref §6). | Satisfies both curriculum M03 (rack-level "Rack B 5V fuse" on the power wall) and gameplay INC03 (per-rig fuse after MAIN, multimeter chain 24 V → 5.08 V → 0 V). Gameplay's `MW-A/MW-B` both map to `MW-1` ("central 24V DC rail", Ref §6). |
+| D2 | **Power topology (physical):** wall 120 V AC → one Mean Well `MW-1` (LRS-600-24) → central **24 V DC rail** (bus bar on the power wall) → step-down regulators on the power wall: `REG-12V` (label "12V DC · NUC") and three `REG-5V-A/-B/-C` (label "5V DC · 10A") → inline rack fuses `F-12V`, `F-5V-A`, `F-5V-B`, `F-5V-C` → cable tray → rack-top 5 V distribution block → per-bay **MAIN** switch → per-bay inline fuse `F-<RIG>-5V` → Raspberry Pi. 24 V also runs (unfused branch, per rack) to each bay's **MOTOR** switch → motor PCB. LabSim devices and Kollis probes use their own AC bricks on commercial AC strips (Ref §6). | Satisfies both curriculum M03 (rack-level "Rack B 5V fuse" on the power wall) and gameplay INC03 (per-rig fuse after MAIN, multimeter chain 24 V → 5.08 V → 0 V). Gameplay's `MW-A/MW-B` both map to `MW-1` ("central 24V DC rail", Ref §6). |
 | D3 | **Fuse hardware:** ATO blade fuses in black inline holders with a smoked translucent cap; every holder carries a white tape label with its id and rating. All 5 V and 12 V fuses are **10 A (red)**†. Spare tray holds 5 A tan, 7.5 A brown, 10 A red, 15 A blue. | Matches 20-gameplay GW04 ("10 A red", holder label "10A"). |
-| D4 | **Cameras:** every touch bay has its own gooseneck webcam (IMG-T/IMG-G). Rack B's four bay webcams are wired to one **Rack B camera Pi** that serves a 2×2 mosaic (the reference's "shared across 4 rigs"). The tethered rack has one bench webcam; the ADB shelf has one webcam; the tethered Pi can serve those two as a 1×2 mosaic. Which Orca URL points at which stream is sim data. | Supports curriculum (Rack B shared, MEGATRON/OPTIMUS shared) and gameplay CAM-A (four rigs on one stream) — Appendix B. |
+| D4 | **Cameras:** every touch bay has its own gooseneck webcam (IMG-T/IMG-G). Rack B's four bay webcams are wired to one **Rack B camera Pi** that serves a 2×2 mosaic (the reference's "shared across 4 rigs"). The tethered rack has one bench webcam; the ADB shelf has one webcam; the tethered Pi can serve those two as a 1×2 mosaic. Which Orka URL points at which stream is sim data. | Supports curriculum (Rack B shared, MEGATRON/OPTIMUS shared) and gameplay CAM-A (four rigs on one stream) — Appendix B. |
 | D5 | **Tablet status strings** are rendered from `RigState.tablet.statusText`. Recommended values: green `OK`; yellow after a manual push `LOCK RELEASED — PARK REQUIRED` (curriculum S13); yellow after Steppers Enable / MOTOR restored `NOT HOMED — PARK REQUIRED`†; grey `Controller unreachable` (gameplay); red `FAULT — <reason>`†. Lockout overlay line 1 `TEST IN PROGRESS — CONTROLS LOCKED` (curriculum S13), line 2 `<job> #<n>` (gameplay). | 20-gameplay's `MANUAL MOVE — PARK REQUIRED` should be replaced by the two strings above. |
 | D6 | **Stand 2 look†:** the reference never describes a Stand 2. Following the reference's example "a Stand 2 tethered to a Micro 2" and curriculum's MEGATRON roster, the photo's **MEGATRON MFD** face (8-inch white bezel, `lab` wordmark, IMG-R) *is* the Stand 2 display head. In the device library it sits on a white Stand base with printer. | Keeps IMG-R exact (four equal 8-inch faces) and the roster intact. Field Manual badges the Stand 2 look as illustrative. |
-| D7 | **Device orientation in touch rigs:** screen face-up and **level**, top edge toward the back of the bay, chip-slot edge toward the front (dip arm just behind the fascia, IMG-T). Screen +x → bay +X (player's right), screen +y → toward the player (+Z). Gantry home (0,0) = screen top-left = the rear-left corner of the screen; limit switches are slid along the extrusions to that point per rig (Jared's true-(0,0) calibration, Ref §3). | Screens read upright to a player looking down into a lower bay; the tethered/ADB screens face the aisle. |
+| D7 | **Device orientation in touch rigs:** screen face-up and **level**, top edge toward the back of the bay, chip-slot edge toward the front (dip arm just behind the fascia, IMG-T). Screen +x → bay +X (player's right), screen +y → toward the player (+Z). Gantry home (0,0) = screen top-left = the rear-left corner of the screen; limit switches are slid along the extrusions to that point per rig (Jaden's true-(0,0) calibration, Ref §3). | Screens read upright to a player looking down into a lower bay; the tethered/ADB screens face the aisle. |
 | D8 | WALL-E's right-hand fascia panel reads **`SETI`** with USB ports labelled `Minix` / `Raspberry Pi`, exactly as IMG-T. Fascia panels get re-used between rigs†; only SETI's own fascia also reads `SETI`. All other rigs' side panels are blank (ports only). | Curriculum M01 step 10 inspects `prop.seti-panel` to the right of WALL-E's tablet. Field Manual note: "identify a rig by its tablet header, never by its side panel"†. |
 | D9 | **Interaction keys used by world verbs:** `E` primary (also left-click), `R` secondary, `G` tertiary, hold-`E` for long presses, LMB-drag for draggables. World **never binds `F` or `Q`** (20-gameplay uses them for flashlight / holster). Hold-RMB inspect is engine-global. | `InteractVerb.key` already allows E/R/G; add an optional `holdMs` (§9.1). |
-| D10 | Hand-held multimeter spawns on the **power bench** (M03 "grab the multimeter" at the power wall); the steel ruler spawns on **your desk** and M09's setup moves it to `anchor.ruler.rack-a`. Spare fuses: power-bench fuse tray **and** the red parts bin. Spare Flux 2 / Micro 3 in Husky drawers 2 / 3; legacy Flux 1 and the spare Collis probe in the locked storage cabinet. | Merges 10-curriculum and 20-gameplay item locations. |
-| D11 | **Callus shelf** stands between Rack A and Rack B and holds the Collis probes (one per touch bay, beside its bay, rear ribbon going straight into the bay — "Collis probe box on the right shelf", IMG-G) plus four Windows box slots: `MINIX-01`, `MINIX-02`, `NUC-03`, and a spare slot (`NUC-01`/`MINIX-03` when the sim seeds them). | Curriculum `loc.callus-shelf`; gameplay MINIX-03/NUC-01 roles. |
+| D10 | Hand-held multimeter spawns on the **power bench** (M03 "grab the multimeter" at the power wall); the steel ruler spawns on **your desk** and M09's setup moves it to `anchor.ruler.rack-a`. Spare fuses: power-bench fuse tray **and** the red parts bin. Spare Flux 2 / Micro 3 in Husky drawers 2 / 3; legacy Flux 1 and the spare Kollis probe in the locked storage cabinet. | Merges 10-curriculum and 20-gameplay item locations. |
+| D11 | **Kallus shelf** stands between Rack A and Rack B and holds the Kollis probes (one per touch bay, beside its bay, rear ribbon going straight into the bay — "Kollis probe box on the right shelf", IMG-G) plus four Windows box slots: `MINIX-01`, `MINIX-02`, `NUC-03`, and a spare slot (`NUC-01`/`MINIX-03` when the sim seeds them). | Curriculum `loc.kallus-shelf`; gameplay MINIX-03/NUC-01 roles. |
 | D12 | Touch-rig **Lower/Raise** = slow solenoid stroke (curriculum M04 step 8). If the sim also stores `solenoid.heightAdjustMm`, the world adds it to the head's rest height. | Both interpretations render correctly. |
 
 ### 0.3 Role-tag remap for 20-gameplay §3.1
 
 | Gameplay role tags | Gameplay default rig | Physical rig in this doc |
 |---|---|---|
-| touch, collis, flexgen3, printer | WALL-E | **WALL-E** (Flux 3) |
-| touch, collis, mini | EVE | **BUMBLEBEE** (Micro 3) |
-| touch, collis, flux-legacy, printer (spare Flux 2 in Husky drawer 2) | BUMBLEBEE | **JOHNNY-5** (Flux 1, upgraded to Flux 2 in curriculum M07 = INC42) |
+| touch, kollis, flexgen3, printer | WALL-E | **WALL-E** (Flux 3) |
+| touch, kollis, mini | EVE | **BUMBLEBEE** (Micro 3) |
+| touch, kollis, flux-legacy, printer (spare Flux 2 in Husky drawer 2) | BUMBLEBEE | **JOHNNY-5** (Flux 1, upgraded to Flux 2 in curriculum M07 = INC42) |
 | touch, duet, ocr | R2-D2 | **R2-D2** (Stand Duet) |
-| touch, collis, canada, physical-pin | JOHNNY-5 | **SETI** (Compass) |
-| touch, collis, paycore (Unavailable) | BAYMAX | **ROSIE** (Flux Pocket) |
-| touch, collis, flexgen3, printerless | SETI | **ROSIE** (Flux Pocket); incidents that need it Available set that in their setup |
+| touch, kollis, canada, physical-pin | JOHNNY-5 | **SETI** (Compass) |
+| touch, kollis, paycrest (Unavailable) | BAYMAX | **ROSIE** (Flux Pocket) |
+| touch, kollis, flexgen3, printerless | SETI | **ROSIE** (Flux Pocket); incidents that need it Available set that in their setup |
 | touch, build (Offline) | ROSIE | **BAYMAX** (Stand 2018; curriculum M06 sets it Offline) |
-| legacy-nuc-motion | EVE | **EVE** (Flux 4); its `EVE MOTION` USB lead runs to the Callus-shelf spare slot when NUC-01 is seeded |
+| legacy-nuc-motion | EVE | **EVE** (Flux 4); its `EVE MOTION` USB lead runs to the Kallus-shelf spare slot when NUC-01 is seeded |
 | tethered dev1 / stg | MEGATRON / OPTIMUS | same |
 | adb-only, printerless / adb-only, flexgen3, printer | DATA / TARS | **DATA** (Micro 3) / **TARS** (Flux 4) |
 | shared camera ×4 (CAM-A) | MEGATRON's Pi | `cam.rack-b-mosaic` (JOHNNY-5, SETI, BAYMAX, ROSIE) **or** `cam.bench-mosaic` (MEGATRON, OPTIMUS, DATA, TARS) — sim picks |
-| AC strips `STRIP-A/B/C` | racks | `power.strip.a`, `power.strip.b`, `power.strip.c1`+`c2` (Callus shelf), plus `power.strip.t`, `power.strip.d`, `power.strip.w` (§1.4) |
+| AC strips `STRIP-A/B/C` | racks | `power.strip.a`, `power.strip.b`, `power.strip.c1`+`c2` (Kallus shelf), plus `power.strip.t`, `power.strip.d`, `power.strip.w` (§1.4) |
 
 ### 0.4 Where the data lives
 
 | File | Exports (data from this doc) |
 |---|---|
 | `src/world/layout.ts` | `ROOM`, `LOCATIONS` (§1.3), `PROPS` (§1.4 rows: id → pos/rotY/size), `RACKS`, `BAYS` (§2.1), `RIGS` (§2.10), `TETHERED` (§2.12), `CAMERAS` (Appendix B), `LIGHTS` (§7.1), `SPAWNS`/`NPC_ANCHORS` (§1.9), `PROP_ALIASES` (§1.10), `TRAYS` (§1.6). |
-| `src/world/lab/*.ts` | `room.ts`, `entrance.ts`, `desks.ts`, `fab.ts`, `server.ts`, `powerWall.ts`, `jaredBench.ts`, `westWall.ts`, `library.ts`, `decor.ts`, `overhead.ts`, `npcs.ts`. |
-| `src/world/rigs/*.ts` | `rack.ts`, `bay.ts`, `gantry.ts`, `dipTap.ts`, `fascia.ts`, `electronics.ts`, `devices/*.ts` (one builder per family), `tethered.ts`, `adbShelf.ts`, `callusShelf.ts`, `bind.ts` (state → transforms/LEDs/textures). |
+| `src/world/lab/*.ts` | `room.ts`, `entrance.ts`, `desks.ts`, `fab.ts`, `server.ts`, `powerWall.ts`, `jadenBench.ts`, `westWall.ts`, `library.ts`, `decor.ts`, `overhead.ts`, `npcs.ts`. |
+| `src/world/rigs/*.ts` | `rack.ts`, `bay.ts`, `gantry.ts`, `dipTap.ts`, `fascia.ts`, `electronics.ts`, `devices/*.ts` (one builder per family), `tethered.ts`, `adbShelf.ts`, `kallusShelf.ts`, `bind.ts` (state → transforms/LEDs/textures). |
 | `src/sim/devices/layouts.ts` | §4 tables (button rectangles in mm per layout class). Both `render2d` and the sim's hit-testing read it. |
 | `src/render2d/*.ts` | `deviceScreens/*.ts` (§4 drawing), `tablet.ts` (§5), `receipt.ts`, `shared/theme.ts` (§4.1 palette), `shared/labLogo.ts`. |
 | `src/engine/textures/*`, `materials.ts`, `audio/*`, `quality.ts` | §6, §8, §7.4 — existing names kept, additions listed. |
@@ -131,10 +131,10 @@ Scale: 1 character = 0.25 m in X, 1 row = 0.50 m in Z. North (z = −5) is at th
 | Glyph | Prop / zone | Glyph | Prop / zone |
 |---|---|---|---|
 | F f | `bench.fab` — Prusa MK4, Bambu Lab, CAD laptop, filament rack (print corner) | A | `rack.a` touch robots WALL-E, EVE, R2-D2, BUMBLEBEE (side doors on the **west** face) |
-| S s | `shelf.server` — 4-GPU blade, switch, UPS | C | `shelf.callus` — Collis probes, MINIX-01/02, NUC-03, spare slot |
+| S s | `shelf.server` — 4-GPU blade, switch, UPS | C | `shelf.kallus` — Kollis probes, MINIX-01/02, NUC-03, spare slot |
 | t | `server.tower` (retired legacy tower) | B | `rack.b` touch robots JOHNNY-5, SETI, BAYMAX, ROSIE (side doors on the **east** face) |
 | P p | `wall.power` board + `bench.power` | D | `shelf.adb` — DATA, TARS |
-| J j | `bench.jared` + `wall.bins` + `wall.drawers` | # | `room.column` |
+| J j | `bench.jaden` + `wall.bins` + `wall.drawers` | # | `room.column` |
 | H | `chest.husky` | T | `rack.t` tethered bench MEGATRON (DEV1) / OPTIMUS (STG) |
 | L | `cabinet.storage` (locked lower, open upper) | c | chairs; `cart.tools` at (−0.20, −0.70) |
 | W | `wall.whiteboard` | R | `wall.roadmap` |
@@ -158,7 +158,7 @@ Aisle widths (clear floor): rear aisle 1.80 m (z −4.40 … −2.60); rack-fron
 | `loc.morgan-desk` | Morgan's desk | (−0.90, 0, 3.85) | 1.0 | `desk.morgan` |
 | `loc.coworker-desks` | Office desks | (−5.20, 0, 3.80) | 1.8 | coworker desks + desk devices on ADB 5555 |
 | `loc.rack-a` | Touch Rack A | (−2.60, 0, −1.15) | 1.0 | WALL-E (bay 4), EVE (3), R2-D2 (2), BUMBLEBEE (1) |
-| `loc.callus-shelf` | Callus shelf | (−2.00, 0, −1.15) | 0.6 | Collis probes, MINIX-01/02, NUC-03 |
+| `loc.kallus-shelf` | Kallus shelf | (−2.00, 0, −1.15) | 0.6 | Kollis probes, MINIX-01/02, NUC-03 |
 | `loc.rack-b` | Touch Rack B | (−1.40, 0, −1.15) | 1.0 | JOHNNY-5 (4), SETI (3), BAYMAX (2), ROSIE (1) |
 | `loc.rear-aisle` | Rack row (rear) | (−1.70, 0, −3.50) | 1.2 | Pis, fuses, AC strips at rack rears |
 | `loc.adb-shelf` | ADB bot shelf | (0.85, 0, −1.15) | 0.9 | DATA, TARS |
@@ -166,7 +166,7 @@ Aisle widths (clear floor): rear aisle 1.80 m (z −4.40 … −2.60); rack-fron
 | `loc.power-wall` | Power wall | (−0.70, 0, −3.90) | 1.3 | Mean Well, 24 V rail, regulators, fuses, AC strip, DC taps |
 | `loc.server-shelf` | Server shelf | (−3.70, 0, −3.90) | 1.0 | GPU blade, switch, retired tower |
 | `loc.print-corner` | 3D print corner | (−5.75, 0, −3.75) | 1.3 | Prusa, Bambu Lab, CAD laptop |
-| `loc.jared-bench` | Jared's bench | (2.70, 0, −3.75) | 1.3 | soldering, scope, bolt bins, red/blue bins, drawers |
+| `loc.jaden-bench` | Jaden's bench | (2.70, 0, −3.75) | 1.3 | soldering, scope, bolt bins, red/blue bins, drawers |
 | `loc.husky` | Husky chest | (4.80, 0, −4.00) | 0.7 | spare devices (drawers 2, 3) |
 | `loc.storage` | Storage cabinet | (6.42, 0, −4.00) | 0.7 | locked spares, legacy Flux 1 |
 | `loc.whiteboard` | Whiteboard | (−6.10, 0, −1.80) | 1.4 | architecture diagram + roadmap board |
@@ -223,12 +223,12 @@ All floor props carry a collider = footprint AABB + 0.02 m (exceptions in §1.8)
 | Id | Description | Position | Size | rotY |
 |---|---|---|---|---|
 | `rack.a` | 42U open 4-post rack, touch robots (§2) | (−2.60, 0, −2.10) | 0.60 × 1.00 × 2.00 | 0 |
-| `shelf.callus` | 4-post perforated shelf aligned with the bays (§2.14) | (−2.00, 0, −2.10) | 0.60 × 1.00 × 1.95 | 0 |
+| `shelf.kallus` | 4-post perforated shelf aligned with the bays (§2.14) | (−2.00, 0, −2.10) | 0.60 × 1.00 × 1.95 | 0 |
 | `rack.b` | 42U open 4-post rack, touch robots | (−1.40, 0, −2.10) | 0.60 × 1.00 × 2.00 | 0 |
 | `shelf.adb` | 2-tier black perforated shelf (§2.13) | (0.85, 0, −1.90) | 1.00 × 0.60 × 1.05 | 0 |
 | `rack.t` | Tethered bench rack (IMG-R, §2.12) | (2.40, 0, −2.05) | 0.60 × 0.90 × 1.80 | 0 |
 | `cart.tools` | Black 3-tier utility cart: open laptop (terminal screen decor), label tape, zip-tie bag, cable coil | (−0.20, 0, −0.70) | 0.75 × 0.45 × 0.95 | 20 |
-| `anchor.ruler.rack-a` | Ruler spot used by M09 setup (front lip of Callus level 3) | (−2.00, 0.995, −1.63) | — | 0 |
+| `anchor.ruler.rack-a` | Ruler spot used by M09 setup (front lip of Kallus level 3) | (−2.00, 0.995, −1.63) | — | 0 |
 
 **Power wall (north wall, x −2.20 … 0.80)** — board layout in §1.5.
 
@@ -239,7 +239,7 @@ All floor props carry a collider = footprint AABB + 0.02 m (exceptions in §1.8)
 | `tool.multimeter` | Hand-held DMM in yellow holster, probes coiled (pickup → hotbar 2) | (−1.60, 0.90, −4.55) | 0.09 × 0.18 × 0.05 | 0 |
 | `power.fuse-tray` | Clear-lid compartment box: 6 × 5 A tan, 6 × 7.5 A brown, 6 × 10 A red, 6 × 15 A blue | (−1.25, 0.90, −4.55) | 0.20 × 0.12 × 0.03 | 0 |
 | `power.bench.flux4-psu` | New Flux 4 power brick (white, 18 V AC brick, 1.8 m cord) | (−0.30, 0.90, −4.60) | 0.110 × 0.060 × 0.032 | 15 |
-| `power.bench.collis-spare` | Spare Collis probe (grey, UL label) + its AC brick | (0.20, 0.90, −4.60) | 0.15 × 0.11 × 0.045 | 0 |
+| `power.bench.kollis-spare` | Spare Kollis probe (grey, UL label) + its AC brick | (0.20, 0.90, −4.60) | 0.15 × 0.11 × 0.045 | 0 |
 | `power.bench.desk-fan` | Desk fan (stored; gameplay INC17 moves it onto STRIP-B) | (0.55, 0.20, −4.70) | 0.25 × 0.15 × 0.32 | 0 |
 
 **Server shelf & print corner (north-west)**
@@ -261,23 +261,23 @@ All floor props carry a collider = footprint AABB + 0.02 m (exceptions in §1.8)
 | `fab.drybox` | Filament dry box under the bench | (−6.20, 0.25, −4.70) | 0.40 × 0.25 × 0.25 | 0 |
 | `wall.safety-card` | Acrylic holder with `LAB SAFETY CARD` cards (curriculum S18) | (−6.985, 1.35, −3.75) | 0.12 × 0.03 × 0.17 | 90 |
 
-**Jared's bench, parts wall, Husky, storage (north-east)**
+**Jaden's bench, parts wall, Husky, storage (north-east)**
 
 | Id | Description | Position | Size | rotY |
 |---|---|---|---|---|
-| `bench.jared` | Butcher-block top, grey-blue ESD mat (#5f7686, 1.20 × 0.60) on the left, 2 under-bench drawers | (2.70, 0, −4.625) | 3.00 × 0.75 × 0.90 | 0 |
-| `jared.solder` | Soldering station (red/black, 7-seg `350`), iron in coil stand, brass sponge | (1.70, 0.90, −4.55) | 0.16 × 0.13 × 0.10 | 0 |
-| `jared.magnifier-lamp` | Articulated lamp, ring LED (warm white emissive) | (1.40, 0.90, −4.85) | reach 0.6 | 0 |
-| `jared.half-pcb` | Motor PCB in a third-hand tool, half soldered | (1.55, 0.90, −4.45) | 0.10 × 0.07 | 0 |
-| `jared.scope` | Bench oscilloscope, 7" screen with an animated square/sine trace | (2.30, 0.90, −4.75) | 0.32 × 0.13 × 0.16 | 0 |
-| `jared.bench-psu` | Bench PSU, readout `24.0V 0.35A` | (2.75, 0.90, −4.78) | 0.13 × 0.24 × 0.16 | 0 |
-| `jared.bench-dmm` | Bench DMM (not a pickup) | (3.05, 0.90, −4.78) | 0.22 × 0.26 × 0.09 | 0 |
-| `jared.bolt-bins` | Two bins labelled `2.5 mm` / `5 mm` + magnetic tray with 10 mixed bolts (curriculum M04 sorter) | (3.30, 0.90, −4.48) | 0.30 × 0.10 × 0.05 | 0 |
-| `jared.label-maker` | Label maker (Build Day) | (3.65, 0.90, −4.50) | 0.07 × 0.20 × 0.05 | 30 |
-| `jared.wire-spools` | Dispenser rod, 4 spools red/blue/green/white | (3.95, 0.90, −4.85) | 0.30 × 0.08 × 0.12 | 0 |
+| `bench.jaden` | Butcher-block top, grey-blue ESD mat (#5f7686, 1.20 × 0.60) on the left, 2 under-bench drawers | (2.70, 0, −4.625) | 3.00 × 0.75 × 0.90 | 0 |
+| `jaden.solder` | Soldering station (red/black, 7-seg `350`), iron in coil stand, brass sponge | (1.70, 0.90, −4.55) | 0.16 × 0.13 × 0.10 | 0 |
+| `jaden.magnifier-lamp` | Articulated lamp, ring LED (warm white emissive) | (1.40, 0.90, −4.85) | reach 0.6 | 0 |
+| `jaden.half-pcb` | Motor PCB in a third-hand tool, half soldered | (1.55, 0.90, −4.45) | 0.10 × 0.07 | 0 |
+| `jaden.scope` | Bench oscilloscope, 7" screen with an animated square/sine trace | (2.30, 0.90, −4.75) | 0.32 × 0.13 × 0.16 | 0 |
+| `jaden.bench-psu` | Bench PSU, readout `24.0V 0.35A` | (2.75, 0.90, −4.78) | 0.13 × 0.24 × 0.16 | 0 |
+| `jaden.bench-dmm` | Bench DMM (not a pickup) | (3.05, 0.90, −4.78) | 0.22 × 0.26 × 0.09 | 0 |
+| `jaden.bolt-bins` | Two bins labelled `2.5 mm` / `5 mm` + magnetic tray with 10 mixed bolts (curriculum M04 sorter) | (3.30, 0.90, −4.48) | 0.30 × 0.10 × 0.05 | 0 |
+| `jaden.label-maker` | Label maker (Build Day) | (3.65, 0.90, −4.50) | 0.07 × 0.20 × 0.05 | 30 |
+| `jaden.wire-spools` | Dispenser rod, 4 spools red/blue/green/white | (3.95, 0.90, −4.85) | 0.30 × 0.08 × 0.12 | 0 |
 | `wall.bins` | Dark-grey louvred panel x 2.90–4.20, y 1.05–1.95, 4 rows × 5 stack bins: rows 1–2 red, rows 3–4 blue (IMG-R) | (3.55, 1.50, −4.93) | 1.30 × 0.015 × 0.90 | 0 |
 | `wall.drawers` | Two 64-drawer organisers side by side (x 4.30–5.30, y 1.20–1.60) on wall brackets directly above the Husky chest (IMG-R), grey frame, clear drawers | (4.80, 1.40, −4.92) | 2 × (0.50 × 0.16 × 0.40) | 0 |
-| `jared.bench-light` | Warm-white LED bar along the bench back edge | (2.70, 1.02, −4.95) | 2.80 × 0.02 × 0.01 | 0 |
+| `jaden.bench-light` | Warm-white LED bar along the bench back edge | (2.70, 1.02, −4.95) | 2.80 × 0.02 × 0.01 | 0 |
 | `chest.husky` | Rolling tool cabinet, black body, full-width chrome pulls, `HUSKY` badge on top front, round emblem on the bottom door, 4 casters; drawers 1 (top) … 5 | (4.80, 0, −4.75) | 0.69 × 0.46 × 1.00 | 0 |
 | `cabinet.storage` | Grey steel cabinet: lower doors locked (keypad), open upper shelves at 1.05/1.45 with LabSim boxes; `cabinet.storage.legacy-shelf` holds the legacy Flux 1 after INC42 | (6.42, 0, −4.75) | 1.05 × 0.45 × 1.95 | 0 |
 
@@ -307,8 +307,8 @@ All floor props carry a collider = footprint AABB + 0.02 m (exceptions in §1.8)
 | Id | Description | Position | Size | rotY |
 |---|---|---|---|---|
 | `wall.history` | Team history wall x 2.60–4.90, title vinyl `TEAM HISTORY` at y 1.95 | (3.75, 1.50, 4.985) | 2.30 × 0.02 × 1.05 | 180 |
-| `wall.history.semi` / `.sedi` / `.ipx` / `.paycore` | Black frames 0.40 × 0.50, read left→right by a viewer facing south | (4.55, 1.55, 4.98) / (4.05, …) / (3.55, …) / (3.05, …) | — | 180 |
-| `wall.history.match` | Plaque board with 5 plaques: Semi, Sedi, IPX, PayCore, Core OS (curriculum M18) | (3.75, 1.07, 4.98) | 2.10 × 0.02 × 0.25 | 180 |
+| `wall.history.semi` / `.sedi` / `.ipx` / `.paycrest` | Black frames 0.40 × 0.50, read left→right by a viewer facing south | (4.55, 1.55, 4.98) / (4.05, …) / (3.55, …) / (3.05, …) | — | 180 |
+| `wall.history.match` | Plaque board with 5 plaques: Semi, Sedi, IPX, PayCrest, Core OS (curriculum M18) | (3.75, 1.07, 4.98) | 2.10 × 0.02 × 0.25 | 180 |
 
 ### 1.5 Power wall board layout
 
@@ -323,12 +323,12 @@ World positions; all parts stand off the board face (z −4.966) toward +Z. Wiri
 | `power.reg.5v-a` / `-b` / `-c` | Silver finned buck modules | (−0.40, 2.02) / (0.00, 2.02) / (0.40, 2.02) | 75 × 55 × 32 | `5V DC · 10A` + second tape `RACK A` / `RACK B` / `BENCH C (TETHERED + ADB)` |
 | `power.fuse.12v` / `5v-a` / `5v-b` / `5v-c` | Inline ATO holders, smoked cap (§2.8 fuse model) | (−0.80, 1.72) / (−0.40, 1.72) / (0.00, 1.72) / (0.40, 1.72) | 55 × 22 × 18 | `F-12V 10A`, `F-5V-A 10A`, `F-5V-B 10A`, `F-5V-C 10A` |
 | `power.tap.24v` / `12v` / `5v` | Dangling DC tap leads with 5.5 × 2.1 barrel plugs on hooks — the wrong-socket trap (M03, INC17) | (−1.35, 1.45) / (−1.15, 1.45) / (−0.95, 1.45) | lead 0.4 m | red tag `24V`, yellow tag `12V`, blue tag `5V` |
-| `power.strip.w` | 6-outlet commercial metal strip, illuminated red rocker; cord to W4 (curriculum `prop.ac-strip`) | (0.35, 1.20) | 450 × 50 × 45 | `AC STRIP — LABSIM / COLLIS ONLY` |
+| `power.strip.w` | 6-outlet commercial metal strip, illuminated red rocker; cord to W4 (curriculum `prop.ac-strip`) | (0.35, 1.20) | 450 × 50 × 45 | `AC STRIP — LABSIM / KOLLIS ONLY` |
 | `power.tag.nuc` / `power.tag.pi` | Clickable line-end tags where wires leave the board (power-trace nodes 7, 8) | (−0.80, 2.20) / (0.00, 2.20) | 60 × 25 | `→ NUC SHELF (12V)` / `→ PI SHELVES (5V)` |
 | `power.tag.motor` | Tag on the orange/black bundle | (−1.25, 2.20) | 60 × 25 | `→ 24V MOTOR (RACK A / B / T)` |
 | `power.sign` | Yellow/black safety sign | (0.65, 2.12) | 300 × 200 | `24V DC · 120V AC — DE-ENERGIZE BEFORE SERVICING` |
 
-Other wall outlets (duplex, white plates): W5 (1.60, 1.05) and W6 (2.60, 1.05) on the north wall above `bench.jared`; W7 (−3.70, 0.40) behind `shelf.server`; W8 (−6.20, 1.05) above `bench.fab`; W9–W12 on the south wall at y 0.40, x −6.10, −4.30, −0.90, 1.10 (under desks); W13 east wall (6.985, 1.05, 3.35) coffee; W14 east wall (6.985, 0.40, 0.30) library. AC strip cords run up into the trays: `power.strip.a` → W2, `power.strip.b` → W3, `power.strip.c1`/`c2` → W2/W3, `power.strip.t` and `power.strip.d` → W5, `power.strip.w` → W4.
+Other wall outlets (duplex, white plates): W5 (1.60, 1.05) and W6 (2.60, 1.05) on the north wall above `bench.jaden`; W7 (−3.70, 0.40) behind `shelf.server`; W8 (−6.20, 1.05) above `bench.fab`; W9–W12 on the south wall at y 0.40, x −6.10, −4.30, −0.90, 1.10 (under desks); W13 east wall (6.985, 1.05, 3.35) coffee; W14 east wall (6.985, 0.40, 0.30) library. AC strip cords run up into the trays: `power.strip.a` → W2, `power.strip.b` → W3, `power.strip.c1`/`c2` → W2/W3, `power.strip.t` and `power.strip.d` → W5, `power.strip.w` → W4.
 
 ### 1.6 Overhead: cable trays, hangers, drops
 
@@ -342,7 +342,7 @@ Wire-basket trays (zinc `zincTray`), bottom at y 2.40, hung from Ø 10 mm thread
 | `tray.ct4` | Spur x 2.40: z −4.60 → −1.95, then west to x 0.85 along z −1.95 | 300 × 60 |
 | `tray.ct5` | Workstation run: x 0.80 from z −4.60 → 4.55, then west x 1.80 → −6.50 along z 4.55 | 200 × 60 |
 
-Cable drops (black braided bundles Ø 40 mm, `braidedSleeve`): tray → top of `rack.a`, `shelf.callus`, `rack.b` (y 2.00 → 2.40); tray → `rack.t` top (1.80 → 2.40); tray → `shelf.adb` rear-right post (1.05 → 2.40). Visible tray contents: yellow Cat6, black AC cords, red/black and yellow/black DC pairs, orange/black motor pairs (all merged into one mesh per tray).
+Cable drops (black braided bundles Ø 40 mm, `braidedSleeve`): tray → top of `rack.a`, `shelf.kallus`, `rack.b` (y 2.00 → 2.40); tray → `rack.t` top (1.80 → 2.40); tray → `shelf.adb` rear-right post (1.05 → 2.40). Visible tray contents: yellow Cat6, black AC cords, red/black and yellow/black DC pairs, orange/black motor pairs (all merged into one mesh per tray).
 
 ### 1.7 Ceiling fixtures
 
@@ -377,10 +377,10 @@ All troffers are 0.6 (x) × 1.2 (z), long axis north–south, recessed 0.02.
 | `spawn.workstation` | chair (1.10, 0, 4.02) | 180 | Load straight into the seated pose (§9.3) |
 | `npc.morgan.desk` | (−0.90, 0, 4.02) | 180 | seated |
 | `npc.morgan.door` | (5.45, 0, 4.30) | 180 | waving through the vision panel |
-| `npc.jared.bench` | (2.70, 0, −4.05) | 0 | working at the bench |
-| `npc.jared.power-wall` | (−0.20, 0, −4.05) | 0 | M03 |
+| `npc.jaden.bench` | (2.70, 0, −4.05) | 0 | working at the bench |
+| `npc.jaden.power-wall` | (−0.20, 0, −4.05) | 0 | M03 |
 | `npc.any.rack-a` / `.rack-b` | (−3.30, 0, −1.30) / (−0.60, 0, −1.30) | 270 / 90 | beside the rack fronts |
-| `npc.any.callus` | (−2.00, 0, −1.05) | 0 | |
+| `npc.any.kallus` | (−2.00, 0, −1.05) | 0 | |
 | `npc.any.tethered` | (2.95, 0, −1.00) | 30 | |
 | `npc.any.server` | (−3.20, 0, −3.90) | 10 | |
 | `npc.any.print` | (−5.20, 0, −3.70) | 10 | |
@@ -388,7 +388,7 @@ All troffers are 0.6 (x) × 1.2 (z), long axis north–south, recessed 0.02.
 | `npc.any.library` | (6.00, 0, −0.40) | 270 | |
 | `npc.coworker.desk-1` / `desk-2` | (−6.10, 0, 4.02) / (−4.30, 0, 4.02) | 180 | Sam† / Riley† seated |
 | `npc.alex.build` | (−4.40, 0, 1.45) | 0 | Alex† at the build table |
-| `npc.tate.visit` / `npc.david.visit` | (0.10, 0, 3.30) / (−0.20, 0, 2.90) | 180 | visitors near the desks |
+| `npc.nate.visit` / `npc.devin.visit` | (0.10, 0, 3.30) / (−0.20, 0, 2.90) | 180 | visitors near the desks |
 
 NPC look and animation: Appendix A.
 
@@ -411,7 +411,7 @@ NPC look and animation: Appendix A.
 | `prop.walle.limit-switch-x`, `prop.walle.limit-switch-y` | `rig.wall-e.limit-x`, `rig.wall-e.limit-y` |
 | `prop.walle.dip-arm` | `rig.wall-e.dip-arm` |
 | `prop.walle.pi` | `rig.wall-e.pi` |
-| `prop.bolt-bins` | `jared.bolt-bins` |
+| `prop.bolt-bins` | `jaden.bolt-bins` |
 | `prop.device-library.<model>` | `library.<model>` (same model slugs) |
 | `prop.family-trays` | `library.trays` |
 | `prop.megatron.mfd`, `.cfd`, `prop.optimus.mfd`, `.cfd` | `rig.megatron.mfd`, `rig.megatron.cfd`, `rig.optimus.mfd`, `rig.optimus.cfd` |
@@ -422,9 +422,9 @@ NPC look and animation: Appendix A.
 | `prop.regulator-12v`, `prop.regulator-5v10a` | `power.reg.12v`, `power.reg.5v-b` |
 | `prop.fuse-5v-b`, `prop.fuse-spares`, `prop.multimeter` | `power.fuse.5v-b`, `power.fuse-tray`, `tool.multimeter` |
 | `prop.ac-strip` | `power.strip.w` |
-| `prop.flux4-psu-brick`, `prop.collis-probe-spare` | `power.bench.flux4-psu`, `power.bench.collis-spare` |
-| `prop.nuc-03`, `prop.minix-01` | `callus.nuc-03`, `callus.minix-01` |
-| `prop.collis-probe-a` | `collis.wall-e` |
+| `prop.flux4-psu-brick`, `prop.kollis-probe-spare` | `power.bench.flux4-psu`, `power.bench.kollis-spare` |
+| `prop.nuc-03`, `prop.minix-01` | `kallus.nuc-03`, `kallus.minix-01` |
+| `prop.kollis-probe-a` | `kollis.wall-e` |
 | `prop.eve.pi-power` | `rig.eve.pi-power` |
 | `prop.eve.device`, `prop.seti.device`, `prop.data.device`, `prop.tars.device` | `rig.eve.device`, `rig.seti.device`, `rig.data.device`, `rig.tars.device` |
 | `prop.ruler` | `tool.ruler` |
@@ -432,7 +432,7 @@ NPC look and animation: Appendix A.
 | `prop.coworker-device` | `desk.coworker-1.device` |
 | `prop.whiteboard`, `prop.roadmap-board` | `wall.whiteboard`, `wall.roadmap` |
 | `prop.gpu-blade`, `prop.legacy-tower` | `server.blade`, `server.tower` |
-| `prop.history.semi/sedi/ipx/paycore/match` | `wall.history.semi/sedi/ipx/paycore/match` |
+| `prop.history.semi/sedi/ipx/paycrest/match` | `wall.history.semi/sedi/ipx/paycrest/match` |
 
 ---
 ## 2. Touch-robot rig construction (mm)
@@ -490,7 +490,7 @@ z=0    └── POWER ─────────── tablet ─────�
 | Bay floor shelf | Plate 440 × 900 × 2, front & rear flanges 440 × 40 × 2 hanging down, 4 mounting ears with M6 cage-nut screws (button heads) | `perforatedSteel` (slots 6 × 30 mm, staggered, row pitch 13 mm, long axis along Z) — IMG-G | Flange cut-outs 10 × 22 mm every 40 mm (normal/alpha map on the flange). |
 | Hex-mesh back panel | 450 × 442 × 1 at z −905 (just behind the rear rails), black | `hexMesh` (7 mm across flats, 1.3 mm bars) — IMG-G | Alpha-tested; shows the Pi/PCB glow through it. |
 | Side door (`rig.<id>.door`) | Frame 12 × 12 black aluminium, 900 (along Z) × 440 (Y), hex-mesh infill; printed pull handle 80 × 20 × 25 at the front edge, y 220; two magnetic catches | `anodisedBlack` + `hexMesh` | On the rack's **outer** side (Rack A: −X face, Rack B: +X face). Hinged on the **rear** post (z −900), opens outward 0 → 95° in 0.45 s (ease-out); open leaf points along ±X at the rear. Closed state still shows the rig through the mesh. |
-| Open side | The side facing `shelf.callus` has no door (Collis ribbons and USB pass through). | — | |
+| Open side | The side facing `shelf.kallus` has no door (Kollis ribbons and USB pass through). | — | |
 | Braided sleeve | Expandable PET sleeve Ø 24, black, running along the bay floor's front edge from x −215 to +215 at z −12, y 12, then up the door-side rear post (IMG-G) | `braidedSleeve` (§6.1) | TubeGeometry on a CatmullRom path, 6 radial segments (Low) / 10 (High). |
 | Wiring loom | 4 wires Ø 2.0 (red, blue, green, white) twisted, zip-tied every 40 mm (white ties), running from the motor PCB along the floor to the dip tower, up the tower's zip-tie slots, then as an orange PU coil cable (coil Ø 14, wire Ø 4) to the carriages (VID) | `wireRed/Blue/Green/White`, `coilOrange` | One merged TubeGeometry per colour per rig. |
 
@@ -561,7 +561,7 @@ Heights (bay-local y, rest): tip bottom **106.0** (6.0 mm above the screen); fra
 | Gear-hub clamp | 2 × M2.5 socket bolts (INC16 screwdriver target) | hub face |
 | Drive | Micro servo 23 × 12 × 29 (blue case) inside the tower, Ø 14 pinion | x 32, y 150 |
 | Arm | Printed plate 8 thick, 100 long, 26 wide, tapering to 18 at the tip, 3 screw heads | in the plane x −4…+4 |
-| Card insert ("white ribbon card") | Flexible white card 54 × 85 × 0.6 (`cardWhite`, grey print `COLLIS PROBE CARD†`), screwed to the arm tip, sticking out 60 beyond it; grey flat ribbon (20 wires, 25 wide, red edge stripe) from its rear edge along the arm and down the tower to the Collis probe | arm tip → slot |
+| Card insert ("white ribbon card") | Flexible white card 54 × 85 × 0.6 (`cardWhite`, grey print `KOLLIS PROBE CARD†`), screwed to the arm tip, sticking out 60 beyond it; grey flat ribbon (20 wires, 25 wide, red edge stripe) from its rear edge along the arm and down the tower to the Kollis probe | arm tip → slot |
 
 Pose angles (arm direction pointing toward −Z, angle measured from horizontal, + = up): **In = −20°** (card tip 20 mm inside the slot at `(0, slotY, −180)`), **Out = +35°** (card tip at about (0, slotY + 127, −163), clear above the device edge and below the beam). Pivot to card tip = 140 mm.
 
@@ -577,14 +577,14 @@ Pose angles (arm direction pointing toward −Z, angle measured from horizontal,
 | Pi Ethernet (`rig.<id>.pi-ethernet`) | Yellow Cat6 Ø 6 with RJ45 boot | from the jack up the door-side rear post to the rack top | Unplugged: the plug end hangs 60 mm below the jack beside the cradle (INC04) |
 | Pi power lead (`rig.<id>.pi-power`) | Black USB-C cable Ø 4 from the bay fuse holder | | Unplugged: plug rests on the floor 40 mm from the Pi |
 | Bay fuse holder (`rig.<id>.fuse`) | Inline ATO holder 55 × 22 × 18, black body, smoked translucent cap (`smokedPlastic`), red 10 A blade inside; tape label `F-<RIG>-5V 10A` (e.g. `F-WALL-E-5V 10A`) | zip-tied to the door-side rear post at (±205, 70, −850) | Blown: the blade's link is broken with a brown scorch (fuse texture variant), visible with the flashlight + inspect (INC03) |
-| Motor controller PCB (`rig.<id>.motor-pcb`) | Green PCB 100 × 70 × 1.6 on 4 brass standoffs (10 mm) on the hex-mesh; DB-25 female connector (53 × 12, silver shell) on the top edge with a grey 25-way ribbon to the loom; 3 purple stepper-driver modules 15 × 20 with silver heatsinks 9 × 9 × 5; green screw terminals labelled `24V IN`, `SOL`, `SERVO`; USB-B port; silkscreen `25-PIN MOTOR CTRL · MADE IN HONG KONG†` and the rig name hand-written in silver marker | vertical board on the back mesh, opposite the door side: Rack A centre (+110, 205, −893), Rack B (−110, 205, −893), facing +Z | Power LED (green 2 mm) on when MAIN; driver LEDs (red 1 mm) on when MOTOR + steppers enabled. EVE (legacy-nuc-motion): a grey USB lead tagged `EVE MOTION` leaves the PCB through the open side to the Callus shelf spare slot |
+| Motor controller PCB (`rig.<id>.motor-pcb`) | Green PCB 100 × 70 × 1.6 on 4 brass standoffs (10 mm) on the hex-mesh; DB-25 female connector (53 × 12, silver shell) on the top edge with a grey 25-way ribbon to the loom; 3 purple stepper-driver modules 15 × 20 with silver heatsinks 9 × 9 × 5; green screw terminals labelled `24V IN`, `SOL`, `SERVO`; USB-B port; silkscreen `25-PIN MOTOR CTRL · MADE IN HONG KONG†` and the rig name hand-written in silver marker | vertical board on the back mesh, opposite the door side: Rack A centre (+110, 205, −893), Rack B (−110, 205, −893), facing +Z | Power LED (green 2 mm) on when MAIN; driver LEDs (red 1 mm) on when MOTOR + steppers enabled. EVE (legacy-nuc-motion): a grey USB lead tagged `EVE MOTION` leaves the PCB through the open side to the Kallus shelf spare slot |
 | Webcam (`rig.<id>.webcam`) | Black webcam 72 × 31 × 30, glossy front, lens Ø 12, white activity LED; on a black gooseneck (Ø 8, 400 long) clamped to the left front post top at (−225, 425, −10) | camera at (−150, 410, −120), aimed at the rig's camera target (§2.10) | LED on while a stream client is connected; USB unplugged state (INC08 variant B): cable hangs from the gooseneck |
 | Device AC brick (`rig.<id>.device-psu`) | White (Flux/Micro) or black (Stand) 18 V AC brick 110 × 60 × 32, cord up the rear post to the rack's AC strip; DC cable (white, VID) to the device | floor, door side (±150, 0, −640) | Unplugged → device dark |
-| Collis ribbon | Grey 20-way ribbon (red edge stripe) entering through the open side from the Collis probe on `shelf.callus` at the same level, along the floor to the dip tower | enters at x ±225 (Callus side), y 30 | Unseated state is at the Collis end (§2.14) |
+| Kollis ribbon | Grey 20-way ribbon (red edge stripe) entering through the open side from the Kollis probe on `shelf.kallus` at the same level, along the floor to the dip tower | enters at x ±225 (Kallus side), y 30 | Unseated state is at the Kollis end (§2.14) |
 | Rack-top distribution (`power.rackdist.a` / `.b`) | Printed box 300 × 60 × 70 on the U41 plate front with 4 USB-C leads (5 V) and 4 two-pin leads (24 V) dropping down the rear posts; tape `RACK A · 5V IN (F-5V-A) · 24V MOTOR IN`; green `5V` and orange `24V` LEDs | rack-local (0, 1.880, +0.40) | LEDs follow rail voltage |
-| Rack AC strip (`power.strip.a` / `.b`) | 1U rack-mount 6-outlet strip at the rear, illuminated switch; tape `STRIP-A — LABSIM / COLLIS ONLY` | rack-local (0, 1.885…1.929, −0.47), facing the rear aisle | Outlet n occupied ⇔ load plugged; switch LED red when on |
+| Rack AC strip (`power.strip.a` / `.b`) | 1U rack-mount 6-outlet strip at the rear, illuminated switch; tape `STRIP-A — LABSIM / KOLLIS ONLY` | rack-local (0, 1.885…1.929, −0.47), facing the rear aisle | Outlet n occupied ⇔ load plugged; switch LED red when on |
 | Rack B camera Pi (`rig.rack-b.camera-pi`) | Pi in a black case + 4-port USB hub in a printed tray; tape `RACK B CAM` | Rack B rack-local (+0.15, 1.880, +0.30) | Same LED rules as rig Pis |
-| Minix / NUC (Callus) box | Not inside the bay: one Windows box serves a whole rack's Collis probes, so the boxes live on the adjacent Callus shelf (§2.14, D11). The bay's link to it is the side panel's `Minix` USB port (front extension) and the Collis USB cable | `shelf.callus` level 3 | Blue power LED on the box; INC02 = LED off |
+| Minix / NUC (Kallus) box | Not inside the bay: one Windows box serves a whole rack's Kollis probes, so the boxes live on the adjacent Kallus shelf (§2.14, D11). The bay's link to it is the side panel's `Minix` USB port (front extension) and the Kollis USB cable | `shelf.kallus` level 3 | Blue power LED on the box; INC02 = LED off |
 
 Per-bay wiring path for the Pi (D2): rack-top distribution (5 V) → down the rear post → front **MAIN** switch on the fascia → back along the braided sleeve → bay fuse → Pi. MAIN LED = MAIN on **and** 5 V present upstream of the bay fuse (so a blown bay fuse shows MAIN lit but a dark Pi — the INC03 clue). MOTOR LED = MOTOR on **and** 24 V present.
 
@@ -619,7 +619,7 @@ Screen sizes from §3.1. `homeX/homeZ` = the screen's top-left in bay-local mm (
 
 Mechanical check (all rigs): `cx = homeX + x − 26` stays within [−180.95, +128.95] ⊂ [−183, 183]; `az = homeZ + y` stays within [−535, −183] ⊂ [−560, −80]. When JOHNNY-5's device is swapped, the world moves both limit-switch brackets to the new home (visible re-calibration) and swaps the cradle mesh.
 
-Collis assignment (shelf.callus level = bay number): Rack A bay n → `collis.<rig>` on the left half of Callus level n; Rack B bay n → right half. MEGATRON/OPTIMUS use SmartStripe probes (§2.12); DATA/TARS have none.
+Kollis assignment (shelf.kallus level = bay number): Rack A bay n → `kollis.<rig>` on the left half of Kallus level n; Rack B bay n → right half. MEGATRON/OPTIMUS use SmartStripe probes (§2.12); DATA/TARS have none.
 
 ### 2.11 Animation specification
 
@@ -681,19 +681,19 @@ Shelf-local frame: origin (0.85, 0, −1.90), +Z to the aisle. Black perforated 
 | Other | 5-port switch (+0.05, 0.45, −0.10), `power.strip.d` (6 outlets) on the lower tier rear, two AC bricks. |
 | `rig.adb.webcam` | Gooseneck clamped to the rear-right post; camera at (0.45, 1.35, −0.25) aimed at (0.00, 1.10, 0.05). |
 
-### 2.14 Callus shelf `shelf.callus`
+### 2.14 Kallus shelf `shelf.kallus`
 
 Shelf-local frame: origin (−2.00, 0, −2.10), +X toward Rack B, +Z toward the aisle. Black 4-post shelf 0.60 × 1.00 × 1.95 with `perforatedSteel` levels L1–L4 at the **same heights as the bays** (0.100, 0.5445, 0.989, 1.4335) and a top plate at 1.878.
 
 | Part | Spec |
 |---|---|
-| **Collis probe** (`collis.<rig>`, ×8) | Light-grey painted aluminium box 150 × 110 × 45 (`collisGrey`): front panel with a white sticker `UL Transaction Security` (plain text, no logo), a 3 mm status LED (green ready / amber no ribbon link / off unpowered — 20-gameplay), USB-B port, DC barrel input; **rear panel**: 40-pin IDC header with the grey ribbon (`ribbonGrey`) — IMG-G. Top: tape `COLLIS · <HRN>`. |
-| Collis placement | Rack A bay n → left half of level n at (−0.15, Lₙ, +0.20) rotY −90 (rear panel faces Rack A; the ribbon goes straight into the bay through its open side). Rack B bay n → (+0.15, Lₙ, +0.20) rotY 90. **Level 3 exception:** probes at z −0.25 (front reserved for the Windows boxes). **Level 4:** probes at z −0.20 (front holds the console monitor). |
-| Windows boxes, level 3 front (z +0.30) | `callus.minix-01` x −0.18, `callus.minix-02` x −0.06, `callus.nuc-03` x +0.06, `callus.slot-4` x +0.18 (empty unless the sim seeds NUC-01/MINIX-03). Minix: black 120 × 120 × 19, blue power LED, power button on the front. Intel NUC: 117 × 112 × 51, black body / silver top, blue LED ring power button. NUC-03 carries a yellow sticky note on top (rotated 8°): `DISK 100% — corporate AGENT. NO HARDWARE CONTROL ON THIS BOX. –J` (curriculum M05†). Tapes: `MINIX-01`, `MINIX-02`, `NUC-03`, `SPARE`. |
-| 12 V distribution | Printed block with 4 barrel outputs at (0, 0.995, −0.45), fed from `F-12V` via `tray.ct2`; tape `12V · CALLUS / NUC SHELF`. |
-| `callus.monitor` | 7" HDMI LCD 175 × 110 × 15 on a kickstand, tilted back 10°, at (0, 1.4335, +0.30); shows the console of the box selected by its KVM button (default MINIX-01, curriculum M10 text). |
-| AC strips | `power.strip.c1` (x −0.15) and `power.strip.c2` (x +0.15) on L1 rear (z −0.40); Collis AC bricks plugged in; tapes `STRIP-C1 — COLLIS RACK A`, `STRIP-C2 — COLLIS RACK B`. |
-| USB | Black USB cables from each Collis front up the posts to its Callus box (Rack A probes → MINIX-01, Rack B → MINIX-02). |
+| **Kollis probe** (`kollis.<rig>`, ×8) | Light-grey painted aluminium box 150 × 110 × 45 (`kollisGrey`): front panel with a white sticker `UL Transaction Security` (plain text, no logo), a 3 mm status LED (green ready / amber no ribbon link / off unpowered — 20-gameplay), USB-B port, DC barrel input; **rear panel**: 40-pin IDC header with the grey ribbon (`ribbonGrey`) — IMG-G. Top: tape `KOLLIS · <HRN>`. |
+| Kollis placement | Rack A bay n → left half of level n at (−0.15, Lₙ, +0.20) rotY −90 (rear panel faces Rack A; the ribbon goes straight into the bay through its open side). Rack B bay n → (+0.15, Lₙ, +0.20) rotY 90. **Level 3 exception:** probes at z −0.25 (front reserved for the Windows boxes). **Level 4:** probes at z −0.20 (front holds the console monitor). |
+| Windows boxes, level 3 front (z +0.30) | `kallus.minix-01` x −0.18, `kallus.minix-02` x −0.06, `kallus.nuc-03` x +0.06, `kallus.slot-4` x +0.18 (empty unless the sim seeds NUC-01/MINIX-03). Minix: black 120 × 120 × 19, blue power LED, power button on the front. Intel NUC: 117 × 112 × 51, black body / silver top, blue LED ring power button. NUC-03 carries a yellow sticky note on top (rotated 8°): `DISK 100% — corporate AGENT. NO HARDWARE CONTROL ON THIS BOX. –J` (curriculum M05†). Tapes: `MINIX-01`, `MINIX-02`, `NUC-03`, `SPARE`. |
+| 12 V distribution | Printed block with 4 barrel outputs at (0, 0.995, −0.45), fed from `F-12V` via `tray.ct2`; tape `12V · KALLUS / NUC SHELF`. |
+| `kallus.monitor` | 7" HDMI LCD 175 × 110 × 15 on a kickstand, tilted back 10°, at (0, 1.4335, +0.30); shows the console of the box selected by its KVM button (default MINIX-01, curriculum M10 text). |
+| AC strips | `power.strip.c1` (x −0.15) and `power.strip.c2` (x +0.15) on L1 rear (z −0.40); Kollis AC bricks plugged in; tapes `STRIP-C1 — KOLLIS RACK A`, `STRIP-C2 — KOLLIS RACK B`. |
+| USB | Black USB cables from each Kollis front up the posts to its Kallus box (Rack A probes → MINIX-01, Rack B → MINIX-02). |
 
 ### 2.15 Build table `table.build` (BOM facts, Ref §1)
 
@@ -784,11 +784,11 @@ Triangle budget per device: ≤ 1.2 k (Low LOD 400). Corner radius segments 3 (L
 
 | Screen | Canvas | Content | Update |
 |---|---|---|---|
-| Workstation monitors | 512 × 288 (Low 256 × 144) each | "Desktop mirror": wallpaper (dark green gradient + leaf), taskbar, title bars of the apps open in `ui` state, a blurred representation of the focused app (flat colour blocks per app: Orca green, Jenkins grey/red, IntelliJ dark, terminal black with green text lines). When seated, the React desktop covers the screen instead. | 2 Hz |
+| Workstation monitors | 512 × 288 (Low 256 × 144) each | "Desktop mirror": wallpaper (dark green gradient + leaf), taskbar, title bars of the apps open in `ui` state, a blurred representation of the focused app (flat colour blocks per app: Orka green, Jenkins grey/red, IntelliJ dark, terminal black with green text lines). When seated, the React desktop covers the screen instead. | 2 Hz |
 | Coworker / Morgan monitors | 256 × 144 | Static: code editor, Slack-like chat, spreadsheet | once |
-| `callus.monitor` | 512 × 320 | Windows console (MONO 14 px, white on #0c0c0c) of the KVM-selected box, from sim service state | on change |
+| `kallus.monitor` | 512 × 320 | Windows console (MONO 14 px, white on #0c0c0c) of the KVM-selected box, from sim service state | on change |
 | `fab.laptop-cad` | 512 × 320 | Isometric line render of a cradle (boxes/cylinders) on grey grid | once |
-| `jared.scope` | 256 × 160 | Green trace on black grid, scrolling square wave | 10 Hz when within 4 m |
+| `jaden.scope` | 256 × 160 | Green trace on black grid, scrolling square wave | 10 Hz when within 4 m |
 | Desk phone | 128 × 96 | `x4117†  09:00`, missed-call icon | per game minute |
 | GPU blade | — | no screen (LEDs only) | — |
 | `fab.printer-prusa` LCD / `fab.printer-bambu` screen | 128 × 64 / 192 × 108 | Print progress `47%`, temps `215/60°C` | 1 Hz |
@@ -797,7 +797,7 @@ Triangle budget per device: ≤ 1.2 k (Low LOD 400). Corner radius segments 3 (L
 ## 4. Device screen UI art (render2d → canvas textures; `src/sim/devices/layouts.ts`)
 
 The rectangles below are the **firmware truth**: `render2d` draws them and the sim hit-tests touches against them
-(ARCHITECTURE "layout truth"). Orca's Screen Locations are what automation *believes*; their seed values are the
+(ARCHITECTURE "layout truth"). Orka's Screen Locations are what automation *believes*; their seed values are the
 centres of these rectangles unless §4.6 says otherwise. Everything is in **mm from the screen's top-left (0,0)**,
 x → right, y → down, exactly the coordinate frame of xy_touch and of the gantry (canon).
 
@@ -842,7 +842,7 @@ Launcher scrolling (Ref §4: `open(appName)` scrolls vertically on Flux, horizon
 
 ### 4.3 Class P screens (68.0 × 136.0 mm) — exact
 
-● = touch target (id = the button string xy_touch/Orca use). Rect = (x, y, w, h). Centre given for every ●.
+● = touch target (id = the button string xy_touch/Orka use). Rect = (x, y, w, h). Centre given for every ●.
 
 **Merchant chrome (P):** status bar (0, 0, 68, 4.0) `greenDark`, game time `9:41` style 2.2 mm white at x 2, icons (Ethernet, Wi-Fi, battery) at the right; nav bar (0, 130, 68, 6) #111: ● `nav.back` (9, 130, 16, 6) c(17, 133) ◁, ● `nav.home` (26, 130, 16, 6) c(34, 133) ○, ● `nav.recents` (43, 130, 16, 6) c(51, 133) □.
 
@@ -906,7 +906,7 @@ Visible-page centres: Register (13, 26), Orders (34, 26), Transactions (55, 26),
 | ● `Other tender` | (4, 68, 60, 10) c(34, 73) | row |
 | ● `Charge` | (4, 113, 60, 14) c(34, 120) | primary `Charge $10.83` |
 
-**`cash-discount-tender`** (Orca `TENDER_CASH_DISCOUNT`, curriculum S10)
+**`cash-discount-tender`** (Orka `TENDER_CASH_DISCOUNT`, curriculum S10)
 
 | Element | Rect | Content |
 |---|---|---|
@@ -915,7 +915,7 @@ Visible-page centres: Register (13, 26), Orders (34, 26), Transactions (55, 26),
 | Prompt | centred, baseline 31 | `Pay with cash and save` 2.8 mm bold |
 | Prices | x 6, baselines 37 / 42 | `Cash price  $10.50`, `Card price  $10.83` 2.2 mm |
 | ● `Cash` | (4.0, 48.0, 36.0, 21.0) c(22.0, 58.5) | primary green: `Cash` 3.4 mm bold + `Save $0.33` 2.0 mm |
-| ● `Card` | (43.0, 48.0, 23.0, 21.0) c(54.5, 58.5) | secondary: `Card` 3.0 mm. Orca's seeded point (62.0, 58.5) lies inside, 4.0 mm from the right edge (§4.6). |
+| ● `Card` | (43.0, 48.0, 23.0, 21.0) c(54.5, 58.5) | secondary: `Card` 3.0 mm. Orka's seeded point (62.0, 58.5) lies inside, 4.0 mm from the right edge (§4.6). |
 
 **`payment-prompt`** (customer-facing; VID light-blue screen)
 
@@ -973,7 +973,7 @@ Visible-page centres: Register (13, 26), Orders (34, 26), Transactions (55, 26),
 
 **`declined`**: background `declined`; white circle with ✕ at (34, 50); `Declined` 6 mm baseline 80; reason 2.2 mm baseline 87 (e.g. `Card read error`); ● `Try again` (4, 113, 60, 14) c(34, 120) white outline.
 
-**`receipt-options`** — 4 options (Orca `RECEIPT_OPTIONS_4`) and 5 options (`RECEIPT_OPTIONS_5`, "scan for receipt" QR feature, Ref §5). Centres are curriculum S10 values. Option buttons are **pills 52.0 × 5.0 mm** (x 8 … 60): small enough that the 3.0 mm QR shift makes every old 4-option point land in the gap above its button (the 48-hour regression, Ref §5).
+**`receipt-options`** — 4 options (Orka `RECEIPT_OPTIONS_4`) and 5 options (`RECEIPT_OPTIONS_5`, "scan for receipt" QR feature, Ref §5). Centres are curriculum S10 values. Option buttons are **pills 52.0 × 5.0 mm** (x 8 … 60): small enough that the 3.0 mm QR shift makes every old 4-option point land in the gap above its button (the 48-hour regression, Ref §5).
 
 | Element | 4-option rect / centre | 5-option rect / centre | Content |
 |---|---|---|---|
@@ -991,7 +991,7 @@ Visible-page centres: Register (13, 26), Orders (34, 26), Transactions (55, 26),
 
 **`printing`**: white; printer glyph at (34, 50); `Printing receipt…` 3 mm baseline 70; progress bar (14, 76, 40, 2). The device's printer mesh extrudes the paper strip in sync (§3.3).
 
-**OOBE (Laz Automation zero-touch provisioning, Ref §1)** — all white backgrounds, header text 3.2 mm bold at baseline 12 unless stated, primary button (4, 113, 60, 14) c(34, 120):
+**OOBE (Lazo Automation zero-touch provisioning, Ref §1)** — all white backgrounds, header text 3.2 mm bold at baseline 12 unless stated, primary button (4, 113, 60, 14) c(34, 120):
 
 | Screen | Elements (● centres) |
 |---|---|
@@ -1000,7 +1000,7 @@ Visible-page centres: Register (13, 26), Orders (34, 26), Transactions (55, 26),
 | `oobe-merchant` | `Activate this device`; ● `Merchant ID` field (4, 22, 60, 9) c(34, 26.5) showing the MID; ● `Activation code` (4, 36, 60, 9) c(34, 40.5) `•••• ••••`; ● `Activate` c(34, 120) |
 | `oobe-employee` | `Create your passcode`; 4 dots at baseline 22; keypad 18 × 14 keys at columns c 14 / 34 / 54 and rows c 37 / 54 / 71 / 88 with digits 1–9 then `` (empty) · `0` (34, 88) · `⌫` (54, 88) (standard merchant layout); ● `Continue` c(34, 120) |
 | `oobe-complete` | green ✓ circle Ø 30 at (34, 50); `You're all set` 4.6 mm baseline 80; `Merchant: <name>` 2.2 mm baseline 87; ● `Done` c(34, 120) |
-| `deprovisioning` | background #0b1220; white leaf 16 mm at (34, 50); `Resetting device…` 3 mm white baseline 72; progress bar (8, 78, 52, 2.5) `green`; `Laz Automation` 1.8 mm #7b8794 baseline 128 |
+| `deprovisioning` | background #0b1220; white leaf 16 mm at (34, 50); `Resetting device…` 3 mm white baseline 72; progress bar (8, 78, 52, 2.5) `green`; `Lazo Automation` 1.8 mm #7b8794 baseline 128 |
 
 **Other P screens**
 
@@ -1061,9 +1061,9 @@ Computed with the §4.2 scale factors (receipt pills keep 5.0 mm height, QR shif
 
 Hit tolerance reference (for incident designers): receipt pills ±2.5 mm vertical; PIN keys ±7 × ±9 (P); `Charge`/`Pay`/`Review Order` ±7 vertical (P); tender `Card` ±11.5 horizontal. A legacy Offset only *misses* when it exceeds those half-sizes (e.g. 20-gameplay INC14's "misses Charge" needs Offset Y ≥ 7.5 mm on P, or target the receipt pills with ≥ 2.6 mm). Log strings that quote mm values must be generated from these tables (INC14's `PAYMENT/Charge` on FLUX_GEN3 is (34.0, 120.0) + offsets).
 
-### 4.6 Orca screen names ↔ device screens, and seed Screen Locations
+### 4.6 Orka screen names ↔ device screens, and seed Screen Locations
 
-| Orca screen (`OrcaScreen.name`) | Device `ScreenName` (+ params) | Buttons (seeded at the ● centre unless overridden) |
+| Orka screen (`OrkaScreen.name`) | Device `ScreenName` (+ params) | Buttons (seeded at the ● centre unless overridden) |
 |---|---|---|
 | `LOCK` | `lock` | `unlock` |
 | `HOME` | `home` (page / scroll 0) | app names on the first page |
@@ -1102,7 +1102,7 @@ active area (7.43 px/mm); lower-quality textures scale the whole canvas (§7.4).
 |---|---|---|
 | Frame / background | (0, 0, 1280, 800) | light blue `#6aa0e0` (visible as the margins around the content panel, IMG-T) |
 | **Header** | (0, 0, 1280, 112) | Horizontal gradient (green state): 0.00 `#1fcf4f`, 0.45 `#2bd862`, 0.70 `#3fdc9a`, 0.86 `#52c9d6`, 1.00 `#5ab7ee` (green → cyan → light blue, IMG-T) |
-| Robot name | left x 150, baseline 82 | `OrcaRobot.humanReadableName` (e.g. `WALL-E`; JOHNNY-5 shows the typo `JONNY-5` while Orca has it), `UI_SANS` 800 weight, 64 px, `#121212`; shrink to fit 380 px |
+| Robot name | left x 150, baseline 82 | `OrkaRobot.humanReadableName` (e.g. `WALL-E`; JOHNNY-5 shows the typo `JONNY-5` while Orka has it), `UI_SANS` 800 weight, 64 px, `#121212`; shrink to fit 380 px |
 | LabSim logo | x 560 … 860, baseline 78 | four-leaf glyph (4 circles r 15 px in a 2 × 2, 4 px gaps, + stem notch) and wordmark `lab` 56 px weight 600; colour `rgba(255,255,255,0.55)` (the light, translucent logo of IMG-T) |
 | Status line | left x 1000, baseline 46 | `Status: ` + `RigState.tablet.statusText` (`OK` normally), 22 px weight 500 `#1a1a1a`; shrink to fit 270 px (min 15 px), wrap to 2 lines if still too long |
 | Board line | left x 1000, baseline 76 | `RigState.tablet.brainbox` → `Brainbox v6`, 22 px `#1a1a1a` |
@@ -1139,7 +1139,7 @@ State highlights: the button matching the current state (Steppers `Disable` when
 
 ### 5.3 Robot and Robot Control tabs (†, sim-only content)
 
-**Robot tab** — key/value list at x 80 (labels 22 px `#9fb3d6`) / x 420 (values 24 px white), first baseline 230, pitch 48: `Name` → `wall-e`; `Human Readable Name` → `WALL-E`; `Orca status` → chip (colours = the Orca app's status chips; defaults Available `#2e9e4f`, Unavailable `#8b5cf6`, Offline `#6b7280`, Connection Failed `#dc2626`, Reserved `#2563eb`); `Device` → `FLUX_3 · SIM-…`; `Device IP` → `10.42.30.11:5444`; `Robot Pi` → host IP; `Camera` → stream URL (truncated); `Last health check` → `09:35:00 · 200 OK`; `Magnetic lock` → `ENGAGED` / `RELEASED`. Micro-map box (760, 200, 440, 300): device-screen outline to scale, crosshair + 12 px dot at the gantry position (green; yellow when the lock is released), text `X 12.0 mm   Y 58.5 mm` baseline 540, `Home = limit switches (0,0)` baseline 572.
+**Robot tab** — key/value list at x 80 (labels 22 px `#9fb3d6`) / x 420 (values 24 px white), first baseline 230, pitch 48: `Name` → `wall-e`; `Human Readable Name` → `WALL-E`; `Orka status` → chip (colours = the Orka app's status chips; defaults Available `#2e9e4f`, Unavailable `#8b5cf6`, Offline `#6b7280`, Connection Failed `#dc2626`, Reserved `#2563eb`); `Device` → `FLUX_3 · SIM-…`; `Device IP` → `10.42.30.11:5444`; `Robot Pi` → host IP; `Camera` → stream URL (truncated); `Last health check` → `09:35:00 · 200 OK`; `Magnetic lock` → `ENGAGED` / `RELEASED`. Micro-map box (760, 200, 440, 300): device-screen outline to scale, crosshair + 12 px dot at the gantry position (green; yellow when the lock is released), text `X 12.0 mm   Y 58.5 mm` baseline 540, `Home = limit switches (0,0)` baseline 572.
 
 **Robot Control tab** — jog pad centred (400, 440): blue arrow buttons 110 × 80 (▲ = −Y toward the screen top, ▼ +Y, ◀ −X, ▶ +X) around a green `Tap` button (centre) → `move.to` / `tap.at`; step selector segmented control (220, 600, 360, 56) `0.1 mm | 1 mm | 10 mm`; yellow buttons 300 × 70 at x 670: `Go to (0,0)` (y 300), `Go to centre` (y 390); blue `Wake screen` (y 480) → `phone.pushPower`; readout `X … Y …` at (670, 600). These are illustrative conveniences; every one maps to an existing `RigCommandName`.
 
@@ -1151,7 +1151,7 @@ State highlights: the button matching the current state (Steppers `Disable` when
 | `yellow` | gradient `#f2c12e` → `#f7d86a` → `#f2e08c`; name stays `#121212` | `Status: LOCK RELEASED — PARK REQUIRED` (lock broken) or `Status: NOT HOMED — PARK REQUIRED` (after Steppers Enable / MOTOR restored) | normal; Park group buttons pulse (outline α 0.4 ↔ 1, 1 Hz) |
 | `grey` | gradient `#8b9099` → `#a3a8b0` | `Status: Controller unreachable` | panel shows `Reconnecting to robot controller…` 26 px `#c9d2e3` centred + spinner; buttons hidden |
 | `red` | gradient `#e04b3c` → `#ef7a5a` | `Status: FAULT — <reason>`† | normal, buttons enabled |
-| **Lockout** (`dashboardLocked`) | unchanged | unchanged | Overlay over (0, 112, 1280, 688) `rgba(8,12,22,0.80)`: padlock glyph 96 px white at (640, 330); line 1 `TEST IN PROGRESS — CONTROLS LOCKED` bold 34 px white centred baseline 450; line 2 `<job> #<n>` (e.g. `Java/uia-remote-regression-flux #4120`) 24 px `#b9c6dc` baseline 492; line 3 `Checked out via Orca · unlocks when the build finishes`† 20 px `#8ea0bf` baseline 528. Any tap: overlay shakes ±6 px for 200 ms + quiet `ui-fail`; no command is sent. |
+| **Lockout** (`dashboardLocked`) | unchanged | unchanged | Overlay over (0, 112, 1280, 688) `rgba(8,12,22,0.80)`: padlock glyph 96 px white at (640, 330); line 1 `TEST IN PROGRESS — CONTROLS LOCKED` bold 34 px white centred baseline 450; line 2 `<job> #<n>` (e.g. `Java/uia-relay-regression-flux #4120`) 24 px `#b9c6dc` baseline 492; line 3 `Checked out via Orka · unlocks when the build finishes`† 20 px `#8ea0bf` baseline 528. Any tap: overlay shakes ±6 px for 200 ms + quiet `ui-fail`; no command is sent. |
 | Booting (MAIN just on) | black 1 s → white leaf splash 3 s → normal layout with `Connecting…` in the panel until the Pi is up | — | |
 | Off (MAIN off) | screen mesh hidden, glass = `screenGlass` | — | |
 
@@ -1197,14 +1197,14 @@ Existing palette entries keep their current values (from `src/engine/materials.t
 | `rubberTip` | MS | #0f0f0f | 0.92 | 0 | | Plunger tip, feet |
 | `coilOrange` | MP | #ff6a13 | 0.45 | 0 | clearcoat 0.4 | Coiled cable (VID) |
 | `wireRed/Blue/Green/White/Black/Yellow/Orange` | MP | #d0211c / #1f4fd1 / #1f9e4a / #eeeeee / #121212 / #f2c200 / #f07d1a | 0.45 | 0 | clearcoat 0.2 | Wiring looms, DC pairs |
-| `ribbonGrey` | MS | map `ribbonCable` | 0.50 | 0 | | Collis ribbons, DB-25 ribbon |
+| `ribbonGrey` | MS | map `ribbonCable` | 0.50 | 0 | | Kollis ribbons, DB-25 ribbon |
 | `braidedSleeve` | MS | #141414 | 0.80 | 0 | normal `braidWeave` (8 mm tile) | Sleeves, tray drops |
 | `cat6Yellow` / `cableBlue` / `cableWhite` / `cableBlack` | MS | #f2c200 / #8fb7e6 / #f0f0ee / #151515 | 0.55 | 0 | | Patch cords, USB, AC cords |
 | `labelTape` | MS | #f5f5f0 | 0.55 | 0 | map = label canvas | All tape labels |
 | `paperWhite` | MS | #fbfbf8 | 0.85 | 0 | | Receipts, posters, cards |
 | `stickyYellow` | MS | #ffe866 | 0.90 | 0 | map = sticky-note canvas | Sticky notes |
 | `cardWhite` | MS | #f4f4f2 | 0.40 | 0 | map (print) | Dip card insert |
-| `collisGrey` | MS | #a9acaf | 0.55 | 0.35 | | Collis probe boxes |
+| `kollisGrey` | MS | #a9acaf | 0.55 | 0.35 | | Kollis probe boxes |
 | `nucBody` / `nucTop` / `minixBlack` | MS | #1a1a1c / #b8bbbf / #0f0f10 | 0.45 / 0.35 / 0.5 | 0.2 / 0.8 / 0.1 | | Windows boxes |
 | `deviceGreyBack` | MS | #5b5f63 | 0.50 | 0 | | Device backs |
 | `smokedPlastic` | MP | #2a2a2c | 0.25 | 0 | transparent, opacity 0.7 | Fuse caps |
@@ -1216,7 +1216,7 @@ Existing palette entries keep their current values (from `src/engine/materials.t
 | `zincTray` | MS | #b9bcbf | 0.45 | 1 | | Cable trays, threaded rods |
 | `whiteboard` | MP | #f8f8f6 | 0.12 | 0 | clearcoat 0.6, map = whiteboard canvas | Whiteboard |
 | `cork` | MS | #b88a5a | 0.95 | 0 | noise map | Roadmap board |
-| `laminateGrey` / `esdLaminate` / `esdMat` / `butcherBlock` | MS | #c9c7c1 / #9aa3a8 / #5f7686 / wood map tinted #c8955c | 0.55 / 0.60 / 0.90 / 0.60 | 0 | | Desks / power bench / mat / Jared's bench |
+| `laminateGrey` / `esdLaminate` / `esdMat` / `butcherBlock` | MS | #c9c7c1 / #9aa3a8 / #5f7686 / wood map tinted #c8955c | 0.55 / 0.60 / 0.90 / 0.60 | 0 | | Desks / power bench / mat / Jaden's bench |
 | `doorGrey` / `frameGrey` | MS | #c9ccd0 / #8d9196 | 0.50 / 0.45 | 0.2 / 0.5 | | Lab door |
 | `coveBlack` | MS | #1b1b1b | 0.85 | 0 | | Cove base |
 | `monitorBlack` / `keycap` | MS | #0d0d0e / #1d1d1f | 0.40 / 0.60 | 0 | keycap atlas map | Monitors, tablet bezel / keyboards |
@@ -1270,38 +1270,38 @@ Label tape (`label(text, {font: LABEL})`): white tape with 1.5 px darker edges, 
 | Tethered docks | `MEGATRON` / `MFD`, `MEGATRON` / `CFD`, `OPTIMUS` / `MFD`, `OPTIMUS` / `CFD` | 2-line tape, cap 18 mm |
 | SmartStripe blade | `SmartStripe Probe` | white print |
 | ADB shelf | `DATA`, `TARS`, `ADB ONLY — NO PIN` | tape (last on yellow tape) |
-| Collis probes | `UL Transaction Security` (front sticker), `COLLIS · <HRN>` (top tape) | |
-| Callus shelf | `MINIX-01`, `MINIX-02`, `NUC-03`, `SPARE`, `12V · CALLUS / NUC SHELF`, `STRIP-C1 — COLLIS RACK A`, `STRIP-C2 — COLLIS RACK B` | tape |
+| Kollis probes | `UL Transaction Security` (front sticker), `KOLLIS · <HRN>` (top tape) | |
+| Kallus shelf | `MINIX-01`, `MINIX-02`, `NUC-03`, `SPARE`, `12V · KALLUS / NUC SHELF`, `STRIP-C1 — KOLLIS RACK A`, `STRIP-C2 — KOLLIS RACK B` | tape |
 | NUC-03 sticky note | `DISK 100% — corporate AGENT.` / `NO HARDWARE CONTROL` / `ON THIS BOX. –J` | sticky note† |
 | Bay fuses | `F-WALL-E-5V 10A`, `F-EVE-5V 10A`, `F-R2-D2-5V 10A`, `F-BUMBLEBEE-5V 10A`, `F-JOHNNY-5-5V 10A`, `F-SETI-5V 10A`, `F-BAYMAX-5V 10A`, `F-ROSIE-5V 10A` | tape on the holder |
-| Power wall | §1.5 strings; outlets `W1 · 120V` … ; strips `AC STRIP — LABSIM / COLLIS ONLY`, `STRIP-A — LABSIM / COLLIS ONLY`, `STRIP-B — …`, `STRIP-T — …`, `STRIP-D — …` | tape / sticker |
+| Power wall | §1.5 strings; outlets `W1 · 120V` … ; strips `AC STRIP — LABSIM / KOLLIS ONLY`, `STRIP-A — LABSIM / KOLLIS ONLY`, `STRIP-B — …`, `STRIP-T — …`, `STRIP-D — …` | tape / sticker |
 | Motor PCB silkscreen | `25-PIN MOTOR CTRL · MADE IN HONG KONG†`, `24V IN`, `SOL`, `SERVO`, `J1 DB25` | silkscreen |
 | Mean Well | `MEAN WELL · INPUT 120VAC · OUTPUT 24VDC` / `LRS-600-24 · 24V 25A` | sticker |
 | Regulators | `12V DC · NUC` + `24V→12V 15A†`; `5V DC · 10A` + `RACK A` / `RACK B` / `BENCH C (TETHERED + ADB)` | tape |
-| Server | `GPU BLADE · 10.42.1.5 · VMs: ORCA / JENKINS / OLLAMA`, `GPU 1` … `GPU 4`, tower tag `RETIRED — replaced by GPU blade` | tape / hang tag |
+| Server | `GPU BLADE · 10.42.1.5 · VMs: ORKA / JENKINS / OLLAMA`, `GPU 1` … `GPU 4`, tower tag `RETIRED — replaced by GPU blade` | tape / hang tag |
 | Build table | `130 FT · 22 AWG`, `200+ M2.5 / M5 BOLTS`, `SOLDER JOINTS ≈ 300 ✓✓✓`, `10 FT` | tape / clipboard |
-| Jared's bench | bins `2.5 mm`, `5 mm`; red bin `SPARE PI · SD · FUSES`; blue bin `ETHERNET · USB`; drawers `M2.5 BOLTS`, `M5 BOLTS`, `M2.5 NUTS`, `M5 NUTS`, `SOLENOIDS`, `LIMIT SW`, `V-WHEELS`, `GT2 BELT`, `PULLEYS`, `RIBBON`, `CARD INSERT`, `FUSES 10A`, `HEAT SHRINK`, `ZIP TIES` (others blank) | tape |
+| Jaden's bench | bins `2.5 mm`, `5 mm`; red bin `SPARE PI · SD · FUSES`; blue bin `ETHERNET · USB`; drawers `M2.5 BOLTS`, `M5 BOLTS`, `M2.5 NUTS`, `M5 NUTS`, `SOLENOIDS`, `LIMIT SW`, `V-WHEELS`, `GT2 BELT`, `PULLEYS`, `RIBBON`, `CARD INSERT`, `FUSES 10A`, `HEAT SHRINK`, `ZIP TIES` (others blank) | tape |
 | Husky | drawer 2 `SPARE FLUX 2`, drawer 3 `SPARE MICRO 3` | tape |
-| Storage cabinet | `SPARES — SIGN OUT WITH JARED` | sticker |
-| Desk sticky notes (hidden in Strict) | `ADB → :5444 (NOT 5555!)`; `orca.lab.local:8080 · jenkins.lab.local:8080`; `theme=avocado · kernelType=CPA` | sticky notes |
+| Storage cabinet | `SPARES — SIGN OUT WITH JADEN` | sticker |
+| Desk sticky notes (hidden in Strict) | `ADB → :5444 (NOT 5555!)`; `orka.lab.local:8080 · jenkins.lab.local:8080`; `theme=avocado · kernelType=CPA` | sticky notes |
 | Workstation | `WS · 10.42.50.17` | sticker |
 | Corridor | `AUTOMATION LAB · 3.14†`, `AUTHORIZED PERSONNEL ONLY` | sign |
-| Safety card (curriculum S18) | `LAB SAFETY CARD` / `1. Never touch a robot while a test is running.` / `2. If you move an arm by hand, Park All before you walk away.` / `3. LabSim terminals and Collis probes go on the AC power strips — never the DC rails.` / `4. Broken rig? Tell Jared.` | printed card |
+| Safety card (curriculum S18) | `LAB SAFETY CARD` / `1. Never touch a robot while a test is running.` / `2. If you move an arm by hand, Park All before you walk away.` / `3. LabSim terminals and Kollis probes go on the AC power strips — never the DC rails.` / `4. Broken rig? Tell Jaden.` | printed card |
 
 ### 6.4 Posters, whiteboard and boards
 
 | Id | Content (all text exact) |
 |---|---|
 | `poster.esd` | Yellow #ffd400, black ESD triangle glyph; `ATTENTION` / `OBSERVE PRECAUTIONS FOR HANDLING` / `ELECTROSTATIC SENSITIVE DEVICES` / `Wear a wrist strap at the benches`. |
-| `poster.pool` | Navy; `THE POOL · 42 RIGS`; 6 × 7 grid of the 42 canon names in canon order, the 12 physical rigs in green with `●`; footer `Orca tracks them all. Gort is a repo, not a rig.` |
+| `poster.pool` | Navy; `THE POOL · 42 RIGS`; 6 × 7 grid of the 42 canon names in canon order, the 12 physical rigs in green with `●`; footer `Orka tracks them all. Gorth is a repo, not a rig.` |
 | `poster.5444` (Strict: hidden) | White; huge green `5444`, red struck-through `5555`; `ADB over TCP in this lab: port 5444.` / `5555 is the default — and it found our coworkers' desk devices.` |
-| `poster.power` (Strict: hidden) | Flow `120V AC → MEAN WELL → 24V DC RAIL → 12V (NUCs) · 5V 10A (Pis) → INLINE FUSES`; red box `LABSIM DEVICES (18V) & COLLIS PROBES: AC STRIPS ONLY`. |
+| `poster.power` (Strict: hidden) | Flow `120V AC → MEAN WELL → 24V DC RAIL → 12V (NUCs) · 5V 10A (Pis) → INLINE FUSES`; red box `LABSIM DEVICES (18V) & KOLLIS PROBES: AC STRIPS ONLY`. |
 | `poster.park` (Strict: hidden) | `ARM MOVED?` → tablet header yellow `MAGNETIC LOCK BROKEN` → `PARK ALL` → `(0,0)` → header green. |
-| `poster.network` (Strict: hidden) | `LAB NETWORK` table: GPU blade `10.42.1.5` · Orca `orca.lab.local → 10.42.1.10:8080` (MySQL `orca` :3306) · Jenkins `jenkins.lab.local → 10.42.1.11:8080` · Ollama `10.42.1.12:11434` · Robot Pis `10.42.10.x :8000 / :8081` · Callus boxes `10.42.20.x :9000` · LabSim devices `10.42.30.x ADB :5444` · You `10.42.50.17` · Coworker desks `10.42.60.x :5555`. Corner badge `ILLUSTRATIVE`. |
+| `poster.network` (Strict: hidden) | `LAB NETWORK` table: GPU blade `10.42.1.5` · Orka `orka.lab.local → 10.42.1.10:8080` (MySQL `orka` :3306) · Jenkins `jenkins.lab.local → 10.42.1.11:8080` · Ollama `10.42.1.12:11434` · Robot Pis `10.42.10.x :8000 / :8081` · Kallus boxes `10.42.20.x :9000` · LabSim devices `10.42.30.x ADB :5444` · You `10.42.50.17` · Coworker desks `10.42.60.x :5555`. Corner badge `ILLUSTRATIVE`. |
 | `poster.lab` | `KEEP THE RIGS GREEN` + five status chips with one-line meanings: `AVAILABLE — open to pipelines`, `UNAVAILABLE — named jobs only`, `OFFLINE — being built, no health checks`, `CONNECTION FAILED — ping failed, see Notes`, `RESERVED — someone's running locally` (Ref §3). |
-| `wall.whiteboard` (complete state) | Marker boxes (black outline, blue text): `Jenkins (Executor)` → arrow `triggers pipeline + env vars` → `Test runner (uia-remote / Pigeon)`; `Jenkins` → `checkout robot` → `Orca (Controller)`; runner → `REST: xy_touch, swipe/dip/tap` → `Orca`; `Orca` — `MySQL` cylinder; `Orca` → red `5-min health ping` → `Raspberry Pi Robot Controller (Linux)`; Pi → `ADB :5444` → `LabSim device (MFD/CFD)`; Pi → `camera stream`, `steppers / solenoid / dip / tap`, `Wine card programming`; `Windows/Minix box: Callus` → `ribbon` → `Collis probe` → `card reader`. Green marker note `Jared calibrated to true (0,0)`. Puzzle state: same boxes as loose magnets in a row at the bottom, dashed slots where they belong. |
+| `wall.whiteboard` (complete state) | Marker boxes (black outline, blue text): `Jenkins (Executor)` → arrow `triggers pipeline + env vars` → `Test runner (uia-relay / Parrot)`; `Jenkins` → `checkout robot` → `Orka (Controller)`; runner → `REST: xy_touch, swipe/dip/tap` → `Orka`; `Orka` — `MySQL` cylinder; `Orka` → red `5-min health ping` → `Raspberry Pi Robot Controller (Linux)`; Pi → `ADB :5444` → `LabSim device (MFD/CFD)`; Pi → `camera stream`, `steppers / solenoid / dip / tap`, `Wine card programming`; `Windows/Minix box: Kallus` → `ribbon` → `Kollis probe` → `card reader`. Green marker note `Jaden calibrated to true (0,0)`. Puzzle state: same boxes as loose magnets in a row at the bottom, dashed slots where they belong. |
 | `wall.roadmap` | Headers `TODAY` · `IN PROGRESS` · `PLANNED` · `RETIRED / PHASING OUT`; 8 index cards (curriculum M17 text) pinned in a pile at the right until sorted. |
-| `wall.history.*` | Frames: `SEMI TEAM: third-party POS SDKs · USB Pay Display · Secure Network Pay Display (link MFDs and CFDs over USB or the local network)`; `SEDI (QA) TEAM: tested Semi's apps with the Lester framework`; `IPX: Integrated Payment Experience. uia-remote tests standalone + tethered across Register, Orders, Authorizations, Sale, Transactions, Setup`; `PAYCORE: adopted uia-remote for LabSim Dining · back-to-back card matrices (Visa, Discover, AmEx) · standalone rigs kept Unavailable` (curriculum M18). Plaques: `Semi`, `Sedi`, `IPX`, `PayCore`, `Core OS`. |
+| `wall.history.*` | Frames: `SEMI TEAM: third-party POS SDKs · USB Pay Display · Secure Network Pay Display (link MFDs and CFDs over USB or the local network)`; `SEDI (QA) TEAM: tested Semi's apps with the Lister framework`; `IPX: Integrated Payment Experience. uia-relay tests standalone + tethered across Register, Orders, Authorizations, Sale, Transactions, Setup`; `PAYCREST: adopted uia-relay for LabSim Dining · back-to-back card matrices (Visa, Discover, AmEx) · standalone rigs kept Unavailable` (curriculum M18). Plaques: `Semi`, `Sedi`, `IPX`, `PayCrest`, `Core OS`. |
 
 ---
 ## 7. Lighting and post-processing
@@ -1317,13 +1317,13 @@ bloom with HDR luminance threshold 1.25 so only LEDs and diffusers glow.
 | Troffer key lights `light.t01`…`t12` | `SpotLight` pointing straight down; angle 1.10 rad, penumbra 1.0, decay 2, distance 0; colour #f4f6ff (LED, ≈ 5000 K), intensity **10**; `t01` fluorescent: colour #fff3e0, intensity 8.5 | (x, 2.98, z) of each troffer (§1.7); target (x, 0, z) | `castShadow = true` on the six below with `userData.shadowPriority`; the quality preset decides how many really render shadows |
 | Troffer diffusers | Emissive meshes 0.58 × 1.18 (`trofferLed`, `trofferFluor`) | ceiling | Bloom halo on Medium+ |
 | Hemisphere fill | `HemisphereLight` sky #ffffff, ground #8a8780, intensity 0.5 (Low: 0.9) | — | Bounce light |
-| Bench task light | `PointLight` #ffd9a8, intensity 0.6, distance 1.6, decay 2 (Medium+) | (2.70, 1.10, −4.75) | Over `bench.jared` |
+| Bench task light | `PointLight` #ffd9a8, intensity 0.6, distance 1.6, decay 2 (Medium+) | (2.70, 1.10, −4.75) | Over `bench.jaden` |
 | Magnifier lamp | `PointLight` #fff1e0, intensity 0.4, distance 0.8 (High+) | lamp head | |
 | Corridor | `SpotLight` intensity 8, angle 1.2, penumbra 1 | (5.90, 2.68, 6.15) | Off-screen once inside |
 | Flashlight (player tool, gameplay `F`) | `SpotLight` attached to the camera: angle 0.35, penumbra 0.5, intensity 6, distance 4, decay 2, no shadow | camera | Needed to read fuse windows / under-shelf labels |
 | Rack green spill | Ultra: two `RectAreaLight`s per rack front (green #2bff6a, 0.02 × 1.80 m, intensity 2.0) at the front posts; Low–High: an additive floor decal (green radial gradient 0.6 × 0.6 m, opacity 0.15) at each front post | rack fronts | IMG-T green glow |
 
-Shadow priorities (highest first): `t06` (−1.50, 0.00) rack fronts = 10; `t02` (−1.50, −3.00) rear aisle + power wall = 9; `t07` (1.50, 0.00) ADB + tethered = 8; `t11` (1.50, 3.00) desks = 7; `t03` (1.50, −3.00) Jared's bench = 6; `t05` (−5.10, 0.00) build table / whiteboard = 5. Shadow camera near 0.5, far 3.6; bias −0.0005, normalBias 0.02.
+Shadow priorities (highest first): `t06` (−1.50, 0.00) rack fronts = 10; `t02` (−1.50, −3.00) rear aisle + power wall = 9; `t07` (1.50, 0.00) ADB + tethered = 8; `t11` (1.50, 3.00) desks = 7; `t03` (1.50, −3.00) Jaden's bench = 6; `t05` (−5.10, 0.00) build table / whiteboard = 5. Shadow camera near 0.5, far 3.6; bias −0.0005, normalBias 0.02.
 
 Shadow casters (`castShadow`): rack/shelf frames (merged), shelves, benches, desks, chairs, cabinets, Husky, NPCs, the build table; **rig moving parts (beam, arm, drop, solenoid) cast only on Ultra** (the head's shadow on the screen). Receivers: floor, benches, shelves, desks, device screens (Ultra).
 
@@ -1333,7 +1333,7 @@ Shadow casters (`castShadow`): rack/shelf frames (merged), shelves, benches, des
 
 | Emitter | Colour | Emissive intensity | Bloom? |
 |---|---|---|---|
-| Indicator LEDs (POWER panel, Pi PWR/ACT, Collis, hubs, switch ports) | §6.1 | 7 (blue 9.1) | yes |
+| Indicator LEDs (POWER panel, Pi PWR/ACT, Kollis, hubs, switch ports) | §6.1 | 7 (blue 9.1) | yes |
 | Rack LED strips | #2bff6a | 2.2 | soft |
 | Chip-slot light pipes | #39ff7a | 2.5 | soft |
 | Troffer diffusers | #f4f6ff | 2.0 | soft halo |
@@ -1423,14 +1423,14 @@ Notation: osc `sine/square/saw/tri` with frequency; noise `white/pink/brown`; fi
 | `drawer` **new** | — | one-shot, variants `open`, `close` | rolling brown LP 500 Hz 400 ms rising (0.08) + ball-bearing rattle BP 4 kHz grains at 60 Hz (0.02); close adds a thump | Husky, organiser drawers, cabinet |
 | `chair-roll` **new** | — | one-shot | brown LP 300 Hz 300 ms (0.05) | sit / stand |
 | `coffee-machine` **new** | — | one-shot 6 s | pump saw 60 Hz LP 300 (0.05) + gurgles (sine blips 200–600 Hz at 8/s, BP noise) + final steam hiss HP 4 kHz 1 s (0.06) | `coffee.machine` |
-| `voice-blip` **new** | `VOICE_BLIP_<speaker>` | one-shot (voice bus), 18 blips/s for the subtitle duration | 40 ms blips, ± 2 semitones random: Morgan sine 520 Hz; Jared square 330 Hz LP 1.5 kHz; Tate triangle 440 Hz; David sine 392 Hz; Riley sine 600 Hz; Sam triangle 480 Hz; Alex square 700 Hz LP 2 kHz; robots use their quip voice (WALL-E sine 300 Hz with 9 Hz ± 40 Hz vibrato; EVE clean sine 880; BUMBLEBEE BP noise 1.5 kHz "radio" bursts; R2-D2 random chirps 1.2–3 kHz glides; others triangle at 200–500 Hz) | dialogue/barks/quips |
+| `voice-blip` **new** | `VOICE_BLIP_<speaker>` | one-shot (voice bus), 18 blips/s for the subtitle duration | 40 ms blips, ± 2 semitones random: Morgan sine 520 Hz; Jaden square 330 Hz LP 1.5 kHz; Nate triangle 440 Hz; Devin sine 392 Hz; Riley sine 600 Hz; Sam triangle 480 Hz; Alex square 700 Hz LP 2 kHz; robots use their quip voice (WALL-E sine 300 Hz with 9 Hz ± 40 Hz vibrato; EVE clean sine 880; BUMBLEBEE BP noise 1.5 kHz "radio" bursts; R2-D2 random chirps 1.2–3 kHz glides; others triangle at 200–500 Hz) | dialogue/barks/quips |
 | `ui-click`, `ui-hover`, `ui-success`, `ui-fail`, `ui-xp`, `ui-achievement`, `ui-ticket`, `ui-type` | `UI_*` | 2D | Recipes per 20-gameplay §5.1 (`ui-ticket` = `UI_TICKET_NEW`, `ui-success` = `UI_RESOLVE`/`UI_DIAG_CORRECT`, `ui-fail` = `UI_WRONG`, `ui-xp` = `UI_COMBO_UP`, `ui-achievement` = `UI_ACHIEVEMENT`); add **new** `ui-health-ping`, `ui-sla-tick`, `ui-combo-break`, `ui-build`, `ui-rank-up` for the remaining UI cues | HUD |
 
 ### 8.3 Emitter placement
 
 | Emitter | Sound | Position (world) | refDistance |
 |---|---|---|---|
-| Rack A / Rack B / tethered / Callus / ADB fans | `fan` (`rack` / `rack` / `rack` / `box` / `box`) | (−2.60, 1.95, −2.10) / (−1.40, 1.95, −2.10) / (2.40, 1.70, −2.05) / (−2.00, 1.00, −2.10) / (0.85, 0.50, −1.90) | 1.2 |
+| Rack A / Rack B / tethered / Kallus / ADB fans | `fan` (`rack` / `rack` / `rack` / `box` / `box`) | (−2.60, 1.95, −2.10) / (−1.40, 1.95, −2.10) / (2.40, 1.70, −2.05) / (−2.00, 1.00, −2.10) / (0.85, 0.50, −1.90) | 1.2 |
 | Each moving rig | `stepper`, `solenoid`, `servo`, `limit-click`, `maglock-*` | the moving part's world position (beam carriage / arm carriage / solenoid / dip pivot / switch) | 0.8 |
 | Each tablet | `tablet-tap`, `park-done`, `banner-yellow` | tablet centre | 0.8 |
 | Each device | `device-*`, `printer`, `nfc-tap`, `card-insert` | device screen centre / printer slot | 1.0 |
@@ -1498,7 +1498,7 @@ Mix rules: the sfx bus ducks ambience by −3 dB for 300 ms on `fuse-pop`, `fry`
 | `rig.<id>.stepper-x` / `.stepper-y` | X / Y stepper | — | `NEMA-17` · `GT2 pulley` · `V-slot wheels` · `2020 extrusion` (curriculum M04) |
 | `rig.<id>.limit-x` / `.limit-y` | Limit switch X / Y | E **Press lever** → `limit-click` (and a tablet toast `LIMIT X`† while held) | `Limit switch — physical (0,0)` |
 | `rig.<id>.dip-arm` | Dip arm | E [screwdriver 2.5 mm] **Loosen hub bolts** → mouse wheel rotates the arm one gear tooth per notch → E **Tighten** → `sim.rig.setDipAlignment(id, teeth)` (proposed) | `Dip arm` · `Sector gear "63"` · `White card insert → chip slot` |
-| `rig.<id>.tap-paddle` | Tap paddle | — | `Tap paddle — Collis NFC antenna` |
+| `rig.<id>.tap-paddle` | Tap paddle | — | `Tap paddle — Kollis NFC antenna` |
 | `rig.<id>.phone-sled` | Phone carriage | — | `Phone carriage & power-button pusher†` |
 | `rig.<id>.motor-pcb` | Motor controller PCB | E **Move `EVE MOTION` cable to the Pi** (EVE, INC19 only) → `sim.rig.moveMotionCable(id, 'pi')` (proposed) | `25-PIN MOTOR CTRL · MADE IN HONG KONG†` |
 | `rig.<id>.cradle` | Cradle | E [screwdriver 2.5 mm] **Remove / fit clamp bolts**; with bolts out and device unplugged: E **Lift device** (carry); carrying a device: E **Install** → `sim.device.swapHardware(id, type)` | `Angled 3D-printed cradle (black PLA)` |
@@ -1509,17 +1509,17 @@ Mix rules: the sfx bus ducks ambience by −3 dB for 300 ms on `fuse-pop`, `fry`
 | `rig.<id>.pi-ethernet` | Ethernet cable | E **Unplug / Re-seat** → `sim.host.setEthernet`; R [ethernet cable] **Replace cable** | `Cat6 → rack switch` |
 | `rig.<id>.fuse` | Inline fuse F-`<RIG>`-5V | E **Open / Close holder**; R **Pull fuse** (holder open); E [spare fuse] **Insert `<rating>` fuse** → `sim.power.replaceFuse`; E [multimeter] **Measure** (in / out / Ω) | `ATO blade fuse · 10 A` |
 | `rig.<id>.webcam` | Webcam | E **Adjust aim** (drag ±15° yaw/pitch) → `sim.rig.aimWebcam` (proposed); R **Re-seat USB** → `sim.rig.reseatWebcam` | `Webcam → camera stream` |
-| `power.strip.a` / `.b` (+ sockets `.s1`…`.s6`) | AC strip STRIP-A / -B | E **Switch on / off** → `sim.power.toggleStrip`; on a socket: E **Unplug** / **Plug** (carried plug) | `Commercial AC strip — LabSim devices & Collis probes` |
+| `power.strip.a` / `.b` (+ sockets `.s1`…`.s6`) | AC strip STRIP-A / -B | E **Switch on / off** → `sim.power.toggleStrip`; on a socket: E **Unplug** / **Plug** (carried plug) | `Commercial AC strip — LabSim devices & Kollis probes` |
 | `power.rackdist.a` / `.b` | Rack distribution | E [multimeter] **Measure 5 V / 24 V** | `5V 10A from F-5V-<rack> · 24V motor feed` |
 | `rig.rack-b.camera-pi` | Rack B camera Pi | as `rig.<id>.pi` | `Shared camera — four webcams, one stream` |
 
-**Callus shelf, tethered bench, ADB shelf**
+**Kallus shelf, tethered bench, ADB shelf**
 
 | Id | Prompt label | Verbs → effect | Inspect callouts |
 |---|---|---|---|
-| `callus.minix-01` / `-02`, `callus.nuc-03`, `callus.slot-4` | `MINIX-01` … | E **Power button** (hold 4 s = force off) → `sim.host.powerCycle` / power on; R **Re-seat Ethernet** → `sim.host.setEthernet` | `Windows box running Callus` / NUC: sticky-note text |
-| `callus.monitor` | Callus console | E **Switch KVM** (box 1 → 4) | — |
-| `collis.<id>` | Collis probe — `<HRN>` | E **Re-seat rear ribbon** → `sim.collis.reseatRibbon`; R **Unplug / Plug PSU** (socket picker) | `UL Transaction Security` · `Rear ribbon cable → <HRN>'s card reader` · `Power: AC strip` (curriculum M10) |
+| `kallus.minix-01` / `-02`, `kallus.nuc-03`, `kallus.slot-4` | `MINIX-01` … | E **Power button** (hold 4 s = force off) → `sim.host.powerCycle` / power on; R **Re-seat Ethernet** → `sim.host.setEthernet` | `Windows box running Kallus` / NUC: sticky-note text |
+| `kallus.monitor` | Kallus console | E **Switch KVM** (box 1 → 4) | — |
+| `kollis.<id>` | Kollis probe — `<HRN>` | E **Re-seat rear ribbon** → `sim.kollis.reseatRibbon`; R **Unplug / Plug PSU** (socket picker) | `UL Transaction Security` · `Rear ribbon cable → <HRN>'s card reader` · `Power: AC strip` (curriculum M10) |
 | `power.strip.c1` / `.c2` | AC strip STRIP-C1 / -C2 | as rack strips | |
 | `rig.megatron.mfd` / `.cfd`, `rig.optimus.mfd` / `.cfd` | `MEGATRON MFD (DEV1)` … | E **Look at screen**; R **Tap screen** | `MEGATRON  MFD  DEV1` · `Merchant Facing Device` (or `Customer Facing Device`) |
 | `rig.<x>.dock-mfd` / `.dock-cfd` | Connectivity hub | E **Re-seat USB**; R **Re-seat Ethernet**; G **Re-seat power** → `sim.device.reseatHub` (proposed) | `LabSim connectivity hub: Ethernet, USB, power` |
@@ -1537,35 +1537,35 @@ Mix rules: the sfx bus ducks ambience by −3 dB for 300 ms on `fuse-pop`, `fry`
 | `power.bus.24v` | 24 V DC rail | E [multimeter] **Measure** | `Central 24V DC rail` |
 | `power.reg.12v`, `power.reg.5v-a/-b/-c` | Step-down regulator | E [multimeter] **Measure output** | `12V DC · NUC` / `5V DC · 10A` (curriculum M03 step 6) |
 | `power.fuse.12v`, `power.fuse.5v-a/-b/-c` | Inline fuse `<id>` | as `rig.<id>.fuse` | `F-5V-B 10A` etc. |
-| `power.tap.24v` / `.12v` / `.5v` | DC tap lead 24V / 12V / 5V | as a socket target: E **Plug `<carried plug>` here** → `sim.power.plug(load, {kind:'dc-rail', …})` (the 18 V trap: spark + fry if a LabSim/Collis PSU) | `DC rail tap — Pis/NUCs only` |
-| `power.strip.w` (+ `.s1`…`.s6`) | AC strip (bench) | as rack strips (curriculum `prop.ac-strip`) | `AC STRIP — LABSIM / COLLIS ONLY` |
+| `power.tap.24v` / `.12v` / `.5v` | DC tap lead 24V / 12V / 5V | as a socket target: E **Plug `<carried plug>` here** → `sim.power.plug(load, {kind:'dc-rail', …})` (the 18 V trap: spark + fry if a LabSim/Kollis PSU) | `DC rail tap — Pis/NUCs only` |
+| `power.strip.w` (+ `.s1`…`.s6`) | AC strip (bench) | as rack strips (curriculum `prop.ac-strip`) | `AC STRIP — LABSIM / KOLLIS ONLY` |
 | `power.outlet.w1`…`w14` | Wall outlet W`<n>` · 120 V | E **Unplug / Plug**; E [multimeter] **Measure V~** | `120V AC` |
 | `power.trace` | Power trace | E **Start trace** (M03) → hotspot mode: click W1 → MW-1 → 24V rail → REG-12V → REG-5V → fuses → `→ NUC SHELF` → `→ PI SHELVES`; each correct node lights its cable (emissive orange 1.5) | — |
 | `tool.multimeter` | Multimeter | E **Pick up** → hotbar 2 | — |
 | `power.fuse-tray` | Spare fuses | E **Take fuse** (R cycles 5 / 7.5 / 10 / 15 A) → hotbar 3 | ratings |
-| `power.bench.flux4-psu`, `power.bench.collis-spare`, `power.bench.desk-fan` | Flux 4 power brick / Spare Collis probe / Desk fan | E **Pick up** (carry) → plug via any socket target | |
+| `power.bench.flux4-psu`, `power.bench.kollis-spare`, `power.bench.desk-fan` | Flux 4 power brick / Spare Kollis probe / Desk fan | E **Pick up** (carry) → plug via any socket target | |
 
 **Server, fabrication, benches, walls, library**
 
 | Id | Prompt label | Verbs → effect | Inspect callouts |
 |---|---|---|---|
-| `server.blade` | GPU server blade | E (hold 4 s) **Power button** → `sim.host.powerCycle('blade')` (GW13 trap) | `4× NVIDIA GPUs (2 on top, 2 underneath)` · `Hosts the Orca, Jenkins and Ollama VMs` |
+| `server.blade` | GPU server blade | E (hold 4 s) **Power button** → `sim.host.powerCycle('blade')` (GW13 trap) | `4× NVIDIA GPUs (2 on top, 2 underneath)` · `Hosts the Orka, Jenkins and Ollama VMs` |
 | `server.blade.gpu-1`…`gpu-4` | GPU `<n>` | E **Tag** (curriculum M17); GPUs 3–4 need crouch | `GPU <n>` |
 | `server.switch` | Network switch | R **Re-seat uplink** | `24-port switch` |
 | `server.tower` | Old tower | — | `RETIRED — replaced by GPU blade` |
 | `fab.printer-prusa` / `fab.printer-bambu` | Prusa MK4 / Bambu Lab | E **Start print** / **Check print** (replacement cradle: 90 s real) | `Prints the black PLA fixtures` · `CAD from simple geometric shapes` |
 | `fab.laptop-cad` | CAD laptop | E **Look** (focus) | — |
 | `fab.spare-cradle` | Printed cradle | E **Pick up** (carry; INC59) | — |
-| `jared.bolt-bins` | Bolt bins | E **Sort bolts** → minigame overlay (10 bolts → `2.5 mm` / `5 mm`) | `2.5 mm and 5 mm bolts` |
-| `jared.solder` | Soldering station | E **Iron on / off** (tip glows) | `~300 solder points per robot` |
-| `jared.label-maker` | Label maker | E **Print label** (Build Day) | — |
+| `jaden.bolt-bins` | Bolt bins | E **Sort bolts** → minigame overlay (10 bolts → `2.5 mm` / `5 mm`) | `2.5 mm and 5 mm bolts` |
+| `jaden.solder` | Soldering station | E **Iron on / off** (tip glows) | `~300 solder points per robot` |
+| `jaden.label-maker` | Label maker | E **Print label** (Build Day) | — |
 | `wall.bins.red-spares` / `wall.bins.blue-cables` | Red bin / Blue bin | E **Open** → take: spare Pi, SD card, 10 A fuses / Ethernet cable, USB-C lead, micro-USB lead | bin labels |
 | `wall.drawers.<label>` | Drawer `<label>` | E **Open** → take item | label |
 | `chest.husky.d1`…`d5` | Husky drawer `<n>` | E **Open / Close** (`drawer`); take `SPARE FLUX 2` (d2) / `SPARE MICRO 3` (d3) | — |
-| `cabinet.storage` | Storage cabinet | E **Sign out spare** (120 s, gameplay) → spare Collis probe; `cabinet.storage.legacy-shelf` E **Place / Take** legacy Flux 1 | `SPARES — SIGN OUT WITH JARED` |
+| `cabinet.storage` | Storage cabinet | E **Sign out spare** (120 s, gameplay) → spare Kollis probe; `cabinet.storage.legacy-shelf` E **Place / Take** legacy Flux 1 | `SPARES — SIGN OUT WITH JADEN` |
 | `wall.whiteboard` | Whiteboard | E **Use whiteboard** → focus + diagram builder overlay | — |
 | `wall.roadmap` | Roadmap board | E **Sort roadmap** → overlay | — |
-| `wall.history.semi/sedi/ipx/paycore` | Team history | — | frame texts (§6.4) |
+| `wall.history.semi/sedi/ipx/paycrest` | Team history | — | frame texts (§6.4) |
 | `wall.history.match` | Match the teams | E **Match teams** → overlay | — |
 | `poster.*`, `wall.extrusion-10ft`, `table.build.*` | Poster / 10 ft rail / Build table | — | poster text; `10 ft aluminium rail, cut to size`; BOM callouts §2.15 |
 | `library.<model>` | `<Device name>` | E **Pick up / Put back**; carried + E on `library.trays` **Place on tray**; G **Compare** (M02 step 6: highlights the Flux 4 printer block next to the Pocket) | lip-card text |
@@ -1596,7 +1596,7 @@ The held multimeter shows probe-point markers (small 6 mm rings, visible only wh
 | `mp.rig.<id>.fuse.in` / `.out` | both sides of the bay fuse | `fuse:F-<RIG>-5V:in` / `:out` |
 | `mp.rig.<id>.pi` | Pi USB-C input | `load:pi-<id>` |
 | `mp.rackdist.<rack>.5v` / `.24v` | rack distribution block | `rail-5v-<rack>` / `rail-24v` |
-| `mp.callus.12v` | Callus 12 V block | `rail-12v` |
+| `mp.kallus.12v` | Kallus 12 V block | `rail-12v` |
 | `mp.strip.<id>` | strip socket | `strip:<id>` |
 | Removed fuse (in hand) | Ω mode | `fuse:<fuseId>:ohms` |
 
@@ -1612,7 +1612,7 @@ The held multimeter shows probe-point markers (small 6 mm rings, visible only wh
 | `test-card-visa` / `test-card-interac` | Card 85.6 × 54 (§3.4) | Dip/tap/swipe gestures at readers |
 | `flashlight` | none (head torch light only, §7.1) | Toggle |
 | Ruler (carried item) | 150 mm rule; when measuring, a flat overlay rule with mm ticks (canvas 1024 × 64) snaps to the screen top-left | — |
-| Carried large items | Device, Pi, cradle, PSU brick, Collis probe held in both hands in front, scaled to fit the view; hotbar disabled | `Q` puts down |
+| Carried large items | Device, Pi, cradle, PSU brick, Kollis probe held in both hands in front, scaled to fit the view; hotbar disabled | `Q` puts down |
 
 ### 9.6 Contract additions this doc relies on
 
@@ -1642,7 +1642,7 @@ The held multimeter shows probe-point markers (small 6 mm rings, visible only wh
 | High | ≤ 550 | ≤ 240 | ≤ 1.6 M | ≤ 190 MB | ≤ 160 MB | ≤ 1.5 Mpx |
 | Ultra | ≤ 650 | ≤ 420 | ≤ 2.5 M | ≤ 260 MB | ≤ 300 MB | ≤ 2.5 Mpx |
 
-Scene triangle budget (all LOD0): touch rig ≤ 25 k each (8 → 200 k); tethered + ADB + Callus ≤ 70 k; room shell + furniture + benches ≤ 160 k; library ≤ 20 k; overhead (trays, rods, cables) ≤ 30 k; NPCs ≤ 6 k each (≤ 8 → 48 k); viewmodel ≤ 4 k. Total ≈ 0.55 M before culling.
+Scene triangle budget (all LOD0): touch rig ≤ 25 k each (8 → 200 k); tethered + ADB + Kallus ≤ 70 k; room shell + furniture + benches ≤ 160 k; library ≤ 20 k; overhead (trays, rods, cables) ≤ 30 k; NPCs ≤ 6 k each (≤ 8 → 48 k); viewmodel ≤ 4 k. Total ≈ 0.55 M before culling.
 
 High texture estimate: tiling materials ≈ 72 MB (1024² RGBA + mips: perforated ×2 sets 34 MB, hex 11 MB, floor 11 MB, ceiling 6 MB, others 10 MB); device screens 18 canvases ≈ 49 MB; tablets 8 × 1024 × 640 ≈ 28 MB; label atlas 2048² ≈ 22 MB; posters/whiteboard ≈ 26 MB; monitors and misc ≈ 15 MB → ≈ 212 MB worst case — trim by dropping off-screen tablet textures to 512 × 320 when > 6 m away (§10.4).
 
@@ -1702,14 +1702,14 @@ Stylised low-poly people (≤ 6 k triangles each), built procedurally from capsu
 | NPC | Outfit colours | Props | Default anchor |
 |---|---|---|---|
 | Morgan (`npc.morgan`) | teal hoodie #1f8a8a, dark jeans | laptop sticker-covered | `npc.morgan.desk` |
-| Jared (`npc.jared`) | charcoal work shirt, black apron, safety glasses pushed up | screwdriver in apron pocket | `npc.jared.bench` |
-| Tate (`npc.tate`) | navy polo #23395d | coffee cup | `npc.tate.visit` |
-| David (`npc.david`) | burgundy sweater #7a2430 | notebook | `npc.david.visit` |
+| Jaden (`npc.jaden`) | charcoal work shirt, black apron, safety glasses pushed up | screwdriver in apron pocket | `npc.jaden.bench` |
+| Nate (`npc.nate`) | navy polo #23395d | coffee cup | `npc.nate.visit` |
+| Devin (`npc.devin`) | burgundy sweater #7a2430 | notebook | `npc.devin.visit` |
 | Riley† | mustard cardigan #c79a2b | headphones | `npc.coworker.desk-2` |
 | Sam† | olive jacket #5b6b3a | — | `npc.coworker.desk-1` |
 | Alex† | light-blue shirt #8fb7e6 | clipboard | `npc.alex.build` |
 
-Procedural animation: idle breathing (chest scale ±1.5 % at 0.25 Hz), head look-at the player within 4 m (yaw ±60°, pitch ±20°), talking (head bob + hand gesture sine 1.2 Hz while their voice blips play), walking (leg swing ±25°, arm swing ±15°, 1.4 m/s, `footstep`), seated typing (hands ±3 mm at 8 Hz), pointing at a prop when a lesson step targets it, waving (M00). Movement follows a fixed waypoint graph through the aisles (≈ 20 nodes: corridor, entrance, desks, front aisle, rack row ends, rear aisle, power wall, Jared's bench, tethered, library, whiteboard) — no navmesh. Name tag (from `team.ts`) floats above the head when looked at within 3 m.
+Procedural animation: idle breathing (chest scale ±1.5 % at 0.25 Hz), head look-at the player within 4 m (yaw ±60°, pitch ±20°), talking (head bob + hand gesture sine 1.2 Hz while their voice blips play), walking (leg swing ±25°, arm swing ±15°, 1.4 m/s, `footstep`), seated typing (hands ±3 mm at 8 Hz), pointing at a prop when a lesson step targets it, waving (M00). Movement follows a fixed waypoint graph through the aisles (≈ 20 nodes: corridor, entrance, desks, front aisle, rack row ends, rear aisle, power wall, Jaden's bench, tethered, library, whiteboard) — no navmesh. Name tag (from `team.ts`) floats above the head when looked at within 3 m.
 
 ## Appendix B — Virtual cameras (camera app, OCR, GIMP, Ollama)
 
@@ -1718,7 +1718,7 @@ All webcams are 16:9, snapshot **1280 × 720**, vertical FOV 32° unless stated,
 | Id | Mount | Position | Look-at | Notes |
 |---|---|---|---|---|
 | `cam.<rig>` (8 touch rigs) | gooseneck, bay-local | (−150, 410, −120) mm | camera target in §2.10 | Screen reads upright; solenoid in frame (VID) |
-| `cam.r2-d2` | gooseneck, bay-local | (−150, 410, −120) mm (same mount as the others) | CFD `TOTAL` text centre | **Solved projection**: choose vertical FOV so the padded `TOTAL $10.83` text rect (L8 customer-cart, padded to a 236:44 aspect) spans 236 px of the 1280 px width, then `camera.setViewOffset(1280, 720, …)` so its centre lands at (530, 310) — i.e. the bbox (412, 288, 236, 44) of curriculum S10 `CFD_TOTAL` matches the real snapshot (±4 px), so GIMP/OCR lessons see the text where Orca says it is. |
+| `cam.r2-d2` | gooseneck, bay-local | (−150, 410, −120) mm (same mount as the others) | CFD `TOTAL` text centre | **Solved projection**: choose vertical FOV so the padded `TOTAL $10.83` text rect (L8 customer-cart, padded to a 236:44 aspect) spans 236 px of the 1280 px width, then `camera.setViewOffset(1280, 720, …)` so its centre lands at (530, 310) — i.e. the bbox (412, 288, 236, 44) of curriculum S10 `CFD_TOTAL` matches the real snapshot (±4 px), so GIMP/OCR lessons see the text where Orka says it is. |
 | `cam.tethered` | gooseneck on `rack.t` S3 | rack.t-local (0.00, 1.45, 0.38) m | (0.00, 1.23, 0.00) | vertical FOV 40° |
 | `cam.adb` | gooseneck on `shelf.adb` | shelf-local (0.45, 1.35, −0.25) m | (0.00, 1.10, 0.05) | vertical FOV 40° |
 | `cam.rack-b-mosaic` | Rack B camera Pi | — | — | 2 × 2 composite 1280 × 720: TL JOHNNY-5, TR SETI, BL BAYMAX, BR ROSIE; 640 × 360 tiles, 1 px black gutters, per-tile tags |
@@ -1731,7 +1731,7 @@ De-aimed webcam fault (`webcam.aimedOk = false`): the camera's look-at is offset
 1. Every id in §1.4, §1.5, §2.10 parts, §2.12–§2.14 and §9.2 exists in `PROP_IDS`; every curriculum `prop.*`/`loc.*` in 10-curriculum §0.5 resolves through `PROP_ALIASES` / `LOCATIONS` (content test).
 2. Rail numbers: crosshair on WALL-E's left rail at y 1.5446 m reads `U33`; WALL-E's fascia spans U31.3–U35.6.
 3. For every rig, `xy_touch` of every §4.6 seed location moves the solenoid tip to within 0.1 mm (world space) of the drawn button centre (or the overridden point), and `sim.device.touch` reports the expected `hitButton`.
-4. With `flags.receiptQrFeature` on and Orca still on `RECEIPT_OPTIONS_4`, all four old FLUX_GEN3 taps miss (land 0.5 mm above each pill); with `RECEIPT_OPTIONS_5` they hit.
+4. With `flags.receiptQrFeature` on and Orka still on `RECEIPT_OPTIONS_4`, all four old FLUX_GEN3 taps miss (land 0.5 mm above each pill); with `RECEIPT_OPTIONS_5` they hit.
 5. Park All after a manual push shows the clamp re-coupling, two limit clicks, banner wipe yellow → green; Park X/Y/XY leave the banner yellow when the lock was broken.
 6. Tethered bench screenshot (`img-r`) matches IMG-R's composition; MFD lock screens show the game time; CFDs are dark.
 7. Low preset holds ≥ 30 fps at `spawn.entrance` on the reference integrated GPU and meets §10.2 budgets in SwiftShader.

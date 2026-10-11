@@ -5,7 +5,7 @@ export interface SeedCommit {
   /** Documented short sha (7 hex); padded deterministically to 40. */
   short: string;
   message: string;
-  /** Team key ("jared") or bot ("claude-eval"). */
+  /** Team key ("jaden") or bot ("claude-eval"). */
   author: string;
   /** "YYYY-MM-DD HH:MM" local game time. */
   at: string;

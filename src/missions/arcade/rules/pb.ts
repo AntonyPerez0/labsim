@@ -29,18 +29,18 @@ export const PB_SPECS: readonly PbSpec[] = [
     incidents: ['INC01', 'INC15', 'INC20', 'INC23', 'INC42', 'INC59'],
   },
   {
-    id: 'PB03', behaviour: personText('Coordinate change landed through a Gort PR merged by {{jared}} (not only a direct Orca edit)'), points: 75, appliesTo: 'listed',
-    trigger: { events: ['github.prMerged', 'orca.screenLocationsSynced'], rule: 'a gort PR touching config/screen-locations/** is merged by jared and synced into Orca while the ticket is open' },
+    id: 'PB03', behaviour: personText('Coordinate change landed through a Gorth PR merged by {{jaden}} (not only a direct Orka edit)'), points: 75, appliesTo: 'listed',
+    trigger: { events: ['github.prMerged', 'orka.screenLocationsSynced'], rule: 'a gorth PR touching config/screen-locations/** is merged by jaden and synced into Orka while the ticket is open' },
     incidents: ['INC20', 'INC21'],
   },
   {
-    id: 'PB04', behaviour: 'Pigeon JSON fixed by pasting from tests/_templates/known_good_actions.json, or located with git diff', points: 25, appliesTo: 'listed',
-    trigger: { events: ['terminal.command', 'app.action', 'git.committed'], rule: 'the player ran git diff / opened known_good_actions.json, then committed a pigeon fix that parses' },
+    id: 'PB04', behaviour: 'Parrot JSON fixed by pasting from tests/_templates/known_good_actions.json, or located with git diff', points: 25, appliesTo: 'listed',
+    trigger: { events: ['terminal.command', 'app.action', 'git.committed'], rule: 'the player ran git diff / opened known_good_actions.json, then committed a parrot fix that parses' },
     incidents: ['INC25'],
   },
   {
     id: 'PB05', behaviour: 'Legacy Device row kept and new one linked (upgrades)', points: 50, appliesTo: 'listed',
-    trigger: { events: ['orca.entitySaved'], rule: 'a new Device row was created and linked as Robot Device while the previous row still exists unchanged' },
+    trigger: { events: ['orka.entitySaved'], rule: 'a new Device row was created and linked as Robot Device while the previous row still exists unchanged' },
     incidents: ['INC42'],
   },
   {

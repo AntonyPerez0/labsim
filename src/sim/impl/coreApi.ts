@@ -1,5 +1,5 @@
 /**
- * sim-core SimApi namespaces (orca, rig, device, power, host, collis, camera, laz, ocr, printer3d, chat,
+ * sim-core SimApi namespaces (orka, rig, device, power, host, kollis, camera, lazo, ocr, printer3d, chat,
  * faults): each method runs one `transact()` on the store, delegates to `src/sim/core`, and returns the
  * exact result/error texts of Sim §3/§4. Pure reads read the committed lab.
  */
@@ -11,7 +11,7 @@ import * as C from '../core';
 import { DEVICE_TYPES } from '../seed/deviceTypes';
 import { clone } from '../core/util';
 
-type CoreNamespaces = Pick<SimApi, 'orca' | 'rig' | 'device' | 'power' | 'host' | 'collis' | 'camera' | 'laz' | 'ocr' | 'printer3d' | 'chat' | 'faults'>;
+type CoreNamespaces = Pick<SimApi, 'orka' | 'rig' | 'device' | 'power' | 'host' | 'kollis' | 'camera' | 'lazo' | 'ocr' | 'printer3d' | 'chat' | 'faults'>;
 
 const OK: Result = { ok: true, value: undefined };
 const lab = (): LabState => getState().lab;
@@ -64,7 +64,7 @@ function device(l: LabState, id: string): TerminalDevice | undefined {
 
 export function createCoreApi(): CoreNamespaces {
   return {
-    orca: {
+    orka: {
       saveRobot: (robot, actor) => tx((l, ctx) => C.saveRobot(l, ctx, robot, actorKey(actor))),
       setRobotStatus: (robotId, status, actor, reason) => tx((l, ctx) => C.setRobotStatus(l, ctx, robotId, status, actorKey(actor), reason)),
       reserveRobot: (robotId, who) => tx((l, ctx) => C.setRobotStatus(l, ctx, robotId, 'RESERVED', who)),
@@ -82,10 +82,10 @@ export function createCoreApi(): CoreNamespaces {
       forceHealthCheck: (actor) =>
         tx((l, ctx): Result => {
           if (!l.config.forceHealthCheckAllowed) return { ok: false, error: '403 Force health check is disabled in this environment' };
-          const down = C.orcaDown(l);
+          const down = C.orkaDown(l);
           if (down && !down.startsWith('500')) return { ok: false, error: down };
           C.runHealthCheck(l, ctx, { forced: true });
-          C.log(l, 'orca', 'info', `forced health check (${actorKey(actor)})`);
+          C.log(l, 'orka', 'info', `forced health check (${actorKey(actor)})`);
           return OK;
         }),
       checkout: (req) =>
@@ -97,14 +97,14 @@ export function createCoreApi(): CoreNamespaces {
               if (toast) return { ok: false, error: toast };
             }
           }
-          const out = C.checkout(l, ctx, { ...req, buildId: req.buildId || `manual-${++l.seq.request}`, jobId: req.jobId || 'orca-ui' });
+          const out = C.checkout(l, ctx, { ...req, buildId: req.buildId || `manual-${++l.seq.request}`, jobId: req.jobId || 'orka-ui' });
           if (out.kind === 'ok') return { ok: true, value: { robotId: out.robotId } };
           if (out.kind === 'wait') return { ok: false, error: `waiting: ${out.label}` };
           return { ok: false, error: out.lines[out.lines.length - 1] ?? out.code };
         }),
       release: (robotId, buildId) =>
         tx((l, ctx): Result => {
-          const robot = l.orca.robots[robotId];
+          const robot = l.orka.robots[robotId];
           if (!robot) return { ok: false, error: '404 Not Found' };
           if (!robot.checkout) return { ok: false, error: `409 Conflict: robot ${robot.name} is not checked out` };
           C.release(l, ctx, robotId, buildId || robot.checkout.buildId);
@@ -116,7 +116,7 @@ export function createCoreApi(): CoreNamespaces {
         return { ok: true, value: C.matchPreview(lab(), parsed.caps, environment ?? 'DEV1') };
       },
       capabilityDocument: (robotId) => {
-        const r = lab().orca.robots[robotId];
+        const r = lab().orka.robots[robotId];
         return r ? C.capabilityDocument(lab(), r) : null;
       },
       xyTouch: (robotName, screen, button, actor, opts) => tx((l, ctx) => C.xyTouch(l, ctx, robotName, screen, button, actorKey(actor), opts ?? {})),
@@ -255,15 +255,15 @@ export function createCoreApi(): CoreNamespaces {
       plugUsb: (hostId, usbId, attached) => tx((l, ctx) => C.hostPlugUsb(l, ctx, hostId, usbId, attached)),
       runSchedTask: (hostId, task) => tx((l, ctx) => C.hostRunSchedTask(l, ctx, hostId, task)),
     },
-    collis: {
-      reseatRibbon: (collisId) => tx((l, ctx) => C.reseatRibbon(l, ctx, collisId)),
+    kollis: {
+      reseatRibbon: (kollisId) => tx((l, ctx) => C.reseatRibbon(l, ctx, kollisId)),
     },
     camera: {
       probe: (url) => C.cameraProbe(lab(), url),
       snapshot: (url, fileName) => tx((l, ctx) => C.cameraSnapshot(l, ctx, url, fileName)),
     },
-    laz: {
-      start: (deviceId, toMerchantId, actor) => tx((l, ctx) => C.startLaz(l, ctx, deviceId, toMerchantId, { buildId: null, actor: actorKey(actor) })),
+    lazo: {
+      start: (deviceId, toMerchantId, actor) => tx((l, ctx) => C.startLazo(l, ctx, deviceId, toMerchantId, { buildId: null, actor: actorKey(actor) })),
     },
     ocr: {
       tesseract: (imageRef, bbox) => {
@@ -272,7 +272,7 @@ export function createCoreApi(): CoreNamespaces {
       },
       compare: (id) =>
         tx((l, ctx): Result<{ text: string; expected: string; match: boolean }> => {
-          const r = C.screenCompare(l, ctx, id, 'player', 'orca');
+          const r = C.screenCompare(l, ctx, id, 'player', 'orka');
           return r.ok ? { ok: true, value: { text: r.value.text, expected: r.value.expected, match: r.value.match } } : r;
         }),
       frame: (imageRef) => {
@@ -307,14 +307,14 @@ export function createCoreApi(): CoreNamespaces {
   };
 }
 
-/* ────────────────────────────── orca.rest: Orca + other lab URLs ────────────────────────────── */
+/* ────────────────────────────── orka.rest: Orka + other lab URLs ────────────────────────────── */
 
 /**
- * `sim.orca.rest(method, path, body, actor)`: a path (`/api/…`) goes to Orca
- * (`http://orca.lab.local:8080`); a full URL goes to that host (Pis, Callus, Ollama tags, Jenkins JSON)
+ * `sim.orka.rest(method, path, body, actor)`: a path (`/api/…`) goes to Orka
+ * (`http://orka.lab.local:8080`); a full URL goes to that host (Pis, Kallus, Ollama tags, Jenkins JSON)
  * from the workstation, through the same reachability rules as curl (Sim §1.9, §3.23).
  */
 function restCall(l: LabState, ctx: TxContext, method: string, path: string, body: string | null, actor: string) {
-  const url = /^https?:\/\//.test(path) ? path : `http://orca.lab.local:8080${path.startsWith('/') ? path : `/${path}`}`;
+  const url = /^https?:\/\//.test(path) ? path : `http://orka.lab.local:8080${path.startsWith('/') ? path : `/${path}`}`;
   return C.http(l, ctx, { method, url, body, fromHostId: 'ws-17', actor });
 }

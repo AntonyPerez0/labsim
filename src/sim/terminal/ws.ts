@@ -49,7 +49,7 @@ function wsRemove(sh: Sh, abs: string): string | null {
     if (!at.rel) {
       // rm -rf of the whole clone: the project is gone from disk (clone again to get it back).
       lab.repos[at.repo].local = null;
-      if (at.repo === 'uia-remote') git.mirrorConfig(lab);
+      if (at.repo === 'uia-relay') git.mirrorConfig(lab);
       return null;
     }
     const r = git.deleteFile(lab, sh.ctx, at.repo, at.rel);
@@ -178,7 +178,7 @@ const HELP: string[] = [
   ' files       ls [-la] · cd [dir|~|..|-] · pwd · cat · less · head/tail [-n N] · grep [-oicnvEr] · wc -l · sort · uniq',
   '             echo · touch · mkdir · rm [-rf] · cp · mv · nano <file>',
   ' network     ping [-c N] host · curl [-i -s -v -X M -H h -d body] URL · nc -zv host port · nslookup host · ip addr',
-  ' remote      ssh pi@10.42.10.n · ssh automation@10.42.20.n · ssh automation@orca.lab.local',
+  ' remote      ssh pi@10.42.10.n · ssh automation@10.42.20.n · ssh automation@orka.lab.local',
   ' android     adb connect <ip>:5444 · adb devices [-l] · adb -s <target> shell uiautomator dump · adb -s <target> pull <file>',
   '             adb -s <target> shell input tap X Y · adb -s <target> exec-out screencap -p > shot.png · adb kill-server',
   ' code        git clone|status|log|diff|checkout|branch|add|commit|push|pull · mvn test [-Dtest=Class] · ./gradlew connectedAndroidTest',

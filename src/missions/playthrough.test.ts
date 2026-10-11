@@ -68,7 +68,7 @@ describe('Academy M01 playthrough (authored lesson, public API)', { timeout: 30_
         // The tablet's Park All while build #4120 holds the lock.
         const r = sim.rig.command('wall-e', 'park.all', 'player');
         // Sim gap (reported): if the lock is not enforced the tablet overlay still shows the lockout.
-        if (r.ok) fire('app.action', { app: 'tablet', action: 'tablet.lockout.shown', data: { robot: 'wall-e', holder: 'Java/uia-remote-regression-flux #4120', blockedClick: true } });
+        if (r.ok) fire('app.action', { app: 'tablet', action: 'tablet.lockout.shown', data: { robot: 'wall-e', holder: 'Java/uia-relay-regression-flux #4120', blockedClick: true } });
       },
       'M01.07a': () => {
         sim.rig.command('wall-e', 'park.all', 'player');

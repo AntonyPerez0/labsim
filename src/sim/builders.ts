@@ -2,7 +2,7 @@
  * Entity builders with Sim §2 factory defaults (seeds and other modules' test fixtures use them so
  * contract additions never break hand-written literals). Re-exported by `initialState.ts` and `@/sim`.
  */
-import type { TerminalDevice, DeviceTypeCode, DisplayState, Host, HostKind, OrcaRobot, OrderState, RigKind, RigState, ScreenName } from './types';
+import type { TerminalDevice, DeviceTypeCode, DisplayState, Host, HostKind, OrkaRobot, OrderState, RigKind, RigState, ScreenName } from './types';
 
 /* ────────────────────────────── Entity builders (seeds and test fixtures) ──────────────────────────────
  * Complete v2 objects with the factory defaults of Sim §2.3–§2.5; pass overrides for what differs.
@@ -49,11 +49,11 @@ export function createOrderState(id: string, overrides: Partial<OrderState> = {}
 }
 
 /** A rig in its factory state (Sim §2.3 "Physical placement"): parked & homed at (0,0), lock engaged, green. */
-export function createRigState(id: string, orcaRobotId: number, kind: RigKind, overrides: Partial<RigState> = {}): RigState {
+export function createRigState(id: string, orkaRobotId: number, kind: RigKind, overrides: Partial<RigState> = {}): RigState {
   const hasGantry = kind === 'touch' || kind === 'standalone';
   return {
     id,
-    orcaRobotId,
+    orkaRobotId,
     kind,
     hasGantry,
     gantry: {
@@ -84,8 +84,8 @@ export function createRigState(id: string, orcaRobotId: number, kind: RigKind, o
     motorSwitch: true,
     queue: [],
     piHostId: null,
-    callusHostId: null,
-    collisId: null,
+    kallusHostId: null,
+    kollisId: null,
     deviceIds: [],
     webcam: { connected: false, aimedOk: true, cameraId: null, aimOffsetDeg: { yaw: 0, pitch: 0 } },
     tablet: { tab: 'robot', statusText: 'Status: OK', brainbox: 'Brainbox v6', hrnShown: id.toUpperCase(), reachable: true },
@@ -146,7 +146,7 @@ export function createTerminalDevice(id: string, type: DeviceTypeCode, overrides
     firmware: firmware.version,
     cardPresent: null,
     lastReceipt: null,
-    orcaDeviceName: id.startsWith('dev-') ? id.slice(4) : id,
+    orkaDeviceName: id.startsWith('dev-') ? id.slice(4) : id,
     state: 'OK',
     adbTcpPort: 5444,
     bootStartedPhysMs: null,
@@ -204,8 +204,8 @@ export function createHost(id: string, kind: HostKind, hostname: string, ip: str
   };
 }
 
-/** An Orca robot row with factory defaults (Sim §1.3.2); status AVAILABLE, no notes. */
-export function createOrcaRobot(id: number, name: string, rigKind: RigKind, overrides: Partial<OrcaRobot> = {}): OrcaRobot {
+/** An Orka robot row with factory defaults (Sim §1.3.2); status AVAILABLE, no notes. */
+export function createOrkaRobot(id: number, name: string, rigKind: RigKind, overrides: Partial<OrkaRobot> = {}): OrkaRobot {
   return {
     id,
     name,

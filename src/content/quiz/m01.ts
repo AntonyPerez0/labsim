@@ -32,7 +32,7 @@ export const QUIZ_M01: QuizQuestion[] = resolvePeople([
     moduleId: "M01",
     difficulty: 1,
     checkpoint: "CP-M01.1",
-    prompt: "Roughly how many rigs does Orca's Robot entity track?",
+    prompt: "Roughly how many rigs does Orka's Robot entity track?",
     options: [
       "400+",
       "12",
@@ -42,7 +42,7 @@ export const QUIZ_M01: QuizQuestion[] = resolvePeople([
     answer: 3,
     explanation: "The Robot entity tracks a pool of 40+ rigs and their status flags (F115). Only some are physically in the training room.",
     factIds: ["F115"],
-    tags: ["lab.orientation", "orca.robot"],
+    tags: ["lab.orientation", "orka.robot"],
   },
   {
     id: "Q003",
@@ -96,8 +96,8 @@ export const QUIZ_M01: QuizQuestion[] = resolvePeople([
     prompt: "You try to press Park All on WALL-E and the tablet shows a lock overlay. What is the most likely reason?",
     options: [
       "The MOTOR toggle is off",
-      "Park All can only be issued from Orca",
-      "WALL-E is Offline in Orca",
+      "Park All can only be issued from Orka",
+      "WALL-E is Offline in Orka",
       "A test is active, so the global control dashboard locks out external users",
     ],
     answer: 3,
@@ -114,7 +114,7 @@ export const QUIZ_M01: QuizQuestion[] = resolvePeople([
     options: [
       "An injection-moulding shop in Hong Kong",
       "In-house 3D printers (Prusa in this lab, Bambu Lab at the team's other lab)",
-      "A CNC mill at {{jared}}'s bench",
+      "A CNC mill at {{jaden}}'s bench",
       "Formlabs resin printers",
     ],
     answer: 1,
@@ -142,7 +142,7 @@ export const QUIZ_M01: QuizQuestion[] = resolvePeople([
     prompt: "In the reference photo, what are the numbers printed along WALL-E's rack rails?",
     options: [
       "Millimetre coordinates for the gantry",
-      "Robot IDs from Orca",
+      "Robot IDs from Orka",
       "Rack-unit numbers (e.g. 29 to 40)",
       "Fuse ratings in amps",
     ],
@@ -176,9 +176,9 @@ export const QUIZ_M01: QuizQuestion[] = resolvePeople([
     prompt: "The robot name across the top of a status tablet is typed into the tablet by hand.",
     options: ["True", "False"],
     answer: 1,
-    explanation: "The Human Readable Name is pushed from Orca to the front-mounted status tablet (F118, F089).",
+    explanation: "The Human Readable Name is pushed from Orka to the front-mounted status tablet (F118, F089).",
     factIds: ["F089", "F118"],
-    tags: ["lab.orientation", "hw.tablet", "orca.names"],
+    tags: ["lab.orientation", "hw.tablet", "orka.names"],
   },
   {
     id: "Q383",
@@ -190,7 +190,7 @@ export const QUIZ_M01: QuizQuestion[] = resolvePeople([
       "Ask the team for help now",
       "Keep digging alone until the end of the day",
       "Set the robot back to Available and move on",
-      "Escalate every issue to {{jared}} before trying anything yourself",
+      "Escalate every issue to {{jaden}} before trying anything yourself",
     ],
     answer: 0,
     explanation: "The 15-minute rule: after at most 15 minutes stuck alone, ask the team for help (F252).",
@@ -253,7 +253,7 @@ export const QUIZ_M01: QuizQuestion[] = resolvePeople([
     options: [
       "Everyone's responsibility is no one's responsibility",
       "Only one badge opens the lab door",
-      "Orca allows only one admin account",
+      "Orka allows only one admin account",
       "The robots only obey one operator",
     ],
     answer: 0,

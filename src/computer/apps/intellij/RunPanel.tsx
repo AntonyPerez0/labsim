@@ -17,7 +17,7 @@ export interface RunPanelProps {
 }
 
 function headerLine(tab: RunTab): string {
-  if (tab.config.kind === 'lstr') return `/usr/lib/jvm/java-17-openjdk/bin/java -Dfile.encoding=UTF-8 -classpath … com.labsim.pigeon.LstrRunner --platform ANDROID ${tab.config.testPath}`;
+  if (tab.config.kind === 'lstr') return `/usr/lib/jvm/java-17-openjdk/bin/java -Dfile.encoding=UTF-8 -classpath … com.labsim.parrot.LstrRunner --platform ANDROID ${tab.config.testPath}`;
   const pkg = javaPackageOf(tab.config.testPath) ?? 'com.labsim.uia.testactions';
   return `/usr/lib/jvm/java-17-openjdk/bin/java -ea -Didea.test.cyclic.buffer.size=1048576 -javaagent:/opt/idea/lib/idea_rt.jar=40217:/opt/idea/bin -Dfile.encoding=UTF-8 -classpath … com.intellij.rt.junit.JUnitStarter -ideVersion5 -junit4 ${pkg}.${tab.config.name}`;
 }

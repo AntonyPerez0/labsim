@@ -2,7 +2,7 @@
  * Academy exemptions from the global wrong-action detectors (GP §5.4 GW01–GW24).
  *
  * Some lessons deliberately ask for an action that is a mistake anywhere else — push WALL-E's carriage
- * by hand to see the lock break (M04.11, GW06), pull EVE's Pi lead to watch Orca fail the ping (M06.07,
+ * by hand to see the lock break (M04.11, GW06), pull EVE's Pi lead to watch Orka fail the ping (M06.07,
  * GW17). Penalising the instructed action (Teach Card, mastery evidence, Leitner demotion) teaches the
  * opposite of the lesson, so the step that asks for it — and the moment right after it completes, when
  * the action's follow-up events (e.g. the Pi's `host.powerChanged`) arrive — is exempt. M14 runs the

@@ -7,7 +7,7 @@ import { expect } from 'vitest';
 import type { ScenarioItem } from '../api';
 import { lab, run, runUntil, sim } from '../core/testkit';
 import { resetTerminalSessions } from '../terminal';
-import type { JenkinsBuild, OrcaRobot } from '../types';
+import type { JenkinsBuild, OrkaRobot } from '../types';
 
 export { lab, run, runUntil, sim };
 
@@ -24,24 +24,24 @@ export function scenario(...items: ScenarioItem[]): string[] {
   return r.value.instanceIds;
 }
 
-export const robot = (name: string): OrcaRobot => Object.values(lab().orca.robots).find((r) => r.name === name)!;
+export const robot = (name: string): OrkaRobot => Object.values(lab().orka.robots).find((r) => r.name === name)!;
 
 /** Newest first note texts of a robot. */
 export const notes = (name: string): string[] => [...robot(name).notes].sort((a, b) => b.id - a.id).map((n) => n.text);
 
 /** Run the next scheduled health check (game clock jump) and return its log block. */
 export function nextHealthCheck(): string[] {
-  const before = lab().orca.healthCheck.log.length;
+  const before = lab().orka.healthCheck.log.length;
   sim.skipToNextHealthCheck();
-  const log = lab().orca.healthCheck.log;
+  const log = lab().orka.healthCheck.log;
   expect(log.length).toBeGreaterThan(before);
   return log[log.length - 1]!.lines;
 }
 
 /** Run the health check now (tutorial button) and return its log block. */
 export function healthNow(): string[] {
-  sim.orca.runHealthCheckNow();
-  const log = lab().orca.healthCheck.log;
+  sim.orka.runHealthCheckNow();
+  const log = lab().orka.healthCheck.log;
   return log[log.length - 1]!.lines;
 }
 
@@ -93,6 +93,6 @@ export const resolved = (ids: string[]): boolean => ids.every((id) => sim.faults
 /** Time to the next health check in physical ms (game ms / scale). */
 export function msToNextHealthCheck(): number {
   const t = lab().time;
-  const next = lab().orca.healthCheck.nextRunMs;
+  const next = lab().orka.healthCheck.nextRunMs;
   return Math.max(0, Math.ceil((next - t.nowMs) / t.timeScale));
 }

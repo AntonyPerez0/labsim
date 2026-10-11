@@ -13,7 +13,7 @@ export const ROBOTS_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
     summary: "A touch robot is a 3D-printer-style gantry that taps instead of prints. Learn every part — rails, steppers, solenoid, dip arm, limit switches, magnetic lock, webcam — and the tap cycle.",
     factIds: ["F079", "F080", "F081", "F082", "F083", "F088", "F240", "F241", "F242", "F243", "F089"],
     tags: ["robots.mechanics", "hw.rigbom", "hw.motion"],
-    related: ["status-tablet", "maglock-and-park-all", "fabrication-and-bom", "orca-screens-xytouch", "collis-probes"],
+    related: ["status-tablet", "maglock-and-park-all", "fabrication-and-bom", "orka-screens-xytouch", "kollis-probes"],
     keywords: ["gantry", "NEMA-17", "GT2", "2020 extrusion", "V-slot", "carriage", "solenoid", "plunger", "dip arm", "sector gear", "63", "ribbon card", "limit switch", "webcam", "cradle"],
     practice: ["INC13", "INC15", "INC16", "INC59"],
     image: "touch-robot-side-gantry.jpg",
@@ -40,12 +40,12 @@ The solenoid is remote-firing: its **plunger drops** onto the screen to tap {F08
 
 ## Card mechanics
 
-- A black **rotating dip arm** (sector gear marked \`63\`) carries a flat white ribbon card — the Collis probe's card insert — into the device's chip slot {F241} ([[collis-probes]]).
+- A black **rotating dip arm** (sector gear marked \`63\`) carries a flat white ribbon card — the Kollis probe's card insert — into the device's chip slot {F241} ([[kollis-probes]]).
 - A tap paddle† presents the card to the NFC area for contactless taps (the **Tap** In / Out buttons).
 
 ## Around the device
 
-- The device (a Flux in the photo) sits in an **angled black 3D-printed cradle**, with the grey **UL Transaction Security (Collis)** probe box on the shelf beside it {F242}.
+- The device (a Flux in the photo) sits in an **angled black 3D-printed cradle**, with the grey **UL Transaction Security (Kollis)** probe box on the shelf beside it {F242}.
 - A **webcam** watches the screen — the source of camera streams and OCR screenshots {F088}.
 - A **front-mounted status tablet** shows the robot's dashboard {F089} ([[status-tablet]]).
 
@@ -65,10 +65,10 @@ The solenoid is remote-firing: its **plunger drops** onto the screen to tap {F08
     id: "status-tablet",
     title: "The Status Tablet",
     category: "Robots",
-    summary: "The front-mounted tablet is the robot's face: header from Orca, three tabs, and the Motion Control button groups you will use to drive and recover the rig.",
+    summary: "The front-mounted tablet is the robot's face: header from Orka, three tabs, and the Motion Control button groups you will use to drive and recover the rig.",
     factIds: ["F089", "F118", "F233", "F234", "F235", "F230", "F236", "F245", "F260"],
-    tags: ["robots.mechanics", "hw.tablet", "hw.lockout", "orca.names"],
-    related: ["maglock-and-park-all", "touch-robot-anatomy", "orca-robot-device", "lab-tour"],
+    tags: ["robots.mechanics", "hw.tablet", "hw.lockout", "orka.names"],
+    related: ["maglock-and-park-all", "touch-robot-anatomy", "orka-robot-device", "lab-tour"],
     keywords: ["tablet", "Brainbox v6", "Status OK", "Robot", "Robot Control", "Motion Control", "Steppers", "Park", "Dip", "Tap", "Phone", "Solenoid", "lockout", "Human Readable Name"],
     practice: ["INC11", "INC12", "INC63", "DR16"],
     image: "walle-status-tablet-front.jpg",
@@ -76,12 +76,12 @@ The solenoid is remote-firing: its **plunger drops** onto the screen to tap {F08
 
 Every touch robot has a front-mounted status tablet {F089}. The header shows {F233}:
 
-- The robot's **Human Readable Name** (e.g. \`WALL-E\`) — pushed from Orca, not typed into the tablet {F118}.
+- The robot's **Human Readable Name** (e.g. \`WALL-E\`) — pushed from Orka, not typed into the tablet {F118}.
 - The LabSim logo.
 - \`Status: OK\`.
 - \`Brainbox v6\`.
 
-If the name on the tablet is misspelt, fix the robot's **Human Readable Name** in Orca — never its Name ([[orca-robot-device]]).
+If the name on the tablet is misspelt, fix the robot's **Human Readable Name** in Orka — never its Name ([[orka-robot-device]]).
 
 ## The tabs
 
@@ -113,7 +113,7 @@ While a test is active, the global LabSim control dashboard **locks out external
 
 ## Placeholders
 
-The tablets display the rig's **active connection properties and network addresses**, but **many physical buttons on the fixture panels are legacy placeholders that remain unwired** {F260}. If a panel button does nothing, that is expected; use the tablet or Orca.
+The tablets display the rig's **active connection properties and network addresses**, but **many physical buttons on the fixture panels are legacy placeholders that remain unwired** {F260}. If a panel button does nothing, that is expected; use the tablet or Orka.
 `,
   },
   {
@@ -123,7 +123,7 @@ The tablets display the rig's **active connection properties and network address
     summary: "Push an arm by hand and its magnetic lock breaks and the banner turns yellow; Park All drives the steppers back to the limit switches at (0,0), clears the error and turns the banner green.",
     factIds: ["F231", "F232", "F081", "F082", "F235", "F130"],
     tags: ["robots.mechanics", "hw.motion"],
-    related: ["status-tablet", "touch-robot-anatomy", "orca-urls-tethering-offsets"],
+    related: ["status-tablet", "touch-robot-anatomy", "orka-urls-tethering-offsets"],
     keywords: ["Park All", "yellow", "green", "banner", "magnetic lock", "limit switch", "(0", "0)", "home", "recover", "LOCK RELEASED", "PARK REQUIRED"],
     practice: ["INC11", "DR16"],
     body: `## What happens
@@ -147,7 +147,7 @@ Each arm is held by a magnetic lock {F081}; the limit switches define the (0,0) 
 ## Don't
 
 - Don't press Steppers → Disable to "fix" it — that releases the motors; it does not re-home them.
-- Don't add an Offset in Orca to compensate for a pushed arm. Offsets are a deprecated legacy fudge; the lab is calibrated to a true (0,0) {F130}.
+- Don't add an Offset in Orka to compensate for a pushed arm. Offsets are a deprecated legacy fudge; the lab is calibrated to a true (0,0) {F130}.
 - Don't push the carriage while a test is running — the dashboard is locked for a reason.
 `,
   },
@@ -157,8 +157,8 @@ Each arm is held by a magnetic lock {F081}; the limit switches define the (0,0) 
     category: "Robots",
     summary: "ADB bots are purely programmatic and can't touch a screen or enter a PIN; physical bots have mechanical touch probes and are required for Canadian PIN flows and ADB-blind displays.",
     factIds: ["F217", "F218", "F219", "F220", "F221", "F222", "F223", "F144", "F151"],
-    tags: ["orca.screens", "bots.types", "bots.pin"],
-    related: ["orca-screens-xytouch", "card-testing-philosophy", "stand-duet-dual-screen", "device-families"],
+    tags: ["orka.screens", "bots.types", "bots.pin"],
+    related: ["orka-screens-xytouch", "card-testing-philosophy", "stand-duet-dual-screen", "device-families"],
     keywords: ["ADB bot", "physical bot", "interactive bot", "PIN", "Canada", "Interac", "Secure Touch", "Gen 2", "Core OS", "ADB-blind", "DATA", "TARS", "SETI"],
     practice: ["INC52", "INC64", "DR09"],
     body: `## Two kinds of robot
@@ -171,12 +171,12 @@ Each arm is held by a magnetic lock {F081}; the limit switches define the (0,0) 
 | Merchants allowed | Only merchant configs that **bypass PIN security** {F218} | Any |
 | Required for | — | **Canadian payment workflows** (physical PIN entry is mandatory) {F220}; **ADB-blind displays** {F221} |
 
-In Orca, an xy_touch on an ADB bot becomes an electronic ADB touch; on a touch robot it becomes a physical probe tap {F144} ([[orca-screens-xytouch]]).
+In Orka, an xy_touch on an ADB bot becomes an electronic ADB touch; on a touch robot it becomes a physical probe tap {F144} ([[orka-screens-xytouch]]).
 
 ## Choosing a robot
 
 - **US, PIN-bypass merchant, ADB-visible screen** → an ADB bot is fine.
-- **Canadian Interac with PIN** → a physical bot on a Compass (Westers bed). An ADB bot simply cannot do it.
+- **Canadian Interac with PIN** → a physical bot on a Compass (Westerly bed). An ADB bot simply cannot do it.
 - **Stand Duet CFD** → it is blind to ADB {F151}, so legacy suites needed a physical bot or OCR ([[stand-duet-dual-screen]]).
 
 > **Warning:** Never "fix" a Canadian PIN test by switching the merchant to one that bypasses PIN. Canada mandates physical PIN entry; re-target the job to a physical bot.

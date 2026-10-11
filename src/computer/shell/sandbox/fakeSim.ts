@@ -1,11 +1,11 @@
 /**
- * SANDBOX ONLY — minimal stand-ins for the `sim.*` methods the shell/Orca/dashboard call, installed only
+ * SANDBOX ONLY — minimal stand-ins for the `sim.*` methods the shell/Orka/dashboard call, installed only
  * while the real sim answers "not implemented". Plausible, not authoritative (the real rules live in Sim §3).
  */
 import { getState, transact } from '@/core/store';
 import { sim } from '@/sim';
 import type { Result } from '@/sim';
-import type { LabState, OrcaRobot, RobotStatus } from '@/sim/types';
+import type { LabState, OrkaRobot, RobotStatus } from '@/sim/types';
 import type { RigCommandName } from '@/sim/events';
 import { fmtStamp, fmtTime24 } from '../../apps';
 import { UI_DEVICE_TYPES } from '../deviceTypes';
@@ -26,7 +26,7 @@ type Coll = 'robots' | 'devices' | 'capabilities' | 'merchants' | 'screens' | 's
 
 function saveIn(coll: Coll, row: { id?: number } & Record<string, unknown>, actor: string): Result<number> {
   return transact((root, ctx) => {
-    const db = root.lab.orca;
+    const db = root.lab.orka;
     const table = db[coll] as unknown as Record<number, Record<string, unknown>>;
     let id = row.id;
     if (id == null) {
@@ -40,7 +40,7 @@ function saveIn(coll: Coll, row: { id?: number } & Record<string, unknown>, acto
       for (const k of Object.keys(row)) if (JSON.stringify(before[k]) !== JSON.stringify(row[k]) && k !== 'id') diff[k] = [before[k], row[k]];
       db.audit.unshift({ atMs: ctx.now, who: actor, action: 'UPDATED', entity: coll, entityId: id, diff });
       if (coll === 'robots') {
-        const r = table[id] as unknown as OrcaRobot;
+        const r = table[id] as unknown as OrkaRobot;
         for (const k of Object.keys(diff)) {
           if (k === 'status') continue;
           r.notes.unshift({ id: db.seq.notes++, atMs: ctx.now, author: actor, text: `${fmtStamp(ctx.now)} CONFIG ${k}: ${JSON.stringify(diff[k]![0])} → ${JSON.stringify(diff[k]![1])} (${actor})`, resolved: false, kind: 'CONFIG', repeat: 1, lastAtMs: ctx.now });
@@ -129,11 +129,11 @@ function rigCommand(rigId: string, command: RigCommandName, _actor: string, args
 }
 
 function capabilityDocument(lab: LabState, robotId: number): Record<string, string | boolean> | null {
-  const r = lab.orca.robots[robotId];
+  const r = lab.orka.robots[robotId];
   if (!r) return null;
-  const dev = r.deviceId != null ? lab.orca.devices[r.deviceId] : null;
+  const dev = r.deviceId != null ? lab.orka.devices[r.deviceId] : null;
   const t = dev ? UI_DEVICE_TYPES[dev.deviceType] : null;
-  const keys = r.capabilityIds.map((id) => lab.orca.capabilities[id]).filter(Boolean);
+  const keys = r.capabilityIds.map((id) => lab.orka.capabilities[id]).filter(Boolean);
   const has = (k: string) => keys.some((c) => c!.key === k);
   const doc: Record<string, string | boolean> = {
     deviceType: dev?.deviceType ?? '',
@@ -154,38 +154,38 @@ function capabilityDocument(lab: LabState, robotId: number): Record<string, stri
 
 /** Install the fakes for every namespace method that is still a stub. */
 export function installFakeSim(): void {
-  const o = sim.orca as unknown as Record<string, unknown>;
-  if (notImplemented(() => sim.orca.saveRobot({ id: -1 }, 'probe'))) {
+  const o = sim.orka as unknown as Record<string, unknown>;
+  if (notImplemented(() => sim.orka.saveRobot({ id: -1 }, 'probe'))) {
     o.saveRobot = (row: Record<string, unknown>, actor: string) => {
       const name = row.name as string | undefined;
-      if (name != null && Object.values(getState().lab.orca.robots).some((r) => r.name === name && r.id !== row.id)) return err('400 Bad Request: Robot name already exists');
+      if (name != null && Object.values(getState().lab.orka.robots).some((r) => r.name === name && r.id !== row.id)) return err('400 Bad Request: Robot name already exists');
       if (row.id == null) Object.assign(row, { notes: [], statusHistory: [], checkout: null, capabilityIds: row.capabilityIds ?? [] });
       return saveIn('robots', row as never, actor);
     };
     o.setRobotStatus = (id: number, status: RobotStatus, actor: string) =>
       transact((root, ctx) => {
-        const r = root.lab.orca.robots[id];
+        const r = root.lab.orka.robots[id];
         if (!r) return err('404 Not Found');
         if (status === 'CONNECTION_FAILED') return err('400 Bad Request: Connection Failed is set by the health check only');
         const from = r.status;
         r.status = status;
         r.reservedBy = status === 'RESERVED' ? actor : null;
-        r.notes.unshift({ id: root.lab.orca.seq.notes++, atMs: ctx.now, author: actor, text: `${fmtStamp(ctx.now)} STATUS ${LABEL[from]} → ${LABEL[status]} (${actor})`, resolved: false, kind: 'STATUS', repeat: 1, lastAtMs: ctx.now });
+        r.notes.unshift({ id: root.lab.orka.seq.notes++, atMs: ctx.now, author: actor, text: `${fmtStamp(ctx.now)} STATUS ${LABEL[from]} → ${LABEL[status]} (${actor})`, resolved: false, kind: 'STATUS', repeat: 1, lastAtMs: ctx.now });
         return ok(undefined);
       });
     o.resolveNote = (robotId: number, noteId: number) =>
       transact((root) => {
-        const n = root.lab.orca.robots[robotId]?.notes.find((x) => x.id === noteId);
+        const n = root.lab.orka.robots[robotId]?.notes.find((x) => x.id === noteId);
         if (!n) return err('404 Not Found');
         n.resolved = true;
         return ok(undefined);
       });
     o.addNote = (robotId: number, text: string, actor: string) =>
       transact((root, ctx) => {
-        const r = root.lab.orca.robots[robotId];
+        const r = root.lab.orka.robots[robotId];
         if (!r) return err<number>('404 Not Found');
         if (!text.trim()) return err<number>('400 Bad Request: note text is required');
-        const id = root.lab.orca.seq.notes++;
+        const id = root.lab.orka.seq.notes++;
         r.notes.unshift({ id, atMs: ctx.now, author: actor, text: `${fmtStamp(ctx.now)} ${text.trim()} (${actor})`, resolved: false, kind: 'MANUAL', repeat: 1, lastAtMs: ctx.now });
         return ok(id);
       });
@@ -195,21 +195,21 @@ export function installFakeSim(): void {
     o.saveScreen = (row: Record<string, unknown>, a: string) => saveIn('screens', row as never, a);
     o.saveScreenLocation = (row: Record<string, unknown>, a: string) => saveIn('screenLocations', row as never, a);
     o.saveCardProfile = (row: Record<string, unknown>, a: string) => {
-      if (row.entry === 'SWIPE' ? !row.trackData || row.gortPath : !row.gortPath || row.trackData) return err('400 Bad Request: Swipe profiles store Track Data; Dip/Tap profiles store a Gort path');
+      if (row.entry === 'SWIPE' ? !row.trackData || row.gorthPath : !row.gorthPath || row.trackData) return err('400 Bad Request: Swipe profiles store Track Data; Dip/Tap profiles store a Gorth path');
       return saveIn('cardProfiles', row as never, a);
     };
     o.saveScreenCompareImage = (row: Record<string, unknown>, a: string) => saveIn('screenCompareImages', row as never, a);
     o.deleteEntity = (entity: string, id: number) =>
       transact((root) => {
         const map: Record<string, Coll> = { robot: 'robots', device: 'devices', capability: 'capabilities', merchant: 'merchants', screen: 'screens', screenLocation: 'screenLocations', cardProfile: 'cardProfiles', screenCompareImage: 'screenCompareImages' };
-        const t = root.lab.orca[map[entity]!] as unknown as Record<number, unknown>;
-        if (entity === 'device' && Object.values(root.lab.orca.robots).some((r) => r.deviceId === id || r.mfdDeviceId === id || r.cfdDeviceId === id)) return err('400 Bad Request: Device is linked to a robot');
+        const t = root.lab.orka[map[entity]!] as unknown as Record<number, unknown>;
+        if (entity === 'device' && Object.values(root.lab.orka.robots).some((r) => r.deviceId === id || r.mfdDeviceId === id || r.cfdDeviceId === id)) return err('400 Bad Request: Device is linked to a robot');
         delete t[id];
         return ok(undefined);
       });
     o.forceHealthCheck = () =>
       transact((root, ctx) => {
-        const hc = root.lab.orca.healthCheck;
+        const hc = root.lab.orka.healthCheck;
         hc.runCount++;
         hc.lastRunMs = ctx.now;
         hc.log.unshift({ run: hc.runCount, atMs: ctx.now, pinged: 37, skipped: 3, failed: 1, recovered: 0, lines: [`${fmtStamp(ctx.now)}  health-check run #${hc.runCount} — 37 pinged, 3 skipped, 1 failed, 0 recovered`, 'sonny  GET http://10.42.10.74:8000/health  FAIL connect timed out after 10000 ms', 'robby  SKIPPED (Offline)'] });
@@ -217,7 +217,7 @@ export function installFakeSim(): void {
       });
     o.checkout = (req: { buildId: string; jobId: string; robotName?: string }) =>
       transact((root, ctx) => {
-        const r = Object.values(root.lab.orca.robots).find((x) => x.name === req.robotName);
+        const r = Object.values(root.lab.orka.robots).find((x) => x.name === req.robotName);
         if (!r) return err('404 Not Found');
         if (r.checkout) return err(`Robot ${r.name} is already checked out (${r.checkout.buildId})`);
         r.checkout = { buildId: req.buildId, jobId: req.jobId, byName: true, startedMs: ctx.now, statusAtCheckout: r.status, kind: 'jenkins' };
@@ -225,7 +225,7 @@ export function installFakeSim(): void {
       });
     o.release = (robotId: number) =>
       transact((root) => {
-        const r = root.lab.orca.robots[robotId];
+        const r = root.lab.orka.robots[robotId];
         if (!r) return err('404 Not Found');
         r.checkout = null;
         return ok(undefined);
@@ -239,7 +239,7 @@ export function installFakeSim(): void {
         return err(`Invalid JSON: ${(e as Error).message}`);
       }
       const lab = getState().lab;
-      const rows = Object.values(lab.orca.robots)
+      const rows = Object.values(lab.orka.robots)
         .filter((r) => r.environment === env)
         .map((r) => {
           const doc = capabilityDocument(lab, r.id) ?? {};
@@ -250,38 +250,38 @@ export function installFakeSim(): void {
     };
     o.xyTouch = (robotName: string, screen: string, button: string) => {
       const lab = getState().lab;
-      const r = Object.values(lab.orca.robots).find((x) => x.name === robotName);
+      const r = Object.values(lab.orka.robots).find((x) => x.name === robotName);
       if (!r) return err(`404 Not Found: robot ${robotName}`);
-      const dev = r.deviceId != null ? lab.orca.devices[r.deviceId] : null;
-      const s = Object.values(lab.orca.screens).find((x) => x.name === screen && x.deviceType === dev?.deviceType);
-      const l = s ? Object.values(lab.orca.screenLocations).find((x) => x.screenId === s.id && x.button === button) : null;
+      const dev = r.deviceId != null ? lab.orka.devices[r.deviceId] : null;
+      const s = Object.values(lab.orka.screens).find((x) => x.name === screen && x.deviceType === dev?.deviceType);
+      const l = s ? Object.values(lab.orka.screenLocations).find((x) => x.screenId === s.id && x.button === button) : null;
       if (!l) return err(`404 Not Found: no Screen Location "${button}" on ${screen} (${dev?.deviceType ?? '?'})`);
       const rig = lab.rigs[robotName];
       if (rig && !rig.magneticLock.engaged) return err('409 Conflict: LOCK_RELEASED (park required)');
       const mode = r.rigKind === 'adb' ? 'ADB_TOUCH' : 'PHYSICAL_TAP';
       const x = l.xMm + r.offsetXMm;
       const y = l.yMm + r.offsetYMm;
-      return ok({ robotName, screen, button, xMm: x, yMm: y, mode: mode === 'ADB_TOUCH' ? 'adb' : 'probe', hitButton: null, requestId: 'req-1', orcaMode: mode, status: 200, body: `{"result":"OK","mode":"${mode}","x_mm":${x.toFixed(1)},"y_mm":${y.toFixed(1)}}`, respondsAfterMs: 900, deviceId: dev?.simDeviceId ?? '', display: 'primary' });
+      return ok({ robotName, screen, button, xMm: x, yMm: y, mode: mode === 'ADB_TOUCH' ? 'adb' : 'probe', hitButton: null, requestId: 'req-1', orkaMode: mode, status: 200, body: `{"result":"OK","mode":"${mode}","x_mm":${x.toFixed(1)},"y_mm":${y.toFixed(1)}}`, respondsAfterMs: 900, deviceId: dev?.simDeviceId ?? '', display: 'primary' });
     };
     o.rest = (method: string, path: string, body: string | null) => {
       const lab = getState().lab;
       if (method === 'GET' && path === '/management/health') {
-        const up = lab.orca.app.dbConnected;
+        const up = lab.orka.app.dbConnected;
         return { status: up ? 200 : 503, body: JSON.stringify({ status: up ? 'UP' : 'DOWN', components: { db: { status: up ? 'UP' : 'DOWN' }, diskSpace: { status: 'UP' }, ping: { status: 'UP' } } }), latencyMs: 12, headers: { 'content-type': 'application/json' } };
       }
       const capM = /^\/api\/robots\/([^/]+)\/capabilities$/.exec(path);
       if (method === 'GET' && capM) {
-        const r = Object.values(lab.orca.robots).find((x) => x.name === capM[1]);
+        const r = Object.values(lab.orka.robots).find((x) => x.name === capM[1]);
         if (!r) return { status: 404, body: '{"title":"Not Found","status":404}', latencyMs: 8 };
         return { status: 200, body: JSON.stringify(capabilityDocument(lab, r.id)), latencyMs: 9, headers: { 'content-type': 'application/json' } };
       }
       if (method === 'GET' && path.startsWith('/api/robots')) {
-        return { status: 200, body: JSON.stringify(Object.values(lab.orca.robots).slice(0, 5).map((r) => ({ id: r.id, name: r.name, status: r.status }))), latencyMs: 14, headers: { 'content-type': 'application/json' } };
+        return { status: 200, body: JSON.stringify(Object.values(lab.orka.robots).slice(0, 5).map((r) => ({ id: r.id, name: r.name, status: r.status }))), latencyMs: 14, headers: { 'content-type': 'application/json' } };
       }
       if (method === 'POST' && path === '/api/xy_touch') {
         try {
           const b = JSON.parse(body ?? '{}') as { robot: string; screen: string; button: string };
-          const res = sim.orca.xyTouch(b.robot, b.screen, b.button, 'player');
+          const res = sim.orka.xyTouch(b.robot, b.screen, b.button, 'player');
           if (res.ok) return { status: 200, body: res.value.body, latencyMs: 900, headers: { 'content-type': 'application/json' } };
           return { status: Number(/^\d+/.exec(res.error)?.[0] ?? 400), body: JSON.stringify({ title: res.error.replace(/^\d+ [A-Za-z ]+: /, ''), status: Number(/^\d+/.exec(res.error)?.[0] ?? 400) }), latencyMs: 20 };
         } catch {
@@ -303,7 +303,7 @@ export function installFakeSim(): void {
   }
   if (notImplemented(() => sim.ocr.compare(-1))) {
     (sim.ocr as unknown as Record<string, unknown>).compare = (id: number) => {
-      const c = getState().lab.orca.screenCompareImages[id];
+      const c = getState().lab.orka.screenCompareImages[id];
       if (!c) return err('404 Not Found');
       const v2 = getState().lab.flags.cfdLayoutV2Toggle;
       const text = v2 ? 'Total: $10.83' : c.expectedText;

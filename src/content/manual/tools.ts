@@ -51,7 +51,7 @@ If a coworker's device starts acting up while you run tests:
 
 - \`config.properties\` → \`portNumber=5444\`.
 - Jenkins console env block → \`PORT_NUMBER=5444\`†.
-- Orca's Robot ADB Service URL routes ADB through the Pi controller {F123}.
+- Orka's Robot ADB Service URL routes ADB through the Pi controller {F123}.
 `,
   },
   {
@@ -66,7 +66,7 @@ If a coworker's device starts acting up while you run tests:
     practice: ["DR03", "DR19", "INC64"],
     body: `## What ADB is for
 
-**ADB (Android Debug Bridge)** is the command-line tool used to **inspect XML UI hierarchies and locate elements** {F024}, and to **dispatch programmatic touch events** {F025}. In the lab it runs over **port 5444** {F026}. UI Automator, the engine inside uia-remote {F005}, works from the same view of the screen.
+**ADB (Android Debug Bridge)** is the command-line tool used to **inspect XML UI hierarchies and locate elements** {F024}, and to **dispatch programmatic touch events** {F025}. In the lab it runs over **port 5444** {F026}. UI Automator, the engine inside uia-relay {F005}, works from the same view of the screen.
 
 ## Tap an element in five commands
 
@@ -95,10 +95,10 @@ adb -s 10.42.30.32:5444 shell input tap 192 508             # 5. tap the centre
     id: "gimp-coordinates",
     title: "GIMP: Extracting Screen Coordinates",
     category: "Tools",
-    summary: "How to measure an exact bounding box in a device screenshot with GIMP's Rectangle Select — the input for Pigeon screen comparisons and legacy Screen Compare Images.",
+    summary: "How to measure an exact bounding box in a device screenshot with GIMP's Rectangle Select — the input for Parrot screen comparisons and legacy Screen Compare Images.",
     factIds: ["F030", "F212", "F153", "F155"],
-    tags: ["duet.ocr", "pigeon.gimp"],
-    related: ["pigeon-bottlenecks", "orca-screen-compare", "stand-duet-dual-screen"],
+    tags: ["duet.ocr", "parrot.gimp"],
+    related: ["parrot-bottlenecks", "orka-screen-compare", "stand-duet-dual-screen"],
     keywords: ["GIMP", "Rectangle Select", "bounding box", "Tool Options", "Position", "Size", "screenshot", "coordinates", "pixels"],
     practice: ["INC24", "DR05"],
     body: `## What GIMP is for
@@ -111,7 +111,7 @@ adb -s 10.42.30.32:5444 shell input tap 192 508             # 5. tap the centre
 2. **File → Open** the PNG in GIMP.
 3. Choose **Rectangle Select** and drag a box tightly around the target text.
 4. Read **Tool Options → Position** (x, y) and **Size** (w × h) — in pixels.
-5. Copy them into the Pigeon JSON block {F212} or a Screen Compare Image row along with the expected text {F153}.
+5. Copy them into the Parrot JSON block {F212} or a Screen Compare Image row along with the expected text {F153}.
 
 ## Worked example (R2-D2's customer screen)†
 
@@ -129,8 +129,8 @@ adb -s 10.42.30.32:5444 shell input tap 192 508             # 5. tap the centre
 
 | Coordinates | Unit | Measured with | Used by |
 |---|---|---|---|
-| Screen-compare boxes | **pixels** of the screenshot | GIMP | Pigeon screenCompare blocks, Screen Compare Images |
-| Screen Locations (button positions) | **millimetres** from the screen's top-left | A ruler from the limit-switch (0,0) | Orca xy_touch |
+| Screen-compare boxes | **pixels** of the screenshot | GIMP | Parrot screenCompare blocks, Screen Compare Images |
+| Screen Locations (button positions) | **millimetres** from the screen's top-left | A ruler from the limit-switch (0,0) | Orka xy_touch |
 
 Never paste GIMP pixel values into Screen Locations, or millimetres into a screen-compare block.
 
@@ -150,8 +150,8 @@ Never paste GIMP pixel values into Screen Locations, or millimetres into a scree
     summary: "The team's primary IDE and code host: clone repos from GitHub into IntelliJ IDEA, configure local properties, run suites, and land changes through branches and pull requests.",
     factIds: ["F027", "F028", "F018", "F214", "F246"],
     tags: ["uia.pom", "tools.intellij", "tools.github", "arch.repos", "tools.vscode"],
-    related: ["uia-remote-structure", "config-properties", "receipt-qr-regression", "ollama-and-claude", "pigeon-bottlenecks"],
-    keywords: ["IntelliJ IDEA", "IDE", "VS Code", "GitHub", "clone", "Get from VCS", "run configuration", "pull request", "PR", "review", "branch", "Gort", "uia-remote", "pigeon"],
+    related: ["uia-relay-structure", "config-properties", "receipt-qr-regression", "ollama-and-claude", "parrot-bottlenecks"],
+    keywords: ["IntelliJ IDEA", "IDE", "VS Code", "GitHub", "clone", "Get from VCS", "run configuration", "pull request", "PR", "review", "branch", "Gorth", "uia-relay", "parrot"],
     practice: ["INC20", "INC34"],
     body: `## IntelliJ IDEA
 
@@ -161,19 +161,19 @@ Never paste GIMP pixel values into Screen Locations, or millimetres into a scree
 - Edit \`config.properties\` for local runs ([[config-properties]]).
 - Run test classes (\`TaxTest\`, \`HomeScreenTest\`…) with the green ▶ and read the run log.
 
-> **Tip:** Pigeon's JSON tests are edited in **VS Code**, not IntelliJ {F246}. VS Code flags raw JSON syntax but nothing Pigeon-specific ([[pigeon-bottlenecks]]).
+> **Tip:** Parrot's JSON tests are edited in **VS Code**, not IntelliJ {F246}. VS Code flags raw JSON syntax but nothing Parrot-specific ([[parrot-bottlenecks]]).
 
 ## GitHub
 
-**GitHub** hosts the team's repositories — **Gort, uia-remote and pigeon** — for branch management and pull requests {F018}.
+**GitHub** hosts the team's repositories — **Gorth, uia-relay and parrot** — for branch management and pull requests {F018}.
 
 | Repo | What it holds |
 |---|---|
-| Gort | Core monorepo: testing ecosystem, configuration modules, virtual card definition files |
-| uia-remote | Modern Java / UI Automator framework |
-| pigeon | Legacy LSTR JSON framework |
+| Gorth | Core monorepo: testing ecosystem, configuration modules, virtual card definition files |
+| uia-relay | Modern Java / UI Automator framework |
+| parrot | Legacy LSTR JSON framework |
 
-**The PR habit:** branch → change → pull request → review → merge. Coordinate fixes go through PRs too: the receipt-QR breakage ended when {{jared}} merged a coordinate PR {F214}.
+**The PR habit:** branch → change → pull request → review → merge. Coordinate fixes go through PRs too: the receipt-QR breakage ended when {{jaden}} merged a coordinate PR {F214}.
 
 When reviewing a page-object PR, check the mandatory \`waitForScreen()\` and \`isScreenPresent()\`, Zone 1/Zone 2 placement, and that nothing touches \`app/src/main\`.
 
@@ -187,7 +187,7 @@ When reviewing a page-object PR, check the mandatory \`waitForScreen()\` and \`i
     summary: "The commands you will type most — ssh to Pis and Windows boxes, health checks with curl, service and disk checks, ADB, git and Windows scheduled tasks — with the sim's illustrative hosts.",
     factIds: ["F019", "F021", "F026", "F099", "F148"],
     tags: ["pi.controller", "tools.terminal", "adb.usage"],
-    related: ["robot-pi", "adb-commands", "callus", "illustrative-details"],
+    related: ["robot-pi", "adb-commands", "kallus", "illustrative-details"],
     keywords: ["terminal", "ssh", "curl", "systemctl", "uname", "df", "ps", "grep", "adb", "schtasks", "dir", "git", "commands", "cheat sheet"],
     practice: ["DR17", "DR19"],
     body: `## Raspberry Pi (Linux)
@@ -200,14 +200,14 @@ When reviewing a page-object PR, check the mandatory \`waitForScreen()\` and \`i
 | \`df -h /\` | Disk space |
 | \`ps aux \\| grep -i wine\` | Is the Wine card-programming software running? {F021} |
 | \`sudo reboot\` | Reboot the Pi (then wait for the next health check) |
-| \`curl -i http://10.42.10.11:8000/health\`† | What Orca's 5-minute ping sees {F099} |
+| \`curl -i http://10.42.10.11:8000/health\`† | What Orka's 5-minute ping sees {F099} |
 
-## Orca REST†
+## Orka REST†
 
 | Command | Use |
 |---|---|
-| \`curl -X POST http://orca.lab.local:8080/api/xy_touch -H "Content-Type: application/json" -d '{"robot":"wall-e","screen":"TENDER_CASH_DISCOUNT","button":"Cash"}'\` | Tap a button through Orca |
-| \`curl -X POST http://orca.lab.local:8080/api/card/dip -H "Content-Type: application/json" -d '{"robot":"wall-e","profile":"VISA_STD_DIP"}'\` | Dip a card through Orca |
+| \`curl -X POST http://orka.lab.local:8080/api/xy_touch -H "Content-Type: application/json" -d '{"robot":"wall-e","screen":"TENDER_CASH_DISCOUNT","button":"Cash"}'\` | Tap a button through Orka |
+| \`curl -X POST http://orka.lab.local:8080/api/card/dip -H "Content-Type: application/json" -d '{"robot":"wall-e","profile":"VISA_STD_DIP"}'\` | Dip a card through Orka |
 
 ## ADB (port 5444)
 
@@ -220,13 +220,13 @@ When reviewing a page-object PR, check the mandatory \`waitForScreen()\` and \`i
 | \`adb -s <ip>:5444 shell input tap X Y\` | Programmatic tap |
 | \`adb disconnect <ip>:5555\` | Drop a wrong (desk) connection |
 
-## Windows / Minix boxes (Callus)
+## Windows / Minix boxes (Kallus)
 
 | Command | Use |
 |---|---|
 | \`ssh automation@10.42.20.1\`† | Log in to MINIX-01 |
-| \`schtasks /query /tn GortCardSync\`† | When did the scheduled Gort clone last run? {F148} |
-| \`dir C:\\gort\\cards\\emv\`† | Are the card files there? |
+| \`schtasks /query /tn GorthCardSync\`† | When did the scheduled Gorth clone last run? {F148} |
+| \`dir C:\\gorth\\cards\\emv\`† | Are the card files there? |
 
 ## git
 
@@ -246,7 +246,7 @@ When reviewing a page-object PR, check the mandatory \`waitForScreen()\` and \`i
     summary: "Ollama is a local LLM runner on the 4-GPU blade running a proof-of-concept vision check of receipts and tip math from webcam streams; Claude was evaluated for repository optimisation and automated test generation. Both are aids, not gates.",
     factIds: ["F031", "F032", "F033", "F078", "F075", "F262", "F263", "F264"],
     tags: ["infra.ai", "vision.ollama", "tools.claude", "vision.tesseract"],
-    related: ["infrastructure-overview", "intellij-and-github", "uia-remote-pom"],
+    related: ["infrastructure-overview", "intellij-and-github", "uia-relay-pom"],
     keywords: ["Ollama", "LLM", "vision", "llava", "proof of concept", "PoC", "receipt", "tip math", "Claude", "AI", "test generation", "repository optimisation", "13,000", "token", "OCR", "noise", "powered down"],
     practice: ["INC10", "INC57", "INC61"],
     body: `## Ollama
@@ -273,7 +273,7 @@ Answer: FAIL — tip of 18% on $42.00 should be $7.56; the receipt shows $7.65.
 
 ## Claude
 
-**Claude** was evaluated during corporate AI initiatives for **repository optimisation and automated test generation** {F033}. Generated tests still get a human review: check that every new screen class has both mandatory methods, sits in \`pageobjects\`, and that nothing touches \`app/src/main\` ([[uia-remote-pom]]).
+**Claude** was evaluated during corporate AI initiatives for **repository optimisation and automated test generation** {F033}. Generated tests still get a human review: check that every new screen class has both mandatory methods, sits in \`pageobjects\`, and that nothing touches \`app/src/main\` ([[uia-relay-pom]]).
 
 ## Which tool does what
 

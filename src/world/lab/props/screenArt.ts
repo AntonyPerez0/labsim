@@ -13,7 +13,7 @@ export interface MirrorState {
   clock: string;
   /** Seconds (drives the cursor blink / log scroll). */
   t: number;
-  /** Robot rows for the Orca window: [name, status, device type] (type '' when the robot has no device). */
+  /** Robot rows for the Orka window: [name, status, device type] (type '' when the robot has no device). */
   robots: [string, string, string?][];
   /** Terminal lines (most recent last). */
   terminal: string[];
@@ -85,13 +85,13 @@ function windowFrame(g: G, x: number, y: number, w: number, h: number, title: st
 /** Left + right workstation monitors (each half of a 1024 × 288 canvas). */
 export function drawDesktopMirror(g: G, W: number, H: number, s: MirrorState): void {
   const w = W / 2;
-  // LEFT: Orca robot list
+  // LEFT: Orka robot list
   g.save();
   g.beginPath();
   g.rect(0, 0, w, H);
   g.clip();
   wallpaper(g, w, H);
-  windowFrame(g, 14, 12, w - 28, H - 46, 'Orca — Robots · orca.lab.local:8080', '#1f7a3b', '#f4f6f5');
+  windowFrame(g, 14, 12, w - 28, H - 46, 'Orka — Robots · orka.lab.local:8080', '#1f7a3b', '#f4f6f5');
   g.font = `600 9px ${FONT.UI_SANS}`;
   g.fillStyle = '#4a5560';
   ['Name', 'Device', 'Status', 'Last health'].forEach((c, i) => g.fillText(c, 24 + [0, 120, 250, 360][i]!, 38));
@@ -125,9 +125,9 @@ export function drawDesktopMirror(g: G, W: number, H: number, s: MirrorState): v
   g.clip();
   g.translate(w, 0);
   wallpaper(g, w, H);
-  windowFrame(g, 10, 10, w * 0.56, H - 40, 'Jenkins — pigeon-android-regression #4127', '#2b2d31', '#f7f7f7');
+  windowFrame(g, 10, 10, w * 0.56, H - 40, 'Jenkins — parrot-android-regression #4127', '#2b2d31', '#f7f7f7');
   g.font = `9px ${FONT.UI_SANS}`;
-  ['Checkout', 'Orca checkout', 'Run tests', 'Release robot', 'Report'].forEach((st, i) => {
+  ['Checkout', 'Orka checkout', 'Run tests', 'Release robot', 'Report'].forEach((st, i) => {
     const y = 40 + i * 30;
     g.fillStyle = i < 3 ? '#43b02a' : '#c9cdd3';
     roundRect(g, 18, y, w * 0.56 - 18, 22, 4);

@@ -28,7 +28,7 @@ describe('objective waypoint positions', () => {
       expect(p, m.id).not.toBeNull();
       expect(Math.abs(p![0]) < 20 && p![1] > 0 && p![1] < 3 && Math.abs(p![2]) < 20, m.id).toBe(true);
     }
-    expect(markerWorldPos({ kind: 'app', id: 'orca' })).toBeNull();
+    expect(markerWorldPos({ kind: 'app', id: 'orka' })).toBeNull();
     expect(markerWorldPos({ kind: 'prop', id: 'no.such.thing' })).toBeNull();
   });
 

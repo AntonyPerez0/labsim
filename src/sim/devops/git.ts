@@ -19,7 +19,7 @@ export interface GitOp<T = undefined> {
 }
 const fail = <T = undefined>(error: string, lines: string[] = [error]): GitOp<T> => ({ ok: false, error, lines });
 
-export const REPO_IDS: RepoId[] = ['gort', 'uia-remote', 'pigeon', 'orchestrator'];
+export const REPO_IDS: RepoId[] = ['gorth', 'uia-relay', 'parrot', 'orchestrator'];
 export const isRepoId = (s: string): s is RepoId => (REPO_IDS as string[]).includes(s);
 
 /** Repo id from a clone URL (`git@github.com:labsim-lab/x.git`, https forms). */
@@ -171,7 +171,7 @@ export function writeFile(lab: LabState, ctx: TxContext, repoId: RepoId, path: s
   if (!clean || clean.endsWith('/')) return fail(`error: invalid path '${path}'`);
   repo.local!.files[clean] = contents;
   refreshLocal(repo);
-  if (repoId === 'uia-remote' && clean === 'config.properties') mirrorConfig(lab);
+  if (repoId === 'uia-relay' && clean === 'config.properties') mirrorConfig(lab);
   ctx.emit('git.fileEdited', { repo: repoId, path: clean });
   return { ok: true, lines: [] };
 }
@@ -185,7 +185,7 @@ export function deleteFile(lab: LabState, ctx: TxContext, repoId: RepoId, path: 
   if (!victims.length) return fail(`rm: cannot remove '${path}': No such file or directory`);
   for (const p of victims) delete files[p];
   refreshLocal(repo);
-  if (repoId === 'uia-remote') mirrorConfig(lab);
+  if (repoId === 'uia-relay') mirrorConfig(lab);
   for (const p of victims) ctx.emit('git.fileEdited', { repo: repoId, path: p });
   return { ok: true, lines: [] };
 }
@@ -226,7 +226,7 @@ export function discard(lab: LabState, ctx: TxContext, repoId: RepoId, path: str
   else local.files[path] = head[path]!;
   delete x.index[path];
   refreshLocal(repo);
-  if (repoId === 'uia-remote' && path === 'config.properties') mirrorConfig(lab);
+  if (repoId === 'uia-relay' && path === 'config.properties') mirrorConfig(lab);
   ctx.emit('git.fileEdited', { repo: repoId, path });
   return { ok: true, lines: [] };
 }
@@ -397,16 +397,16 @@ export function push(lab: LabState, ctx: TxContext, repoId: RepoId, setUpstream 
   return { ok: true, lines };
 }
 
-/** Remote main moved: refresh the remote tree; queue the gort → Orca screen-location sync (Sim §3.22.3). */
+/** Remote main moved: refresh the remote tree; queue the gorth → Orka screen-location sync (Sim §3.22.3). */
 export function afterMainMoved(lab: LabState, repoId: RepoId, oldSha: string | null, newSha: string): void {
   const repo = lab.repos[repoId];
   const before = treeAt(repo, oldSha);
   repo.files = treeAt(repo, newSha);
-  if (repoId !== 'gort') return;
+  if (repoId !== 'gorth') return;
   const paths = [...new Set([...Object.keys(before), ...Object.keys(repo.files)])]
     .filter((p) => /^config\/screen-locations\/[A-Z0-9_]+\/[A-Z0-9_]+\.json$/.test(p) && (before[p] ?? null) !== (repo.files[p] ?? null) && repo.files[p] !== undefined)
     .sort();
-  if (paths.length) lab.orca.pendingSyncs.push({ atPhysMs: lab.time.physMs + 10_000, repo: 'gort', paths, commit: newSha });
+  if (paths.length) lab.orka.pendingSyncs.push({ atPhysMs: lab.time.physMs + 10_000, repo: 'gorth', paths, commit: newSha });
 }
 
 export function pull(lab: LabState, ctx: TxContext, repoId: RepoId): GitOp {
@@ -451,7 +451,7 @@ export function pull(lab: LabState, ctx: TxContext, repoId: RepoId): GitOp {
   local.headSha = remote;
   x.branches[local.branch] = remote;
   refreshLocal(repo);
-  if (repoId === 'uia-remote') mirrorConfig(lab);
+  if (repoId === 'uia-relay') mirrorConfig(lab);
   ctx.emit('git.pulled', { repo: repoId, branch: local.branch });
   return {
     ok: true,
@@ -492,7 +492,7 @@ export function revert(lab: LabState, ctx: TxContext, repoId: RepoId, rev: strin
 
 /** Workstation mirror of the local clone's config.properties (Sim §1.10). */
 export function mirrorConfig(lab: LabState): void {
-  const t = lab.repos['uia-remote']?.local?.files['config.properties'];
+  const t = lab.repos['uia-relay']?.local?.files['config.properties'];
   const out: Record<string, string> = {};
   if (t !== undefined) {
     for (const raw of t.split(/\r?\n/)) {

@@ -76,12 +76,12 @@ export function defaultVars(lab: Readonly<LabState>, rig: string): Record<string
   vars.device = row?.name ?? ro?.device ?? '';
   vars.deviceIp = row?.ip ?? dev?.ip ?? ro?.deviceIp ?? '';
   vars.deviceType = row?.deviceType ?? dev?.type ?? ro?.deviceType ?? '';
-  const box = rs?.callusHostId ?? ro?.box;
+  const box = rs?.kallusHostId ?? ro?.box;
   if (box) {
     vars.box = box;
     vars.boxIp = hostById(lab as LabState, box)?.ip ?? '';
   }
-  vars.probe = rs?.collisId ?? `collis-${rig}`;
+  vars.probe = rs?.kollisId ?? `kollis-${rig}`;
   if (ro?.rack) vars.rack = ro.rack;
   if (ro?.fuse) vars.fuse = ro.fuse;
   if (ro?.camera) vars.camera = ro.camera;
@@ -97,13 +97,13 @@ export function hrnOf(lab: Readonly<LabState>, rig: string | null): string | nul
   return robotByName(lab as LabState, rig)?.humanReadableName ?? ROSTER[rig]?.hrn ?? rig.toUpperCase();
 }
 
-/** Rigs that share a rack / Callus box / Pi with `rig` (binding scopes). */
+/** Rigs that share a rack / Kallus box / Pi with `rig` (binding scopes). */
 export function scopeRigs(lab: Readonly<LabState>, rig: string, scope: IncidentDef['rigs']['scope']): string[] {
   const v = defaultVars(lab, rig);
   switch (scope) {
     case 'rack':
       return MODELLED_RIGS.filter((r) => ROSTER[r]?.rack === v.rack && ROSTER[r]?.rack !== undefined);
-    case 'callus-box':
+    case 'kallus-box':
       return v.box ? MODELLED_RIGS.filter((r) => defaultVars(lab, r).box === v.box) : [rig];
     case 'shared-pi':
       return MODELLED_RIGS.filter((r) => defaultVars(lab, r).pi === v.pi);
@@ -192,9 +192,9 @@ export function tpl(t: Templated | undefined, b: IncidentBinding): string {
 }
 
 /** GP §3.6 incident category for certification mixes. */
-export function incidentCategory(def: IncidentDef): 'hardware' | 'orca' | 'code-config' {
+export function incidentCategory(def: IncidentDef): 'hardware' | 'orka' | 'code-config' {
   const tags = def.tags;
-  if (tags.some((t) => t.startsWith('power.') || t.startsWith('hw.') || t === 'cards.callus' || t === 'hw.collis')) return 'hardware';
-  if (tags.some((t) => t.startsWith('uia.') || t.startsWith('pigeon.') || t.startsWith('adb.') || t.startsWith('jenkins.') || t.startsWith('tools.') || t.startsWith('receipt.'))) return 'code-config';
-  return 'orca';
+  if (tags.some((t) => t.startsWith('power.') || t.startsWith('hw.') || t === 'cards.kallus' || t === 'hw.kollis')) return 'hardware';
+  if (tags.some((t) => t.startsWith('uia.') || t.startsWith('parrot.') || t.startsWith('adb.') || t.startsWith('jenkins.') || t.startsWith('tools.') || t.startsWith('receipt.'))) return 'code-config';
+  return 'orka';
 }

@@ -1,7 +1,7 @@
 /**
  * Firmware tap points (button centres, mm from the screen's top-left) per layout family — Sim §2.10.2.
- * This is the data behind `gort/config/screen-locations/<DEVICE_TYPE>/<SCREEN>.json` (factory = no
- * drift) and the ground truth Jared's scripted review compares against (±0.5 mm, Sim §3.22.2).
+ * This is the data behind `gorth/config/screen-locations/<DEVICE_TYPE>/<SCREEN>.json` (factory = no
+ * drift) and the ground truth Jaden's scripted review compares against (±0.5 mm, Sim §3.22.2).
  * Kept in sim-devops so the repo seed does not depend on sim-core's layout module.
  */
 import type { DeviceTypeCode } from '../../types';
@@ -164,7 +164,7 @@ export const TYPE_FAMILY: Partial<Record<DeviceTypeCode, Family>> = {
   STAND_DUET_2: 'STAND',
 };
 
-/** Device types with Orca screen rows at factory (Sim §2.10.1), enum order. */
+/** Device types with Orka screen rows at factory (Sim §2.10.1), enum order. */
 export const SCREEN_TYPES: DeviceTypeCode[] = ['STAND_2018', 'STAND_2', 'STAND_DUET', 'STAND_DUET_2', 'MICRO_2', 'MICRO_3', 'FLUX_1', 'FLUX_2', 'FLUX_3', 'FLUX_4', 'FLUX_POCKET', 'COMPASS'];
 
 /** Every screen (name → buttons) a device type has at factory. */

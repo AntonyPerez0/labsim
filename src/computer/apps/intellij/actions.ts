@@ -66,7 +66,7 @@ export function codeWithMeSessions(lab: LabState): { person: string; repo: RepoI
   for (const p of Object.keys(lab.workstation?.files ?? {})) {
     const m = /^~\/CodeWithMe\/([^/]+)\/([^/]+)\//.exec(p);
     if (!m || seen.has(`${m[1]}/${m[2]}`)) continue;
-    if (!['gort', 'uia-remote', 'pigeon', 'orchestrator'].includes(m[2])) continue;
+    if (!['gorth', 'uia-relay', 'parrot', 'orchestrator'].includes(m[2])) continue;
     seen.add(`${m[1]}/${m[2]}`);
     out.push({ person: m[1], repo: m[2] as RepoId });
   }
@@ -84,7 +84,7 @@ type SimValidate = (text: string, robotName: string) => { passed: number; total:
 
 export function validateConfig(text: string): ConfigValidation {
   const lab = getState().lab;
-  const local = validateConfigProperties(text, lab.orca);
+  const local = validateConfigProperties(text, lab.orka);
   // D8: prefer the sim's validator for the totals when it exists (the UI keeps the local per-key rows).
   const simValidate = (sim.runner as unknown as { validateConfig?: SimValidate }).validateConfig;
   if (typeof simValidate === 'function') {
@@ -100,7 +100,7 @@ export function validateConfig(text: string): ConfigValidation {
 }
 
 export function isConfigFile(repo: string, path: string): boolean {
-  return repo === 'uia-remote' && path === 'config.properties';
+  return repo === 'uia-relay' && path === 'config.properties';
 }
 
 export function emitValidator(repo: string, path: string, text: string): ConfigValidation {

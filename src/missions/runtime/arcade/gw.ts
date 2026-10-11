@@ -16,11 +16,11 @@ import {
   connFailedCausePersists,
   has5555,
   islabload,
-  isCollisLoad,
+  isKollisLoad,
   isCoworkerDevice,
   isDc,
   isLegacyRow,
-  paycoreRig,
+  paycrestRig,
   pl,
   playerTouchedPower,
   recentProtectionTrip,
@@ -61,18 +61,18 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
   }),
   d({
     id: 'GW02',
-    name: 'Fried Collis probe',
-    action: 'Connect a Collis probe to any DC terminal',
+    name: 'Fried Kollis probe',
+    action: 'Connect a Kollis probe to any DC terminal',
     penalty: 750,
     strike: true,
-    tags: ['power.18v', 'hw.collis'],
+    tags: ['power.18v', 'hw.kollis'],
     consequence: 'Probe FRIED; rig loses card actions; spare from the locked cabinet costs 120 s',
     factIds: ['F229'],
     cooldownS: 5,
-    detect: [det(on('power.plugged'), (s, p) => isDc(pl(p).hookup) && isCollisLoad(s.lab, String(pl(p).loadId)))],
+    detect: [det(on('power.plugged'), (s, p) => isDc(pl(p).hookup) && isKollisLoad(s.lab, String(pl(p).loadId)))],
     teach: {
-      whatHappened: 'The Collis probe fried on DC power.',
-      why: 'Collis probes are high-cost and, like LabSim devices, go only on AC strips. (Ref §1, §6)',
+      whatHappened: 'The Kollis probe fried on DC power.',
+      why: 'Kollis probes are high-cost and, like LabSim devices, go only on AC strips. (Ref §1, §6)',
       doInstead: 'Plug the probe PSU into the strip; re-seat its rear ribbon.',
       ref: 'Ref §1, §6',
       factIds: ['F229'],
@@ -120,23 +120,23 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
   }),
   d({
     id: 'GW05',
-    name: 'PayCore rig opened',
-    action: 'Set a paycore rig to Available',
+    name: 'PayCrest rig opened',
+    action: 'Set a paycrest rig to Available',
     penalty: 400,
     strike: 'conditional',
     strikeWhen: () => false,
-    tags: ['orca.status.unavailable'],
-    consequence: '40 % per checkout cycle that a general pipeline takes it and Laz swaps its merchant → INC40',
+    tags: ['orka.status.unavailable'],
+    consequence: '40 % per checkout cycle that a general pipeline takes it and Lazo swaps its merchant → INC40',
     factIds: ['F102', 'F103'],
-    detect: [det(on('robot.statusChanged', { to: 'AVAILABLE' }), (_s, p) => byPlayer(p) && paycoreRig(String(pl(p).name)))],
+    detect: [det(on('robot.statusChanged', { to: 'AVAILABLE' }), (_s, p) => byPlayer(p) && paycrestRig(String(pl(p).name)))],
     teach: {
       whatHappened: 'ROSIE opened to general pipelines.',
-      why: 'Unavailable keeps PayCore\'s merchant safe; only jobs naming the robot use it, and Orca resets it afterwards. (Ref §3)',
+      why: 'Unavailable keeps PayCrest\'s merchant safe; only jobs naming the robot use it, and Orka resets it afterwards. (Ref §3)',
       doInstead: 'Leave it Unavailable; pass `ROBOT_NAME=rosie`.',
       ref: 'Ref §3',
       factIds: ['F102', 'F103'],
       practiceDrillId: 'DR01',
-      tag: 'orca.status.unavailable',
+      tag: 'orka.status.unavailable',
     },
   }),
   d({
@@ -186,7 +186,7 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
   d({
     id: 'GW08',
     name: 'Port 5555',
-    action: 'Use port 5555 (config, adb connect, adb tcpip 5555, Orca URL)',
+    action: 'Use port 5555 (config, adb connect, adb tcpip 5555, Orka URL)',
     penalty: 300,
     strike: 'conditional',
     strikeWhen: (_s, p) => String(pl(p).target ?? pl(p).line ?? '').includes('10.42.60.') || pl(p).coworker === true || pl(p).by === 'terminal' || pl(p).by === 'runner',
@@ -201,7 +201,7 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
       // (INC27) is the situation to fix, not the player's move (its own −20 drain covers the delay).
       det(on('adb.connected'), (_s, p) => String(pl(p).target).endsWith(':5555') && !GWS.runtimeRuns.size),
       det(on('adb.coworkerDriven'), (_s, p) => pl(p).by !== 'runner' || !GWS.runtimeRuns.size),
-      det(on('orca.entitySaved', { entity: 'robot' }), (s, p) => byPlayer(p) && has5555(robotUrl(s.lab, Number(pl(p).id)))),
+      det(on('orka.entitySaved', { entity: 'robot' }), (s, p) => byPlayer(p) && has5555(robotUrl(s.lab, Number(pl(p).id)))),
       det(on('git.fileEdited'), (s, p) => String(pl(p).path).endsWith('config.properties') && currentConfig(s.lab).portNumber === '5555'),
     ],
     teach: {
@@ -220,10 +220,10 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
     action: "Delete a Device row that is a robot's legacy/rollback device",
     penalty: 300,
     strike: false,
-    tags: ['orca.device'],
+    tags: ['orka.device'],
     consequence: 'Rollback impossible (INC43 much longer)',
     factIds: ['F119', 'F120'],
-    detect: [det(on('orca.entitySaved', { entity: 'device', action: 'delete' }), (_s, p) => byPlayer(p) && isLegacyRow(Number(pl(p).id)))],
+    detect: [det(on('orka.entitySaved', { entity: 'device', action: 'delete' }), (_s, p) => byPlayer(p) && isLegacyRow(Number(pl(p).id)))],
     teach: {
       whatHappened: 'Legacy device configuration lost.',
       why: 'Robots link to a separate Device row so upgrades keep the old config for rollback. (Ref §3)',
@@ -231,7 +231,7 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
       ref: 'Ref §3',
       factIds: ['F119', 'F120'],
       practiceDrillId: 'DR12',
-      tag: 'orca.device',
+      tag: 'orka.device',
     },
   }),
   d({
@@ -240,11 +240,11 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
     action: "Change an existing Device row's type/serial in place for a hardware swap",
     penalty: 300,
     strike: false,
-    tags: ['orca.device'],
+    tags: ['orka.device'],
     consequence: 'Legacy config lost',
     factIds: ['F119', 'F120'],
     detect: [
-      det(on('orca.entitySaved', { entity: 'device', action: 'update' }), (_s, p) => {
+      det(on('orka.entitySaved', { entity: 'device', action: 'update' }), (_s, p) => {
         const f = (pl(p).fields as string[] | undefined) ?? [];
         return byPlayer(p) && f.some((x) => /type|serial/i.test(x));
       }),
@@ -256,7 +256,7 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
       ref: 'Ref §3',
       factIds: ['F119', 'F120'],
       practiceDrillId: 'DR12',
-      tag: 'orca.device',
+      tag: 'orka.device',
     },
   }),
   d({
@@ -282,7 +282,7 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
   d({
     id: 'GW12',
     name: 'Escalated config issue',
-    action: personText('Escalate a non-escalatable issue to {{jared}}'),
+    action: personText('Escalate a non-escalatable issue to {{jaden}}'),
     penalty: 100,
     strike: false,
     tags: ['people.roles'],
@@ -290,7 +290,7 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
     factIds: ['F111'],
     detect: [],
     teach: {
-      whatHappened: '{{jared}} bounced the escalation.',
+      whatHappened: '{{jaden}} bounced the escalation.',
       why: 'Escalate hardware Connection Failed causes; config issues are yours. (Ref §3)',
       doInstead: 'Read the Notes / Edit view and fix it.',
       ref: 'Ref §3',
@@ -302,7 +302,7 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
   d({
     id: 'GW13',
     name: 'Shared infrastructure restarted',
-    action: 'Restart the Orca/Jenkins/Ollama VM or power-cycle the GPU blade',
+    action: 'Restart the Orka/Jenkins/Ollama VM or power-cycle the GPU blade',
     penalty: 500,
     strike: false,
     tags: ['arch.infra'],
@@ -311,11 +311,11 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
     cooldownS: 10,
     detect: [
       det(on('host.powerChanged'), (_s, p) => INFRA_HOSTS.has(String(pl(p).hostId)) && pl(p).from === 'on' && pl(p).to !== 'on' && playerTouchedPower(_s.session.clockS, String(pl(p).hostId))),
-      det(on('terminal.command'), (_s, p) => /\b(sudo\s+)?(reboot|shutdown)\b/.test(String(pl(p).line)) && /orca|jenkins|ollama|blade/.test(String(pl(p).host))),
+      det(on('terminal.command'), (_s, p) => /\b(sudo\s+)?(reboot|shutdown)\b/.test(String(pl(p).line)) && /orka|jenkins|ollama|blade/.test(String(pl(p).host))),
     ],
     teach: {
       whatHappened: 'You restarted shared infrastructure.',
-      why: 'Orca, Jenkins and Ollama VMs share the GPU blade; restarts kill every running job. (Ref §1)',
+      why: 'Orka, Jenkins and Ollama VMs share the GPU blade; restarts kill every running job. (Ref §1)',
       doInstead: 'Restart only the failed service.',
       ref: 'Ref §1',
       factIds: ['F078'],
@@ -326,14 +326,14 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
   d({
     id: 'GW14',
     name: 'Edited app/src/main',
-    action: 'Edit any file under uia-remote/app/src/main',
+    action: 'Edit any file under uia-relay/app/src/main',
     penalty: 200,
     strike: false,
     tags: ['uia.layout'],
     consequence: personText('PR auto-flagged by {{morgan}}'),
     factIds: ['F164'],
     cooldownS: 30,
-    detect: [det(on('git.fileEdited', { repo: 'uia-remote' }), (_s, p) => String(pl(p).path).startsWith('app/src/main'))],
+    detect: [det(on('git.fileEdited', { repo: 'uia-relay' }), (_s, p) => String(pl(p).path).startsWith('app/src/main'))],
     teach: {
       whatHappened: 'Edited app/src/main.',
       why: 'main holds production/app registration code; QA never modifies it. (Ref §4)',
@@ -386,7 +386,7 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
     action: 'Redundant power-cycle (target already booting or healthy)',
     penalty: 50,
     strike: false,
-    tags: ['orca.healthcheck'],
+    tags: ['orka.healthcheck'],
     consequence: 'Recovery slips to the next health check',
     factIds: ['F099'],
     cooldownS: 1,
@@ -395,7 +395,7 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
         const id = String(pl(p).hostId);
         if (!id.startsWith('pi-')) return false;
         // Only a power *cut* counts (a finishing boot is booting → on; a hang is on → crashed), and only
-        // one the player caused (not a fault taking the rail down or Jared's fix).
+        // one the player caused (not a fault taking the rail down or Jaden's fix).
         if (pl(p).to !== 'off' || !playerTouchedPower(_s.session.clockS, id) || recentProtectionTrip(_s.session.clockS)) return false;
         const from = pl(p).from;
         return from === 'booting' || (from === 'on' && GWS.hostHealthy.get(id) === true);
@@ -412,7 +412,7 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
       ref: 'Ref §3',
       factIds: ['F099'],
       practiceDrillId: 'DR01',
-      tag: 'orca.healthcheck',
+      tag: 'orka.healthcheck',
     },
   }),
   d({
@@ -421,14 +421,14 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
     action: 'Enter non-zero Offsets to compensate for coordinate problems',
     penalty: 150,
     strike: false,
-    tags: ['orca.offsets'],
+    tags: ['orka.offsets'],
     consequence: 'Masks the root cause',
     factIds: ['F129', 'F130'],
     detect: [
-      det(on('orca.entitySaved', { entity: 'robot' }), (s, p) => {
+      det(on('orka.entitySaved', { entity: 'robot' }), (s, p) => {
         const f = (pl(p).fields as string[] | undefined) ?? [];
         if (!byPlayer(p) || !f.some((x) => /offset/i.test(x))) return false;
-        const r = Object.values(s.lab.orca?.robots ?? {}).find((x) => x.id === Number(pl(p).id));
+        const r = Object.values(s.lab.orka?.robots ?? {}).find((x) => x.id === Number(pl(p).id));
         return !!r && (Math.abs(r.offsetXMm ?? 0) > 1e-9 || Math.abs(r.offsetYMm ?? 0) > 1e-9);
       }),
     ],
@@ -439,7 +439,7 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
       ref: 'Ref §3',
       factIds: ['F129', 'F130'],
       practiceDrillId: 'DR12',
-      tag: 'orca.offsets',
+      tag: 'orka.offsets',
     },
   }),
   d({
@@ -472,7 +472,7 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
     action: 'Change a rig away from Reserved set by someone else without asking',
     penalty: 150,
     strike: false,
-    tags: ['orca.status.reserved'],
+    tags: ['orka.status.reserved'],
     consequence: 'Their local run collides with Jenkins',
     factIds: ['F112', 'F113'],
     detect: [
@@ -489,7 +489,7 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
       ref: 'Ref §3, §6',
       factIds: ['F112', 'F113'],
       practiceDrillId: 'DR01',
-      tag: 'orca.status.reserved',
+      tag: 'orka.status.reserved',
     },
   }),
   d({
@@ -515,10 +515,10 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
     action: "Edit a robot's Name (system identifier) when the Human Readable Name was meant",
     penalty: 100,
     strike: false,
-    tags: ['orca.names'],
+    tags: ['orka.names'],
     consequence: 'Pipelines and named jobs lose the robot until reverted',
     factIds: ['F117', 'F118'],
-    detect: [det(on('orca.entitySaved', { entity: 'robot', action: 'update' }), (_s, p) => byPlayer(p) && ((pl(p).fields as string[] | undefined) ?? []).includes('name'))],
+    detect: [det(on('orka.entitySaved', { entity: 'robot', action: 'update' }), (_s, p) => byPlayer(p) && ((pl(p).fields as string[] | undefined) ?? []).includes('name'))],
     teach: {
       whatHappened: "You edited the robot's Name.",
       why: 'Name is the system identifier pipelines use; the tablet shows the Human Readable Name. (Ref §3)',
@@ -526,7 +526,7 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
       ref: 'Ref §3',
       factIds: ['F117', 'F118'],
       practiceDrillId: 'DR12',
-      tag: 'orca.names',
+      tag: 'orka.names',
     },
   }),
   d({
@@ -558,7 +558,7 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
     action: 'Manually set a Connection Failed rig to Available while the cause persists',
     penalty: 200,
     strike: true,
-    tags: ['orca.status.connfailed'],
+    tags: ['orka.status.connfailed'],
     consequence: 'A pipeline checks out a dead rig (red build); next ping flips it back',
     factIds: ['F107', 'F108', 'F111'],
     detect: [
@@ -567,11 +567,11 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
     teach: {
       whatHappened: 'You overrode a failed health check.',
       why: 'Connection Failed blocks checkouts for a reason; the next ping will flip it back. (Ref §3)',
-      doInstead: 'Find the cause or escalate to {{jared}} with the endpoint.',
+      doInstead: 'Find the cause or escalate to {{jaden}} with the endpoint.',
       ref: 'Ref §3',
       factIds: ['F107', 'F108', 'F111'],
       practiceDrillId: 'DR01',
-      tag: 'orca.status.connfailed',
+      tag: 'orka.status.connfailed',
     },
   }),
 ];
@@ -580,16 +580,16 @@ export const GW_BY_ID: Readonly<Record<string, GlobalWrongActionDef>> = Object.f
 
 /** Bark per GW (GP §5.4). */
 export const GW_BARKS: Readonly<Record<string, string>> = {
-  GW01: 'BARK_JARED_02',
-  GW02: 'BARK_JARED_02',
-  GW05: 'BARK_TATE_03',
+  GW01: 'BARK_JADEN_02',
+  GW02: 'BARK_JADEN_02',
+  GW05: 'BARK_NATE_03',
   GW07: 'BARK_RILEY_01',
-  GW12: 'BARK_JARED_05',
+  GW12: 'BARK_JADEN_05',
   GW14: 'BARK_MORGAN_02',
-  GW18: 'BARK_JARED_07',
+  GW18: 'BARK_JADEN_07',
   GW19: 'BARK_RILEY_01',
-  GW20: 'BARK_TATE_04',
-  GW22: 'BARK_TATE_05',
-  GW24: 'BARK_TATE_02',
+  GW20: 'BARK_NATE_04',
+  GW22: 'BARK_NATE_05',
+  GW24: 'BARK_NATE_02',
 };
 

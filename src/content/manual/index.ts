@@ -8,9 +8,9 @@ import { BASICS_ARTICLES } from './basics';
 import { CARDS_ARTICLES } from './cards';
 import { HARDWARE_ARTICLES } from './hardware';
 import { INFRA_ARTICLES } from './infra';
-import { ORCA_ARTICLES } from './orca';
-import { ORCA2_ARTICLES } from './orca2';
-import { PIGEON_ARTICLES } from './pigeon';
+import { ORKA_ARTICLES } from './orka';
+import { ORKA2_ARTICLES } from './orka2';
+import { PARROT_ARTICLES } from './parrot';
 import { PIPELINES_ARTICLES } from './pipelines';
 import { POWER_ARTICLES } from './power';
 import { ROBOTS_ARTICLES } from './robots';
@@ -41,11 +41,11 @@ const ALL: ManualArticle[] = [
   ...HARDWARE_ARTICLES,
   ...POWER_ARTICLES,
   ...ROBOTS_ARTICLES,
-  ...ORCA_ARTICLES,
-  ...ORCA2_ARTICLES,
+  ...ORKA_ARTICLES,
+  ...ORKA2_ARTICLES,
   ...PIPELINES_ARTICLES,
   ...UIA_ARTICLES,
-  ...PIGEON_ARTICLES,
+  ...PARROT_ARTICLES,
   ...CARDS_ARTICLES,
   ...TOOLS_ARTICLES,
   ...INFRA_ARTICLES,

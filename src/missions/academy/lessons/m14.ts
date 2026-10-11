@@ -1,7 +1,7 @@
 /**
  * M14 — config.properties & the Tethered Tax Test (Cur §2 M14). Mentor {{morgan}}, cameo the office
  * coworker ({{riley}}, `npc.coworker`, desk Flux `10.42.60.4` on the default ADB port 5555).
- * Setup (`academy:M14`, Sim §4.4.2): uia-remote cloned with the broken `config.properties` of Cur M14
+ * Setup (`academy:M14`, Sim §4.4.2): uia-relay cloned with the broken `config.properties` of Cur M14
  * (`m14-broken`); the coworker's desk Flux is already known to the workstation's ADB server; MEGATRON
  * (STAND_2 MFD `10.42.30.21` + MICRO_2 CFD `10.42.30.22`, DEV1) is Available. How 5555 reaches the
  * coworker's device is illustrative (Cur S19): the refused lab connect falls back to the first known device.
@@ -41,14 +41,14 @@ const taxRunning = (pl: { testName: string }) => pl.testName === 'TaxTest';
  * really opens there); the stale theme/kernelType of the start file arrive at M14.04, before the player
  * opens the file. Written with `sim.git.writeFile` (draft-safe at activity start, unlike scenario items).
  */
-const COLLISION_CONFIG = Object.entries({ ...M14_TARGET, portNumber: '5555', deviceType: 'Flux' })
+const KOLLISION_CONFIG = Object.entries({ ...M14_TARGET, portNumber: '5555', deviceType: 'Flux' })
   .map(([k, v]) => `${k}=${v}`)
   .join('\n')
   .concat('\n');
 const writeCollisionConfig: ScriptAction = {
   do: 'sim',
   run: (sim) => {
-    sim.git.writeFile('uia-remote', 'config.properties', COLLISION_CONFIG);
+    sim.git.writeFile('uia-relay', 'config.properties', KOLLISION_CONFIG);
   },
 };
 
@@ -62,15 +62,15 @@ const noRunOnCoworker: Condition = c.custom('m14-no-run-on-coworker', 'Nothing d
 export const M14: LessonDef = {
   moduleId: 'M14',
   mentor: 'morgan',
-  setup: { preset: 'academy:M14', spawn: 'loc.workstation', apps: { unlock: ['intellij', 'orca', 'terminal', 'camera', 'github', 'chat'] } },
+  setup: { preset: 'academy:M14', spawn: 'loc.workstation', apps: { unlock: ['intellij', 'orka', 'terminal', 'camera', 'github', 'chat'] } },
   deck: 'deck.M14',
   realLabChecklist: [
     'Running locally? You fill in config.properties yourself; in CI Jenkins injects the same values.',
     'portNumber is locked to 5444. The ADB default 5555 once let scripts connect to and drive coworkers\' desk devices.',
     'theme is always avocado and kernelType is always CPA (Core Payments Application, which replaced SPA).',
     'Tethered rigs: runType=tethered, MFD and CFD IPs (the same IP on a Stand Duet), the serial of the primary terminal, deviceType = Micro, Flux or Stand.',
-    'Reserve the rig in Orca before a local run and set it back to Available afterwards.',
-    'The Tax test: MFD_O1 (Register, Tax Item 5, Review Order, Orca → Callus loads the swipe card) → CFD_O1 (assert subtotal, tax, total) → MFD_O2 (Pay, Charge) → CFD finalises payment; it starts and ends on HomeScreen.',
+    'Reserve the rig in Orka before a local run and set it back to Available afterwards.',
+    'The Tax test: MFD_O1 (Register, Tax Item 5, Review Order, Orka → Kallus loads the swipe card) → CFD_O1 (assert subtotal, tax, total) → MFD_O2 (Pay, Charge) → CFD finalises payment; it starts and ends on HomeScreen.',
   ],
   steps: [
     {
@@ -78,10 +78,10 @@ export const M14: LessonDef = {
       kind: 'computer-task',
       hud: 'Run TaxTest against MEGATRON',
       app: 'intellij',
-      route: '/project/uia-remote',
+      route: '/project/uia-relay',
       onEnter: [writeCollisionConfig],
       success: c.any(c.happened(on('test.localRunStarted', {}, taxRunning)), c.appAction('intellij', 'intellij.run.started', (d) => d.config === 'TaxTest')),
-      showMe: [{ app: 'intellij', route: '/project/uia-remote', target: 'intellij.runButton', action: 'click', caption: '▶ TaxTest' }],
+      showMe: [{ app: 'intellij', route: '/project/uia-relay', target: 'intellij.runButton', action: 'click', caption: '▶ TaxTest' }],
       factIds: ['F028'],
     },
     {
@@ -123,7 +123,7 @@ export const M14: LessonDef = {
       id: 'M14.04',
       kind: 'dialogue',
       speaker: 'morgan',
-      onComplete: [inject({ faultId: 'config.themeKernel', params: { path: '~/IdeaProjects/uia-remote/config.properties' } })],
+      onComplete: [inject({ faultId: 'config.themeKernel', params: { path: '~/IdeaProjects/uia-relay/config.properties' } })],
       text: "Classic. Check your config.properties. I bet you're on 5555, the out-of-the-box ADB port. Lab devices only listen on 5444, so your connect was refused and the runner grabbed the first device ADB already knew: a coworker's desk device on the default port. That exact collision is why portNumber is locked to 5444.",
       factIds: ['F199', 'F200', 'F198', 'F026'],
     },
@@ -132,7 +132,7 @@ export const M14: LessonDef = {
       kind: 'computer-task',
       hud: 'Fix config.properties for MEGATRON (tethered)',
       app: 'intellij',
-      route: '/project/uia-remote/file/config.properties',
+      route: '/project/uia-relay/file/config.properties',
       success: configValid,
       objectives: [
         { id: 'M14.05.port', text: 'portNumber=5444', done: cfg('portNumber') },
@@ -155,7 +155,7 @@ export const M14: LessonDef = {
         { afterS: 120, idle: true, effect: 'text', text: 'MEGATRON = Stand 2 MFD 10.42.30.21 tethered to Micro 2 CFD 10.42.30.22: runType=tethered, deviceType=Stand, portNumber=5444, theme=avocado, kernelType=CPA.' },
         { afterS: 180, idle: true, effect: 'show-me-button' },
       ],
-      showMe: [{ app: 'intellij', route: '/project/uia-remote/file/config.properties', target: 'intellij.configValidator', action: 'click' }],
+      showMe: [{ app: 'intellij', route: '/project/uia-relay/file/config.properties', target: 'intellij.configValidator', action: 'click' }],
       factIds: ['F188', 'F190', 'F191', 'F192', 'F194', 'F195', 'F196', 'F197', 'F198', 'F201'],
     },
     {
@@ -192,10 +192,10 @@ export const M14: LessonDef = {
       id: 'M14.08',
       kind: 'computer-task',
       hud: "You're running locally, so reserve MEGATRON",
-      app: 'orca',
+      app: 'orka',
       route: '/robot',
       success: c.status('megatron', 'RESERVED'),
-      showMe: [{ app: 'orca', route: '/robot', target: 'orca.robots.rowStatus:megatron', action: 'select', text: 'Reserved' }],
+      showMe: [{ app: 'orka', route: '/robot', target: 'orka.robots.rowStatus:megatron', action: 'select', text: 'Reserved' }],
       factIds: ['F112', 'F113'],
     },
     {
@@ -203,7 +203,7 @@ export const M14: LessonDef = {
       kind: 'computer-task',
       hud: 'Open TaxTest.java, read the header, then run it',
       app: 'intellij',
-      route: '/project/uia-remote/file/app/src/androidTest/java/com/labsim/uia/testactions/TaxTest.java',
+      route: '/project/uia-relay/file/app/src/androidTest/java/com/labsim/uia/testactions/TaxTest.java',
       success: c.all(c.appAction('intellij', 'intellij.file.opened', (d) => String(d.path ?? '').endsWith('TaxTest.java')), c.happened(on('test.localRunStarted', {}, taxRunning)), configValid),
       objectives: [
         { id: 'M14.09.read', text: 'Open TaxTest.java and read the header', done: c.appAction('intellij', 'intellij.file.opened', (d) => String(d.path ?? '').endsWith('TaxTest.java')) },
@@ -225,7 +225,7 @@ export const M14: LessonDef = {
       kind: 'inspect',
       hud: 'MFD_O1: watch the merchant screen',
       prop: 'prop.megatron.mfd',
-      callouts: ['[MFD_O1] open Register', '[MFD_O1] add "Tax Item 5"', '[MFD_O1] Review Order', '[MFD_O1] orca → callus: load swipe card VISA_STD_SWIPE … OK'],
+      callouts: ['[MFD_O1] open Register', '[MFD_O1] add "Tax Item 5"', '[MFD_O1] Review Order', '[MFD_O1] orka → kallus: load swipe card VISA_STD_SWIPE … OK'],
       factIds: ['F183', 'F184'],
     },
     {
@@ -257,7 +257,7 @@ export const M14: LessonDef = {
       id: 'M14.14',
       kind: 'computer-task',
       hud: 'Done locally. Release MEGATRON',
-      app: 'orca',
+      app: 'orka',
       route: '/robot',
       success: c.status('megatron', 'AVAILABLE'),
       factIds: ['F101', 'F112'],

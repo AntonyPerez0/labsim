@@ -9,7 +9,7 @@ import { addTimer, rand } from '../util';
 import { DEVICE_TYPES } from '../../seed/deviceTypes';
 import { DECLINE, receiptText, TOAST } from '../../text/devices';
 import { RECEIPT_ADDRESS } from '../../seed/merchants';
-import { gortFileText } from '../../seed';
+import { gorthFileText } from '../../seed';
 import { addItem, customerSide, dispOf, drawRenderMs, isSplit, logcat, merchantOf, newOrder, ownerOf, recompute, setScreen, toast } from './model';
 import type { Disp } from './model';
 import { enqueueRig } from '../rigs';
@@ -152,7 +152,7 @@ export function press(lab: LabState, ctx: Ctx, d: TerminalDevice, disp: Disp, bt
         ds.pinDigits = 0;
         ds.rev += 1;
       } else if (btn === 'Enter') {
-        const prof = o.cardProfileId != null ? lab.orca.cardProfiles[o.cardProfileId] : undefined;
+        const prof = o.cardProfileId != null ? lab.orka.cardProfiles[o.cardProfileId] : undefined;
         if (prof?.pin != null && typed === prof.pin) afterPin(lab, ctx, owner);
         else {
           o.pinTries += 1;
@@ -340,13 +340,13 @@ function approve(lab: LabState, ctx: Ctx, owner: TerminalDevice, hold = false): 
   retractCard(lab, owner);
 }
 
-/** Orca auto-sends dipOut / tapOut after approved/declined (Sim §3.6 #10). */
+/** Orka auto-sends dipOut / tapOut after approved/declined (Sim §3.6 #10). */
 function retractCard(lab: LabState, owner: TerminalDevice): void {
   const c = customerSide(lab, owner);
   const rig = c.dev.rigId ? lab.rigs[c.dev.rigId] : undefined;
   if (!rig) return;
-  if (rig.dipArm === 'extended' || rig.dipArm === 'extending') enqueueRig(lab, rig.id, { kind: 'dipOut', source: 'orca' });
-  if (rig.tapArm === 'extended' || rig.tapArm === 'extending') enqueueRig(lab, rig.id, { kind: 'tapOut', source: 'orca' });
+  if (rig.dipArm === 'extended' || rig.dipArm === 'extending') enqueueRig(lab, rig.id, { kind: 'dipOut', source: 'orka' });
+  if (rig.tapArm === 'extended' || rig.tapArm === 'extending') enqueueRig(lab, rig.id, { kind: 'tapOut', source: 'orka' });
 }
 
 function receiptChoice(lab: LabState, ctx: Ctx, owner: TerminalDevice, d: TerminalDevice, disp: Disp, btn: string): void {
@@ -457,7 +457,7 @@ export function printPayload(lab: LabState, ctx: Ctx, deviceId: string, ownerId:
   if (!d || !owner?.order || d.power !== 'on') return;
   const o = owner.order;
   const m = merchantOf(lab, owner);
-  const prof = o.cardProfileId != null ? lab.orca.cardProfiles[o.cardProfileId] : undefined;
+  const prof = o.cardProfileId != null ? lab.orka.cardProfiles[o.cardProfileId] : undefined;
   const doc: ReceiptDoc = {
     merchantName: m?.displayName ?? 'LabSim',
     address: m?.address ?? RECEIPT_ADDRESS,
@@ -532,7 +532,7 @@ export function cardFileValid(text: string | null): boolean {
 export interface CardEventOpts {
   /** Dip arm misaligned on the presenting rig: the ribbon strikes the bezel (INC16). */
   misaligned?: boolean;
-  /** Text of the card definition file Callus loaded (DIP/TAP). */
+  /** Text of the card definition file Kallus loaded (DIP/TAP). */
   cardFile?: string | null;
   /** Physical test card / SDK injection: skip track/file validation. */
   trusted?: boolean;
@@ -563,7 +563,7 @@ export function cardEvent(lab: LabState, ctx: Ctx, d: TerminalDevice, disp: Disp
       report(false, 'SWIPE_ERROR: invalid track data');
       return 'SWIPE_ERROR: invalid track data';
     }
-    if (entry !== 'SWIPE' && !cardFileValid(opts.cardFile ?? (profile.gortPath ? gortFileText(lab, profile.gortPath) : null))) {
+    if (entry !== 'SWIPE' && !cardFileValid(opts.cardFile ?? (profile.gorthPath ? gorthFileText(lab, profile.gorthPath) : null))) {
       logcat(d, 'E CardReader: CHIP_READ_ERROR');
       toast(lab, ctx, d, disp, TOAST.cardRead);
       report(false, 'CHIP_READ_ERROR');

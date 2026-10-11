@@ -1,23 +1,23 @@
 /**
- * Simulated REST surfaces (Sim §3.23): Orca (JHipster problem JSON), Robot Pis (`:8000`, camera
- * `:8081`) and Callus (`:9000`). Ollama and Jenkins are sim-devops'. Connection failures answer
+ * Simulated REST surfaces (Sim §3.23): Orka (JHipster problem JSON), Robot Pis (`:8000`, camera
+ * `:8081`) and Kallus (`:9000`). Ollama and Jenkins are sim-devops'. Connection failures answer
  * `status: 0` with header `x-sim-error: refused | timeout | no-route` and the error text as body.
  */
-import type { CardEntry, LabState, OrcaRobot } from '../types';
+import type { CardEntry, LabState, OrkaRobot } from '../types';
 import type { Actor, RestResponse } from '../api';
 import type { RigCommandName } from '../events';
 import type { Ctx } from './util';
 import { parseUrl, rand } from './util';
 import { reach, resolve } from './network';
-import { capabilityDocument, checkout, matchPreview, parseCapsJson, release } from './orca/checkout';
-import { robotByName, setRobotStatus } from './orca/status';
-import { piHealth } from './orca/health';
-import { runHealthCheck } from './orca/health';
-import { xyTouch } from './orca/xyTouch';
-import { cardAction, callusStatusBody } from './collis';
+import { capabilityDocument, checkout, matchPreview, parseCapsJson, release } from './orka/checkout';
+import { robotByName, setRobotStatus } from './orka/status';
+import { piHealth } from './orka/health';
+import { runHealthCheck } from './orka/health';
+import { xyTouch } from './orka/xyTouch';
+import { cardAction, kallusStatusBody } from './kollis';
 import { screenCompare } from './ocr';
-import { deleteEntity, rigOf, saveCapability, saveCardProfile, saveDevice, saveMerchant, saveRobot, saveScreen, saveScreenCompareImage, saveScreenLocation } from './orca/entities';
-import type { EntityName } from './orca/entities';
+import { deleteEntity, rigOf, saveCapability, saveCardProfile, saveDevice, saveMerchant, saveRobot, saveScreen, saveScreenCompareImage, saveScreenLocation } from './orka/entities';
+import type { EntityName } from './orka/entities';
 import { enqueueRig, rigCommand } from './rigs';
 import { cameraForUrl } from '../seed/cameras';
 import { DEVICE_TYPES } from '../seed/deviceTypes';
@@ -68,7 +68,7 @@ const ENTITY_PATHS: Record<string, EntityName> = {
 };
 
 function tableOf(lab: LabState, e: EntityName): Record<number, object> {
-  const o = lab.orca;
+  const o = lab.orka;
   return { robot: o.robots, device: o.devices, capability: o.capabilities, merchant: o.merchants, screen: o.screens, screenLocation: o.screenLocations, cardProfile: o.cardProfiles, screenCompareImage: o.screenCompareImages }[e];
 }
 
@@ -88,11 +88,11 @@ function filterRows(rows: Record<string, unknown>[], query: URLSearchParams): Re
   return out;
 }
 
-/** Runtime env Orca hands back on checkout (Sim §3.18.4 subset). */
-function runtimeEnvOf(lab: LabState, robot: OrcaRobot): Record<string, string> {
-  const dev = robot.deviceId != null ? lab.orca.devices[robot.deviceId] : undefined;
-  const mfd = robot.mfdDeviceId != null ? lab.orca.devices[robot.mfdDeviceId] : undefined;
-  const cfd = robot.cfdDeviceId != null ? lab.orca.devices[robot.cfdDeviceId] : undefined;
+/** Runtime env Orka hands back on checkout (Sim §3.18.4 subset). */
+function runtimeEnvOf(lab: LabState, robot: OrkaRobot): Record<string, string> {
+  const dev = robot.deviceId != null ? lab.orka.devices[robot.deviceId] : undefined;
+  const mfd = robot.mfdDeviceId != null ? lab.orka.devices[robot.mfdDeviceId] : undefined;
+  const cfd = robot.cfdDeviceId != null ? lab.orka.devices[robot.cfdDeviceId] : undefined;
   const type = dev?.deviceType;
   return {
     RUN_TYPE: mfd ? 'tethered' : 'standalone',
@@ -106,21 +106,21 @@ function runtimeEnvOf(lab: LabState, robot: OrcaRobot): Record<string, string> {
     THEME: 'avocado',
     KERNEL_TYPE: 'CPA',
     BACKEND_ENV: robot.environment,
-    ORCA_URL: 'http://orca.lab.local:8080',
+    ORKA_URL: 'http://orka.lab.local:8080',
   };
 }
 
-/* ────────────────────────────── Orca ────────────────────────────── */
+/* ────────────────────────────── Orka ────────────────────────────── */
 
-export function orcaRest(lab: LabState, ctx: Ctx, method: string, rawPath: string, body: string | null, actor: Actor): RestResponse {
+export function orkaRest(lab: LabState, ctx: Ctx, method: string, rawPath: string, body: string | null, actor: Actor): RestResponse {
   const [path, qs] = rawPath.split('?') as [string, string | undefined];
   const query = new URLSearchParams(qs ?? '');
   const M = method.toUpperCase();
   const res = (() => {
     if (path === '/management/health') {
-      return lab.orca.app.dbConnected ? ok(lab, { status: 'UP' }) : ok(lab, { status: 'DOWN', components: { db: { status: 'DOWN' } } }, 503);
+      return lab.orka.app.dbConnected ? ok(lab, { status: 'UP' }) : ok(lab, { status: 'DOWN', components: { db: { status: 'DOWN' } } }, 503);
     }
-    if (!lab.orca.app.dbConnected) return problem(lab, 500, JPA, path);
+    if (!lab.orka.app.dbConnected) return problem(lab, 500, JPA, path);
     const json = parseBody(body);
     if (json === null) return problem(lab, 400, 'Failed to read request: malformed JSON', path);
     let m: RegExpExecArray | null;
@@ -131,7 +131,7 @@ export function orcaRest(lab: LabState, ctx: Ctx, method: string, rawPath: strin
     if (M === 'POST' && (m = /^\/api\/card\/(swipe|dip|tap)$/.exec(path))) {
       const r = cardAction(lab, ctx, String(json.robot ?? ''), m[1]!.toUpperCase() as CardEntry, String(json.profile ?? ''), actor);
       if (r.ok) return { status: 200, body: r.value.body, headers: JSON_H, latencyMs: r.value.respondsAfterMs };
-      const last = r.error.split('\n').pop()!.replace(/^\[(orca|callus|pi)\] /, '');
+      const last = r.error.split('\n').pop()!.replace(/^\[(orka|kallus|pi)\] /, '');
       return /^\d{3}/.test(last) ? fromError(lab, last, path) : problem(lab, 502, last, path);
     }
     if (M === 'POST' && path === '/api/match-preview') {
@@ -145,7 +145,7 @@ export function orcaRest(lab: LabState, ctx: Ctx, method: string, rawPath: strin
       return ok(lab, '', 202);
     }
     if (M === 'POST' && (m = /^\/api\/screen-compare\/([^/]+)\/test$/.exec(path))) {
-      const r = screenCompare(lab, ctx, decodeURIComponent(m[1]!), actor, 'orca');
+      const r = screenCompare(lab, ctx, decodeURIComponent(m[1]!), actor, 'orka');
       return r.ok ? ok(lab, { text: r.value.text, expected: r.value.expected, match: r.value.match }) : fromError(lab, r.error, path);
     }
     if (M === 'POST' && path === '/api/robots/checkout') {
@@ -159,13 +159,13 @@ export function orcaRest(lab: LabState, ctx: Ctx, method: string, rawPath: strin
         kind: 'manual',
       });
       if (out.kind === 'ok') {
-        const robot = lab.orca.robots[out.robotId]!;
+        const robot = lab.orka.robots[out.robotId]!;
         const env = runtimeEnvOf(lab, robot);
         return ok(lab, { robot: robot.name, deviceType: env.DEVICE_TYPE, runType: env.RUN_TYPE, env });
       }
-      if (out.kind === 'wait') return problem(lab, 409, out.lines[out.lines.length - 1]?.replace(/^\[orca\] /, '') ?? `no Available ${out.label} robot`, path);
+      if (out.kind === 'wait') return problem(lab, 409, out.lines[out.lines.length - 1]?.replace(/^\[orka\] /, '') ?? `no Available ${out.label} robot`, path);
       const last = out.lines[out.lines.length - 1] ?? out.code;
-      return /\] \d{3}/.test(last) ? fromError(lab, last.replace(/^\[orca\] /, ''), path) : problem(lab, out.code === 'ENUM_CASE' ? 400 : 409, last.replace(/^\[orca\] /, ''), path);
+      return /\] \d{3}/.test(last) ? fromError(lab, last.replace(/^\[orka\] /, ''), path) : problem(lab, out.code === 'ENUM_CASE' ? 400 : 409, last.replace(/^\[orka\] /, ''), path);
     }
     if (M === 'POST' && (m = /^\/api\/robots\/([^/]+)\/release$/.exec(path))) {
       const robot = robotByName(lab, decodeURIComponent(m[1]!));
@@ -179,7 +179,7 @@ export function orcaRest(lab: LabState, ctx: Ctx, method: string, rawPath: strin
     }
     if (M === 'PUT' && (m = /^\/api\/robots\/(\d+)\/status$/.exec(path))) {
       const r = setRobotStatus(lab, ctx, Number(m[1]), String(json.status ?? ''), actor);
-      return r.ok ? ok(lab, lab.orca.robots[Number(m[1])]) : fromError(lab, r.error, path);
+      return r.ok ? ok(lab, lab.orka.robots[Number(m[1])]) : fromError(lab, r.error, path);
     }
     // JHipster CRUD.
     if ((m = /^\/api\/([a-z-]+)(?:\/(\d+))?$/.exec(path)) && ENTITY_PATHS[m[1]!]) {
@@ -205,16 +205,16 @@ export function orcaRest(lab: LabState, ctx: Ctx, method: string, rawPath: strin
     }
     return problem(lab, 404, 'Not Found', path);
   })();
-  ctx.emit('orca.rest', { method: M, path, status: res.status, actor });
+  ctx.emit('orka.rest', { method: M, path, status: res.status, actor });
   return res;
 }
 
-/* ────────────────────────────── Robot Pi & Callus ────────────────────────────── */
+/* ────────────────────────────── Robot Pi & Kallus ────────────────────────────── */
 
 function piRest(lab: LabState, ctx: Ctx, hostId: string, method: string, path: string, body: string | null, actor: Actor): RestResponse {
   const pi = lab.hosts[hostId]!;
   const M = method.toUpperCase();
-  const rigs = Object.values(lab.rigs).filter((r) => r.piHostId === hostId).sort((a, b) => a.orcaRobotId - b.orcaRobotId);
+  const rigs = Object.values(lab.rigs).filter((r) => r.piHostId === hostId).sort((a, b) => a.orkaRobotId - b.orkaRobotId);
   if (M === 'GET' && path === '/health') {
     const h = piHealth(lab, hostId, pi.ip);
     if (h.http === 200) return { status: 200, body: h.body, headers: JSON_H, latencyMs: h.latencyMs };
@@ -257,10 +257,10 @@ function cameraRest(lab: LabState, hostId: string, path: string): RestResponse {
   return { status: 404, body: 'Not Found', latencyMs: lat(lab) };
 }
 
-function callusRest(lab: LabState, hostId: string, method: string, path: string): RestResponse {
+function kallusRest(lab: LabState, hostId: string, method: string, path: string): RestResponse {
   const box = lab.hosts[hostId]!;
   if (box.diskUsedGb >= box.diskTotalGb - 0.001) return ok(lab, { error: 'No space left on device' }, 500);
-  if (method.toUpperCase() === 'GET' && path === '/status') return ok(lab, callusStatusBody(lab, hostId));
+  if (method.toUpperCase() === 'GET' && path === '/status') return ok(lab, kallusStatusBody(lab, hostId));
   if (method.toUpperCase() === 'POST' && ['/load', '/swipe', '/arm'].includes(path)) return ok(lab, { result: 'OK' });
   return ok(lab, { error: 'Not Found' }, 404);
 }
@@ -310,10 +310,10 @@ export function http(lab: LabState, ctx: Ctx, req: { method: string; url: string
   }
   if (!r.hostId) return { status: 0, body: 'Empty reply from server', headers: { 'x-sim-error': 'refused' }, latencyMs: r.latencyMs };
   const host = lab.hosts[r.hostId]!;
-  if (host.id === 'orca-vm' && u.port === 8080) return orcaRest(lab, ctx, req.method, u.path, req.body, req.actor);
+  if (host.id === 'orka-vm' && u.port === 8080) return orkaRest(lab, ctx, req.method, u.path, req.body, req.actor);
   if (host.kind === 'pi' && u.port === 8000) return piRest(lab, ctx, host.id, req.method, u.path.split('?')[0]!, req.body, req.actor);
   if (host.kind === 'pi' && u.port === 8081) return cameraRest(lab, host.id, u.path.split('?')[0]!);
-  if ((host.kind === 'minix' || host.kind === 'nuc') && u.port === 9000) return callusRest(lab, host.id, req.method, u.path.split('?')[0]!);
+  if ((host.kind === 'minix' || host.kind === 'nuc') && u.port === 9000) return kallusRest(lab, host.id, req.method, u.path.split('?')[0]!);
   if (host.id === 'ollama-vm' && u.port === 11434) return ollamaRest(lab, req.method, u.path.split('?')[0]!);
   if (host.id === 'jenkins-vm' && u.port === 8080) return jenkinsRest(lab, ctx, req.method, u.path, req.actor);
   if (host.kind === 'nuc' && u.port === 9100) return host.diskUsedGb >= host.diskTotalGb - 0.001 ? ok(lab, { error: 'No space left on device' }, 500) : ok(lab, { status: 'ok' });

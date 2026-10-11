@@ -135,7 +135,7 @@ describe('Academy lesson runner', () => {
   it('plays the mentor correction on a wrong action and highlights the control after 3', () => {
     const lesson: LessonDef = {
       moduleId: 'M01',
-      mentor: 'tate',
+      mentor: 'nate',
       setup: { preset: 'academy:M01' },
       realLabChecklist: ['x'],
       steps: [
@@ -143,18 +143,18 @@ describe('Academy lesson runner', () => {
           id: 'W.01',
           kind: 'interact',
           hud: 'Fix the Human Readable Name',
-          target: 'app.orca',
+          target: 'app.orka',
           success: c.eq(p.v('hrnFixed'), true),
-          wrongActions: [{ id: 'name', on: on('orca.entitySaved', { entity: 'robot' }), say: 'Name is the system identifier. Pipelines use it. Leave it.', speaker: 'tate' }],
+          wrongActions: [{ id: 'name', on: on('orka.entitySaved', { entity: 'robot' }), say: 'Name is the system identifier. Pipelines use it. Leave it.', speaker: 'nate' }],
         },
       ],
     };
     registerLessons({ M01: lesson });
     missions.startAcademy('M01');
-    for (let i = 0; i < 3; i++) fire('orca.entitySaved', { entity: 'robot', id: 5, action: 'update', fields: ['name'], actor: 'player' });
+    for (let i = 0; i < 3; i++) fire('orka.entitySaved', { entity: 'robot', id: 5, action: 'update', fields: ['name'], actor: 'player' });
     const ac = state().session.academy!;
     expect(ac.wrongActions).toBe(3);
-    expect(ac.highlight).toEqual({ kind: 'prop', id: 'app.orca' });
+    expect(ac.highlight).toEqual({ kind: 'prop', id: 'app.orka' });
     expect(state().ui.toasts.some((t) => t.body === 'Name is the system identifier. Pipelines use it. Leave it.')).toBe(true);
   });
 

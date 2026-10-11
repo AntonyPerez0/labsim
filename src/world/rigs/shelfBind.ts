@@ -1,17 +1,17 @@
 /**
  * Binder for the non-gantry hardware: rack-top distribution LEDs, AC strip switch lamps, the Rack B
- * camera Pi, Collis probe status LEDs (green / amber / off), Windows-box power LEDs, the spare
- * Callus slot, the KVM console, the tethered hubs / SmartStripe dongles / shelf Pis / webcams and
+ * camera Pi, Kollis probe status LEDs (green / amber / off), Windows-box power LEDs, the spare
+ * Kallus slot, the KVM console, the tethered hubs / SmartStripe dongles / shelf Pis / webcams and
  * the ADB shelf. Missing sim objects read as healthy.
  */
 import type { Engine } from '@/engine/types';
 import type { LabState } from '@/sim/types';
-import { AC_STRIPS, CALLUS_BOXES, findSimObject, type SimRef } from '../layout';
+import { AC_STRIPS, KALLUS_BOXES, findSimObject, type SimRef } from '../layout';
 import type { RigKit } from './kit/context';
 import type { LedHandle } from './kit/instances';
 import type { PiHandles, StripHandles } from './parts';
 import type { RackHandles } from './rack';
-import { drawCallusConsole, type CallusHandles } from './callusShelf';
+import { drawKallusConsole, type KallusHandles } from './kallusShelf';
 import type { TetheredHandles } from './tethered';
 import type { AdbHandles } from './adbShelf';
 
@@ -62,7 +62,7 @@ function stripLit(lab: LabState, ref: SimRef): boolean {
 
 const host = (lab: LabState, ids: readonly string[]) => findSimObject<HostLike>(lab, { collection: 'hosts', ids });
 
-export function bindShelves(kit: RigKit, engine: Engine, racks: RackHandles[], callus: CallusHandles, tethered: TetheredHandles, adb: AdbHandles): (lab: LabState, now: number) => void {
+export function bindShelves(kit: RigKit, engine: Engine, racks: RackHandles[], kallus: KallusHandles, tethered: TetheredHandles, adb: AdbHandles): (lab: LabState, now: number) => void {
   void engine;
   const leds = kit.leds;
   const camPi = racks.find((r) => r.cameraPi)?.cameraPi;
@@ -71,7 +71,7 @@ export function bindShelves(kit: RigKit, engine: Engine, racks: RackHandles[], c
   const aPi = piLedDriver(kit, adb.pi);
   const strips: { h: StripHandles; ref: SimRef }[] = [];
   for (const r of racks) strips.push({ h: r.strip, ref: AC_STRIPS.find((s) => s.host === r.rack.id)!.sim });
-  for (const [id, h] of Object.entries(callus.strips)) strips.push({ h, ref: AC_STRIPS.find((s) => s.id === id)!.sim });
+  for (const [id, h] of Object.entries(kallus.strips)) strips.push({ h, ref: AC_STRIPS.find((s) => s.id === id)!.sim });
   strips.push({ h: tethered.strip, ref: AC_STRIPS.find((s) => s.id === 'power.strip.t')!.sim });
   strips.push({ h: adb.strip, ref: AC_STRIPS.find((s) => s.id === 'power.strip.d')!.sim });
   let consoleSig = '';
@@ -86,9 +86,9 @@ export function bindShelves(kit: RigKit, engine: Engine, racks: RackHandles[], c
     }
     for (const s of strips) leds.set(s.h.switchLed, stripLit(lab, s.ref) ? 1 : 0);
     camDrv?.(host(lab, ['pi-cam-rackb', 'pi-rackb-cam']), true, now);
-    // Collis probes
-    for (const c of Object.values(callus.collis)) {
-      const p = findSimObject<{ ledColor?: 'green' | 'amber' | 'off'; powered?: boolean; ribbonConnected?: boolean }>(lab, { collection: 'collis', ids: [c.simId] }, c.worldId);
+    // Kollis probes
+    for (const c of Object.values(kallus.kollis)) {
+      const p = findSimObject<{ ledColor?: 'green' | 'amber' | 'off'; powered?: boolean; ribbonConnected?: boolean }>(lab, { collection: 'kollis', ids: [c.simId] }, c.worldId);
       const color = p?.ledColor ?? (p ? (p.powered === false ? 'off' : p.ribbonConnected === false ? 'amber' : 'green') : 'green');
       if (color === 'off') leds.set(c.led, 0);
       else {
@@ -97,16 +97,16 @@ export function bindShelves(kit: RigKit, engine: Engine, racks: RackHandles[], c
       }
     }
     // Windows boxes
-    for (const bx of CALLUS_BOXES) {
-      const h = callus.boxes[bx.id];
+    for (const bx of KALLUS_BOXES) {
+      const h = kallus.boxes[bx.id];
       if (!h) continue;
       const hs = host(lab, bx.sim.ids);
       if (h.group) h.group.visible = !!hs;
       if (h.led) leds.set(h.led, hs ? (hs.power !== 'off' ? 1 : 0) : bx.kind === 'slot' ? 0 : 1);
     }
     // KVM console (≤ 1 Hz)
-    const mon = callus.monitor;
-    const box = CALLUS_BOXES[mon.kvm % CALLUS_BOXES.length]!;
+    const mon = kallus.monitor;
+    const box = KALLUS_BOXES[mon.kvm % KALLUS_BOXES.length]!;
     const hs = host(lab, box.sim.ids);
     const sig = `${box.id}|${hs?.power}|${hs?.os}|${JSON.stringify(hs?.services ? Object.values(hs.services).map((s) => [s.name, s.running]) : null)}|${hs?.diskUsedPct}`;
     if (sig !== consoleSig || now - consoleAt > 5000) {
@@ -116,14 +116,14 @@ export function bindShelves(kit: RigKit, engine: Engine, racks: RackHandles[], c
       if (hs && hs.power === 'off') lines.push('', '            No signal');
       else {
         lines.push(`Microsoft Windows [Version 10.0.19044]`, `${hs?.hostname ?? box.label} · ${hs?.ip ?? '10.42.20.x'}`, '');
-        lines.push(`C:\\Callus> sc query callus`);
+        lines.push(`C:\\Kallus> sc query kallus`);
         const svc = hs?.services ?? {};
-        const names = Object.keys(svc).length ? Object.values(svc) : [{ name: 'callus', running: true, port: 9000, failure: null }];
+        const names = Object.keys(svc).length ? Object.values(svc) : [{ name: 'kallus', running: true, port: 9000, failure: null }];
         for (const s of names) lines.push(`  ${s.name.padEnd(16)} ${s.running ? 'RUNNING' : 'STOPPED'}${s.port ? `  :${s.port}` : ''}`);
         if (hs?.diskUsedPct !== undefined) lines.push('', `Disk C: ${Math.round(hs.diskUsedPct)}% used`);
-        lines.push('', 'C:\\Callus> _');
+        lines.push('', 'C:\\Kallus> _');
       }
-      drawCallusConsole(mon.ctx, box.label, lines);
+      drawKallusConsole(mon.ctx, box.label, lines);
       mon.tex.needsUpdate = true;
     }
     // tethered bench
@@ -137,7 +137,7 @@ export function bindShelves(kit: RigKit, engine: Engine, racks: RackHandles[], c
       leds.set(led as LedHandle, linked ? (Math.sin(now / 53 + dockId.length) > -0.4 ? 1 : 0.2) : 0);
     }
     for (const [rigId, led] of Object.entries(tethered.dongles)) {
-      const p = findSimObject<{ ribbonConnected?: boolean; powered?: boolean }>(lab, { collection: 'collis', ids: [`smartstripe-${rigId}`] });
+      const p = findSimObject<{ ribbonConnected?: boolean; powered?: boolean }>(lab, { collection: 'kollis', ids: [`smartstripe-${rigId}`] });
       leds.set(led, p ? (p.ribbonConnected !== false ? 1 : 0) : 1);
     }
     const tRig = lab.rigs?.megatron;

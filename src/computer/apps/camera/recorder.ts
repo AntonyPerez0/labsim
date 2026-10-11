@@ -6,7 +6,7 @@
  */
 import { bus } from '@/core/bus';
 import { getState } from '@/core/store';
-import type { LabState, OrcaRobot } from '@/sim/types';
+import type { LabState, OrkaRobot } from '@/sim/types';
 import { getWindowManager } from '@/computer/apps';
 import { drawStreamFrame, cameraDefForUrl } from './frames';
 
@@ -132,7 +132,7 @@ function grab(rec: Recording, lab: LabState): void {
   }
 }
 
-function start(robot: OrcaRobot, buildId: string | null, runId: string | null, label: string): void {
+function start(robot: OrkaRobot, buildId: string | null, runId: string | null, label: string): void {
   const url = (robot.cameraStreamUrl ?? '').trim();
   if (!url) return;
   if (recordings.some((r) => r.recording && ((buildId && r.buildId === buildId) || (runId && r.runId === runId)))) return;
@@ -201,8 +201,8 @@ function addEvent(match: (r: Recording) => boolean, e: Omit<RecEvent, 'frame' | 
   if (any) changed();
 }
 
-function robotByName(name: string): OrcaRobot | null {
-  return Object.values(getState().lab.orca.robots).find((r) => r.name === name) ?? null;
+function robotByName(name: string): OrkaRobot | null {
+  return Object.values(getState().lab.orka.robots).find((r) => r.name === name) ?? null;
 }
 
 let stopAll: (() => void) | null = null;
@@ -224,12 +224,12 @@ export function startRecorder(): () => void {
     }),
     bus.on('jenkins.buildStarted', (e) => {
       if (e.robotId == null) return;
-      const r = getState().lab.orca.robots[e.robotId];
+      const r = getState().lab.orka.robots[e.robotId];
       if (r) start(r, e.buildId, null, buildLabel(e.buildId));
     }),
     bus.on('robot.checkedOut', (e) => {
       if (e.kind === 'manual') return;
-      const r = getState().lab.orca.robots[e.robotId];
+      const r = getState().lab.orka.robots[e.robotId];
       if (!r) return;
       if (e.kind === 'local' || e.buildId.startsWith('run-')) start(r, null, e.buildId, `Local run · ${e.buildId}`);
       else start(r, e.buildId, null, buildLabel(e.buildId));
@@ -241,9 +241,9 @@ export function startRecorder(): () => void {
     }),
     bus.on('jenkins.buildFinished', (e) => stop((r) => r.buildId === e.buildId, e.result)),
     bus.on('test.localRunFinished', (e) => stop((r) => r.runId === e.runId, e.passed ? 'PASSED' : 'FAILED')),
-    bus.on('orca.xyTouch', (e) => {
+    bus.on('orka.xyTouch', (e) => {
       const hit = e.hitButton;
-      const mode = e.orcaMode ?? (e.mode === 'adb' ? 'ADB_TOUCH' : 'PHYSICAL_TAP');
+      const mode = e.orkaMode ?? (e.mode === 'adb' ? 'ADB_TOUCH' : 'PHYSICAL_TAP');
       const rig = getState().lab.rigs[e.robotName];
       const deviceId = rig?.deviceIds?.[e.target === 'CFD' ? 1 : 0] ?? null;
       addEvent((r) => r.robotName === e.robotName, {

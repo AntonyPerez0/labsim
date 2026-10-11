@@ -112,22 +112,22 @@ export function sourceRootOf(path: string): string | null {
 
 export interface RunConfig {
   name: string;
-  repo: 'uia-remote' | 'pigeon';
+  repo: 'uia-relay' | 'parrot';
   testPath: string;
   kind: 'junit' | 'lstr';
 }
 
 export function runConfigsFor(repo: string, paths: string[]): RunConfig[] {
-  if (repo === 'uia-remote') {
+  if (repo === 'uia-relay') {
     return paths
       .filter((p) => /\/testactions\/[A-Za-z_$][\w$]*\.java$/.test(p))
-      .map((p) => ({ name: p.split('/').pop()!.replace(/\.java$/, ''), repo: 'uia-remote' as const, testPath: p, kind: 'junit' as const }))
+      .map((p) => ({ name: p.split('/').pop()!.replace(/\.java$/, ''), repo: 'uia-relay' as const, testPath: p, kind: 'junit' as const }))
       .sort((a, b) => cmp(a.name, b.name));
   }
-  if (repo === 'pigeon') {
+  if (repo === 'parrot') {
     return paths
       .filter((p) => /^tests\/.+\.json$/.test(p) && !p.startsWith('tests/_templates/'))
-      .map((p) => ({ name: `LSTR: ${p.split('/').pop()}`, repo: 'pigeon' as const, testPath: p, kind: 'lstr' as const }))
+      .map((p) => ({ name: `LSTR: ${p.split('/').pop()}`, repo: 'parrot' as const, testPath: p, kind: 'lstr' as const }))
       .sort((a, b) => cmp(a.name, b.name));
   }
   return [];

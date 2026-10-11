@@ -1,8 +1,8 @@
 /**
- * M03 — Power Distribution: Don't Fry the terminals (Cur §2 M03). Mentor {{jared}}.
+ * M03 — Power Distribution: Don't Fry the terminals (Cur §2 M03). Mentor {{jaden}}.
  * Setup (`academy:M03`): Rack B's 5V inline fuse `F-RACKB-5V` is blown (JOHNNY-5 / BAYMAX / SETI /
- * ROSIE Pis dark); a new Flux 4 power brick (`psu-flux4-new`) and a spare Collis probe PSU
- * (`psu-collis-spare`) lie unplugged on the power-wall bench. Wrong socket in Academy = spark +
+ * ROSIE Pis dark); a new Flux 4 power brick (`psu-flux4-new`) and a spare Kollis probe PSU
+ * (`psu-kollis-spare`) lie unplugged on the power-wall bench. Wrong socket in Academy = spark +
  * mentor line, no damage (Sim §3.13.3).
  */
 import { c, on, p } from '../../types';
@@ -12,13 +12,13 @@ import { loadsOnAcStrip, minigameDone, say, worldAction } from './helpers';
 const RACK_B_PIS = ['pi-johnny-5', 'pi-baymax', 'pi-seti', 'pi-rosie'] as const;
 const FUSE = 'F-RACKB-5V';
 const REG = 'REG-5V-B';
-const NEW_LOADS = ['psu-flux4-new', 'psu-collis-spare'] as const;
+const NEW_LOADS = ['psu-flux4-new', 'psu-kollis-spare'] as const;
 
 const isFusePoint = (id: string) => id === FUSE || id === `fuse:${FUSE}:ohms` || id.startsWith('fuse:F-5V-B');
 
 export const M03: LessonDef = {
   moduleId: 'M03',
-  mentor: 'jared',
+  mentor: 'jaden',
   setup: { preset: 'academy:M03', spawn: 'loc.workstation' },
   deck: 'deck.M03',
   manualChapters: ['Power'],
@@ -26,14 +26,14 @@ export const M03: LessonDef = {
     'Trace the chain before touching anything: 120V AC wall → Mean Well → 24V DC rail → step-down regulators → 12V (NUCs) and 5V 10A (Pis), inline fuses on the DC lines.',
     'A whole shelf of dark Pis points at the shared 5V line or its inline fuse, not at four broken Pis.',
     'Test a fuse out of circuit: a blown fuse reads open (OL). Replace it with the rating printed on the holder.',
-    'LabSim devices draw an irregular 18V, so LabSim terminals (and the expensive Collis probes) always go on a commercial AC power strip, never on the DC rails.',
+    'LabSim devices draw an irregular 18V, so LabSim terminals (and the expensive Kollis probes) always go on a commercial AC power strip, never on the DC rails.',
   ],
   steps: [
-    { id: 'M03.01', kind: 'walk-to', hud: 'Meet {{jared}} at the power wall', location: 'loc.power-wall' },
+    { id: 'M03.01', kind: 'walk-to', hud: 'Meet {{jaden}} at the power wall', location: 'loc.power-wall' },
     {
       id: 'M03.02',
       kind: 'dialogue',
-      speaker: 'jared',
+      speaker: 'jaden',
       text: "Power 101. Get this wrong and we're buying new terminals. 120 volts AC comes out of the wall and goes straight into the Mean Well.",
       factIds: ['F074', 'F227'],
     },
@@ -65,7 +65,7 @@ export const M03: LessonDef = {
     {
       id: 'M03.05',
       kind: 'dialogue',
-      speaker: 'jared',
+      speaker: 'jaden',
       text: 'From the 24-volt rail, step-down regulators split it two ways: 12 volts DC for the Windows NUCs, and 5 volts DC at 10 amps for the Raspberry Pis. Inline fuses protect both lines.',
       factIds: ['F085', 'F086', 'F087'],
     },
@@ -88,7 +88,7 @@ export const M03: LessonDef = {
     {
       id: 'M03.07',
       kind: 'dialogue',
-      speaker: 'jared',
+      speaker: 'jaden',
       text: "Rack B's Pis just went dark. Grab the multimeter and check the 5-volt fuse.",
       onComplete: [{ do: 'grant', tools: ['multimeter'] }],
       factIds: ['F087'],
@@ -113,7 +113,7 @@ export const M03: LessonDef = {
         { afterS: 60, effect: 'text', text: 'Regulator input off, pull the fuse, meter on Ω, probe the fuse.' },
         { afterS: 120, effect: 'highlight' },
       ],
-      onComplete: [say('jared', 'OL. Open circuit. That fuse is toast, which is why every Pi on that line went dark at once.')],
+      onComplete: [say('jaden', 'OL. Open circuit. That fuse is toast, which is why every Pi on that line went dark at once.')],
       factIds: ['F087', 'F086'],
     },
     {
@@ -142,33 +142,33 @@ export const M03: LessonDef = {
         { id: 'wrong-rating', on: on('power.fuseInserted', { fuseId: FUSE }, (pl) => pl.ratingA !== pl.labelA), say: 'Check the holder label: it says 10A. Match the rating printed on the holder.', gw: 'GW04' },
         { id: 'insert-live', on: on('power.fuseInserted', { fuseId: FUSE, live: true }), say: 'Regulator input off before the fuse goes in. Then power up.', gw: 'GW03' },
       ],
-      onComplete: [say('jared', 'Green LEDs and a boot chime. Four Pis back from one little fuse.')],
+      onComplete: [say('jaden', 'Green LEDs and a boot chime. Four Pis back from one little fuse.')],
       factIds: ['F087', 'F086'],
     },
     {
       id: 'M03.10',
       kind: 'dialogue',
-      speaker: 'jared',
-      text: 'Now the exception. LabSim devices draw an irregular 18 volts. They never touch our DC rails, and neither do the Collis probes. Those things cost more than my car.',
+      speaker: 'jaden',
+      text: 'Now the exception. LabSim devices draw an irregular 18 volts. They never touch our DC rails, and neither do the Kollis probes. Those things cost more than my car.',
       factIds: ['F228', 'F229', 'F069'],
     },
     {
       id: 'M03.11',
       kind: 'interact',
-      hud: 'Plug in the new Flux 4 and the spare Collis probe',
+      hud: 'Plug in the new Flux 4 and the spare Kollis probe',
       target: 'prop.flux4-psu-brick',
       success: loadsOnAcStrip(NEW_LOADS),
       objectives: [
         { id: 'M03.11.flux4', text: 'New Flux 4 power brick → AC power strip', done: loadsOnAcStrip(['psu-flux4-new']) },
-        { id: 'M03.11.collis', text: 'Spare Collis probe → AC power strip', done: loadsOnAcStrip(['psu-collis-spare']) },
+        { id: 'M03.11.kollis', text: 'Spare Kollis probe → AC power strip', done: loadsOnAcStrip(['psu-kollis-spare']) },
       ],
       wrongActions: [
         // Academy damage model: a wrong socket sparks and the lead pops out (`power.spark`, no `power.plugged`).
         { id: 'dc-flux4', on: on('power.spark', {}, (pl) => /Flux 4 power brick/i.test(pl.cause)), say: "That's how we fry a terminal. Commercial AC strip. Always.", gw: 'GW01' },
-        { id: 'dc-collis', on: on('power.spark', {}, (pl) => /Collis/i.test(pl.cause)), say: "That's how we fry a probe that costs more than my car. Commercial AC strip. Always.", gw: 'GW02' },
+        { id: 'dc-kollis', on: on('power.spark', {}, (pl) => /Kollis/i.test(pl.cause)), say: "That's how we fry a probe that costs more than my car. Commercial AC strip. Always.", gw: 'GW02' },
         // Damage model "real" (Free Play replays): the plug goes in, then the load fries.
         { id: 'dc-flux4-plugged', on: on('power.plugged', { loadId: 'psu-flux4-new' }, (pl) => pl.hookup.kind !== 'ac-strip'), say: "That's how we fry a terminal. Commercial AC strip. Always.", gw: 'GW01' },
-        { id: 'dc-collis-plugged', on: on('power.plugged', { loadId: 'psu-collis-spare' }, (pl) => pl.hookup.kind !== 'ac-strip'), say: "That's how we fry a probe that costs more than my car. Commercial AC strip. Always.", gw: 'GW02' },
+        { id: 'dc-kollis-plugged', on: on('power.plugged', { loadId: 'psu-kollis-spare' }, (pl) => pl.hookup.kind !== 'ac-strip'), say: "That's how we fry a probe that costs more than my car. Commercial AC strip. Always.", gw: 'GW02' },
       ],
       factIds: ['F228', 'F229'],
     },
@@ -176,8 +176,8 @@ export const M03: LessonDef = {
     {
       id: 'M03.13',
       kind: 'dialogue',
-      speaker: 'jared',
-      text: "Good. Rails for Pis and NUCs, AC strips for terminals and Collis. Tattoo it somewhere. Now let's open up a robot.",
+      speaker: 'jaden',
+      text: "Good. Rails for Pis and NUCs, AC strips for terminals and Kollis. Tattoo it somewhere. Now let's open up a robot.",
     },
   ],
 };

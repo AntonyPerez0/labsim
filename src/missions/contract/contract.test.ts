@@ -24,7 +24,7 @@ const INC04: IncidentDef = {
   escalatable: true,
   unlockedBy: 'M06',
   rigs: { roles: ['touch'], default: 'bumblebee', scope: 'rig', describe: 'any rig with its own Pi (default BUMBLEBEE)' },
-  tags: ['orca.status.connfailed', 'hw.pi', 'orca.notes'],
+  tags: ['orka.status.connfailed', 'hw.pi', 'orka.notes'],
   ticket: {
     title: (b) => `${b.hrn} Connection Failed`,
     reporter: 'jenkins-bot',
@@ -33,12 +33,12 @@ const INC04: IncidentDef = {
   setup: () => ({ scenario: [{ faultId: 'eth.unplugged', params: { host: '$PI' } }] }),
   reveal: 'healthCheck',
   symptoms: [{ where: 'Notes', text: (b) => `GET http://${b.vars.piIp}:8000/health → connect timed out after 10000 ms` }],
-  diagnosisPath: ['Tablet green but Orca red ⇒ Pi alive, network not', 'Inspect the jack', 'Call or escalate'],
-  hints: ['Compare the tablet with Orca.', "Look at the Pi's Ethernet jack LEDs.", 'Re-seat the cable at the jack.'],
+  diagnosisPath: ['Tablet green but Orka red ⇒ Pi alive, network not', 'Inspect the jack', 'Call or escalate'],
+  hints: ['Compare the tablet with Orka.', "Look at the Pi's Ethernet jack LEDs.", 'Re-seat the cable at the jack.'],
   fix: { byTheBook: 'Escalate with the health endpoint, cause A.', handsOn: 'Re-seat the cable; wait for the next health check.' },
   escalation: {
     endpoints: (b) => [`http://${b.vars.piIp}:8000/health`],
-    jaredFix: (b) => [{ do: 'npc', npc: 'jared', action: 'fix', target: `rig.${b.rig}.pi` }],
+    jadenFix: (b) => [{ do: 'npc', npc: 'jaden', action: 'fix', target: `rig.${b.rig}.pi` }],
   },
   success: (b) => c.all(c.eq(p.pi(String(b.vars.pi)).eth, 'LINKED'), c.status(b.rig!, 'AVAILABLE'), c.nextHealthCheck()),
   diagnosisCall: {
@@ -46,7 +46,7 @@ const INC04: IncidentDef = {
       { id: 'A', text: 'Network cable disconnected', correct: true },
       { id: 'B', text: 'Pi hung', wrongCallHint: 'A hung Pi freezes its ACT LED and greys the tablet. This tablet is green.' },
       { id: 'C', text: 'Rack A fuse blown', wrongCallHint: 'A blown fuse darkens every Pi on the rack. Only one rig is down.' },
-      { id: 'D', text: 'Orca health thread stuck', wrongCallHint: 'Other rigs were checked at the same time and passed.' },
+      { id: 'D', text: 'Orka health thread stuck', wrongCallHint: 'Other rigs were checked at the same time and passed.' },
     ],
   },
   wrongButTempting: [{ id: 'cycle', text: 'Power-cycle the Pi', gw: 'GW17' }],
@@ -57,7 +57,7 @@ const INC04: IncidentDef = {
 const LESSON: LessonDef = {
   moduleId: 'M01',
   mentor: 'morgan',
-  setup: { preset: 'academy:M01', spawn: 'loc.entrance', scenario: [{ op: 'orca.setStatus', params: { robot: 'baymax', status: 'OFFLINE' } }] },
+  setup: { preset: 'academy:M01', spawn: 'loc.entrance', scenario: [{ op: 'orka.setStatus', params: { robot: 'baymax', status: 'OFFLINE' } }] },
   realLabChecklist: ["Read a rig's status tablet header before touching anything."],
   steps: [
     { id: 'M01.01', kind: 'dialogue', speaker: 'morgan', text: 'Welcome to the LabSim automation lab!' },
@@ -74,8 +74,8 @@ const LESSON: LessonDef = {
       id: 'M06.12',
       kind: 'computer-task',
       hud: 'Reserve WALL-E, then build …',
-      app: ['orca', 'jenkins'],
-      success: c.sequence(on('orca.checkoutRejected', { jobId: 'Java/uia-remote-regression-flux' }), on('robot.checkedOut', { name: 'wall-e' })),
+      app: ['orka', 'jenkins'],
+      success: c.sequence(on('orka.checkoutRejected', { jobId: 'Java/uia-relay-regression-flux' }), on('robot.checkedOut', { name: 'wall-e' })),
       offerFastForward: true,
     },
     { id: 'M01.10', kind: 'branch', if: c.eq(p.v('choice'), 'a'), goto: 'M01.14' },
@@ -108,7 +108,7 @@ describe('missions contract builders', () => {
       op: 'all',
       of: [
         { op: 'cmp', probe: { p: 'hw.pi', host: 'pi-bumblebee', field: 'eth' }, cmp: 'eq', value: 'LINKED' },
-        { op: 'cmp', probe: { p: 'orca.robot', robot: 'bumblebee', field: 'status' }, cmp: 'eq', value: 'AVAILABLE' },
+        { op: 'cmp', probe: { p: 'orka.robot', robot: 'bumblebee', field: 'status' }, cmp: 'eq', value: 'AVAILABLE' },
         { op: 'verify', on: { kind: 'health-check' } },
       ],
     });
@@ -124,7 +124,7 @@ describe('missions contract builders', () => {
     expect(qr).toMatchObject({ op: 'all', of: [{ cmp: 'approx', tolerance: 0.5 }, { cmp: 'approx' }] });
     expect(c.nextBuild({ pipeline: 'PL3', distinctRobots: 2 })).toEqual({ op: 'verify', on: { kind: 'build', pipeline: 'PL3', distinctRobots: 2 } });
     expect(c.never(c.status('rosie', 'AVAILABLE'))).toMatchObject({ op: 'never', scope: 'owner' });
-    expect(c.appAction('orca', 'orca.robot.notesOpened')).toMatchObject({ op: 'happened', match: { event: 'app.action', where: { app: 'orca', action: 'orca.robot.notesOpened' } } });
+    expect(c.appAction('orka', 'orka.robot.notesOpened')).toMatchObject({ op: 'happened', match: { event: 'app.action', where: { app: 'orka', action: 'orka.robot.notesOpened' } } });
     const visited = c.visited('jenkins', '/job/Java/');
     expect(visited.op === 'happened' && visited.match.event === 'app.navigated' && visited.match.test?.({ app: 'jenkins', route: '/job/Java/job/x/' }, {} as never)).toBe(true);
   });

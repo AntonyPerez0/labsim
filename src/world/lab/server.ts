@@ -108,7 +108,7 @@ export function buildServer(ctx: LabCtx): void {
     b.add(cylGeo(mm(6), mm(6), mm(4), 16), mats.chrome, xf(bw / 2 - 0.035, bh / 2 + 0.02, bd / 2 + 0.002, Math.PI / 2, 0, 0), 'none');
     leds.power = ctx.leds.add({ pos: [bx + bw / 2 - 0.035, by + bh / 2 + 0.02, bz + bd / 2 + 0.0045], normal: [0, 0, 1], color: '#2f6bff', size: 0.006 });
     for (let i = 0; i < 3; i++) leds.status.push(ctx.leds.add({ pos: [bx + bw / 2 - 0.035, by + bh / 2 - 0.005 - i * 0.012, bz + bd / 2 + 0.0005], normal: [0, 0, 1], color: i === 2 ? '#ffa516' : '#2bff6a', size: 0.003 }));
-    addTape(ctx, b, 'GPU BLADE · 10.42.1.5 · VMs: ORCA / JENKINS / OLLAMA', 6, xf(-0.05, bh - 0.015, bd / 2 + 0.0005));
+    addTape(ctx, b, 'GPU BLADE · 10.42.1.5 · VMs: ORKA / JENKINS / OLLAMA', 6, xf(-0.05, bh - 0.015, bd / 2 + 0.0005));
     // rear NICs + power
     for (let i = 0; i < 2; i++) {
       b.box(0.016, 0.013, 0.004, mats.blackPlastic, -0.2 + i * 0.03, 0.05, -bd / 2 - 0.002, 0, 'none');
@@ -173,7 +173,7 @@ export function buildServer(ctx: LabCtx): void {
         run: () => {
           if (now >= confirmUntil) {
             confirmUntil = now + 3;
-            toast('warning', 'GPU blade', 'Holding the power button hard-powers the blade: Orca, Jenkins and Ollama all go down. Press E again to keep holding.');
+            toast('warning', 'GPU blade', 'Holding the power button hard-powers the blade: Orka, Jenkins and Ollama all go down. Press E again to keep holding.');
             return;
           }
           confirmUntil = -1;

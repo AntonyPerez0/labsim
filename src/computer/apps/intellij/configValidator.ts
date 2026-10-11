@@ -1,9 +1,9 @@
 /**
- * `config.properties` validator — the "uia-remote Config Assistant" plugin [illus.] (Apps §4.8, Cur M14 target,
- * Sim §3.19.1). Pure: (file text, Orca tables) → 11 rule results. Contract delta D8 (`sim.runner.validateConfig`)
+ * `config.properties` validator — the "uia-relay Config Assistant" plugin [illus.] (Apps §4.8, Cur M14 target,
+ * Sim §3.19.1). Pure: (file text, Orka tables) → 11 rule results. Contract delta D8 (`sim.runner.validateConfig`)
  * replaces it when the sim provides one.
  */
-import type { DeviceTypeCode, OrcaDb, OrcaDevice, OrcaRobot } from '@/sim';
+import type { DeviceTypeCode, OrkaDb, OrkaDevice, OrkaRobot } from '@/sim';
 
 export const CONFIG_KEYS = [
   'robotName',
@@ -57,10 +57,10 @@ export function deviceFamily(t: DeviceTypeCode | string): 'Micro' | 'Flux' | 'St
 
 const isDuet = (t: string | undefined) => !!t && t.startsWith('STAND_DUET');
 
-export function validateConfigProperties(text: string, orca: Pick<OrcaDb, 'robots' | 'devices'> | null | undefined, devicePasscode = '0000'): ConfigValidation {
+export function validateConfigProperties(text: string, orka: Pick<OrkaDb, 'robots' | 'devices'> | null | undefined, devicePasscode = '0000'): ConfigValidation {
   const kv = parseProperties(text);
-  const robots: OrcaRobot[] = Object.values(orca?.robots ?? {});
-  const devices: Record<number, OrcaDevice> = (orca?.devices ?? {}) as Record<number, OrcaDevice>;
+  const robots: OrkaRobot[] = Object.values(orka?.robots ?? {});
+  const devices: Record<number, OrkaDevice> = (orka?.devices ?? {}) as Record<number, OrkaDevice>;
   const name = kv.robotName ?? null;
   const robot = name ? (robots.find((r) => r.name === name) ?? null) : null;
   const mfd = robot?.mfdDeviceId != null ? devices[robot.mfdDeviceId] : undefined;
@@ -69,7 +69,7 @@ export function validateConfigProperties(text: string, orca: Pick<OrcaDb, 'robot
   const primary = mfd ?? robotDev;
   const duo = isDuet(primary?.deviceType) || isDuet(robotDev?.deviceType);
   const tethered = !!mfd || duo;
-  const noRobot = `no robot named '${name ?? ''}' in Orca`;
+  const noRobot = `no robot named '${name ?? ''}' in Orka`;
 
   const rule = (key: ConfigKey, ok: boolean, message: string): ConfigRuleResult => ({ key, value: kv[key] ?? null, ok, message: ok ? null : message });
   const needRobot = (key: ConfigKey, check: () => [boolean, string]): ConfigRuleResult => {
@@ -85,7 +85,7 @@ export function validateConfigProperties(text: string, orca: Pick<OrcaDb, 'robot
       return [kv.runType === want, tethered ? `must be "tethered" for ${robot!.name} (${duo && !mfd ? 'Stand Duet' : 'MFD populated'})` : 'must be "standalone"'];
     }),
     needRobot('merchantFacingDeviceIp', () => {
-      if (!primary) return [false, `${robot!.name} has no Robot Device in Orca`];
+      if (!primary) return [false, `${robot!.name} has no Robot Device in Orka`];
       return [kv.merchantFacingDeviceIp === primary.ip, `expected ${primary.ip} (${primary.name})`];
     }),
     needRobot('customerFacingDeviceIp', () => {
@@ -98,7 +98,7 @@ export function validateConfigProperties(text: string, orca: Pick<OrcaDb, 'robot
       return [v === '' || v === (primary?.ip ?? ''), 'must be empty (or the MFD address) for a standalone rig'];
     }),
     needRobot('serial', () => {
-      if (!primary) return [false, `${robot!.name} has no Robot Device in Orca`];
+      if (!primary) return [false, `${robot!.name} has no Robot Device in Orka`];
       return [kv.serial === primary.serial, `expected ${primary.serial}`];
     }),
     needRobot('deviceType', () => {

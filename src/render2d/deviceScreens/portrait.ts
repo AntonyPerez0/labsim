@@ -246,7 +246,7 @@ export function drawPortrait(sc: ScreenCtx): void {
       drawMark(sc.ctx, m.X(34), m.Y(50), m.S(16), '#ffffff');
       m.text('Resetting device…', W / 2, 72, 3, { color: '#ffffff', align: 'center' });
       progressBar(sc, 8, 78, 52, 2.5, progressOf(sc, 6000), C.green, '#1f2a3d');
-      m.text('Laz Automation', W / 2, 128, 1.8, { color: '#7b8794', align: 'center' });
+      m.text('Lazo Automation', W / 2, 128, 1.8, { color: '#7b8794', align: 'center' });
       return;
     case 'app-orders':
     case 'app-transactions':

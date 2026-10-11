@@ -1,5 +1,5 @@
 /**
- * Parts wall above Jared's bench and the storage beside it (World §1.4, §6.3, §9.2; IMG-R
+ * Parts wall above Jaden's bench and the storage beside it (World §1.4, §6.3, §9.2; IMG-R
  * background): dark-grey louvred panel with 4 × 5 red/blue stack bins (instanced), two 64-drawer
  * organisers (128 instanced clear drawers that slide open, labelled drawers per §6.3), the Husky
  * rolling tool chest (5 drawers, spare Flux 2 / Micro 3 in drawers 2 / 3) and the grey storage
@@ -436,7 +436,7 @@ export function buildPartsWall(ctx: LabCtx): void {
         blocked: () => (signOutAt > 0 ? `${personName(HARDWARE_LEAD)} is fetching the key` : null),
         run: () => {
           signOutAt = now;
-          emit('app.action', { app: 'world', action: 'storage.signOut', data: { item: 'collis-probe-spare' } });
+          emit('app.action', { app: 'world', action: 'storage.signOut', data: { item: 'kollis-probe-spare' } });
           toast('info', 'Storage cabinet', `Sign-out requested — ${personName(HARDWARE_LEAD)} will unlock it in about 2 minutes.`);
         },
       },
@@ -475,7 +475,7 @@ export function buildPartsWall(ctx: LabCtx): void {
     now = t;
     if (signOutAt > 0 && t - signOutAt >= 120) {
       signOutAt = -1;
-      if (carry('collis-probe-spare', 'Spare Collis probe', 'collis-spare', 'cabinet.storage')) toast('success', 'Spare Collis probe signed out', 'Plug its brick into an AC strip — never a DC tap.');
+      if (carry('kollis-probe-spare', 'Spare Kollis probe', 'kollis-spare', 'cabinet.storage')) toast('success', 'Spare Kollis probe signed out', 'Plug its brick into an AC strip — never a DC tap.');
     }
     let moved = false;
     let labelsMoved = false;

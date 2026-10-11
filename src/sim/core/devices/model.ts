@@ -40,7 +40,7 @@ export function isSplit(lab: LabState, owner: TerminalDevice): boolean {
 
 export function merchantOf(lab: LabState, d: TerminalDevice): MerchantConfig | null {
   const owner = ownerOf(lab, d);
-  return owner.merchantConfigId != null ? (lab.orca.merchants[owner.merchantConfigId] ?? null) : null;
+  return owner.merchantConfigId != null ? (lab.orka.merchants[owner.merchantConfigId] ?? null) : null;
 }
 
 /** Receipt options this device renders (Sim §3.10). */
@@ -163,9 +163,9 @@ export function setScreen(lab: LabState, ctx: Ctx, d: TerminalDevice, disp: Disp
   if (from !== screen) ctx.emit('device.screenChanged', { deviceId: d.id, display: disp, from, to: screen });
   // Armed probes fire 0.8 s after the customer display reaches the payment prompt (Sim §3.6 #9).
   if (screen === 'payment-prompt') {
-    for (const pid of Object.keys(lab.collis).sort()) {
-      const c = lab.collis[pid]!;
-      if (c.armed && c.armed.deviceId === d.id) addTimer(lab, 'callus.armFire', 'phys', 800, { probe: pid });
+    for (const pid of Object.keys(lab.kollis).sort()) {
+      const c = lab.kollis[pid]!;
+      if (c.armed && c.armed.deviceId === d.id) addTimer(lab, 'kallus.armFire', 'phys', 800, { probe: pid });
     }
   }
 }

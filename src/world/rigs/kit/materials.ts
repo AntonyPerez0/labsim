@@ -140,8 +140,8 @@ export class RigMaterials {
   get cardWhite(): Material {
     return this.std('cardWhite', '#f4f4f2', 0.4, 0);
   }
-  get collisGrey(): Material {
-    return this.std('collisGrey', '#a9acaf', 0.55, 0.35);
+  get kollisGrey(): Material {
+    return this.std('kollisGrey', '#a9acaf', 0.55, 0.35);
   }
   get nucBody(): Material {
     return this.std('nucBody', '#1a1a1c', 0.45, 0.2);

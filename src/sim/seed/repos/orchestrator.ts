@@ -1,7 +1,7 @@
 /**
- * `labsim-lab/orchestrator` — Orca, the on-prem Spring Boot monolith scaffolded with JHipster
+ * `labsim-lab/orchestrator` — Orka, the on-prem Spring Boot monolith scaffolded with JHipster
  * (Ref §1, §3): `.jhipster/*.json` entity definitions, Liquibase changelogs + CSV seeds (MySQL schema
- * `orca`), the xy_touch / checkout / card REST resources, the 5-minute health-check scheduler and Tate's
+ * `orka`), the xy_touch / checkout / card REST resources, the 5-minute health-check scheduler and Nate's
  * Angular robot-list filter UI. Planned migration: Docker + GCP (draft PR #81).
  */
 import type { RepoSeed } from './types';
@@ -9,7 +9,7 @@ import type { RepoSeed } from './types';
 const entity = (name: string, table: string, fields: [string, string, string?][], rel: string[] = [], changelog = '20260309101500'): string =>
   `${JSON.stringify(
     {
-      applications: ['orca'],
+      applications: ['orka'],
       changelogDate: changelog,
       dto: 'no',
       entityTableName: table,
@@ -34,7 +34,7 @@ const entity = (name: string, table: string, fields: [string, string, string?][]
     2,
   )}\n`;
 
-export const DEVICE_TYPE_JAVA = `package com.labsim.orca.domain.enumeration;
+export const DEVICE_TYPE_JAVA = `package com.labsim.orka.domain.enumeration;
 
 /** The DeviceType enumeration. ALL CAPS — Jenkins env vars must match exactly. */
 public enum DeviceType {
@@ -85,7 +85,7 @@ const JHIPSTER: Record<string, string> = {
       ['pinBypass', 'Boolean'],
       ['cashDiscountEnabled', 'Boolean'],
       ['owner', 'String'],
-      ['ubiRoute', 'String'],
+      ['uboRoute', 'String'],
       ['appId', 'String'],
       ['appSecret', 'String'],
       ['apiKey', 'String'],
@@ -95,7 +95,7 @@ const JHIPSTER: Record<string, string> = {
   ),
   '.jhipster/Screen.json': entity('Screen', 'screen', [['name', 'String', 'required'], ['deviceType', 'DeviceType', DEVICE_TYPES], ['description', 'String'], ['optionCount', 'Integer']], [], '20260309101900'),
   '.jhipster/ScreenLocation.json': entity('ScreenLocation', 'screen_location', [['button', 'String', 'required'], ['xMm', 'Double', 'required'], ['yMm', 'Double', 'required']], ['screen:Screen:many-to-one'], '20260309102000'),
-  '.jhipster/CardProfile.json': entity('CardProfile', 'card_profile', [['name', 'String', 'required'], ['brand', 'String'], ['entry', 'CardEntry', 'SWIPE,DIP,TAP'], ['trackData', 'TextBlob'], ['gortPath', 'String'], ['country', 'String'], ['owner', 'String']], [], '20260309102100'),
+  '.jhipster/CardProfile.json': entity('CardProfile', 'card_profile', [['name', 'String', 'required'], ['brand', 'String'], ['entry', 'CardEntry', 'SWIPE,DIP,TAP'], ['trackData', 'TextBlob'], ['gorthPath', 'String'], ['country', 'String'], ['owner', 'String']], [], '20260309102100'),
   '.jhipster/ScreenCompareImage.json': entity('ScreenCompareImage', 'screen_compare_image', [['name', 'String', 'required'], ['screenName', 'String'], ['x', 'Integer'], ['y', 'Integer'], ['w', 'Integer'], ['h', 'Integer'], ['expectedText', 'String', 'required'], ['deprecated', 'Boolean']], ['robot:Robot:many-to-one'], '20260412093000'),
 };
 
@@ -103,7 +103,7 @@ const YO_RC = `{
   "generator-jhipster": {
     "applicationType": "monolith",
     "authenticationType": "jwt",
-    "baseName": "orca",
+    "baseName": "orka",
     "buildTool": "maven",
     "cacheProvider": "ehcache",
     "clientFramework": "angular",
@@ -113,18 +113,18 @@ const YO_RC = `{
     "enableHibernateCache": true,
     "entities": ["Robot", "Device", "RobotCapability", "MerchantConfig", "Screen", "ScreenLocation", "CardProfile", "ScreenCompareImage"],
     "jhipsterVersion": "8.1.0",
-    "packageName": "com.labsim.orca",
+    "packageName": "com.labsim.orka",
     "serverPort": "8080"
   }
 }
 `;
 
-const README = `# Orchestrator (Orca)
+const README = `# Orchestrator (Orka)
 
 On-prem Spring Boot monolith generated with **JHipster** (interactive questionnaire → Angular UI, Spring Boot
-REST endpoints, MySQL schema). Orca is the **Controller**; Jenkins is the **Executor**.
+REST endpoints, MySQL schema). Orka is the **Controller**; Jenkins is the **Executor**.
 
-* MySQL schema \`orca\` on \`orca.lab.local:3306\`. Entities (\`.jhipster/\`): Robot, Device, RobotCapability,
+* MySQL schema \`orka\` on \`orka.lab.local:3306\`. Entities (\`.jhipster/\`): Robot, Device, RobotCapability,
   MerchantConfig, Screen, ScreenLocation, CardProfile, ScreenCompareImage.
 * Every 5 minutes \`HealthCheckScheduler\` pings each Robot Pi's \`GET /health\`; a timeout or non-200 sets
   \`CONNECTION_FAILED\`, blocks checkouts and writes a Note with the endpoint and error. OFFLINE robots are
@@ -151,11 +151,11 @@ const POM = `<?xml version="1.0" encoding="UTF-8"?>
         <artifactId>jhipster-dependencies</artifactId>
         <version>8.1.0</version>
     </parent>
-    <groupId>com.labsim.orca</groupId>
-    <artifactId>orca</artifactId>
+    <groupId>com.labsim.orka</groupId>
+    <artifactId>orka</artifactId>
     <version>3.7.2</version>
     <packaging>jar</packaging>
-    <name>Orca (Orchestrator)</name>
+    <name>Orka (Orchestrator)</name>
     <properties>
         <java.version>17</java.version>
         <liquibase.version>4.25.1</liquibase.version>
@@ -171,7 +171,7 @@ const POM = `<?xml version="1.0" encoding="UTF-8"?>
 </project>
 `;
 
-const APP_JAVA = `package com.labsim.orca;
+const APP_JAVA = `package com.labsim.orka;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -179,15 +179,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class OrcaApp {
+public class OrkaApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(OrcaApp.class, args);
+        SpringApplication.run(OrkaApp.class, args);
     }
 }
 `;
 
-const ROBOT_STATUS = `package com.labsim.orca.domain.enumeration;
+const ROBOT_STATUS = `package com.labsim.orka.domain.enumeration;
 
 /** The RobotStatus enumeration. CONNECTION_FAILED is set by the health check only. */
 public enum RobotStatus {
@@ -195,7 +195,7 @@ public enum RobotStatus {
 }
 `;
 
-const CAPABILITY_LOOKUP = `package com.labsim.orca.domain.enumeration;
+const CAPABILITY_LOOKUP = `package com.labsim.orka.domain.enumeration;
 
 /** NON_DYNAMIC = hard-coded in the pipeline script (UI Automator suites); DYNAMIC_JSON = parsed from the test definition (SDK frameworks). */
 public enum CapabilityLookup {
@@ -203,7 +203,7 @@ public enum CapabilityLookup {
 }
 `;
 
-const MERCHANT_V1 = `package com.labsim.orca.domain;
+const MERCHANT_V1 = `package com.labsim.orka.domain;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
@@ -235,9 +235,9 @@ public class MerchantConfig implements Serializable {
     @Column(name = "cash_discount_enabled")
     private Boolean cashDiscountEnabled;
 
-    /** Ubi platform route used by Laz merchant switches. */
-    @Column(name = "ubi_route")
-    private String ubiRoute;
+    /** Ubo platform route used by Lazo merchant switches. */
+    @Column(name = "ubo_route")
+    private String uboRoute;
 
     public String getName() {
         return name;
@@ -247,15 +247,15 @@ public class MerchantConfig implements Serializable {
         return pinBypass;
     }
 
-    public String getUbiRoute() {
-        return ubiRoute;
+    public String getUboRoute() {
+        return uboRoute;
     }
 }
 `;
 
 const MERCHANT = MERCHANT_V1.replace(
   `    public String getName() {`,
-  `    /** Go SDK credentials (Tate, #77): exported by Jenkins as APP_ID / APP_SECRET / API_KEY. */
+  `    /** Go SDK credentials (Nate, #77): exported by Jenkins as APP_ID / APP_SECRET / API_KEY. */
     @Column(name = "app_id")
     private String appId;
 
@@ -280,11 +280,11 @@ const MERCHANT = MERCHANT_V1.replace(
     public String getName() {`,
 );
 
-const HEALTH = `package com.labsim.orca.service;
+const HEALTH = `package com.labsim.orka.service;
 
-import com.labsim.orca.domain.Robot;
-import com.labsim.orca.domain.enumeration.RobotStatus;
-import com.labsim.orca.repository.RobotRepository;
+import com.labsim.orka.domain.Robot;
+import com.labsim.orka.domain.enumeration.RobotStatus;
+import com.labsim.orka.repository.RobotRepository;
 import java.time.Duration;
 import java.time.Instant;
 import org.slf4j.Logger;
@@ -358,20 +358,20 @@ public class HealthCheckScheduler {
 }
 `;
 
-const XY_SERVICE = `package com.labsim.orca.service;
+const XY_SERVICE = `package com.labsim.orka.service;
 
-import com.labsim.orca.domain.Robot;
-import com.labsim.orca.domain.Screen;
-import com.labsim.orca.domain.ScreenLocation;
-import com.labsim.orca.repository.ScreenLocationRepository;
-import com.labsim.orca.repository.ScreenRepository;
-import com.labsim.orca.web.rest.errors.BadRequestAlertException;
+import com.labsim.orka.domain.Robot;
+import com.labsim.orka.domain.Screen;
+import com.labsim.orka.domain.ScreenLocation;
+import com.labsim.orka.repository.ScreenLocationRepository;
+import com.labsim.orka.repository.ScreenRepository;
+import com.labsim.orka.web.rest.errors.BadRequestAlertException;
 import org.springframework.stereotype.Service;
 
 /**
  * xy_touch: look up the Screen Location (mm from the screen's top-left (0,0)) for the robot's Device Type and
  * tell the Robot Pi to fire an ADB touch (ADB bots) or a physical solenoid tap (touch robots).
- * Orca answers 200 OK whether or not the probe actually hit the button.
+ * Orka answers 200 OK whether or not the probe actually hit the button.
  */
 @Service
 public class XyTouchService {
@@ -392,7 +392,7 @@ public class XyTouchService {
             .orElseThrow(() -> new NotFoundException("no Screen " + screenName + " for " + type));
         ScreenLocation loc = locations.findOneByScreenAndButton(screen, button)
             .orElseThrow(() -> new NotFoundException("no Screen Location for (" + type + ", " + screenName + ", \\"" + button + "\\")"));
-        // Offsets are legacy: Jared calibrated the lab to a true (0,0). Still applied if non-zero.
+        // Offsets are legacy: Jaden calibrated the lab to a true (0,0). Still applied if non-zero.
         double x = loc.getxMm() + robot.getOffsetX();
         double y = loc.getyMm() + robot.getOffsetY();
         if (robot.isPhysicalTouch()) {
@@ -405,11 +405,11 @@ public class XyTouchService {
 }
 `;
 
-const XY_RESOURCE = `package com.labsim.orca.web.rest;
+const XY_RESOURCE = `package com.labsim.orka.web.rest;
 
-import com.labsim.orca.repository.RobotRepository;
-import com.labsim.orca.service.XyTouchResult;
-import com.labsim.orca.service.XyTouchService;
+import com.labsim.orka.repository.RobotRepository;
+import com.labsim.orka.service.XyTouchResult;
+import com.labsim.orka.service.XyTouchService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -436,17 +436,17 @@ public class XyTouchResource {
 }
 `;
 
-const CHECKOUT_SERVICE = `package com.labsim.orca.service;
+const CHECKOUT_SERVICE = `package com.labsim.orka.service;
 
-import com.labsim.orca.domain.Robot;
-import com.labsim.orca.domain.enumeration.DeviceType;
-import com.labsim.orca.domain.enumeration.RobotStatus;
+import com.labsim.orka.domain.Robot;
+import com.labsim.orka.domain.enumeration.DeviceType;
+import com.labsim.orka.domain.enumeration.RobotStatus;
 import java.util.Comparator;
 import java.util.Map;
 
 /**
  * Robot checkout for Jenkins. Requirements = non-dynamic map from the pipeline script ∪ dynamic JSON from the
- * test definition. Named requests (exact Name) may take an UNAVAILABLE robot; Orca resets it to UNAVAILABLE
+ * test definition. Named requests (exact Name) may take an UNAVAILABLE robot; Orka resets it to UNAVAILABLE
  * when the named job finishes. Unnamed requests take the least-recently-used AVAILABLE match.
  */
 public class CheckoutService {
@@ -470,7 +470,7 @@ public class CheckoutService {
 
 const APP_YML = `spring:
   application:
-    name: orca
+    name: orka
   jpa:
     open-in-view: false
   liquibase:
@@ -483,20 +483,20 @@ management:
       base-path: /management
       exposure:
         include: health,info,metrics
-orca:
+orka:
   health-check:
     interval-ms: 300000
     timeout-ms: 10000
-  gort:
-    repo: git@github.com:labsim-lab/gort.git
+  gorth:
+    repo: git@github.com:labsim-lab/gorth.git
     screen-locations: config/screen-locations
 `;
 
 const APP_PROD_YML = `spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/orca?useUnicode=true&characterEncoding=utf8&useSSL=false
-    username: orca
-    password: \${ORCA_DB_PASSWORD}
+    url: jdbc:mysql://localhost:3306/orka?useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: orka
+    password: \${ORKA_DB_PASSWORD}
     hikari:
       pool-name: Hikari
       maximum-pool-size: 20
@@ -505,17 +505,17 @@ const APP_PROD_YML = `spring:
 const APP_GCP_YML = `# WIP — GCP profile (planned migration off the on-prem VM)
 spring:
   datasource:
-    url: jdbc:mysql:///orca?cloudSqlInstance=labsim-lab:us-east4:orca-sql&socketFactory=com.google.cloud.sql.mysql.SocketFactory
-    username: orca
-    password: \${ORCA_DB_PASSWORD}
+    url: jdbc:mysql:///orka?cloudSqlInstance=labsim-lab:us-east4:orka-sql&socketFactory=com.google.cloud.sql.mysql.SocketFactory
+    username: orka
+    password: \${ORKA_DB_PASSWORD}
 `;
 
-const DOCKERFILE = `# WIP: containerise Orca (planned migration to GCP)
+const DOCKERFILE = `# WIP: containerise Orka (planned migration to GCP)
 FROM eclipse-temurin:17-jre
 WORKDIR /app
-COPY target/orca-*.jar /app/orca.jar
+COPY target/orka-*.jar /app/orka.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app/orca.jar", "--spring.profiles.active=prod,gcp"]
+ENTRYPOINT ["java", "-jar", "/app/orka.jar", "--spring.profiles.active=prod,gcp"]
 `;
 
 const MASTER_XML = (extra: string[]): string => `<?xml version="1.0" encoding="utf-8"?>
@@ -572,8 +572,8 @@ const ROBOT_CHANGELOG = `<?xml version="1.0" encoding="utf-8"?>
 const CREDENTIALS_CHANGELOG = `<?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <!-- Go SDK credentials so pipelines can export them as runtime env vars (Tate) -->
-    <changeSet id="20260921120000-1" author="tate">
+    <!-- Go SDK credentials so pipelines can export them as runtime env vars (Nate) -->
+    <changeSet id="20260921120000-1" author="nate">
         <addColumn tableName="merchant_config">
             <column name="app_id" type="varchar(255)"/>
             <column name="app_secret" type="varchar(255)"/>
@@ -618,14 +618,14 @@ const ROBOTS: [string, string, string][] = [
 ];
 const ROBOT_CSV = `id;name;human_readable_name;status;environment\n${ROBOTS.map(([n, s, e], i) => `${i + 1};${n};${n.toUpperCase()};${s};${e}`).join('\n')}\n`;
 
-const MERCHANT_CSV_V1 = `id;name;merchant_id;environment;tax_rate_bp;pin_bypass;cash_discount_enabled;ubi_route
+const MERCHANT_CSV_V1 = `id;name;merchant_id;environment;tax_rate_bp;pin_bypass;cash_discount_enabled;ubo_route
 1;AUTO-US-NOPIN-01;SIMMID0000101;dev1;825;true;false;us-east
 2;AUTO-US-NOPIN-02;SIMMID0000102;dev2;825;true;true;us-east
 3;GO-SDK-US-01;SIMMID0000301;dev1;825;true;false;us-east
-4;PAYCORE-STANDALONE-01;SIMMID0000401;stg;825;false;false;us-east
-5;PAYCORE-DINING-01;SIMMID0000501;stg;825;false;false;us-east
-6;WESTERS-CA-01;SIMMID0000601;dev1;1300;false;false;ca-central
-7;WESTERS-CA-02;SIMMID0000602;qa;1300;false;false;ca-central
+4;PAYCREST-STANDALONE-01;SIMMID0000401;stg;825;false;false;us-east
+5;PAYCREST-DINING-01;SIMMID0000501;stg;825;false;false;us-east
+6;WESTERLY-CA-01;SIMMID0000601;dev1;1300;false;false;ca-central
+7;WESTERLY-CA-02;SIMMID0000602;qa;1300;false;false;ca-central
 `;
 
 const ROBOT_LIST_V1 = `import { Component, OnInit, inject } from '@angular/core';
@@ -657,7 +657,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RobotService } from '../service/robot.service';
 import { IRobot, RobotStatus } from '../robot.model';
 
-/** Robot list with Tate's status / environment / name filters (?status.in=…&environment.equals=…&name.contains=…). */
+/** Robot list with Nate's status / environment / name filters (?status.in=…&environment.equals=…&name.contains=…). */
 @Component({
   standalone: true,
   selector: 'jhi-robot',
@@ -708,19 +708,19 @@ export class RobotComponent implements OnInit {
 `;
 
 const MYSQL_YML = `# docker compose -f src/main/docker/mysql.yml up -d
-name: orca
+name: orka
 services:
   mysql:
     image: mysql:8.2.0
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
-      - MYSQL_DATABASE=orca
+      - MYSQL_DATABASE=orka
     ports:
       - 127.0.0.1:3306:3306
     command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
 `;
 
-const J = 'src/main/java/com/labsim/orca';
+const J = 'src/main/java/com/labsim/orka';
 const R = 'src/main/resources/config';
 
 function initial(): Record<string, string> {
@@ -728,7 +728,7 @@ function initial(): Record<string, string> {
     '.yo-rc.json': YO_RC,
     'README.md': README,
     'pom.xml': POM,
-    [`${J}/OrcaApp.java`]: APP_JAVA,
+    [`${J}/OrkaApp.java`]: APP_JAVA,
     [`${J}/domain/enumeration/DeviceType.java`]: DEVICE_TYPE_JAVA,
     [`${J}/domain/enumeration/RobotStatus.java`]: ROBOT_STATUS,
     [`${J}/domain/enumeration/CapabilityLookup.java`]: CAPABILITY_LOOKUP,
@@ -753,14 +753,14 @@ function initial(): Record<string, string> {
 export const ORCHESTRATOR: RepoSeed = {
   id: 'orchestrator',
   remoteUrl: 'git@github.com:labsim-lab/orchestrator.git',
-  description: 'Orca — Spring Boot / JHipster orchestrator',
+  description: 'Orka — Spring Boot / JHipster orchestrator',
   protectedMain: true,
   commits: [
-    { short: '4d81f20', message: 'Initial JHipster application (orca)', author: 'tate', at: '2026-03-09 10:15', changes: initial() },
+    { short: '4d81f20', message: 'Initial JHipster application (orka)', author: 'nate', at: '2026-03-09 10:15', changes: initial() },
     {
       short: '77e1b3f',
       message: 'JHipster entity regen: ScreenCompareImage',
-      author: 'tate',
+      author: 'nate',
       at: '2026-04-12 09:30',
       changes: {
         '.jhipster/ScreenCompareImage.json': JHIPSTER['.jhipster/ScreenCompareImage.json']!,
@@ -771,14 +771,14 @@ export const ORCHESTRATOR: RepoSeed = {
     {
       short: 'c9a0d12',
       message: 'Robot list status filter UI (#64)',
-      author: 'tate',
+      author: 'nate',
       at: '2026-07-08 15:40',
       changes: { 'src/main/webapp/app/entities/robot/list/robot.component.ts': ROBOT_LIST },
     },
     {
       short: '3b8d17a',
       message: 'MerchantConfig: add App ID / App Secret / API Key (#77)',
-      author: 'tate',
+      author: 'nate',
       at: '2026-09-21 12:00',
       changes: {
         [`${J}/domain/MerchantConfig.java`]: MERCHANT,
@@ -791,16 +791,16 @@ export const ORCHESTRATOR: RepoSeed = {
     {
       number: 64,
       title: 'Robot list status filter UI',
-      author: 'tate',
+      author: 'nate',
       body: 'Filter the robot list by status, environment and name (JHipster criteria params). Finally a one-click "show me everything Connection Failed".',
-      sourceBranch: 'tate/robot-status-filter',
+      sourceBranch: 'nate/robot-status-filter',
       state: 'merged',
       createdAt: '2026-07-07 11:02',
       mergedAt: '2026-07-08 15:40',
       branchCommits: [],
       mergeShort: 'c9a0d12',
-      reviewers: ['jared'],
-      approvals: ['jared'],
+      reviewers: ['jaden'],
+      approvals: ['jaden'],
       comments: [],
       verdict: 'APPROVED',
       checks: 'success',
@@ -808,16 +808,16 @@ export const ORCHESTRATOR: RepoSeed = {
     {
       number: 77,
       title: 'MerchantConfig: add App ID / App Secret / API Key',
-      author: 'tate',
+      author: 'nate',
       body: 'Go SDK pipelines need merchant credentials as runtime env vars. Adds three columns (Edit dialog only — the list table is already too wide) and exports them from the checkout response.',
-      sourceBranch: 'tate/merchant-credentials',
+      sourceBranch: 'nate/merchant-credentials',
       state: 'merged',
       createdAt: '2026-09-19 10:30',
       mergedAt: '2026-09-21 12:00',
       branchCommits: [],
       mergeShort: '3b8d17a',
-      reviewers: ['david'],
-      approvals: ['david'],
+      reviewers: ['devin'],
+      approvals: ['devin'],
       comments: [],
       verdict: 'APPROVED',
       checks: 'success',
@@ -825,9 +825,9 @@ export const ORCHESTRATOR: RepoSeed = {
     {
       number: 81,
       title: 'WIP: Dockerfile + GCP Cloud SQL profile (planned migration)',
-      author: 'tate',
-      body: 'Draft. First step of moving Orca off the on-prem VM: container image + a `gcp` Spring profile pointing at Cloud SQL. Not for merge yet.',
-      sourceBranch: 'tate/docker-gcp',
+      author: 'nate',
+      body: 'Draft. First step of moving Orka off the on-prem VM: container image + a `gcp` Spring profile pointing at Cloud SQL. Not for merge yet.',
+      sourceBranch: 'nate/docker-gcp',
       state: 'open',
       createdAt: '2026-10-01 17:05',
       draft: true,
@@ -835,7 +835,7 @@ export const ORCHESTRATOR: RepoSeed = {
         {
           short: 'e2c7b19',
           message: 'WIP: Dockerfile + gcp profile',
-          author: 'tate',
+          author: 'nate',
           at: '2026-10-01 17:03',
           changes: { Dockerfile: DOCKERFILE, [`${R}/application-gcp.yml`]: APP_GCP_YML },
         },

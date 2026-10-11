@@ -1,6 +1,6 @@
 /**
  * Shared authoring helpers for the Arcade incident catalogue (GP §3.5): binding accessors, the
- * Diagnosis Call builder, symptom/wrong-move shorthands, Jared's narrated by-the-book fixes and the
+ * Diagnosis Call builder, symptom/wrong-move shorthands, Jaden's narrated by-the-book fixes and the
  * event matchers incident-local wrong moves use. Pure data helpers — no React, no Math.random.
  */
 import { personText } from '@/content';
@@ -26,7 +26,7 @@ import type {
 } from '../../types';
 import { c, on, p } from '../../types';
 
-/** Resolve `{{jared}}`-style people tokens from `src/content/team.ts` (names are never hard-coded). */
+/** Resolve `{{jaden}}`-style people tokens from `src/content/team.ts` (names are never hard-coded). */
 export const P = (text: string): string => personText(text);
 
 /* ───────────────────────────── binding accessors ───────────────────────────── */
@@ -49,17 +49,17 @@ export const piIp = (b: IncidentBinding): string => v(b, 'piIp');
 export const healthUrl = (b: IncidentBinding): string => `http://${piIp(b)}:8000/health`;
 /** Robot Device runtime id (`dev-wall-e-flux3`). */
 export const dev = (b: IncidentBinding): string => v(b, 'dev');
-/** Orca device-row name (`wall-e-flux3`). */
+/** Orka device-row name (`wall-e-flux3`). */
 export const deviceRow = (b: IncidentBinding): string => v(b, 'device');
 /** Device IP (`10.42.30.11`). */
 export const deviceIp = (b: IncidentBinding): string => v(b, 'deviceIp');
 /** Device Type enum value (`FLUX_3`). */
 export const deviceType = (b: IncidentBinding): string => v(b, 'deviceType');
-/** Callus box host id (`minix-01`). */
+/** Kallus box host id (`minix-01`). */
 export const box = (b: IncidentBinding): string => v(b, 'box');
-/** Collis probe id (`collis-wall-e`). */
-export const probe = (b: IncidentBinding): string => v(b, 'probe') || `collis-${rig(b)}`;
-/** Camera Stream URL Orca stores for the rig. */
+/** Kollis probe id (`kollis-wall-e`). */
+export const probe = (b: IncidentBinding): string => v(b, 'probe') || `kollis-${rig(b)}`;
+/** Camera Stream URL Orka stores for the rig. */
 export const cameraUrl = (b: IncidentBinding): string => v(b, 'cameraUrl') || `http://${piIp(b)}:8081/stream.mjpg`;
 /** True when the rig's camera is served by its own Pi (not the shared Rack B camera host). */
 export const ownCamera = (b: IncidentBinding): boolean => cameraUrl(b).includes(`//${piIp(b)}:`);
@@ -70,7 +70,7 @@ export const hrnList = (rigs: readonly string[]): string => rigs.map((r) => r.to
 
 /**
  * Status a rig returns to after a Connection Failed recovery (Sim §3.2.1 restore rule, SR01): the
- * PayCore rig goes back to Unavailable, every other modelled rig to Available.
+ * PayCrest rig goes back to Unavailable, every other modelled rig to Available.
  */
 export function restoredStatus(rigName: string): RobotStatus {
   return rigName === 'rosie' ? 'UNAVAILABLE' : 'AVAILABLE';
@@ -89,7 +89,7 @@ export function rackFuse(b: IncidentBinding): string {
 
 /** Touch rigs with their own Pi (GP §3.1 `touch` role). */
 export const TOUCH_RIGS = ['wall-e', 'eve', 'bumblebee', 'r2-d2', 'johnny-5', 'baymax', 'seti', 'rosie'] as const;
-/** Rigs whose Collis probe is driven by MINIX-01 / MINIX-02 (Sim roster). */
+/** Rigs whose Kollis probe is driven by MINIX-01 / MINIX-02 (Sim roster). */
 export const MINIX01_RIGS = ['wall-e', 'eve', 'bumblebee', 'r2-d2'] as const;
 export const MINIX02_RIGS = ['johnny-5', 'baymax', 'seti', 'rosie', 'megatron', 'optimus'] as const;
 /** Rigs powered by each rack 5 V fuse (Sim power layout). */
@@ -155,9 +155,9 @@ const byPlayer = (x: unknown): boolean => {
   return a === undefined || a === 'player';
 };
 
-/** The player saved an Orca entity (optionally: touching one of `fields`, matching `test`). */
-export function orcaSave(entity: 'robot' | 'device' | 'capability' | 'merchant' | 'screen' | 'screenLocation' | 'cardProfile' | 'screenCompareImage', opts: { fields?: readonly string[]; action?: 'create' | 'update' | 'delete'; test?: (pl: Pl, s: RootState) => boolean } = {}): AnyEventMatcher {
-  return on('orca.entitySaved', { entity }, (pl, s) => {
+/** The player saved an Orka entity (optionally: touching one of `fields`, matching `test`). */
+export function orkaSave(entity: 'robot' | 'device' | 'capability' | 'merchant' | 'screen' | 'screenLocation' | 'cardProfile' | 'screenCompareImage', opts: { fields?: readonly string[]; action?: 'create' | 'update' | 'delete'; test?: (pl: Pl, s: RootState) => boolean } = {}): AnyEventMatcher {
+  return on('orka.entitySaved', { entity }, (pl, s) => {
     if (!byPlayer(pl)) return false;
     if (opts.action && pl.action !== opts.action) return false;
     if (opts.fields && !opts.fields.some((f) => pl.fields.includes(f))) return false;
@@ -167,7 +167,7 @@ export function orcaSave(entity: 'robot' | 'device' | 'capability' | 'merchant' 
 
 /** The player saved a Robot row of `robotName` touching one of `fields`. */
 export function robotEdit(robotName: string, fields: readonly string[]): AnyEventMatcher {
-  return orcaSave('robot', { fields, test: (_pl, s) => Object.values(s.lab.orca.robots).some((r) => r.name === robotName && r.id === (_pl.id as number)) });
+  return orkaSave('robot', { fields, test: (_pl, s) => Object.values(s.lab.orka.robots).some((r) => r.name === robotName && r.id === (_pl.id as number)) });
 }
 
 /** The player changed a robot's status to `to`. */
@@ -202,7 +202,7 @@ export function piPowerOff(host: string): AnyEventMatcher {
 
 /* ───────────────────────────── conditions ───────────────────────────── */
 
-/** `orca.robot(R).status == S` for every rig. */
+/** `orka.robot(R).status == S` for every rig. */
 export const allStatus = (rigs: readonly string[], status: (r: string) => RobotStatus): Condition => c.forAll(rigs, (r) => c.status(r, status(r)));
 
 /** Recovery observed at the next health check: robot status restored and the last ping 200. */
@@ -213,17 +213,17 @@ export function recoveredAtNextCheck(rigs: readonly string[]): Condition {
   );
 }
 
-/* ───────────────────────────── Jared's by-the-book fix ───────────────────────────── */
+/* ───────────────────────────── Jaden's by-the-book fix ───────────────────────────── */
 
 /**
- * Narrated escalation fix (GP §2.3.7): Jared walks to the target, narrates what was checked and does
- * the fix animation. The runtime then clears the incident's fault instances (`faults.clear(id,'jared')`,
+ * Narrated escalation fix (GP §2.3.7): Jaden walks to the target, narrates what was checked and does
+ * the fix animation. The runtime then clears the incident's fault instances (`faults.clear(id,'jaden')`,
  * whose reverts restore causes the way a real fix would) and auto-resolves on the success condition.
  */
-export function jaredFix(target: string, ...lines: string[]): readonly ScriptAction[] {
-  const out: ScriptAction[] = [{ do: 'npc', npc: 'jared', action: 'walk-to', target }];
-  for (const line of lines) out.push({ do: 'bark', speaker: 'jared', text: P(line) });
-  out.push({ do: 'npc', npc: 'jared', action: 'fix', target });
+export function jadenFix(target: string, ...lines: string[]): readonly ScriptAction[] {
+  const out: ScriptAction[] = [{ do: 'npc', npc: 'jaden', action: 'walk-to', target }];
+  for (const line of lines) out.push({ do: 'bark', speaker: 'jaden', text: P(line) });
+  out.push({ do: 'npc', npc: 'jaden', action: 'fix', target });
   return out;
 }
 
@@ -274,7 +274,7 @@ export function boundRigSwitch(incidentId: string, which: 'main' | 'motor', isOn
 
 /**
  * Every button of `(deviceType, screen)` within ±`tolMm` of the firmware truth (Sim §2.10.2, the
- * values Jared's coordinate-PR review checks) — GP INC20/INC21/INC22 `|loc − truth| ≤ 0.5`.
+ * values Jaden's coordinate-PR review checks) — GP INC20/INC21/INC22 `|loc − truth| ≤ 0.5`.
  */
 export function locationsMatch(deviceTypeCode: string, screen: string, tolMm = 0.5, only?: readonly string[]): Condition {
   const truth = truthFor(deviceTypeCode, screen) ?? {};
@@ -296,10 +296,10 @@ export function truthMm(deviceTypeCode: string, screen: string, button: string):
   return truthFor(deviceTypeCode, screen)?.[button] ?? null;
 }
 
-/** The player's uia-remote `config.properties` was edited (local clone); pair with a `when` condition on the new value. */
-export const configEdited: AnyEventMatcher = on('git.fileEdited', { repo: 'uia-remote', path: 'config.properties' });
-/** The player pushed uia-remote (pair with a code-fact `when`). */
-export const uiaPushed: AnyEventMatcher = on('git.pushed', { repo: 'uia-remote' });
+/** The player's uia-relay `config.properties` was edited (local clone); pair with a `when` condition on the new value. */
+export const configEdited: AnyEventMatcher = on('git.fileEdited', { repo: 'uia-relay', path: 'config.properties' });
+/** The player pushed uia-relay (pair with a code-fact `when`). */
+export const uiaPushed: AnyEventMatcher = on('git.pushed', { repo: 'uia-relay' });
 
 /**
  * LabChat reply option. `response` = the NPC's answer posted after a correct reply (10–20 s, GP SR18);

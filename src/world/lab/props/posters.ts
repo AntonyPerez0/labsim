@@ -114,7 +114,7 @@ export function drawPosterPool(g: G, w: number, h: number): void {
   g.font = `600 ${w * 0.036}px ${FONT.UI_SANS}`;
   g.fillStyle = '#c9d2e3';
   g.textAlign = 'center';
-  g.fillText('Orca tracks them all. Gort is a repo, not a rig.', w / 2, h * 0.92);
+  g.fillText('Orka tracks them all. Gorth is a repo, not a rig.', w / 2, h * 0.92);
 }
 
 export function drawPoster5444(g: G, w: number, h: number): void {
@@ -158,7 +158,7 @@ export function drawPosterPower(g: G, w: number, h: number): void {
   box(g, w * 0.07, h * 0.72, w * 0.86, h * 0.2, '#ffffff', '#d0211c', 8, 8);
   g.save();
   g.translate(w * 0.07, h * 0.72);
-  fitText(g, 'LABSIM DEVICES (18V) & COLLIS PROBES:\nAC STRIPS ONLY', w * 0.86, h * 0.2, { color: '#d0211c', font: FONT.UI_SANS, weight: 900, marginX: 0.06, marginY: 0.16 });
+  fitText(g, 'LABSIM DEVICES (18V) & KOLLIS PROBES:\nAC STRIPS ONLY', w * 0.86, h * 0.2, { color: '#d0211c', font: FONT.UI_SANS, weight: 900, marginX: 0.06, marginY: 0.16 });
   g.restore();
 }
 
@@ -206,12 +206,12 @@ export function drawPosterNetwork(g: G, w: number, h: number): void {
   text(g, 'ILLUSTRATIVE', w * 0.825, h * 0.075, h * 0.035, '#1f2328', 800);
   const rows: [string, string][] = [
     ['GPU blade', '10.42.1.5'],
-    ['Orca', 'orca.lab.local → 10.42.1.10:8080'],
-    ['  MySQL', 'orca :3306'],
+    ['Orka', 'orka.lab.local → 10.42.1.10:8080'],
+    ['  MySQL', 'orka :3306'],
     ['Jenkins', 'jenkins.lab.local → 10.42.1.11:8080'],
     ['Ollama', '10.42.1.12:11434'],
     ['Robot Pis', '10.42.10.x :8000 / :8081'],
-    ['Callus boxes', '10.42.20.x :9000'],
+    ['Kallus boxes', '10.42.20.x :9000'],
     ['LabSim devices', '10.42.30.x ADB :5444'],
     ['You', '10.42.50.17'],
     ['Coworker desks', '10.42.60.x :5555'],
@@ -285,17 +285,17 @@ export function drawWhiteboard(g: G, w: number, h: number): void {
   const bw = w * 0.17;
   const bh = h * 0.1;
   const jen = node(w * 0.04, h * 0.08, bw, bh, 'Jenkins (Executor)');
-  const run = node(w * 0.42, h * 0.08, bw * 1.25, bh, 'Test runner\n(uia-remote / Pigeon)');
-  const orca = node(w * 0.04, h * 0.42, bw, bh, 'Orca (Controller)');
+  const run = node(w * 0.42, h * 0.08, bw * 1.25, bh, 'Test runner\n(uia-relay / Parrot)');
+  const orka = node(w * 0.04, h * 0.42, bw, bh, 'Orka (Controller)');
   const pi = node(w * 0.42, h * 0.42, bw * 1.25, bh * 1.1, 'Raspberry Pi\nRobot Controller (Linux)');
   const dev = node(w * 0.79, h * 0.42, bw, bh * 1.1, 'LabSim device\n(MFD/CFD)');
   arrow(jen.x + jen.w, jen.cy, run.x, run.cy, 'triggers pipeline + env vars');
-  arrow(jen.cx, jen.y + jen.h, orca.cx, orca.y, '');
+  arrow(jen.cx, jen.y + jen.h, orka.cx, orka.y, '');
   g.font = `600 ${h * 0.026}px ${M}`;
   g.fillStyle = '#1d3fa8';
   g.textAlign = 'left';
-  g.fillText('checkout robot', jen.cx + 10, (jen.y + jen.h + orca.y) / 2);
-  arrow(run.x + 20, run.y + run.h, orca.x + orca.w, orca.y + 10, 'REST: xy_touch, swipe/dip/tap');
+  g.fillText('checkout robot', jen.cx + 10, (jen.y + jen.h + orka.y) / 2);
+  arrow(run.x + 20, run.y + run.h, orka.x + orka.w, orka.y + 10, 'REST: xy_touch, swipe/dip/tap');
   // MySQL cylinder
   const mx = w * 0.06;
   const my = h * 0.66;
@@ -310,10 +310,10 @@ export function drawWhiteboard(g: G, w: number, h: number): void {
   g.stroke();
   text(g, 'MySQL', mx + bw * 0.4, my + h * 0.055, h * 0.032, '#1d3fa8', 700, 'center', M);
   g.beginPath();
-  g.moveTo(orca.cx - bw * 0.1, orca.y + orca.h);
+  g.moveTo(orka.cx - bw * 0.1, orka.y + orka.h);
   g.lineTo(mx + bw * 0.4, my - h * 0.02);
   g.stroke();
-  arrow(orca.x + orca.w, orca.cy, pi.x, pi.cy, '5-min health ping', '#d0211c', '#d0211c');
+  arrow(orka.x + orka.w, orka.cy, pi.x, pi.cy, '5-min health ping', '#d0211c', '#d0211c');
   arrow(pi.x + pi.w, pi.cy, dev.x, dev.cy, 'ADB :5444');
   // Pi outputs
   const outs = ['camera stream', 'steppers / solenoid / dip / tap', 'Wine card programming'];
@@ -322,9 +322,9 @@ export function drawWhiteboard(g: G, w: number, h: number): void {
     arrow(pi.x + 20, pi.y + pi.h, pi.x + 40 + i * 30, y - h * 0.015);
     text(g, o, pi.x + 50 + i * 30, y, h * 0.03, '#1d3fa8', 700, 'left', M);
   });
-  // Callus chain
-  const cal = node(w * 0.36, h * 0.82, bw * 1.15, bh, 'Windows/Minix box:\nCallus');
-  const col = node(w * 0.63, h * 0.82, bw * 0.8, bh, 'Collis probe');
+  // Kallus chain
+  const cal = node(w * 0.36, h * 0.82, bw * 1.15, bh, 'Windows/Minix box:\nKallus');
+  const col = node(w * 0.63, h * 0.82, bw * 0.8, bh, 'Kollis probe');
   arrow(cal.x + cal.w, cal.cy, col.x, col.cy, 'ribbon');
   arrow(col.x + col.w, col.cy, w * 0.9, dev.y + dev.h + h * 0.02, 'card reader');
   // green note
@@ -351,14 +351,14 @@ export function drawRoadmapHeaders(g: G, w: number, h: number): void {
 }
 
 const ROADMAP_CARDS = [
-  'GPU blade (Orca, Jenkins, Ollama VMs)',
+  'GPU blade (Orka, Jenkins, Ollama VMs)',
   'Legacy tower',
   'Ollama vision triage',
   'Flux 4 / Pocket profile',
   'Micro 4 rigs',
   'Stand Duet 3 rigs',
   'NUC motion control',
-  'uia-remote tethered',
+  'uia-relay tethered',
 ];
 
 export function drawIndexCard(g: G, w: number, h: number, i: number): void {
@@ -382,9 +382,9 @@ export function drawIndexCard(g: G, w: number, h: number, i: number): void {
 
 export const HISTORY_TEXT: Record<string, [string, string]> = {
   semi: ['SEMI TEAM', 'third-party POS SDKs · USB Pay Display · Secure Network Pay Display (link MFDs and CFDs over USB or the local network)'],
-  sedi: ['SEDI (QA) TEAM', "tested Semi's apps with the Lester framework"],
-  ipx: ['IPX', 'Integrated Payment Experience. uia-remote tests standalone + tethered across Register, Orders, Authorizations, Sale, Transactions, Setup'],
-  paycore: ['PAYCORE', 'adopted uia-remote for LabSim Dining · back-to-back card matrices (Visa, Discover, AmEx) · standalone rigs kept Unavailable'],
+  sedi: ['SEDI (QA) TEAM', "tested Semi's apps with the Lister framework"],
+  ipx: ['IPX', 'Integrated Payment Experience. uia-relay tests standalone + tethered across Register, Orders, Authorizations, Sale, Transactions, Setup'],
+  paycrest: ['PAYCREST', 'adopted uia-relay for LabSim Dining · back-to-back card matrices (Visa, Discover, AmEx) · standalone rigs kept Unavailable'],
 };
 
 export function drawHistoryFrame(g: G, w: number, h: number, key: string): void {
@@ -427,7 +427,7 @@ export function drawSafetyCard(g: G, w: number, h: number): void {
   for (const l of [
     '1. Never touch a robot while a test is running.',
     '2. If you move an arm by hand, Park All before you walk away.',
-    '3. LabSim terminals and Collis probes go on the AC power strips — never the DC rails.',
+    '3. LabSim terminals and Kollis probes go on the AC power strips — never the DC rails.',
     `4. Broken rig? Tell ${LEAD()}.`,
   ]) y = wrapText(g, l, w * 0.07, y, w * 0.86, h * 0.06) + h * 0.03;
 }

@@ -67,7 +67,7 @@ export function langFor(path: string): Lang {
       return 'yaml';
     case 'md':
       return 'markdown';
-    // Pigeon's other runners (Swift, C#, Python) and misc sources: generic highlighting.
+    // Parrot's other runners (Swift, C#, Python) and misc sources: generic highlighting.
     case 'swift':
     case 'cs':
     case 'kt':

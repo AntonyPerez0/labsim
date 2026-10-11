@@ -269,8 +269,8 @@ function compareLines(it: LibraryItemDef): string[] {
     case 'stand-duet-2':
       return ['Stand Duet 2 — no printer in the base', 'MICRO_3 is the hot-swap equivalent'];
     case 'compass':
-      return ['Compass — Canadian-market terminal', 'Used on Westers test beds', 'PIN-capable (Interac)'];
+      return ['Compass — Canadian-market terminal', 'Used on Westerly test beds', 'PIN-capable (Interac)'];
     default:
-      return [it.lipCard, `Orca DeviceType ${it.deviceType}`];
+      return [it.lipCard, `Orka DeviceType ${it.deviceType}`];
   }
 }

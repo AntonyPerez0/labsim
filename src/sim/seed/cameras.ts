@@ -73,7 +73,7 @@ export const CAMERAS: readonly CameraDef[] = [
   { id: 'cam-mazinger', hostId: 'pi-mazinger', octet: 84, rigId: 'mazinger', views: [] },
   { id: 'cam-dalek', hostId: 'pi-dalek', octet: 87, rigId: 'dalek', views: [] },
   { id: 'cam-number-5', hostId: 'pi-number-5', octet: 88, rigId: 'number-5', views: [] },
-  { id: 'cam-westers', hostId: 'pi-gerty', octet: 89, rigId: null, views: [] },
+  { id: 'cam-westerly', hostId: 'pi-gerty', octet: 89, rigId: null, views: [] },
   { id: 'cam-zorg', hostId: 'pi-zorg', octet: 92, rigId: null, views: [] },
 ];
 

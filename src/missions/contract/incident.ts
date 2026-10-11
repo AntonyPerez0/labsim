@@ -25,7 +25,7 @@ import type {
 /** Rig role tags (GP §3.1 roster; world doc §0.3 remap). */
 export type RoleTag =
   | 'touch'
-  | 'collis'
+  | 'kollis'
   | 'flexgen3'
   | 'printer'
   | 'printerless'
@@ -37,7 +37,7 @@ export type RoleTag =
   | 'build'
   | 'canada'
   | 'physical-pin'
-  | 'paycore'
+  | 'paycrest'
   | 'tethered'
   | 'dev1'
   | 'stg'
@@ -55,8 +55,8 @@ export interface RigSpec {
   default: string | null;
   /** Explicit candidate list (overrides `roles`). */
   candidates?: readonly string[];
-  /** Binding granularity: one rig, a whole rack, every rig of a Callus box, a shared Pi, all rigs, or none (repo/judgement). */
-  scope: 'rig' | 'rack' | 'callus-box' | 'shared-pi' | 'all' | 'none';
+  /** Binding granularity: one rig, a whole rack, every rig of a Kallus box, a shared Pi, all rigs, or none (repo/judgement). */
+  scope: 'rig' | 'rack' | 'kallus-box' | 'shared-pi' | 'all' | 'none';
   /** Header text, e.g. "one rack (default Rack B: JOHNNY-5, BAYMAX, SETI, ROSIE)". */
   describe: string;
 }
@@ -72,12 +72,12 @@ export interface BindContext {
   busyRigs: readonly string[];
   /** Rigs whose roster tags include all `roles`. */
   rigsWithRoles(roles: readonly RoleTag[]): string[];
-  /** Fill the conventional `vars` (pi host & IP, device name & IP, rack, fuse, Callus box, camera) for a rig. */
+  /** Fill the conventional `vars` (pi host & IP, device name & IP, rack, fuse, Kallus box, camera) for a rig. */
   defaultVars(rig: string): Record<string, string | number | boolean>;
 }
 
 export type SymptomSource =
-  | 'Orca'
+  | 'Orka'
   | 'Notes'
   | 'Jenkins'
   | 'Tablet'
@@ -165,12 +165,12 @@ export interface WrongMoveDef {
   repeatable?: boolean;
 }
 
-/** By-the-book escalation to Jared (GP §2.3.7). Required when `escalatable`. */
+/** By-the-book escalation to Jaden (GP §2.3.7). Required when `escalatable`. */
 export interface EscalationDef {
   /** Accepted endpoint URLs (the exact Notes line URLs, e.g. `http://10.42.10.11:8000/health`). */
   endpoints: (b: IncidentBinding) => readonly string[];
-  /** What Jared does (60–90 real s, narrated); the ticket auto-resolves when `success` becomes true. */
-  jaredFix: (b: IncidentBinding) => readonly ScriptAction[];
+  /** What Jaden does (60–90 real s, narrated); the ticket auto-resolves when `success` becomes true. */
+  jadenFix: (b: IncidentBinding) => readonly ScriptAction[];
   /** Bounce text when the cause is right but the endpoint wrong. */
   endpointHint?: Templated;
 }
@@ -226,21 +226,21 @@ export interface IncidentVariant {
  *   id: 'INC04', name: 'Connection Failed: Ethernet unplugged',
  *   difficulty: 1, base: 200, parS: 150, severity: 'P1', escalatable: true, unlockedBy: 'M06',
  *   rigs: { roles: ['touch'], default: 'bumblebee', scope: 'rig', describe: 'any rig with its own Pi (default BUMBLEBEE)' },
- *   tags: ['orca.status.connfailed', 'hw.pi', 'orca.notes'],
+ *   tags: ['orka.status.connfailed', 'hw.pi', 'orka.notes'],
  *   ticket: { title: (b) => `${b.hrn} Connection Failed`, reporter: 'jenkins-bot',
  *             misleading: { title: (b) => `${b.hrn}'s Pi crashed again` } },
  *   setup: () => ({ scenario: [{ faultId: 'eth.unplugged', params: { host: '$PI' } }] }), reveal: 'healthCheck',
  *   symptoms: [{ where: 'Notes', text: (b) => `GET http://${b.vars.piIp}:8000/health → connect timed out after 10000 ms` }],
- *   diagnosisPath: ['Tablet green but Orca red ⇒ Pi alive, network not', 'Inspect the jack', 'Call or escalate'],
- *   hints: ['Compare the tablet with Orca.', 'Look at the Pi\'s Ethernet jack LEDs.', 'Re-seat the cable at the jack.'],
+ *   diagnosisPath: ['Tablet green but Orka red ⇒ Pi alive, network not', 'Inspect the jack', 'Call or escalate'],
+ *   hints: ['Compare the tablet with Orka.', 'Look at the Pi\'s Ethernet jack LEDs.', 'Re-seat the cable at the jack.'],
  *   fix: { byTheBook: 'Escalate with the health endpoint, cause A.', handsOn: 'Re-seat the cable; wait for the next health check.' },
- *   escalation: { endpoints: (b) => [`http://${b.vars.piIp}:8000/health`], jaredFix: (b) => [{ do: 'npc', npc: 'jared', action: 'fix', target: `rig.${b.rig}.pi` }] },
+ *   escalation: { endpoints: (b) => [`http://${b.vars.piIp}:8000/health`], jadenFix: (b) => [{ do: 'npc', npc: 'jaden', action: 'fix', target: `rig.${b.rig}.pi` }] },
  *   success: (b) => c.all(c.eq(p.pi(String(b.vars.pi)).eth, 'LINKED'), c.status(b.rig!, 'AVAILABLE'), c.nextHealthCheck()),
  *   diagnosisCall: { options: [
  *     { id: 'A', text: 'Network cable disconnected', correct: true },
  *     { id: 'B', text: 'Pi hung', wrongCallHint: 'A hung Pi freezes its ACT LED and greys the tablet. This tablet is green.' },
  *     { id: 'C', text: 'Rack A fuse blown', wrongCallHint: 'A blown fuse darkens every Pi on the rack. Only one rig is down.' },
- *     { id: 'D', text: 'Orca health thread stuck', wrongCallHint: 'Other rigs were checked at the same time and passed.' },
+ *     { id: 'D', text: 'Orka health thread stuck', wrongCallHint: 'Other rigs were checked at the same time and passed.' },
  *   ] },
  *   wrongButTempting: [{ id: 'cycle', text: 'Power-cycle the Pi', gw: 'GW17' }],
  *   teaches: 'Ref §3 — the health check is a REST ping over the network.',
@@ -286,7 +286,7 @@ export interface IncidentDef {
   setup: (b: IncidentBinding) => SetupSpec;
   /**
    * When the ticket opens after injection (sim doc §4.1.9/§4.5): `healthCheck` = the next
-   * `orca.healthCheckRan` that fails the rig; `pipeline` = the next non-SUCCESS `jenkins.buildFinished`
+   * `orka.healthCheckRan` that fails the rig; `pipeline` = the next non-SUCCESS `jenkins.buildFinished`
    * on the rig (Jenkins Bot reporter); `immediate`; `none` = director-timed (INC05).
    */
   reveal: 'healthCheck' | 'pipeline' | 'immediate' | 'none';
@@ -308,7 +308,7 @@ export interface IncidentDef {
   counters?: (b: IncidentBinding) => Readonly<Record<string, AnyEventMatcher>>;
   /** Process bonuses this incident can earn (PB ids); PB08 applies to every escalatable hardware incident. */
   processBonuses?: readonly string[];
-  /** LabChat messages / NPC choreography when the ticket spawns (Jared's "Firmware drop today…"). */
+  /** LabChat messages / NPC choreography when the ticket spawns (Jaden's "Firmware drop today…"). */
   onSpawn?: (b: IncidentBinding) => readonly ScriptAction[];
   /** "Verifying… waiting for {time} health check" (default per trigger kind). */
   verifyLabel?: Templated;
@@ -335,7 +335,7 @@ export interface GwDetector {
  * @example
  * export const GW17: GlobalWrongActionDef = {
  *   id: 'GW17', name: 'Extra power cycle', action: 'Redundant power-cycle (target already booting or healthy)',
- *   penalty: 50, strike: false, tags: ['orca.healthcheck'], consequence: 'Recovery slips to the next health check',
+ *   penalty: 50, strike: false, tags: ['orka.healthcheck'], consequence: 'Recovery slips to the next health check',
  *   detect: [{ match: on('host.powerChanged', { to: 'off' }), when: (s, ev) => wasAlreadyBootingOrHealthy(s, ev) }],
  *   teach: { whatHappened: 'Extra power cycle.', why: 'Recovery shows at the next 5-minute health check; cycling again delays it. (Ref §3)',
  *            doInstead: 'Verify with curl and wait for the ping.', practiceDrillId: 'DR01' },

@@ -1,6 +1,6 @@
 /**
  * Developer tools on the workstation (Apps §5.4): `mvn test` / `./gradlew connectedAndroidTest`
- * (illustrative wrappers around a local uia-remote run, Sim §1.12 — same engine as IntelliJ, so RESERVED
+ * (illustrative wrappers around a local uia-relay run, Sim §1.12 — same engine as IntelliJ, so RESERVED
  * and Jenkins-collision rules apply), `tesseract <image> stdout` (Sim §3.12.2), the `ollama` CLI
  * (Sim §3.21.2) and a small `jq`.
  */
@@ -9,7 +9,7 @@ import { core } from '../devops/coreRef';
 import { runLocal, stopLocal } from '../devops/local';
 import { ask, OLLAMA_IP, OLLAMA_PORT, ollamaUp } from '../devops/ollama';
 import { gameDate, pad2 } from '../devops/util';
-import { UIA_PATHS } from '../seed/repos/uiaRemote';
+import { UIA_PATHS } from '../seed/repos/uiaRelay';
 import type { CmdResult, Line, Sh } from './session';
 import { E, L, fail, ok, registerJob, resolvePath } from './session';
 import { cwdAbs, cwdRepo } from './ws';
@@ -20,11 +20,11 @@ const MVN_HEAD = (): Line[] =>
   [
     '[INFO] Scanning for projects...',
     '[INFO] ',
-    '[INFO] ------------------< com.labsim.automation:uia-remote >------------------',
-    '[INFO] Building uia-remote 4.2.0',
+    '[INFO] ------------------< com.labsim.automation:uia-relay >------------------',
+    '[INFO] Building uia-relay 4.2.0',
     '[INFO] --------------------------------[ pom ]---------------------------------',
     '[INFO] ',
-    '[INFO] --- maven-surefire-plugin:3.2.5:test (default-test) @ uia-remote ---',
+    '[INFO] --- maven-surefire-plugin:3.2.5:test (default-test) @ uia-relay ---',
     '[INFO] ',
     '[INFO] -------------------------------------------------------',
     '[INFO]  T E S T S',
@@ -62,7 +62,7 @@ function streamRun(sh: Sh, runId: string, tool: 'mvn' | 'gradle', testName: stri
           L(`[INFO] Finished at: ${isoStamp(s.lab)}`),
           L('[INFO] ------------------------------------------------------------------------'),
         );
-        if (!passed) lines.push(L(`[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test (default-test) on project uia-remote: There are test failures.`, 'err'));
+        if (!passed) lines.push(L(`[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test (default-test) on project uia-relay: There are test failures.`, 'err'));
       } else {
         lines.push(
           passed ? L('') : L(`> Task :app:connectedDebugAndroidTest FAILED`, 'err'),
@@ -99,14 +99,14 @@ export function mvn(sh: Sh, argv: string[]): CmdResult {
   if (!at || at.rel || !files?.['pom.xml']) {
     return fail(1, L('[INFO] Scanning for projects...'), L('[INFO] ------------------------------------------------------------------------'), L('[INFO] BUILD FAILURE', 'err'), L('[INFO] ------------------------------------------------------------------------'), E(`[ERROR] The goal you specified requires a project to execute but there is no POM in this directory (${cwdAbs(lab)}). Please verify you invoked Maven from the correct directory. -> [Help 1]`));
   }
-  if (at.repo !== 'uia-remote') return fail(1, ...MVN_HEAD().slice(0, 1), E(`[ERROR] ${at.repo}: the lab's Maven test goal only drives uia-remote device tests.`));
+  if (at.repo !== 'uia-relay') return fail(1, ...MVN_HEAD().slice(0, 1), E(`[ERROR] ${at.repo}: the lab's Maven test goal only drives uia-relay device tests.`));
   const goals = argv.slice(1).filter((a) => !a.startsWith('-'));
   if (!goals.length) return fail(1, L('[INFO] Scanning for projects...'), E('[ERROR] No goals have been specified for this build. You must specify a valid lifecycle phase or a goal. Available lifecycle phases are: validate, compile, test, package, install, deploy. -> [Help 1]'));
-  if (goals.includes('clean') && goals.length === 1) return ok(...MVN_HEAD().slice(0, 6), L('[INFO] --- maven-clean-plugin:3.2.0:clean (default-clean) @ uia-remote ---'), L('[INFO] BUILD SUCCESS', 'success'));
+  if (goals.includes('clean') && goals.length === 1) return ok(...MVN_HEAD().slice(0, 6), L('[INFO] --- maven-clean-plugin:3.2.0:clean (default-clean) @ uia-relay ---'), L('[INFO] BUILD SUCCESS', 'success'));
   if (!goals.includes('test')) return fail(1, ...MVN_HEAD().slice(0, 6), E(`[ERROR] Unknown lifecycle phase "${goals[0]}".`));
   const test = testClassFrom(argv, '-Dtest=');
-  if (!test) return fail(1, ...MVN_HEAD(), E('[ERROR] uia-remote device tests check out a robot each — run one class: mvn test -Dtest=<TestClass> (e.g. -Dtest=SaleTest)'));
-  const r = runLocal(lab, sh.ctx, 'uia-remote', UIA_PATHS.test(test), 'player');
+  if (!test) return fail(1, ...MVN_HEAD(), E('[ERROR] uia-relay device tests check out a robot each — run one class: mvn test -Dtest=<TestClass> (e.g. -Dtest=SaleTest)'));
+  const r = runLocal(lab, sh.ctx, 'uia-relay', UIA_PATHS.test(test), 'player');
   if (!r.ok) return fail(1, ...MVN_HEAD(), E(`[ERROR] ${r.error}`));
   const s = streamRun(sh, r.runId, 'mvn', test);
   return { ...s, lines: [...MVN_HEAD(), L(`[INFO] Running com.labsim.uia.testactions.${test}`)] };
@@ -122,12 +122,12 @@ export function gradlew(sh: Sh, argv: string[]): CmdResult {
   if (!tasks.length) return ok(L(''), L('> Task :help'), L(''), L('Welcome to Gradle 8.7.'), L(''), L('To run a build, run gradlew <task> ...'), L(''), L('BUILD SUCCESSFUL in 1s'), L('1 actionable task: 1 executed'));
   if (!tasks.some((t) => /connected(Debug)?AndroidTest|connectedCheck/.test(t))) {
     if (tasks.includes('assembleDebug') || tasks.includes('build')) return ok(L('> Task :app:preBuild UP-TO-DATE'), L('> Task :app:compileDebugJavaWithJavac UP-TO-DATE'), L('> Task :app:assembleDebug UP-TO-DATE'), L(''), L('BUILD SUCCESSFUL in 4s', 'success'), L('31 actionable tasks: 31 up-to-date'));
-    return fail(1, L(''), L('FAILURE: Build failed with an exception.', 'err'), L(''), L('* What went wrong:'), L(`Task '${tasks[0]}' not found in root project 'uia-remote'.`), L(''), L('BUILD FAILED in 1s', 'err'));
+    return fail(1, L(''), L('FAILURE: Build failed with an exception.', 'err'), L(''), L('* What went wrong:'), L(`Task '${tasks[0]}' not found in root project 'uia-relay'.`), L(''), L('BUILD FAILED in 1s', 'err'));
   }
   const arg = argv.find((a) => a.startsWith('-Pandroid.testInstrumentationRunnerArguments.class='));
   const test = arg ? (arg.split('=')[1] ?? '').replace(/^com\.labsim\.uia\.testactions\./, '').split('#')[0]! : null;
-  if (!test) return fail(1, L('> Task :app:connectedDebugAndroidTest'), E('uia-remote: pass the test class: -Pandroid.testInstrumentationRunnerArguments.class=com.labsim.uia.testactions.<TestClass>'), L('BUILD FAILED in 2s', 'err'));
-  const r = runLocal(lab, sh.ctx, 'uia-remote', UIA_PATHS.test(test), 'player');
+  if (!test) return fail(1, L('> Task :app:connectedDebugAndroidTest'), E('uia-relay: pass the test class: -Pandroid.testInstrumentationRunnerArguments.class=com.labsim.uia.testactions.<TestClass>'), L('BUILD FAILED in 2s', 'err'));
+  const r = runLocal(lab, sh.ctx, 'uia-relay', UIA_PATHS.test(test), 'player');
   if (!r.ok) return fail(1, E(r.error), L('BUILD FAILED in 1s', 'err'));
   const s = streamRun(sh, r.runId, 'gradle', test);
   return { ...s, lines: ['> Task :app:preBuild UP-TO-DATE', '> Task :app:compileDebugAndroidTestJavaWithJavac UP-TO-DATE', '> Task :app:connectedDebugAndroidTest'].map((t) => L(t)) };

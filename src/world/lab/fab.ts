@@ -264,7 +264,7 @@ export function buildFab(ctx: LabCtx): void {
   bus.on('session.started', () => {
     cardTaken = false;
   });
-  const cardLines = ['LAB SAFETY CARD', '1. Never touch a robot while a test is running.', '2. If you move an arm by hand, Park All before you walk away.', '3. Terminals & Collis probes: AC strips only — never the DC rails.'];
+  const cardLines = ['LAB SAFETY CARD', '1. Never touch a robot while a test is running.', '2. If you move an arm by hand, Park All before you walk away.', '3. Terminals & Kollis probes: AC strips only — never the DC rails.'];
   ctx.ia.register('wall.safety-card', cardProxy, () =>
     pickVerbs([
       cardTaken

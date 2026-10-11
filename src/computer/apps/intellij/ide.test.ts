@@ -4,7 +4,7 @@ import { deleteLines, duplicate, indentLines, moveLines, moveStatement, reformat
 import { implementScreenMethods, inspectFile, inspectJava, inspectJsonStrict, screenClassInfo } from './inspections';
 import { highlight, javaDeclaredFields, langFor, stripJavaNoise, tokenAt } from './lang';
 import { buildTree, diffLines, gutterRun, runConfigsFor } from './projectModel';
-import { GORT_FILES, ORCA_FILES, PIGEON_FILES, UIA_FILES } from './sandbox/seedRepos';
+import { GORTH_FILES, ORKA_FILES, PARROT_FILES, UIA_FILES } from './sandbox/seedRepos';
 import { isIgnored, isValidBranchName } from './vcs';
 
 describe('lang', () => {
@@ -90,7 +90,7 @@ describe('editorOps', () => {
 
 describe('inspections', () => {
   it('reports zero problems on every factory Java file', () => {
-    for (const [p, t] of Object.entries({ ...UIA_FILES, ...ORCA_FILES })) {
+    for (const [p, t] of Object.entries({ ...UIA_FILES, ...ORKA_FILES })) {
       if (!p.endsWith('.java')) continue;
       const probs = inspectJava(t);
       expect(probs, p).toEqual([]);
@@ -103,13 +103,13 @@ describe('inspections', () => {
     expect(p[0]).toMatchObject({ line: 3, message: "';' expected" });
     expect(inspectJava('class A {\n    void b() {\n    }\n')[0].message).toBe("'}' expected");
   });
-  it('strict JSON reports a missing comma with IntelliJ wording; pigeon is never inspected', () => {
-    const broken = PIGEON_FILES['tests/sale/swipe_sale_print.json'];
+  it('strict JSON reports a missing comma with IntelliJ wording; parrot is never inspected', () => {
+    const broken = PARROT_FILES['tests/sale/swipe_sale_print.json'];
     const p = inspectJsonStrict(broken);
     expect(p[0].message).toBe("',' or ']' expected");
-    expect(inspectFile('pigeon', 'tests/sale/swipe_sale_print.json', broken)).toEqual([]);
-    expect(inspectFile('gort', 'x.json', broken)).toHaveLength(1);
-    for (const [path, t] of Object.entries(GORT_FILES)) if (path.endsWith('.json')) expect(inspectJsonStrict(t), path).toEqual([]);
+    expect(inspectFile('parrot', 'tests/sale/swipe_sale_print.json', broken)).toEqual([]);
+    expect(inspectFile('gorth', 'x.json', broken)).toHaveLength(1);
+    for (const [path, t] of Object.entries(GORTH_FILES)) if (path.endsWith('.json')) expect(inspectJsonStrict(t), path).toEqual([]);
     expect(inspectJsonStrict('{"a": 1 "b": 2}')[0].message).toBe("',' or '}' expected");
     expect(inspectJsonStrict('{"a": }')[0].message).toBe('Value expected');
     expect(inspectJsonStrict('{a: 1}')[0].message).toBe('Property name expected');
@@ -118,7 +118,7 @@ describe('inspections', () => {
     const path = 'app/src/androidTest/java/com/labsim/uia/pageobjects/ReceiptScreen.java';
     const src = UIA_FILES[path];
     expect(screenClassInfo(path, src).missing).toEqual(['waitForScreen', 'isScreenPresent']);
-    expect(inspectFile('uia-remote', path, src).map((p) => p.message)).toContain('Screen class is missing mandatory method isScreenPresent()');
+    expect(inspectFile('uia-relay', path, src).map((p) => p.message)).toContain('Screen class is missing mandatory method isScreenPresent()');
     const fixed = implementScreenMethods(path, src)!;
     expect(fixed).toContain('device.wait(Until.hasObject(printBtn), TIMEOUT_MS);');
     expect(fixed).toContain('return device.hasObject(printBtn);');
@@ -128,7 +128,7 @@ describe('inspections', () => {
 });
 
 describe('config validator', () => {
-  const orca = {
+  const orka = {
     robots: {
       7: { id: 7, name: 'megatron', environment: 'DEV1', deviceId: 1, mfdDeviceId: 1, cfdDeviceId: 2 },
       8: { id: 8, name: 'r2-d2', environment: 'DEV2', deviceId: 3, mfdDeviceId: 3, cfdDeviceId: 3 },
@@ -141,19 +141,19 @@ describe('config validator', () => {
   } as never;
   const good = 'runType=tethered\nmerchantFacingDeviceIp=10.42.30.21\ncustomerFacingDeviceIp=10.42.30.22\nserial=SIM-S2-000021\ndeviceType=Stand\ntheme=avocado\nkernelType=CPA\nportNumber=5444\nunlockPasscode=0000\nbackendEnv=DEV1\nrobotName=megatron\n';
   it('passes 11/11 on the M14 target', () => {
-    const v = validateConfigProperties(good, orca);
+    const v = validateConfigProperties(good, orka);
     expect(v.passed).toBe(11);
     expect(v.failures).toEqual([]);
   });
   it('reports the M14 broken file', () => {
     const broken = UIA_FILES['config.properties.example'].replace('robotName=CHANGE_ME', 'robotName=megatron').replace('5444', '5555').replace('avocado', 'classic');
-    const v = validateConfigProperties(broken, orca);
+    const v = validateConfigProperties(broken, orka);
     expect(v.passed).toBe(9);
     expect(v.failures).toContain('portNumber = 5555 — must be 5444: lab devices listen on 5444; 5555 is the ADB default');
   });
   it('checks Stand Duet same-IP rule', () => {
     const duo = good.replace('robotName=megatron', 'robotName=r2-d2').replace('backendEnv=DEV1', 'backendEnv=DEV2').replace('10.42.30.21', '10.42.30.14').replace('10.42.30.22', '10.42.30.22').replace('SIM-S2-000021', 'SIM-D2-000014');
-    const v = validateConfigProperties(duo, orca);
+    const v = validateConfigProperties(duo, orka);
     expect(v.rules.find((r) => r.key === 'customerFacingDeviceIp')?.message).toBe('On a Stand Duet both IPs are the same address (10.42.30.14)');
   });
 });
@@ -173,12 +173,12 @@ describe('project model', () => {
     expect(main.path).toBe('app/src/main');
   });
   it('derives run configs and gutter icons', () => {
-    const cfgs = runConfigsFor('uia-remote', paths);
+    const cfgs = runConfigsFor('uia-relay', paths);
     expect(cfgs.map((c) => c.name)).toContain('TaxTest');
     expect(cfgs).toHaveLength(11);
     const tax = cfgs.find((c) => c.name === 'TaxTest')!;
-    expect(gutterRun('uia-remote', tax.testPath, UIA_FILES[tax.testPath], cfgs)?.line).toBeGreaterThan(1);
-    const pig = runConfigsFor('pigeon', Object.keys(PIGEON_FILES));
+    expect(gutterRun('uia-relay', tax.testPath, UIA_FILES[tax.testPath], cfgs)?.line).toBeGreaterThan(1);
+    const pig = runConfigsFor('parrot', Object.keys(PARROT_FILES));
     expect(pig.map((c) => c.name)).toContain('LSTR: swipe_sale_print.json');
     expect(pig.some((c) => c.testPath.includes('_templates'))).toBe(false);
   });
@@ -197,7 +197,7 @@ describe('project model', () => {
 });
 
 describe('real factory seed (when the sim seeds repos)', () => {
-  it('Java / gort JSON inspections are silent on every factory file; config validator matches the M14 target', async () => {
+  it('Java / gorth JSON inspections are silent on every factory file; config validator matches the M14 target', async () => {
     const { createInitialLabState } = await import('@/sim');
     const lab = createInitialLabState();
     // The repo seed tables (sim-devops) — read directly while they are not yet wired into the initial lab.
@@ -219,10 +219,10 @@ describe('real factory seed (when the sim seeds repos)', () => {
       }
     }
     expect(checked).toBeGreaterThanOrEqual(0);
-    const example = lab.repos['uia-remote']?.files['config.properties.example'];
-    if (example && Object.keys(lab.orca.robots).length) {
+    const example = lab.repos['uia-relay']?.files['config.properties.example'];
+    if (example && Object.keys(lab.orka.robots).length) {
       const target = example.replace(/robotName=.*/, 'robotName=megatron');
-      const v = validateConfigProperties(target, lab.orca);
+      const v = validateConfigProperties(target, lab.orka);
       expect(v.rules.find((r) => r.key === 'robotName')?.ok).toBe(true);
       // The factory example only needs a robot name to pass the whole M14 target (Cur M14).
       expect(v.passed).toBe(v.total);

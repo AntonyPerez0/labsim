@@ -128,7 +128,7 @@ describe('ADB / reservation etiquette is judged on the player, not the scenario'
     ]);
     missions.startShift({ configId: 'micro', incidentIds: ['INC90'] });
     mutate((s) => {
-      const r = Object.values(s.lab.orca.robots).find((x) => x.name === 'eve')!;
+      const r = Object.values(s.lab.orka.robots).find((x) => x.name === 'eve')!;
       r.status = 'RESERVED';
       r.reservedBy = 'riley';
     });
@@ -142,7 +142,7 @@ describe('ADB / reservation etiquette is judged on the player, not the scenario'
 });
 
 describe('Full Shift events', () => {
-  it('queues escalations while Jared is at lunch and judges them when the banner ends', () => {
+  it('queues escalations while Jaden is at lunch and judges them when the banner ends', () => {
     registerIncidents([testIncident('INC90', { rigs: { roles: ['touch'], default: null, scope: 'rig', describe: 'any touch rig' } })]);
     completeModules(...Array.from({ length: 18 }, (_, i) => `M${String(i + 1).padStart(2, '0')}`));
     mutate((s) => {
@@ -150,10 +150,10 @@ describe('Full Shift events', () => {
     });
     missions.startShift({ configId: 'shift-20', customSeed: 'l', seedMode: 'custom' });
     const ev = state().session.shift!.event;
-    expect(ev?.id).toBe('jared-lunch');
+    expect(ev?.id).toBe('jaden-lunch');
     advance(ev!.firesAtS + 1, 0.5);
     const sh = state().session.shift!;
-    expect(sh.jaredAwayUntilS).not.toBeNull();
+    expect(sh.jadenAwayUntilS).not.toBeNull();
     expect(state().ui.banners.some((b) => b.id === 'shift-event')).toBe(true);
     const t = state().session.tickets.find((x) => x.status !== 'resolved' && x.status !== 'handover')!;
     expect(t).toBeDefined();
@@ -161,7 +161,7 @@ describe('Full Shift events', () => {
     expect(r.outcome).toBe('queued');
     expect(state().session.shift!.queuedEscalations).toContain(t.id);
     advance(125, 0.5);
-    expect(state().session.shift!.jaredAwayUntilS).toBeNull();
+    expect(state().session.shift!.jadenAwayUntilS).toBeNull();
     expect(state().session.tickets.find((x) => x.id === t.id)!.escalation?.outcome).toBe('accepted');
   });
 });
@@ -197,7 +197,7 @@ describe('planned shifts', () => {
     const t0 = state().session.tickets[0]!;
     expect(missions.escalate(t0.id, { cause: 'A', endpoint: `http://${t0.binding.vars.piIp}:8000/health` }).outcome).toBe('accepted');
     advance(95);
-    fire('orca.healthCheckRan', { atMs: state().lab.time.nowMs, checked: 12, failedRobotIds: [], recoveredRobotIds: [] });
+    fire('orka.healthCheckRan', { atMs: state().lab.time.nowMs, checked: 12, failedRobotIds: [], recoveredRobotIds: [] });
     expect(state().session.tickets.find((t) => t.id === t0.id)!.status).toBe('resolved');
     advance(12);
     expect(state().session.tickets.map((t) => t.incidentId)).toEqual(['INC90', 'INC91']);

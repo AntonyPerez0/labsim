@@ -1,9 +1,9 @@
 /**
  * Firmware layouts — button centre (x, y) and size w × h in mm from the screen's top-left (Sim §2.10.2).
  * THIS is the truth that screens draw and that touches are hit-tested against (ARCHITECTURE rule 6).
- * Orca's Screen Locations are seeded from these tables (factory = no drift, Sim §2.10.1).
+ * Orka's Screen Locations are seeded from these tables (factory = no drift, Sim §2.10.1).
  *
- * Element kinds: `button` (tappable; has an Orca Screen Location), `label` (text only; rects given in the
+ * Element kinds: `button` (tappable; has an Orka Screen Location), `label` (text only; rects given in the
  * doc as top-left x/y/w/h are converted to centres here), `pad` (signature pad), `qr` (receipt QR block).
  * Label ids starting with `@` are live texts resolved at runtime from the order (`@regSubtotal`, …).
  * Label rects not given by the doc are [illus.] placements (marked `/* illus *\/`).
@@ -26,7 +26,7 @@ export interface LayoutDef {
   id: LayoutId;
   wMm: number;
   hMm: number;
-  /** Keyed by Orca screen name; `HOME_P1` = launcher page 1. */
+  /** Keyed by Orka screen name; `HOME_P1` = launcher page 1. */
   screens: Record<string, LayoutEl[]>;
 }
 
@@ -403,10 +403,10 @@ export function coreMm(el: { w: number; h: number }): number {
 }
 
 /**
- * Orca screens seeded per Device Type, in §2.10.1 table order (ids are assigned enum order × table order).
+ * Orka screens seeded per Device Type, in §2.10.1 table order (ids are assigned enum order × table order).
  * Generic rows exist for every lab type; CUSTOMER_CART for MICRO_2/MICRO_3; CFD_* for STAND_DUET / DUET_2.
  */
-export const GENERIC_ORCA_SCREENS = [
+export const GENERIC_ORKA_SCREENS = [
   'HOME',
   'REGISTER_HOME',
   'REVIEW_ORDER',
@@ -421,8 +421,8 @@ export const GENERIC_ORCA_SCREENS = [
   'RECEIPT_OPTIONS_5',
 ] as const;
 
-/** CFD rows on a Duet: Orca name → MICRO_GEN3 table used. */
-export const CFD_ORCA_SCREENS: Record<string, string> = {
+/** CFD rows on a Duet: Orka name → MICRO_GEN3 table used. */
+export const CFD_ORKA_SCREENS: Record<string, string> = {
   CFD_CART: 'CUSTOMER_CART',
   CFD_TENDER_CASH_DISCOUNT: 'TENDER_CASH_DISCOUNT',
   CFD_PAYMENT_PROMPT: 'PAYMENT_PROMPT',
@@ -435,8 +435,8 @@ export const CFD_ORCA_SCREENS: Record<string, string> = {
   CFD_THANK_YOU: 'CFD_THANK_YOU',
 };
 
-/** Orca screen descriptions (Screens entity, Sim §2.10.1). */
-export const ORCA_SCREEN_DESCRIPTIONS: Record<string, string> = {
+/** Orka screen descriptions (Screens entity, Sim §2.10.1). */
+export const ORKA_SCREEN_DESCRIPTIONS: Record<string, string> = {
   HOME: 'Launcher (page 0)',
   REGISTER_HOME: 'Register app: items, Clear, Review Order',
   REVIEW_ORDER: 'Review Order: Back, Pay',

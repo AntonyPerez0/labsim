@@ -11,9 +11,9 @@
 import { createRngState, hashString } from '@/core/rng';
 import type { RngState } from '@/core/rng';
 import { seedDevops } from './devops/seed';
-import { mirrorCallusFiles, seedCore } from './seed';
+import { mirrorKallusFiles, seedCore } from './seed';
 import { registerFactoryBuilder } from './seed/factory';
-import { runHealthCheck } from './core/orca/health';
+import { runHealthCheck } from './core/orka/health';
 import { detachedCtx } from './core/util';
 import type { LabState, RngStream, SimConfig } from './types';
 import { DEFAULT_SEED, EPOCH_DATE, HEALTH_CHECK_INTERVAL_MS, LAB_STATE_VERSION, RNG_STREAMS } from './types';
@@ -72,7 +72,7 @@ export function createEmptyLabState(seed: number = DEFAULT_SEED, startHour = 9):
       showTouchTargets: false,
       cfdLayoutV2Toggle: false,
     },
-    orca: {
+    orka: {
       robots: {},
       devices: {},
       capabilities: {},
@@ -134,18 +134,18 @@ export function createEmptyLabState(seed: number = DEFAULT_SEED, startHour = 9):
       spareFuses: { '5': 4, '10': 4, '15': 2, '20': 1 },
       sparks: [],
     },
-    collis: {},
-    callus: { localCardFiles: {}, log: {} },
+    kollis: {},
+    kallus: { localCardFiles: {}, log: {} },
     repos: {
-      gort: emptyRepo('gort'),
-      'uia-remote': emptyRepo('uia-remote'),
-      pigeon: emptyRepo('pigeon'),
+      gorth: emptyRepo('gorth'),
+      'uia-relay': emptyRepo('uia-relay'),
+      parrot: emptyRepo('parrot'),
       orchestrator: emptyRepo('orchestrator'),
     },
     jenkins: { up: true, url: 'http://jenkins.lab.local:8080', jobs: {}, builds: {}, queue: [], executors: 8, views: {}, nextBuildNumber: {} },
     local: { runs: {} },
-    laz: { runs: {} },
-    ubi: {
+    lazo: { runs: {} },
+    ubo: {
       routes: {
         'us-east': { region: 'US-EAST', up: true },
         'ca-central': { region: 'CA-CENTRAL', up: true },
@@ -168,7 +168,7 @@ export function createEmptyLabState(seed: number = DEFAULT_SEED, startHour = 9):
       event: 0,
       note: 0,
       build: 0,
-      laz: 0,
+      lazo: 0,
       ollama: 0,
       chat: 0,
       fault: 0,
@@ -176,8 +176,8 @@ export function createEmptyLabState(seed: number = DEFAULT_SEED, startHour = 9):
       commit: 0,
       timer: 0,
       request: 0,
-      // Next PR numbers (Sim §2.12, §4.4): gort #417–#419 used, uia-remote up to #431, orchestrator up to #81 [illus.].
-      pr: { gort: 420, 'uia-remote': 432, pigeon: 57, orchestrator: 82 },
+      // Next PR numbers (Sim §2.12, §4.4): gorth #417–#419 used, uia-relay up to #431, orchestrator up to #81 [illus.].
+      pr: { gorth: 420, 'uia-relay': 432, parrot: 57, orchestrator: 82 },
     },
   };
 }
@@ -199,7 +199,7 @@ function emptyRepo(id: LabState['repos'][keyof LabState['repos']]['id']): LabSta
 
 /**
  * The factory lab (Sim §2): empty lab + sim-devops' seed (repos, Jenkins, Ollama) + sim-core's seed
- * (the 42-rig pool, devices, hosts, power, Orca tables) + the factory health check run #1 at `nowMs`
+ * (the 42-rig pool, devices, hosts, power, Orka tables) + the factory health check run #1 at `nowMs`
  * (Sim §6.5 step 2). Used by the store at boot.
  *
  * With `preset`, the full `sim.reset` procedure of Sim §6.5 is applied (preset configuration, start
@@ -216,12 +216,12 @@ export function createInitialLabState(seed: number = DEFAULT_SEED, preset?: stri
  */
 export function createFactoryLab(seed: number = DEFAULT_SEED, startHour = 9): LabState {
   const lab = createEmptyLabState(seed, startHour);
-  // sim-core first, so the devops seed (Jenkins history consoles: robots, devices, merchants, Laz lines)
-  // reads the real Orca rows; seedCore reads gort card files with a canonical fallback (identical text).
+  // sim-core first, so the devops seed (Jenkins history consoles: robots, devices, merchants, Lazo lines)
+  // reads the real Orka rows; seedCore reads gorth card files with a canonical fallback (identical text).
   seedCore(lab);
   seedDevops(lab);
-  // Re-mirror the Windows boxes' C:\gort\cards from the now-seeded gort repo (GortCardSync's last run).
-  for (const boxId of Object.keys(lab.callus.localCardFiles)) mirrorCallusFiles(lab, boxId);
+  // Re-mirror the Windows boxes' C:\gorth\cards from the now-seeded gorth repo (GorthCardSync's last run).
+  for (const boxId of Object.keys(lab.kallus.localCardFiles)) mirrorKallusFiles(lab, boxId);
   factoryHealthCheck(lab);
   return lab;
 }
@@ -229,7 +229,7 @@ export function createFactoryLab(seed: number = DEFAULT_SEED, startHour = 9): La
 /** Sim §6.5 step 2: run #1 = the factory check at `nowMs`, before any scenario is applied (no events). */
 export function factoryHealthCheck(lab: LabState): void {
   runHealthCheck(lab, detachedCtx(lab), { forced: false });
-  lab.orca.healthCheck.nextRunMs = nextHealthBoundary(lab.time.nowMs, lab.time.healthAnchorMs);
+  lab.orka.healthCheck.nextRunMs = nextHealthBoundary(lab.time.nowMs, lab.time.healthAnchorMs);
   lab.rngStreams.core = { ...lab.rng };
 }
 
@@ -244,8 +244,8 @@ export function registerPresetBuilder(fn: PresetBuilder): void {
 registerFactoryBuilder(() => {
   const lab = createEmptyLabState(DEFAULT_SEED);
   seedCore(lab);
-  return lab.orca;
+  return lab.orka;
 });
 
-export { createDisplayState, createOrderState, createRigState, createTerminalDevice, createHost, createOrcaRobot } from './builders';
+export { createDisplayState, createOrderState, createRigState, createTerminalDevice, createHost, createOrkaRobot } from './builders';
 

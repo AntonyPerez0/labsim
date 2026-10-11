@@ -10,7 +10,7 @@ import { PROTECTED_MAIN, REPO_OWNER } from '@/sim/seed/repos';
 
 export { chain, commitChanges, diffLines, mergeBase };
 export const ORG = 'labsim-lab';
-export const REPO_IDS: RepoId[] = ['gort', 'uia-remote', 'pigeon', 'orchestrator'];
+export const REPO_IDS: RepoId[] = ['gorth', 'uia-relay', 'parrot', 'orchestrator'];
 
 export function isProtected(repo: RepoId): boolean {
   return !!PROTECTED_MAIN[repo];

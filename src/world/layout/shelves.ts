@@ -1,5 +1,5 @@
 /**
- * Callus shelf (World §2.14), tethered bench frame (§2.12), ADB shelf (§2.13) and the build table
+ * Kallus shelf (World §2.14), tethered bench frame (§2.12), ADB shelf (§2.13) and the build table
  * (§2.15) — shelf-local specs with world transforms. All three shelves are axis-aligned (rotY 0),
  * shelf-local +Z points to the aisle.
  */
@@ -7,31 +7,31 @@ import { BAYS, type BayNumber } from './racks';
 import { TOUCH_RIGS, RACK_T_ORIGIN, SHELF_ADB_ORIGIN, rackTToWorld, shelfAdbToWorld, type TouchRigId } from './rigs';
 import { round6, type SimRef, type Vec2, type Vec3 } from './types';
 
-/* ───────────────────────────── Callus shelf (§2.14) ───────────────────────────── */
+/* ───────────────────────────── Kallus shelf (§2.14) ───────────────────────────── */
 
-export const CALLUS_ORIGIN: Vec3 = [-2.0, 0, -2.1];
+export const KALLUS_ORIGIN: Vec3 = [-2.0, 0, -2.1];
 
-export function callusToWorld(local: Vec3): Vec3 {
-  return [round6(CALLUS_ORIGIN[0] + local[0]), round6(local[1]), round6(CALLUS_ORIGIN[2] + local[2])];
+export function kallusToWorld(local: Vec3): Vec3 {
+  return [round6(KALLUS_ORIGIN[0] + local[0]), round6(local[1]), round6(KALLUS_ORIGIN[2] + local[2])];
 }
 
 /** Levels L1–L4 at the same heights as the bays; top plate at 1.878. */
-export const CALLUS_LEVELS: Readonly<Record<BayNumber, number>> = {
+export const KALLUS_LEVELS: Readonly<Record<BayNumber, number>> = {
   1: BAYS.find((b) => b.bay === 1)!.floorY,
   2: BAYS.find((b) => b.bay === 2)!.floorY,
   3: BAYS.find((b) => b.bay === 3)!.floorY,
   4: BAYS.find((b) => b.bay === 4)!.floorY,
 };
 
-export const CALLUS_SHELF = {
-  id: 'shelf.callus',
-  origin: CALLUS_ORIGIN,
+export const KALLUS_SHELF = {
+  id: 'shelf.kallus',
+  origin: KALLUS_ORIGIN,
   outer: [0.6, 1.0, 1.95] as Vec3,
   topPlateY: 1.878,
   material: 'perforatedSteel',
 } as const;
 
-export interface CollisPlacement {
+export interface KollisPlacement {
   readonly id: string;
   readonly rigId: TouchRigId;
   readonly simId: string;
@@ -47,35 +47,35 @@ export interface CollisPlacement {
   readonly frontSticker: 'UL Transaction Security';
 }
 
-function collisZ(level: BayNumber): number {
+function kollisZ(level: BayNumber): number {
   // Level 3: front reserved for the Windows boxes; level 4: front holds the console monitor.
   if (level === 3) return -0.25;
   if (level === 4) return -0.2;
   return 0.2;
 }
 
-export const COLLIS_PROBES: readonly CollisPlacement[] = TOUCH_RIGS.map((r) => {
+export const KOLLIS_PROBES: readonly KollisPlacement[] = TOUCH_RIGS.map((r) => {
   const left = r.rackId === 'rack.a';
-  const local: Vec3 = [left ? -0.15 : 0.15, CALLUS_LEVELS[r.bay], collisZ(r.bay)];
+  const local: Vec3 = [left ? -0.15 : 0.15, KALLUS_LEVELS[r.bay], kollisZ(r.bay)];
   return {
-    id: `collis.${r.id}`,
+    id: `kollis.${r.id}`,
     rigId: r.id,
-    simId: r.sim.collisId!,
+    simId: r.sim.kollisId!,
     level: r.bay,
     local,
-    world: callusToWorld(local),
+    world: kallusToWorld(local),
     rotY: left ? 90 : -90,
     sizeMm: [150, 110, 45],
-    topTape: `COLLIS · ${r.hrn}`,
+    topTape: `KOLLIS · ${r.hrn}`,
     frontSticker: 'UL Transaction Security',
   };
 });
 
-/** Note on the Collis rotY: the doc lists −90/+90 but also says "rear panel faces Rack A" — the
+/** Note on the Kollis rotY: the doc lists −90/+90 but also says "rear panel faces Rack A" — the
  * rear-facing rule wins (ribbon straight into the bay), so Rack A probes are +90 (front faces east). */
-export const COLLIS_ROT_NOTE = 'rotY chosen so the rear ribbon panel faces the probe\'s own rack (doc rotY values were swapped).';
+export const KOLLIS_ROT_NOTE = 'rotY chosen so the rear ribbon panel faces the probe\'s own rack (doc rotY values were swapped).';
 
-export interface CallusBoxDef {
+export interface KallusBoxDef {
   readonly id: string;
   readonly label: string;
   readonly kind: 'minix' | 'nuc' | 'slot';
@@ -87,33 +87,33 @@ export interface CallusBoxDef {
   readonly stickyNote?: readonly string[];
 }
 
-function box(id: string, label: string, kind: CallusBoxDef['kind'], x: number, sizeMm: Vec3, simIds: string[], stickyNote?: string[]): CallusBoxDef {
-  const local: Vec3 = [x, CALLUS_LEVELS[3], 0.3];
+function box(id: string, label: string, kind: KallusBoxDef['kind'], x: number, sizeMm: Vec3, simIds: string[], stickyNote?: string[]): KallusBoxDef {
+  const local: Vec3 = [x, KALLUS_LEVELS[3], 0.3];
   return {
-    id, label, kind, local, world: callusToWorld(local), sizeMm,
+    id, label, kind, local, world: kallusToWorld(local), sizeMm,
     sim: { collection: 'hosts', ids: simIds },
     ...(stickyNote ? { stickyNote } : {}),
   };
 }
 
 /** Windows boxes on level 3 front. Minix 120 × 120 × 19; NUC 117 × 112 × 51. */
-export const CALLUS_BOXES: readonly CallusBoxDef[] = [
-  box('callus.minix-01', 'MINIX-01', 'minix', -0.18, [120, 120, 19], ['minix-01']),
-  box('callus.minix-02', 'MINIX-02', 'minix', -0.06, [120, 120, 19], ['minix-02']),
-  box('callus.nuc-03', 'NUC-03', 'nuc', 0.06, [117, 112, 51], ['nuc-03'], ['DISK 100% — corporate AGENT.', 'NO HARDWARE CONTROL', 'ON THIS BOX. –J']),
+export const KALLUS_BOXES: readonly KallusBoxDef[] = [
+  box('kallus.minix-01', 'MINIX-01', 'minix', -0.18, [120, 120, 19], ['minix-01']),
+  box('kallus.minix-02', 'MINIX-02', 'minix', -0.06, [120, 120, 19], ['minix-02']),
+  box('kallus.nuc-03', 'NUC-03', 'nuc', 0.06, [117, 112, 51], ['nuc-03'], ['DISK 100% — corporate AGENT.', 'NO HARDWARE CONTROL', 'ON THIS BOX. –J']),
   // Empty unless the sim seeds NUC-01 / MINIX-03 (tape `SPARE`).
-  box('callus.slot-4', 'SPARE', 'slot', 0.18, [120, 120, 19], ['nuc-01', 'minix-03']),
+  box('kallus.slot-4', 'SPARE', 'slot', 0.18, [120, 120, 19], ['nuc-01', 'minix-03']),
 ];
 
-export const CALLUS_FIXTURES = {
+export const KALLUS_FIXTURES = {
   /** 12 V distribution block with 4 barrel outputs, fed from F-12V via tray.ct2. */
-  dist12v: { id: 'callus.dist-12v', local: [0, 0.995, -0.45] as Vec3, world: callusToWorld([0, 0.995, -0.45]), tape: '12V · CALLUS / NUC SHELF' },
+  dist12v: { id: 'kallus.dist-12v', local: [0, 0.995, -0.45] as Vec3, world: kallusToWorld([0, 0.995, -0.45]), tape: '12V · KALLUS / NUC SHELF' },
   /** 7" HDMI LCD 175 × 110 × 15 on a kickstand tilted back 10°; console of the KVM-selected box. */
-  monitor: { id: 'callus.monitor', local: [0, CALLUS_LEVELS[4], 0.3] as Vec3, world: callusToWorld([0, CALLUS_LEVELS[4], 0.3]), sizeMm: [175, 110, 15] as Vec3, tiltDeg: 10, canvasPx: [512, 320] as Vec2, kvmOrder: ['callus.minix-01', 'callus.minix-02', 'callus.nuc-03', 'callus.slot-4'] as readonly string[] },
-  /** The free 24 V barrel lead lying on the shelf (sim `T-24V-CALLUS`, INC18 trap). */
-  spare24vLead: { id: 'callus.tap-24v', local: [0.05, CALLUS_LEVELS[2], 0.1] as Vec3, world: callusToWorld([0.05, CALLUS_LEVELS[2], 0.1]), sim: { collection: 'power.terminals', ids: ['T-24V-CALLUS'] } as SimRef },
-  /** Black USB cables from each Collis front up the posts to its Callus box (A → MINIX-01, B → MINIX-02). */
-  usb: { rackA: 'callus.minix-01', rackB: 'callus.minix-02' },
+  monitor: { id: 'kallus.monitor', local: [0, KALLUS_LEVELS[4], 0.3] as Vec3, world: kallusToWorld([0, KALLUS_LEVELS[4], 0.3]), sizeMm: [175, 110, 15] as Vec3, tiltDeg: 10, canvasPx: [512, 320] as Vec2, kvmOrder: ['kallus.minix-01', 'kallus.minix-02', 'kallus.nuc-03', 'kallus.slot-4'] as readonly string[] },
+  /** The free 24 V barrel lead lying on the shelf (sim `T-24V-KALLUS`, INC18 trap). */
+  spare24vLead: { id: 'kallus.tap-24v', local: [0.05, KALLUS_LEVELS[2], 0.1] as Vec3, world: kallusToWorld([0.05, KALLUS_LEVELS[2], 0.1]), sim: { collection: 'power.terminals', ids: ['T-24V-KALLUS'] } as SimRef },
+  /** Black USB cables from each Kollis front up the posts to its Kallus box (A → MINIX-01, B → MINIX-02). */
+  usb: { rackA: 'kallus.minix-01', rackB: 'kallus.minix-02' },
 } as const;
 
 /* ───────────────────────────── Tethered bench rack.t (§2.12) ───────────────────────────── */

@@ -12,7 +12,7 @@ import { computeEnv } from './jenkins/engine';
 import { commitRemote } from './git';
 import { treeAt } from './gitCore';
 import { methodBody, openDirection, stripJava } from './codefacts';
-import { UIA_PATHS } from '../seed/repos/uiaRemote';
+import { UIA_PATHS } from '../seed/repos/uiaRelay';
 import { CONFIG_KEYS } from './config';
 
 const lab = (): LabState => getState().lab;
@@ -49,7 +49,7 @@ describe('repository seeds (Sim §2.12)', () => {
   });
 
   it('has the structures a trainee recognises', () => {
-    const uia = lab().repos['uia-remote'].files;
+    const uia = lab().repos['uia-relay'].files;
     for (const p of [UIA_PATHS.base, UIA_PATHS.po('HomeScreen'), UIA_PATHS.po('LockScreen'), UIA_PATHS.po('NavigationBar'), UIA_PATHS.po('RegisterHomeScreen'), UIA_PATHS.test('TaxTest'), UIA_PATHS.runner, 'pom.xml', 'build.gradle', 'gradlew', 'config.properties.example']) {
       expect(uia[p], p).toBeTypeOf('string');
     }
@@ -60,36 +60,36 @@ describe('repository seeds (Sim §2.12)', () => {
     expect(home).toContain('Zone 1');
     expect(home).toContain('Zone 2');
     expect(openDirection(home)).toBe('correct');
-    const gort = lab().repos['gort'].files;
-    expect(Object.keys(gort).filter((p) => p.startsWith('cards/emv/')).length).toBeGreaterThanOrEqual(4);
-    expect(Object.keys(gort).filter((p) => p.startsWith('cards/nfc/')).length).toBeGreaterThanOrEqual(2);
-    expect(Object.keys(gort).some((p) => /^config\/screen-locations\/FLUX_3\/RECEIPT_OPTIONS_5\.json$/.test(p))).toBe(true);
-    const pigeon = lab().repos['pigeon'].files;
-    expect(pigeon['tests/_templates/known_good_actions.json']).toBeTypeOf('string');
-    for (const p of ['runners/rest/rest_runner.py', 'runners/android/AndroidLstrRunner.java', 'runners/windows/WindowsLstrRunner.cs', 'runners/ios/IosLstrRunner.swift']) expect(pigeon[p], p).toBeTypeOf('string');
+    const gorth = lab().repos['gorth'].files;
+    expect(Object.keys(gorth).filter((p) => p.startsWith('cards/emv/')).length).toBeGreaterThanOrEqual(4);
+    expect(Object.keys(gorth).filter((p) => p.startsWith('cards/nfc/')).length).toBeGreaterThanOrEqual(2);
+    expect(Object.keys(gorth).some((p) => /^config\/screen-locations\/FLUX_3\/RECEIPT_OPTIONS_5\.json$/.test(p))).toBe(true);
+    const parrot = lab().repos['parrot'].files;
+    expect(parrot['tests/_templates/known_good_actions.json']).toBeTypeOf('string');
+    for (const p of ['runners/rest/rest_runner.py', 'runners/android/AndroidLstrRunner.java', 'runners/windows/WindowsLstrRunner.cs', 'runners/ios/IosLstrRunner.swift']) expect(parrot[p], p).toBeTypeOf('string');
     const orch = lab().repos['orchestrator'].files;
     expect(Object.keys(orch).some((p) => p.startsWith('.jhipster/') && p.endsWith('.json'))).toBe(true);
     expect(Object.keys(orch).some((p) => p.includes('liquibase'))).toBe(true);
   });
 
   it('config.properties.example carries every key with the lab defaults (Sim §3.19.1)', () => {
-    const p = parseProperties(lab().repos['uia-remote'].files['config.properties.example']!);
+    const p = parseProperties(lab().repos['uia-relay'].files['config.properties.example']!);
     for (const k of CONFIG_KEYS) expect(p.values, k).toHaveProperty(k);
     expect(p.values['theme']).toBe('avocado');
     expect(p.values['kernelType']).toBe('CPA');
     expect(p.values['portNumber']).toBe('5444');
   });
 
-  it("carries Jared's coordinate PRs after the receipt QR regression (Sim §2.12 gort row)", () => {
-    const prs = lab().repos['gort'].pullRequests;
+  it("carries Jaden's coordinate PRs after the receipt QR regression (Sim §2.12 gorth row)", () => {
+    const prs = lab().repos['gorth'].pullRequests;
     const n = (k: number) => prs.find((p) => p.number === k)!;
-    expect(n(418)).toMatchObject({ state: 'merged', author: 'jared' });
+    expect(n(418)).toMatchObject({ state: 'merged', author: 'jaden' });
     expect(n(418).files.some((f) => f.path.startsWith('config/screen-locations/MICRO_3/'))).toBe(true);
-    expect(n(417)).toMatchObject({ state: 'merged', author: 'jared' });
+    expect(n(417)).toMatchObject({ state: 'merged', author: 'jaden' });
     expect(n(417).files.some((f) => /RECEIPT_OPTIONS_5\.json$/.test(f.path))).toBe(true);
     expect(n(415).state).toBe('closed');
     expect(n(415).comments.some((c) => c.body.includes('No offsets. Fix the maps.'))).toBe(true);
-    const log = Object.values(lab().repos['gort'].commits).map((c) => c.message);
+    const log = Object.values(lab().repos['gorth'].commits).map((c) => c.message);
     expect(log).toContain('Add INTERAC_CA_TAP card definition');
   });
 });
@@ -103,9 +103,9 @@ describe('code facts (Sim §3.19.6)', () => {
   });
 });
 
-describe('Pigeon LSTR (Sim §3.20)', () => {
+describe('Parrot LSTR (Sim §3.20)', () => {
   it('reports the token after a missing comma — the unhelpful message', () => {
-    const text = lab().repos['pigeon'].files['tests/sale/tip_sale_print.json']!;
+    const text = lab().repos['parrot'].files['tests/sale/tip_sale_print.json']!;
     const lines = text.split('\n');
     lines[7] = lines[7]!.replace(/,\s*$/, '');
     expect(lstrParseError(lines.join('\n'))).toBe('LSTR ParseError: Unexpected token { in JSON at line 9 column 5');
@@ -117,12 +117,12 @@ describe('Pigeon LSTR (Sim §3.20)', () => {
   it('a broken test on main fails the Jenkins build with JSON_PARSE', { timeout: 60_000 }, () => {
     transact((root) => {
       const l = root.lab;
-      const text = l.repos['pigeon'].files['tests/sale/tip_sale_print.json']!;
+      const text = l.repos['parrot'].files['tests/sale/tip_sale_print.json']!;
       const lines = text.split('\n');
       lines[7] = lines[7]!.replace(/,\s*$/, '');
-      commitRemote(l, 'pigeon', 'main', { 'tests/sale/tip_sale_print.json': lines.join('\n') }, 'Add tip step', 'alex');
+      commitRemote(l, 'parrot', 'main', { 'tests/sale/tip_sale_print.json': lines.join('\n') }, 'Add tip step', 'alex');
     });
-    const b = runBuild('Java/pigeon-android-tip-sale');
+    const b = runBuild('Java/parrot-android-tip-sale');
     expect(b.result).toBe('FAILURE');
     expect(b.failureCode).toBe('JSON_PARSE');
     expect(b.console).toContain('LSTR ParseError: Unexpected token { in JSON at line 9 column 5');
@@ -135,38 +135,38 @@ describe('INC25 end to end: missing comma → red build → PR → Morgan merges
     transact((root) => {
       root.lab.config.npcAutoMerge = true;
     });
-    const f = sim.faults.inject({ faultId: 'pigeon.missingComma', params: {} });
+    const f = sim.faults.inject({ faultId: 'parrot.missingComma', params: {} });
     if (!f.ok) throw new Error(f.error);
-    const red = runBuild('Java/pigeon-android-tip-sale');
+    const red = runBuild('Java/parrot-android-tip-sale');
     expect(red.failureCode).toBe('JSON_PARSE');
     expect(red.console).toContain('LSTR ParseError: Unexpected token { in JSON at line 9 column 5');
     expect(sim.faults.isResolved(f.value.instanceId)).toBe(false);
-    sim.git.clone('pigeon', 'player');
-    sim.git.checkout('pigeon', 'fix/tip-sale-comma', true);
+    sim.git.clone('parrot', 'player');
+    sim.git.checkout('parrot', 'fix/tip-sale-comma', true);
     const path = 'tests/sale/tip_sale_print.json';
-    const lines = lab().repos['pigeon'].local!.files[path]!.split('\n');
+    const lines = lab().repos['parrot'].local!.files[path]!.split('\n');
     lines[7] = `${lines[7]},`;
-    sim.git.writeFile('pigeon', path, lines.join('\n'));
-    sim.git.stage('pigeon', [path]);
-    expect(sim.git.commit('pigeon', 'Restore missing comma in tip_sale_print.json', 'player').ok).toBe(true);
-    expect(sim.git.push('pigeon').ok).toBe(true);
-    const pr = sim.git.createPullRequest('pigeon', 'Fix tip_sale_print.json', '', 'fix/tip-sale-comma', 'player');
+    sim.git.writeFile('parrot', path, lines.join('\n'));
+    sim.git.stage('parrot', [path]);
+    expect(sim.git.commit('parrot', 'Restore missing comma in tip_sale_print.json', 'player').ok).toBe(true);
+    expect(sim.git.push('parrot').ok).toBe(true);
+    const pr = sim.git.createPullRequest('parrot', 'Fix tip_sale_print.json', '', 'fix/tip-sale-comma', 'player');
     if (!pr.ok) throw new Error(pr.error);
     for (let i = 0; i < 160; i++) sim.tick(250);
-    expect(lab().repos['pigeon'].pullRequests.find((p) => p.number === pr.value.number)!.state).toBe('merged');
-    expect(lstrParseError(lab().repos['pigeon'].files[path]!)).toBeNull();
+    expect(lab().repos['parrot'].pullRequests.find((p) => p.number === pr.value.number)!.state).toBe('merged');
+    expect(lstrParseError(lab().repos['parrot'].files[path]!)).toBeNull();
     expect(sim.faults.isResolved(f.value.instanceId)).toBe(true);
   });
 });
 
 describe('Jenkins (Sim §3.18)', () => {
-  it('injects environment keys in ALL CAPS with enum values straight from Orca', { timeout: 60_000 }, () => {
-    const b = runBuild('Java/uia-remote-regression-flux');
+  it('injects environment keys in ALL CAPS with enum values straight from Orka', { timeout: 60_000 }, () => {
+    const b = runBuild('Java/uia-relay-regression-flux');
     const envLines = b.console.filter((l) => l.startsWith('[env] '));
     expect(envLines.length).toBeGreaterThan(3);
     for (const l of envLines) expect(l).toMatch(/^\[env\] [A-Z][A-Z0-9_]*=/);
     expect(envLines).toContain('[env] DEVICE_TYPE=FLUX_3');
-    const build = Object.values(lab().jenkins.builds).find((x) => x.jobId === 'Java/uia-remote-regression-flux' && x.state === 'finished' && x.number >= 4120)!;
+    const build = Object.values(lab().jenkins.builds).find((x) => x.jobId === 'Java/uia-relay-regression-flux' && x.state === 'finished' && x.number >= 4120)!;
     const { env } = computeEnv(lab(), build);
     for (const k of Object.keys(env)) expect(k).toMatch(/^[A-Z][A-Z0-9_]*$/);
   });
@@ -174,10 +174,10 @@ describe('Jenkins (Sim §3.18)', () => {
   it('runs the tethered TaxTest: MFD_O1 → CFD_O1 → MFD_O2 → CFD (Sim §3.19.4)', { timeout: 60_000 }, () => {
     const steps: { step: string; role: string; ok: boolean }[] = [];
     const off = bus.on('runner.step', (p) => steps.push({ step: p.step, role: p.deviceRole, ok: p.ok }));
-    const b = runBuild('Java/uia-remote-tethered-tax');
+    const b = runBuild('Java/uia-relay-tethered-tax');
     off();
     expect(b.result).toBe('SUCCESS');
-    const order = ['[MFD_O1] open Register', '[MFD_O1] add "Tax Item 5"', '[MFD_O1] Review Order', '[MFD_O1] orca → callus: load swipe card VISA_STD_SWIPE … OK', '[CFD_O1] subtotal $10.00 ✓', '[CFD_O1] tax $0.83 ✓', '[CFD_O1] total $10.83 ✓', '[MFD_O2] Pay', '[MFD_O2] Charge', '[CFD] payment prompt', '[callus] swipe VISA_STD_SWIPE fired → OK', '[CFD] receipt: No Receipt', '[teardown] MFD → HomeScreen · CFD → HomeScreen', 'TaxTest PASSED (4/4 steps)'];
+    const order = ['[MFD_O1] open Register', '[MFD_O1] add "Tax Item 5"', '[MFD_O1] Review Order', '[MFD_O1] orka → kallus: load swipe card VISA_STD_SWIPE … OK', '[CFD_O1] subtotal $10.00 ✓', '[CFD_O1] tax $0.83 ✓', '[CFD_O1] total $10.83 ✓', '[MFD_O2] Pay', '[MFD_O2] Charge', '[CFD] payment prompt', '[kallus] swipe VISA_STD_SWIPE fired → OK', '[CFD] receipt: No Receipt', '[teardown] MFD → HomeScreen · CFD → HomeScreen', 'TaxTest PASSED (4/4 steps)'];
     let at = -1;
     for (const line of order) {
       const i = b.console.findIndex((l, k) => k > at && l === line);
@@ -190,7 +190,7 @@ describe('Jenkins (Sim §3.18)', () => {
     expect(phases).toEqual(['MFD_O1', 'CFD_O1', 'MFD_O2', 'Step']);
     expect(tax.every((s) => s.ok)).toBe(true);
     expect(tax.filter((s) => s.step.startsWith('CFD_O1') || s.step.startsWith('Step 4')).every((s) => s.role === 'CFD')).toBe(true);
-    expect(lab().orca.robots[Object.values(lab().orca.robots).find((r) => r.name === 'megatron')!.id]!.status).toBe('AVAILABLE');
+    expect(lab().orka.robots[Object.values(lab().orka.robots).find((r) => r.name === 'megatron')!.id]!.status).toBe('AVAILABLE');
   });
 });
 
@@ -203,10 +203,10 @@ describe('Go SDK and local config validation (Sim §3.21.1, §3.19.1)', () => {
   });
 
   it('rejects an unsupported theme with the exact IllegalStateException', () => {
-    sim.git.clone('uia-remote', 'player');
-    const ex = lab().repos['uia-remote'].local!.files['config.properties.example']!;
-    sim.git.writeFile('uia-remote', 'config.properties', ex.replace('theme=avocado', 'theme=classic').replace(/robotName=.*/, 'robotName=megatron'));
-    const r = sim.runner.runLocal('uia-remote', UIA_PATHS.test('TaxTest'), 'player');
+    sim.git.clone('uia-relay', 'player');
+    const ex = lab().repos['uia-relay'].local!.files['config.properties.example']!;
+    sim.git.writeFile('uia-relay', 'config.properties', ex.replace('theme=avocado', 'theme=classic').replace(/robotName=.*/, 'robotName=megatron'));
+    const r = sim.runner.runLocal('uia-relay', UIA_PATHS.test('TaxTest'), 'player');
     if (!r.ok) throw new Error(r.error);
     sim.tick(250);
     expect(sim.runner.output(r.value.runId)).toEqual({ lines: ['java.lang.IllegalStateException: Unsupported theme "classic" — only "avocado" is supported'], done: true, passed: false });
@@ -217,7 +217,7 @@ describe('determinism (Sim §6)', () => {
   it('the same build from the same seed produces the same console and state', { timeout: 60_000 }, () => {
     const once = (): string => {
       sim.reset({ preset: 'test', seed: 77 });
-      const b = runBuild('Java/uia-remote-regression-flux');
+      const b = runBuild('Java/uia-relay-regression-flux');
       return JSON.stringify({ b, jenkins: lab().jenkins.builds, rng: lab().rngStreams });
     };
     expect(once()).toBe(once());

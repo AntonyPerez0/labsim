@@ -165,10 +165,10 @@ describe('DR03 Port Patrol', () => {
 });
 
 describe('DR04 Power Path', () => {
-  const board: BoardData = { title: '', nodes: ['wall', 'strip', 'meanwell', 'reg12', 'reg5', 'fuseA', 'fuseB', 'pi', 'nuc', 'flux4', 'collis', 'motor'], columns: [] };
+  const board: BoardData = { title: '', nodes: ['wall', 'strip', 'meanwell', 'reg12', 'reg5', 'fuseA', 'fuseB', 'pi', 'nuc', 'flux4', 'kollis', 'motor'], columns: [] };
   const good: Wire[] = [
     { from: 'wall', to: 'meanwell' }, { from: 'wall', to: 'strip' }, { from: 'meanwell', to: 'reg12' }, { from: 'meanwell', to: 'reg5' }, { from: 'meanwell', to: 'motor' },
-    { from: 'reg12', to: 'fuseA' }, { from: 'fuseA', to: 'nuc' }, { from: 'reg5', to: 'fuseB' }, { from: 'fuseB', to: 'pi' }, { from: 'strip', to: 'flux4' }, { from: 'strip', to: 'collis' },
+    { from: 'reg12', to: 'fuseA' }, { from: 'fuseA', to: 'nuc' }, { from: 'reg5', to: 'fuseB' }, { from: 'fuseB', to: 'pi' }, { from: 'strip', to: 'flux4' }, { from: 'strip', to: 'kollis' },
   ];
   it('accepts the reference graph and flags missing fuses', () => {
     expect(checkBoard(board, good).perfect).toBe(true);
@@ -178,9 +178,9 @@ describe('DR04 Power Path', () => {
     expect(r.perfect).toBe(false);
     expect(boardPoints(r, 0, 10, 0)).toBe(50 * r.correct - 100);
   });
-  it('sparks LabSim/Collis on DC and over-voltage', () => {
+  it('sparks LabSim/Kollis on DC and over-voltage', () => {
     expect(sparkFor('reg5', 'flux4', good)).toMatch(/18 V/);
-    expect(sparkFor('meanwell', 'collis', good)).toBeTruthy();
+    expect(sparkFor('meanwell', 'kollis', good)).toBeTruthy();
     expect(sparkFor('strip', 'flux4', good)).toBeNull();
     expect(sparkFor('reg12', 'pi', good)).toBeTruthy();
     expect(sparkFor('wall', 'pi', good)).toBeTruthy();
@@ -212,7 +212,7 @@ describe('DR05 Coordinate Hunter', () => {
     const print = SHOTS['micro3-receipt5'].els.find((e) => e.id === 'Print')!;
     expect(Math.abs((print.x + print.w / 2) / PX_PER_MM.x - 86)).toBeLessThan(0.1);
   });
-  it('mode C checks the Pigeon block strictly', () => {
+  it('mode C checks the Parrot block strictly', () => {
     const box = { x: 412, y: 288, w: 236, h: 44 };
     expect(checkBlock('{"x": 412, "y": 288, "w": 236, "h": 44, "expected": "TOTAL $10.83"}', box, 'TOTAL $10.83').ok).toBe(true);
     expect(checkBlock('{"x": 412, "y": 288, "w": 236, "h": 44 "expected": "TOTAL $10.83"}', box, 'TOTAL $10.83').ok).toBe(false);
@@ -290,8 +290,8 @@ describe('DR08 POM Builder / Doctor', () => {
 
 describe('DR09 Pipeline Order', () => {
   it('has the six spec sequences and scores order', () => {
-    expect(SEQ_SETS.map((s) => s.id)).toEqual(['tax', 'arch', 'power', 'ocr', 'dip', 'laz']);
-    expect(SEQ_SETS.find((s) => s.id === 'laz')!.steps).toEqual(['ubi: routing merchant switch', 'laz: de-provision', 'laz: wipe caches', 'laz: setup wizard', 'laz: merchant active']);
+    expect(SEQ_SETS.map((s) => s.id)).toEqual(['tax', 'arch', 'power', 'ocr', 'dip', 'lazo']);
+    expect(SEQ_SETS.find((s) => s.id === 'lazo')!.steps).toEqual(['ubo: routing merchant switch', 'lazo: de-provision', 'lazo: wipe caches', 'lazo: setup wizard', 'lazo: merchant active']);
     const items = itemsOf(DRILLS_BY_ID.DR09!) as DrillItem<SeqData>[];
     for (const it of items) expect(it.data.tray.every((v, i) => v === i)).toBe(false);
     expect(sequencePoints([0, 1, 2, 3, 4], 5, 30, 0)).toEqual({ points: 30 * 5 + 120, perfect: true });

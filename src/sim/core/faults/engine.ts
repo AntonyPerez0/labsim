@@ -58,13 +58,13 @@ export function setupCatalogue(): SetupOpInfo[] {
 
 /** Candidates of a target kind for '@random' (id order). */
 function kindCandidates(lab: LabState, kind: FaultParamInfo['kind']): string[] {
-  const o = lab.orca;
+  const o = lab.orka;
   const byId = <T extends { id: number; name: string }>(t: Record<number, T>) => Object.values(t).sort((a, b) => a.id - b.id).map((r) => r.name);
   switch (kind) {
     case 'host':
       return Object.keys(lab.hosts).sort();
     case 'rig':
-      return Object.values(lab.rigs).sort((a, b) => a.orcaRobotId - b.orcaRobotId).map((r) => r.id);
+      return Object.values(lab.rigs).sort((a, b) => a.orkaRobotId - b.orkaRobotId).map((r) => r.id);
     case 'robot':
       return byId(o.robots);
     case 'device':
@@ -76,7 +76,7 @@ function kindCandidates(lab: LabState, kind: FaultParamInfo['kind']): string[] {
     case 'regulator':
       return Object.keys(lab.power.regulators).sort();
     case 'probe':
-      return Object.keys(lab.collis).sort();
+      return Object.keys(lab.kollis).sort();
     case 'merchant':
       return byId(o.merchants);
     case 'cardProfile':

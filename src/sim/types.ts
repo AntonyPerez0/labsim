@@ -33,7 +33,7 @@ export const LAB_STATE_VERSION = 2;
 export const EPOCH_DATE = '2026-10-05';
 /** Default seed for `reset()` and `createInitialLabState()` (Sim §2.1). */
 export const DEFAULT_SEED = 20261005;
-/** Orca's synchronized health-check period, game ms (canon: 5 game minutes). */
+/** Orka's synchronized health-check period, game ms (canon: 5 game minutes). */
 export const HEALTH_CHECK_INTERVAL_MS = 300_000;
 /** Maximum physical ms per simulation sub-step (Sim §6.2). */
 export const SIM_SUBSTEP_MS = 50;
@@ -44,7 +44,7 @@ export const RNG_STREAMS = ['core', 'faults', 'jenkins', 'devices', 'ollama', 'n
 
 /* ────────────────────────────── Static enums ────────────────────────────── */
 
-/** Orca DeviceType enum. ALL CAPS — which is why Jenkins env vars carrying it must be all caps. */
+/** Orka DeviceType enum. ALL CAPS — which is why Jenkins env vars carrying it must be all caps. */
 export type DeviceTypeCode =
   | 'STAND_2018'
   | 'STAND_2'
@@ -61,7 +61,7 @@ export type DeviceTypeCode =
   | 'FLUX_POCKET'
   | 'COMPASS';
 
-/** Every DeviceType constant in Orca's enum order (exact, case-sensitive — `DeviceType.valueOf`). */
+/** Every DeviceType constant in Orka's enum order (exact, case-sensitive — `DeviceType.valueOf`). */
 export const DEVICE_TYPE_CODES: readonly DeviceTypeCode[] = [
   'STAND_2018',
   'STAND_2',
@@ -79,7 +79,7 @@ export const DEVICE_TYPE_CODES: readonly DeviceTypeCode[] = [
   'COMPASS',
 ];
 
-/** Family value used by `deviceType` in uia-remote config.properties (governs scroll/layout logic). */
+/** Family value used by `deviceType` in uia-relay config.properties (governs scroll/layout logic). */
 export type DeviceFamily = 'Stand' | 'Micro' | 'Flux' | 'Compass';
 
 /** Shared testing profiles (Flux 3/4/Pocket share FLUX_GEN3). Also the firmware layout id (Sim §2.10.2). */
@@ -95,7 +95,7 @@ export type TestingProfile =
   | 'COMPASS';
 
 /**
- * Static metrics of one Device Type (Orca's enum carries "device dimensions, layout metrics and
+ * Static metrics of one Device Type (Orka's enum carries "device dimensions, layout metrics and
  * internal string definitions", Ref §3). Values: Sim §2.2. Constants table: `DEVICE_TYPES` in
  * `src/sim/seed/deviceTypes.ts` (sim-core). Not part of LabState.
  */
@@ -124,7 +124,7 @@ export interface DeviceTypeInfo {
   pxPerMm?: { x: number; y: number };
   /** NEW — px per mm of the secondary (CFD) display, Duet family only. */
   secondaryPxPerMm?: { x: number; y: number };
-  /** NEW — firmware layout id used for hit tests and Orca seeds (= testingProfile; Duet CFD uses MICRO_GEN3). */
+  /** NEW — firmware layout id used for hit tests and Orka seeds (= testingProfile; Duet CFD uses MICRO_GEN3). */
   layout?: TestingProfile;
   /** NEW — device types this one hot-swaps for (MICRO_3 → ['STAND_DUET_2'], Ref §1). Informational. */
   hotSwapFor?: DeviceTypeCode[];
@@ -166,7 +166,7 @@ export interface SimConfig {
   pipelinesEnabled: boolean;
   /** Scripted NPC reviewers act on PRs (Sim §3.22.2). */
   npcAutoMerge: boolean;
-  /** Orca's tutorial "Force health check" button allowed (Sim §6.3). */
+  /** Orka's tutorial "Force health check" button allowed (Sim §6.3). */
   forceHealthCheckAllowed: boolean;
   /** Max `LabState.log` entries kept by housekeeping (500). */
   logCap: number;
@@ -177,14 +177,14 @@ export interface SeqCounters {
   event: number;
   note: number;
   build: number;
-  laz: number;
+  lazo: number;
   ollama: number;
   chat: number;
   fault: number;
   run: number;
   commit: number;
   timer: number;
-  /** Orca request ids (xy_touch / card actions). */
+  /** Orka request ids (xy_touch / card actions). */
   request: number;
   /** Next PR number per repo. */
   pr: Record<RepoId, number>;
@@ -209,11 +209,11 @@ export interface SimTimer {
 export interface LabFlags {
   /** "Scan for receipt" QR feature: receipt screen gets a 5th option and buttons shift down 3.0 mm (Sim §3.10). Setting it is a lab-wide firmware rollout. */
   receiptQrFeature: boolean;
-  /** UI Automator version used by uia-remote. 2.3 adds native dual-screen element tracking (displayId locators). */
+  /** UI Automator version used by uia-relay. 2.3 adds native dual-screen element tracking (displayId locators). */
   uiaVersion: '2.2' | '2.3';
   /** Gen 2 software PIN bypass (Core OS team) available. Always false in presets (Ref §6: in progress). */
   softwarePinBypass: boolean;
-  /** Tutorial helper: show firmware button rects + Orca points on device screens. */
+  /** Tutorial helper: show firmware button rects + Orka points on device screens. */
   showTouchTargets: boolean;
   /** NEW — Cur M16 tutorial "CFD layout v2" toggle: R2-D2 CFD gets v2 copy + 10 px label shift. */
   cfdLayoutV2Toggle: boolean;
@@ -222,27 +222,27 @@ export interface LabFlags {
 export interface SimLogEntry {
   /** Game ms. */
   atMs: number;
-  /** System that wrote it: "faults", "power", "orca", "jenkins", … */
+  /** System that wrote it: "faults", "power", "orka", "jenkins", … */
   source: string;
   level: 'debug' | 'info' | 'warn' | 'error';
   text: string;
 }
 
-/* ────────────────────────────── Orca (MySQL) ────────────────────────────── */
+/* ────────────────────────────── Orka (MySQL) ────────────────────────────── */
 
 export type RobotStatus = 'AVAILABLE' | 'UNAVAILABLE' | 'OFFLINE' | 'CONNECTION_FAILED' | 'RESERVED';
 
-/** touch = physical XY gantry robot; tethered = MFD/CFD test bed; adb = ADB-only bot; standalone = PayCore-style dedicated rig. */
+/** touch = physical XY gantry robot; tethered = MFD/CFD test bed; adb = ADB-only bot; standalone = PayCrest-style dedicated rig. */
 export type RigKind = 'touch' | 'tethered' | 'adb' | 'standalone';
 
-/** Backend environment a rig's devices point at; checkout filter (Sim §3.4). `OrcaRobot.environment` holds one of these. */
+/** Backend environment a rig's devices point at; checkout filter (Sim §3.4). `OrkaRobot.environment` holds one of these. */
 export type RobotEnvironment = 'DEV1' | 'DEV2' | 'STG' | 'QA' | 'INT';
 
 export interface RobotNote {
   id: number;
   /** Game ms (the request time for HEALTH notes). */
   atMs: number;
-  author: string; // "orca-health-check" | "orca" | person key ("alex", "player")
+  author: string; // "orka-health-check" | "orka" | person key ("alex", "player")
   /** For health-check notes: the exact endpoint attempted. */
   endpoint?: string;
   /** The full display line, exact format Sim §3.3.4 (e.g. "2026-10-05 08:15:00 GET … → connect timed out after 10000 ms"). */
@@ -262,7 +262,7 @@ export interface RobotStatusHistoryEntry {
   atMs: number;
   from: RobotStatus;
   to: RobotStatus;
-  /** Actor: person key, "orca-health-check" or "orca". */
+  /** Actor: person key, "orka-health-check" or "orka". */
   by: string;
   reason?: string;
 }
@@ -280,7 +280,7 @@ export interface RobotHealthResult {
   latencyMs: number;
 }
 
-/** The checkout record of a robot (a Jenkins build, a local run or a manual Orca checkout). */
+/** The checkout record of a robot (a Jenkins build, a local run or a manual Orka checkout). */
 export interface RobotCheckout {
   buildId: string;
   jobId: string;
@@ -294,7 +294,7 @@ export interface RobotCheckout {
   kind: 'jenkins' | 'local';
 }
 
-export interface OrcaRobot {
+export interface OrkaRobot {
   id: number;
   /** System identifier, lowercase-kebab, e.g. "wall-e". Exact value is what a Jenkins job must pass for UNAVAILABLE rigs. */
   name: string;
@@ -304,12 +304,12 @@ export interface OrcaRobot {
   rigKind: RigKind;
   /** Environment label: one of RobotEnvironment ("DEV1", "DEV2", "STG", "QA", "INT"). */
   environment: string;
-  /** FK → OrcaDevice ("Robot Device"). Decoupled so hardware swaps keep legacy config for rollback. */
+  /** FK → OrkaDevice ("Robot Device"). Decoupled so hardware swaps keep legacy config for rollback. */
   deviceId: number | null;
   /** USB tethered configuration. If `mfdDeviceId` is populated the pipeline treats the rig as tethered. */
   mfdDeviceId: number | null;
   cfdDeviceId: number | null;
-  /** "http://10.42.10.11:8000/adb" — Orca derives the Pi (health endpoint) from its host. */
+  /** "http://10.42.10.11:8000/adb" — Orka derives the Pi (health endpoint) from its host. */
   adbServiceUrl: string;
   /** "http://<host>:8081/stream.mjpg" (dedicated or shared ×4), "" if none. */
   cameraStreamUrl: string;
@@ -321,7 +321,7 @@ export interface OrcaRobot {
   offsetYMm: number;
   /** Linked RobotCapability rows (flags); derived keys come from device/rig (Sim §2.7.1). */
   capabilityIds: number[];
-  /** Merchant this rig's device(s) SHOULD hold (Laz enforces it; the device says what it DOES hold). */
+  /** Merchant this rig's device(s) SHOULD hold (Lazo enforces it; the device says what it DOES hold). */
   merchantConfigId: number | null;
   /** Who reserved it (RESERVED only) — person key, e.g. "riley", "player". */
   reservedBy: string | null;
@@ -351,7 +351,7 @@ export interface OrcaRobot {
   lastHealth: RobotHealthResult | null;
 }
 
-export interface OrcaDevice {
+export interface OrkaDevice {
   id: number;
   /** NEW — unique row name "<robot>-<model>", e.g. "johnny-5-flux1" (GP DSL compares names). */
   name: string;
@@ -403,14 +403,14 @@ export interface MerchantConfig {
   /** Merchant config that bypasses PIN security (required for ADB-only bots). */
   pinBypass: boolean;
   cashDiscountEnabled: boolean;
-  /** Owning team: "Automation" | "PayCore" | "SDK" | "Westers". */
+  /** Owning team: "Automation" | "PayCrest" | "SDK" | "Westerly". */
   owner: string;
-  /** Go SDK credentials (added by Tate) — hidden in the list table, visible only on Edit. */
+  /** Go SDK credentials (added by Nate) — hidden in the list table, visible only on Edit. */
   appId: string | null;
   appSecret: string | null;
   apiKey: string | null;
-  /** Ubi platform route ("us-east" | "ca-central") — Edit dialog only. */
-  ubiRoute: string | null;
+  /** Ubo platform route ("us-east" | "ca-central") — Edit dialog only. */
+  uboRoute: string | null;
   notes: string;
   /** NEW — printed on receipts ("LabSim Automation Lab — US 01"). */
   displayName: string;
@@ -434,9 +434,9 @@ export interface MerchantConfig {
   apps: string[];
 }
 
-export interface OrcaScreen {
+export interface OrkaScreen {
   id: number;
-  /** Orca screen name used by xy_touch, ALL CAPS snake: "RECEIPT_OPTIONS_5", "TENDER_CASH_DISCOUNT", "CFD_CART". */
+  /** Orka screen name used by xy_touch, ALL CAPS snake: "RECEIPT_OPTIONS_5", "TENDER_CASH_DISCOUNT", "CFD_CART". */
   name: string;
   /** Derived from deviceType; informational. */
   testingProfile: TestingProfile;
@@ -469,12 +469,12 @@ export interface CardProfile {
   entry: CardEntry;
   /** SWIPE profiles: raw Track 1 + Track 2 text stored directly in MySQL. */
   trackData: string | null;
-  /** DIP/TAP profiles: path to the card definition inside the Gort repo, e.g. "cards/emv/visa_std_dip.json". */
-  gortPath: string | null;
+  /** DIP/TAP profiles: path to the card definition inside the Gorth repo, e.g. "cards/emv/visa_std_dip.json". */
+  gorthPath: string | null;
   country: 'US' | 'CA';
   /** CVM is PIN (e.g. Interac in Canada). */
   requiresPin: boolean;
-  owner: string; // "Automation" (single Visa) or "PayCore" (matrix)
+  owner: string; // "Automation" (single Visa) or "PayCrest" (matrix)
   /** NEW — test PIN entered on the PIN pad ("1234"), null if none. */
   pin: string | null;
   /** NEW — full test PAN; UIs show it masked "•••• 1111". */
@@ -496,11 +496,11 @@ export interface ScreenCompareImage {
   expectedText: string;
   /** Deprecated in favour of UI Automator 2.3 dual-screen support. */
   deprecated: boolean;
-  /** NEW — test ids that reference it, e.g. ["uia-remote:DuetCfdSuite"]. */
+  /** NEW — test ids that reference it, e.g. ["uia-relay:DuetCfdSuite"]. */
   usedBy: string[];
 }
 
-/** NEW — one health-check run in Orca → Administration → Health log (Sim §3.3.4). Last 50 kept. */
+/** NEW — one health-check run in Orka → Administration → Health log (Sim §3.3.4). Last 50 kept. */
 export interface HealthLogRun {
   run: number;
   /** Game ms. */
@@ -514,7 +514,7 @@ export interface HealthLogRun {
 }
 
 /** Health-check thread bookkeeping (Sim §1.3.1, §3.3). */
-export interface OrcaHealthCheckState {
+export interface OrkaHealthCheckState {
   /** 300 000 game ms. */
   intervalMs: number;
   /** Game ms of the last run (scheduled or forced). */
@@ -531,8 +531,8 @@ export interface OrcaHealthCheckState {
   timeoutMs: number;
 }
 
-/** Orca application state on orca-vm (Sim §3.14.5). */
-export interface OrcaAppState {
+/** Orka application state on orka-vm (Sim §3.14.5). */
+export interface OrkaAppState {
   /** Spring Boot process running. */
   up: boolean;
   version: string;
@@ -544,7 +544,7 @@ export interface OrcaAppState {
   reconnectAtPhysMs: number | null;
 }
 
-export interface OrcaAuditEntry {
+export interface OrkaAuditEntry {
   /** Game ms. */
   atMs: number;
   who: string;
@@ -555,21 +555,21 @@ export interface OrcaAuditEntry {
   diff?: Record<string, [unknown, unknown]>;
 }
 
-/** NEW — gort → Orca screen-location sync waiting to run (Sim §3.22.3). */
-export interface PendingGortSync {
-  /** Phys ms when Orca upserts the rows. */
+/** NEW — gorth → Orka screen-location sync waiting to run (Sim §3.22.3). */
+export interface PendingGorthSync {
+  /** Phys ms when Orka upserts the rows. */
   atPhysMs: number;
-  repo: 'gort';
+  repo: 'gorth';
   paths: string[];
   commit: string;
 }
 
-export interface OrcaDb {
-  robots: Record<number, OrcaRobot>;
-  devices: Record<number, OrcaDevice>;
+export interface OrkaDb {
+  robots: Record<number, OrkaRobot>;
+  devices: Record<number, OrkaDevice>;
   capabilities: Record<number, RobotCapability>;
   merchants: Record<number, MerchantConfig>;
-  screens: Record<number, OrcaScreen>;
+  screens: Record<number, OrkaScreen>;
   screenLocations: Record<number, ScreenLocation>;
   cardProfiles: Record<number, CardProfile>;
   screenCompareImages: Record<number, ScreenCompareImage>;
@@ -587,13 +587,13 @@ export interface OrcaDb {
     number
   >;
   /** Health-check thread bookkeeping. */
-  healthCheck: OrcaHealthCheckState;
-  /** Orca VM application state. */
-  app: OrcaAppState;
+  healthCheck: OrkaHealthCheckState;
+  /** Orka VM application state. */
+  app: OrkaAppState;
   /** Audit trail shown in Administration → Audits. */
-  audit: OrcaAuditEntry[];
-  /** NEW — pending gort syncs (sim-devops pushes, sim-core processes). */
-  pendingSyncs: PendingGortSync[];
+  audit: OrkaAuditEntry[];
+  /** NEW — pending gorth syncs (sim-devops pushes, sim-core processes). */
+  pendingSyncs: PendingGorthSync[];
 }
 
 /* ────────────────────────────── Physical rigs ────────────────────────────── */
@@ -632,16 +632,16 @@ export interface RigMotionCommand {
   /** Correlates a command with an xy_touch request / card action / runner step. */
   ref?: string;
   /** NEW — who queued it ('controller' = the robot controller's own start-up homing). */
-  source: 'tablet' | 'orca' | 'player' | 'controller';
+  source: 'tablet' | 'orka' | 'player' | 'controller';
 }
 
 /** NEW — parts `rig.reseat` can re-seat ('solenoid' ≡ 'solenoidConnector'). */
 export type RigPart = 'solenoid' | 'solenoidConnector' | 'smartstripe' | 'webcam' | 'limitSwitchX' | 'limitSwitchY';
 
 export interface RigState {
-  /** Same as OrcaRobot.name, e.g. "wall-e". */
+  /** Same as OrkaRobot.name, e.g. "wall-e". */
   id: string;
-  orcaRobotId: number;
+  orkaRobotId: number;
   kind: RigKind;
   /** Has a physical XY gantry with solenoid probe (touch + standalone). */
   hasGantry: boolean;
@@ -693,9 +693,9 @@ export interface RigState {
   queue: RigMotionCommand[];
   /** Host ids. */
   piHostId: string | null;
-  callusHostId: string | null;
-  /** Collis probe (touch) or SmartStripe probe (tethered) id. */
-  collisId: string | null;
+  kallusHostId: string | null;
+  /** Kollis probe (touch) or SmartStripe probe (tethered) id. */
+  kollisId: string | null;
   /** Runtime device ids sitting on this rig (1 for standalone, 2 for tethered MFD+CFD). */
   deviceIds: string[];
   webcam: {
@@ -713,7 +713,7 @@ export interface RigState {
     /** Exact header status text, e.g. "Status: OK" (Sim §3.7.5). Same as `bannerText`. */
     statusText: string;
     brainbox: string; // "Brainbox v6"
-    /** NEW — HRN currently displayed (updates ≤ 2 s after an Orca save while reachable). */
+    /** NEW — HRN currently displayed (updates ≤ 2 s after an Orka save while reachable). */
     hrnShown: string;
     /** NEW — tablet can reach its controller (USB link to the Pi). */
     reachable: boolean;
@@ -755,13 +755,13 @@ export interface RigState {
   cradle: 'OK' | 'CRACKED' | 'NEW';
   /** NEW — 0, or 2.0 when cracked. */
   cradleTiltDeg: number;
-  /** NEW — 'rebuild' while Jared rebuilds the gantry (forces motionFault, INC07). */
+  /** NEW — 'rebuild' while Jaden rebuilds the gantry (forces motionFault, INC07). */
   assembly: 'complete' | 'rebuild';
 }
 
 /* ────────────────────────────── LabSim devices ────────────────────────────── */
 
-/** Runtime screens (lowercase-kebab). Orca screen names ↔ runtime screens: Sim §2.10.1. */
+/** Runtime screens (lowercase-kebab). Orka screen names ↔ runtime screens: Sim §2.10.1. */
 export type ScreenName =
   | 'off'
   | 'boot'
@@ -950,12 +950,12 @@ export interface TerminalDevice {
   apps: string[];
   /** Firmware version string — mirrors `firmwareInfo.version` (authoritative). */
   firmware: string;
-  /** Collis probe card currently presented (dip inserted / tap held), for rendering. */
+  /** Kollis probe card currently presented (dip inserted / tap held), for rendering. */
   cardPresent: CardEntry | null;
   /** Last printed receipt as 32-column text — mirrors `lastReceiptDoc` (authoritative). */
   lastReceipt: string | null;
-  /** NEW — Orca Device row name bound by serial ("wall-e-flux3"); '' for an unregistered spare. */
-  orcaDeviceName: string;
+  /** NEW — Orka Device row name bound by serial ("wall-e-flux3"); '' for an unregistered spare. */
+  orkaDeviceName: string;
   /** NEW — derived view of power/dead (Sim §0.4), recomputed each tick. */
   state: 'OK' | 'BOOTING' | 'DEAD' | 'FRIED';
   /** NEW — port adbd listens on over TCP: 5444 lab, 5555 coworker devices, null after an OOBE wipe. */
@@ -1009,7 +1009,7 @@ export type HostOs = 'RUNNING' | 'HUNG' | 'BOOTING' | 'OFF';
 export type EthState = 'LINKED' | 'UNPLUGGED' | 'DAMAGED';
 
 export interface ServiceState {
-  /** robot-controller | adb-service | camera-stream | cardprog | sshd | callus | corporate-agent | motion | orca | mysql | jenkins | ollama. */
+  /** robot-controller | adb-service | camera-stream | cardprog | sshd | kallus | corporate-agent | motion | orka | mysql | jenkins | ollama. */
   name: string;
   running: boolean;
   port: number | null;
@@ -1023,7 +1023,7 @@ export interface ServiceState {
   startDelayMs: number;
   /**
    * NEW (sim-core, optional) — configuration the running process loaded at its last start
-   * (robot-controller: the parsed `controller.yaml` keys `robot`/`robots`, `callus`, `motion`, `camera`).
+   * (robot-controller: the parsed `controller.yaml` keys `robot`/`robots`, `kallus`, `motion`, `camera`).
    * The controller re-reads its file only on (re)start (Sim §2.5.3), so this — not `Host.files` — is what
    * `/health` evaluates. null/absent when not running.
    */
@@ -1032,7 +1032,7 @@ export interface ServiceState {
 
 /** NEW — Windows Task Scheduler task (Sim §3.14.6). */
 export interface SchedTask {
-  name: 'GortCardSync';
+  name: 'GorthCardSync';
   dailyAt: '10:00';
   /** Game ms of the last run start. */
   lastRunMs: number | null;
@@ -1043,9 +1043,9 @@ export interface SchedTask {
 }
 
 export interface Host {
-  id: string; // "pi-wall-e", "minix-01", "nuc-03", "orca-vm", "gpu-blade", "ws-17"
+  id: string; // "pi-wall-e", "minix-01", "nuc-03", "orka-vm", "gpu-blade", "ws-17"
   kind: HostKind;
-  /** Shell prompt name: "wall-e", "MINIX-01", "orca". */
+  /** Shell prompt name: "wall-e", "MINIX-01", "orka". */
   hostname: string;
   ip: string;
   /** Authoritative OS run state (narrowed from `string`; the OS product name is `osName`). */
@@ -1067,7 +1067,7 @@ export interface Host {
   propId: string | null;
   /** NEW — product name, e.g. "Raspberry Pi OS (Debian 12, Linux 6.6.31-v8+ aarch64)", "Windows 10 IoT Enterprise". */
   osName: string;
-  /** NEW — "orca.lab.local", … */
+  /** NEW — "orka.lab.local", … */
   aliases: string[];
   /** NEW — authoritative cable state. */
   eth: EthState;
@@ -1123,11 +1123,11 @@ export interface WorkstationState {
   sshHostId: string | null;
   cwd: string;
   shellHistory: string[];
-  /** Local IntelliJ run in progress (robotId null when the config names no Orca robot). */
+  /** Local IntelliJ run in progress (robotId null when the config names no Orka robot). */
   locallyRunningTest: { robotId: number | null; testName: string; startedMs: number } | null;
   /** Coworker devices accidentally controlled (port 5555 incident) — count for missions. */
   coworkerDevicesDisturbed: number;
-  /** NEW — parsed view of the local clone's uia-remote/config.properties (the file is the source of truth). */
+  /** NEW — parsed view of the local clone's uia-relay/config.properties (the file is the source of truth). */
   configProperties: Record<string, string>;
   /** NEW — ~/Downloads, ~/Pictures, ~/CodeWithMe: path → content or image ref ("img:screencap:dev-eve:<physMs>"). */
   files: Record<string, string>;
@@ -1227,11 +1227,11 @@ export interface Fuse {
   stress?: number;
 }
 
-/** A powered load (Pi, NUC, stepper driver, tablet, LabSim device brick, Collis probe…). */
+/** A powered load (Pi, NUC, stepper driver, tablet, LabSim device brick, Kollis probe…). */
 export interface PowerLoad {
   id: string;
   label: string;
-  /** What the load expects. AC-BRICK-18V = LabSim device or Collis probe via its own brick. */
+  /** What the load expects. AC-BRICK-18V = LabSim device or Kollis probe via its own brick. */
   expects: '5V' | '12V' | '24V' | 'AC-BRICK-18V' | 'AC';
   /** Nominal current at its expected voltage (state-dependent, Sim §3.13.3). */
   drawA: number;
@@ -1242,7 +1242,7 @@ export interface PowerLoad {
   /** NEW — back-references. */
   hostId?: string;
   deviceId?: string;
-  collisId?: string;
+  kollisId?: string;
   rigId?: string;
   /** NEW (sim-core, optional) — supply voltage seen in the last solve (V; 120 for AC). */
   volts?: number;
@@ -1275,24 +1275,24 @@ export interface PowerState {
   sparks: PowerSpark[];
 }
 
-/* ────────────────────────────── Collis probes / Callus ────────────────────────────── */
+/* ────────────────────────────── Kollis probes / Kallus ────────────────────────────── */
 
-export interface CollisProbe {
-  id: string; // "collis-wall-e" | "smartstripe-megatron"
+export interface KollisProbe {
+  id: string; // "kollis-wall-e" | "smartstripe-megatron"
   rigId: string;
-  /** Callus host (Windows NUC / Minix) driving this probe. */
-  callusHostId: string;
-  /** Collis: rear ribbon to the card reader. SmartStripe: USB plugged into the shelf Pi. */
+  /** Kallus host (Windows NUC / Minix) driving this probe. */
+  kallusHostId: string;
+  /** Kollis: rear ribbon to the card reader. SmartStripe: USB plugged into the shelf Pi. */
   ribbonConnected: boolean;
   supply: PowerHookup;
   powered: boolean;
   damaged: boolean;
-  /** Card currently loaded by Callus (CardProfile.id). */
+  /** Card currently loaded by Kallus (CardProfile.id). */
   loadedProfileId: number | null;
   /** Last action presented to the device (atMs = game ms). */
   lastAction: { entry: CardEntry; atMs: number; ok: boolean; error: string | null } | null;
-  /** NEW — Collis probe or SmartStripe USB probe. */
-  kind: 'collis' | 'smartstripe';
+  /** NEW — Kollis probe or SmartStripe USB probe. */
+  kind: 'kollis' | 'smartstripe';
   /** NEW */
   state: 'OK' | 'FRIED';
   /** NEW — derived: off (no power) / amber (no ribbon link) / green. */
@@ -1301,16 +1301,16 @@ export interface CollisProbe {
   armed: { profileId: number; entry: CardEntry; deviceId: string; fireOnScreen: ScreenName; expiresPhysMs: number } | null;
 }
 
-export interface CallusState {
-  /** Local Gort clone per Windows box (GortCardSync). Keyed by host id. syncedAtMs = game ms. */
+export interface KallusState {
+  /** Local Gorth clone per Windows box (GorthCardSync). Keyed by host id. syncedAtMs = game ms. */
   localCardFiles: Record<string, { syncedCommit: string; syncedAtMs: number; files: string[] }>;
-  /** NEW — per box, Callus service log tail (cap 50). */
+  /** NEW — per box, Kallus service log tail (cap 50). */
   log: Record<string, string[]>;
 }
 
 /* ────────────────────────────── Git / GitHub ────────────────────────────── */
 
-export type RepoId = 'gort' | 'uia-remote' | 'pigeon' | 'orchestrator';
+export type RepoId = 'gorth' | 'uia-relay' | 'parrot' | 'orchestrator';
 
 export interface GitCommit {
   /** 40 hex (FNV-1a based, Sim §3.22.1); UIs show the first 7. */
@@ -1368,7 +1368,7 @@ export interface PullRequest {
 export interface GitRepo {
   id: RepoId;
   name: string;
-  /** "git@github.com:labsim-lab/gort.git" */
+  /** "git@github.com:labsim-lab/gorth.git" */
   remoteUrl: string;
   description: string;
   defaultBranch: string;
@@ -1380,7 +1380,7 @@ export interface GitRepo {
   pullRequests: PullRequest[];
   /** Workstation clone (IntelliJ / terminal). null = not cloned yet. */
   local: null | {
-    path: string; // "~/IdeaProjects/uia-remote"
+    path: string; // "~/IdeaProjects/uia-relay"
     branch: string;
     headSha: string;
     /** Working tree: path → contents (includes git-ignored files such as config.properties). */
@@ -1412,10 +1412,10 @@ export const FAILURE_CODES = [
   'ROBOT_BLOCKED',
   'CAPABILITY_MISMATCH',
   'PIN_NEEDS_PHYSICAL',
-  'ORCA_DOWN',
-  'ORCA_DB_DOWN',
-  'LAZ_FAILED',
-  'UBI_ROUTE',
+  'ORKA_DOWN',
+  'ORKA_DB_DOWN',
+  'LAZO_FAILED',
+  'UBO_ROUTE',
   'MERCHANT_MISMATCH',
   'CONFIG_INVALID',
   'ADB_CONNECT',
@@ -1450,14 +1450,14 @@ export interface JobParam {
   description: string;
 }
 
-/** Runner implementation of a job / local run. ('gort-sync' kept for compatibility; unused in v2.) */
-export type RunnerKind = 'uia-remote' | 'pigeon' | 'go-sdk' | 'laz' | 'vision' | 'ios' | 'gort-sync';
+/** Runner implementation of a job / local run. ('gorth-sync' kept for compatibility; unused in v2.) */
+export type RunnerKind = 'uia-relay' | 'parrot' | 'go-sdk' | 'lazo' | 'vision' | 'ios' | 'gorth-sync';
 
 /** NEW — one compiled runner step (Sim §3.19–§3.21). */
 export interface RunnerStep {
   id: string;
   label: string;
-  role: 'MFD' | 'CFD' | 'DEVICE' | 'ORCA' | 'SETUP';
+  role: 'MFD' | 'CFD' | 'DEVICE' | 'ORKA' | 'SETUP';
   op: string;
   args: Record<string, string | number | boolean>;
 }
@@ -1469,7 +1469,7 @@ export interface RunnerState {
   steps: RunnerStep[];
   /** Program counter into `steps`. */
   pc: number;
-  /** Pigeon stored outputs, env, runner variables (RECEIPT_SCREEN). */
+  /** Parrot stored outputs, env, runner variables (RECEIPT_SCREEN). */
   vars: Record<string, string>;
   focus: 'MFD' | 'CFD' | 'DEVICE' | null;
   /** "ip:port" actually connected (may be a coworker device!). */
@@ -1481,7 +1481,7 @@ export interface RunnerState {
 }
 
 export interface JenkinsJob {
-  /** Full path id, e.g. "Java/uia-remote-regression-flux". */
+  /** Full path id, e.g. "Java/uia-relay-regression-flux". */
   id: string;
   /** Legacy platform split: "Java" | "iOS" (every job lives in exactly one). */
   folder: string;
@@ -1495,7 +1495,7 @@ export interface JenkinsJob {
   capabilityLookup: CapabilityLookup;
   /** Derived from the script (display only). */
   requiredCapabilities: string[];
-  /** Test definition: repo + path (pigeon JSON, uia-remote test class, gort go-sdk JSON). */
+  /** Test definition: repo + path (parrot JSON, uia-relay test class, gorth go-sdk JSON). */
   testRef: { repo: RepoId; path: string } | null;
   /** Schedule label (e.g. "H 2 * * *"), game-clock driven. */
   schedule: string | null;
@@ -1542,7 +1542,7 @@ export interface JenkinsBuild {
   stages: BuildStage[];
   /** Cap 400 lines (middle elided "… N lines skipped …"). */
   console: string[];
-  /** Robot checked out from Orca for this build. */
+  /** Robot checked out from Orka for this build. */
   robotId: number | null;
   /** One of FAILURE_CODES (Sim §3.18.6) or null. */
   failureCode: string | null;
@@ -1562,7 +1562,7 @@ export interface JenkinsBuild {
 export interface JenkinsState {
   up: boolean;
   url: string;
-  /** Key = full path "Java/uia-remote-regression-flux". */
+  /** Key = full path "Java/uia-relay-regression-flux". */
   jobs: Record<string, JenkinsJob>;
   /** Key = "<jobPath>#<n>"; cap 20 per job. */
   builds: Record<string, JenkinsBuild>;
@@ -1580,7 +1580,7 @@ export interface JenkinsState {
 export interface LocalRun {
   /** "run-<seq.run>". */
   id: string;
-  repo: 'uia-remote' | 'pigeon';
+  repo: 'uia-relay' | 'parrot';
   testName: string;
   testPath: string;
   robotName: string | null;
@@ -1603,11 +1603,11 @@ export interface LocalRunState {
   runs: Record<string, LocalRun>;
 }
 
-/* ────────────────────────────── Laz / Ubi / Ollama / printers / chat ────────────────────────────── */
+/* ────────────────────────────── Lazo / Ubo / Ollama / printers / chat ────────────────────────────── */
 
-export type LazStep =
+export type LazoStep =
   | 'queued'
-  | 'ubi-route'
+  | 'ubo-route'
   | 'deprovision'
   | 'wipe-cache'
   | 'setup-wizard'
@@ -1617,12 +1617,12 @@ export type LazStep =
   | 'done'
   | 'failed';
 
-export interface LazRun {
+export interface LazoRun {
   id: string;
   deviceId: string;
   fromMerchantId: number | null;
   toMerchantId: number;
-  step: LazStep;
+  step: LazoStep;
   progress: number;
   /** Game ms. */
   startedMs: number;
@@ -1634,12 +1634,12 @@ export interface LazRun {
   stepEndsPhysMs: number | null;
   /** NEW — owning Jenkins build, if any. */
   buildId: string | null;
-  /** NEW — fault laz.skipAdbRestore (INC28). */
+  /** NEW — fault lazo.skipAdbRestore (INC28). */
   skipAdbRestore: boolean;
 }
 
-/** NEW — Ubi routing (Sim §1.13, §3.17.3). */
-export interface UbiState {
+/** NEW — Ubo routing (Sim §1.13, §3.17.3). */
+export interface UboState {
   /** "us-east", "ca-central". */
   routes: Record<string, { region: MerchantRegion; up: boolean }>;
   log: string[];
@@ -1696,7 +1696,7 @@ export interface Printer3dState {
 
 export interface ChatMessage {
   id: string;
-  channel: string; // "#lab-automation", "#orca-alerts", "#jenkins", "dm:jared"
+  channel: string; // "#lab-automation", "#orka-alerts", "#jenkins", "dm:jaden"
   author: string;
   text: string;
   /** Game ms. */
@@ -1771,23 +1771,23 @@ export interface LabState {
   /** Core RNG stream (the one TxContext.random() draws from). */
   rng: RngState;
   flags: LabFlags;
-  orca: OrcaDb;
+  orka: OrkaDb;
   /** Key = robot Name; all 42 rigs (off-screen ones have `offscreen: true`). */
   rigs: Record<string, RigState>;
-  /** Key = runtime id "dev-<orca device name>" (spares "dev-spare-<model>"). */
+  /** Key = runtime id "dev-<orka device name>" (spares "dev-spare-<model>"). */
   devices: Record<string, TerminalDevice>;
   /** Pis, Windows boxes, VMs, blade, workstation, coworker devices, switch. */
   hosts: Record<string, Host>;
   workstation: WorkstationState;
   power: PowerState;
-  /** Collis probes and SmartStripe probes. */
-  collis: Record<string, CollisProbe>;
-  callus: CallusState;
+  /** Kollis probes and SmartStripe probes. */
+  kollis: Record<string, KollisProbe>;
+  kallus: KallusState;
   /** sim-devops. */
   repos: Record<RepoId, GitRepo>;
   /** sim-devops. */
   jenkins: JenkinsState;
-  laz: { runs: Record<string, LazRun> };
+  lazo: { runs: Record<string, LazoRun> };
   /** sim-devops. */
   ollama: OllamaState;
   chat: { messages: ChatMessage[]; unread: Record<string, number> };
@@ -1801,8 +1801,8 @@ export interface LabState {
   network: NetworkState;
   /** NEW — IntelliJ runs (sim-devops). */
   local: LocalRunState;
-  /** NEW — Ubi routes. */
-  ubi: UbiState;
+  /** NEW — Ubo routes. */
+  ubo: UboState;
   /** NEW — 3D printers. */
   printer3d: Printer3dState;
   /** NEW — scheduled callbacks. */

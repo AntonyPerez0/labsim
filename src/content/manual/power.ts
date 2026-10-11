@@ -33,7 +33,7 @@ export const POWER_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
 
 ## The exception you must never forget
 
-LabSim devices draw an irregular **18V**. LabSim terminals and the expensive Collis probes **bypass the custom DC rails entirely** and plug into **commercial AC power strips** to prevent frying components {F228} {F229}. See [[power-18v-exception]].
+LabSim devices draw an irregular **18V**. LabSim terminals and the expensive Kollis probes **bypass the custom DC rails entirely** and plug into **commercial AC power strips** to prevent frying components {F228} {F229}. See [[power-18v-exception]].
 
 | Load | Power source |
 |---|---|
@@ -41,7 +41,7 @@ LabSim devices draw an irregular **18V**. LabSim terminals and the expensive Col
 | Intel NUC | 12V DC line |
 | Mean Well transformer | 120V AC wall power |
 | LabSim terminal | Commercial AC power strip (its own power supply) |
-| Collis probe | Commercial AC power strip |
+| Kollis probe | Commercial AC power strip |
 
 ## On the power wall†
 
@@ -63,34 +63,34 @@ LabSim devices draw an irregular **18V**. LabSim terminals and the expensive Col
   },
   {
     id: "power-18v-exception",
-    title: "The 18V Exception: terminals & Collis on AC Strips",
+    title: "The 18V Exception: terminals & Kollis on AC Strips",
     category: "Power",
-    summary: "LabSim devices draw an irregular 18V, so they — and the expensive Collis probes — never touch the lab's DC rails. They plug into commercial AC power strips. Every time.",
+    summary: "LabSim devices draw an irregular 18V, so they — and the expensive Kollis probes — never touch the lab's DC rails. They plug into commercial AC power strips. Every time.",
     factIds: ["F228", "F229", "F069", "F074"],
     tags: ["power.rails", "power.18v"],
-    related: ["power-distribution", "collis-probes", "lab-tour"],
-    keywords: ["18V", "AC power strip", "fried", "Collis probe", "LabSim terminal", "DC rail", "24V tap", "magic smoke"],
+    related: ["power-distribution", "kollis-probes", "lab-tour"],
+    keywords: ["18V", "AC power strip", "fried", "Kollis probe", "LabSim terminal", "DC rail", "24V tap", "magic smoke"],
     practice: ["INC17", "INC18", "DR04"],
     body: `## The rule
 
-> **Warning:** LabSim terminals and Collis probes go on the **commercial AC power strips** — never the 24V rail, the 12V line or the 5V line.
+> **Warning:** LabSim terminals and Kollis probes go on the **commercial AC power strips** — never the 24V rail, the 12V line or the 5V line.
 
 ## Why
 
 - LabSim devices draw an **irregular 18V** {F228}. None of the lab's custom DC lines (24V, 12V, 5V) match it.
-- Both LabSim terminals and the **expensive Collis probes** bypass the custom DC rails entirely and plug into commercial AC power strips **to prevent frying components** {F229}.
-- Collis probes are high-cost proprietary card emulators {F069} — the most expensive thing on the shelf to get wrong.
+- Both LabSim terminals and the **expensive Kollis probes** bypass the custom DC rails entirely and plug into commercial AC power strips **to prevent frying components** {F229}.
+- Kollis probes are high-cost proprietary card emulators {F069} — the most expensive thing on the shelf to get wrong.
 
 ## What it looks like in practice
 
 | You are holding… | Plug it into… |
 |---|---|
 | A new Flux 4 power brick | The commercial AC strip |
-| A spare Collis probe's power supply | The commercial AC strip |
+| A spare Kollis probe's power supply | The commercial AC strip |
 | A Raspberry Pi lead | The 5V 10A line (rack distribution) |
 | A NUC's DC lead | The 12V line |
 
-"The AC strip is full, can I use the spare 24V tap?" — No. Free an outlet on the strip, or ask {{jared}} for another strip. The Mean Well's 24V rail {F074} feeds the regulators and motors, not terminals.
+"The AC strip is full, can I use the spare 24V tap?" — No. Free an outlet on the strip, or ask {{jaden}} for another strip. The Mean Well's 24V rail {F074} feeds the regulators and motors, not terminals.
 
 > **In the sim:** In the Academy a wrong plug only sparks and the lead pops out. In the Arcade the device fries (−500 points and a strike) and the branch fuse can blow.
 `,
@@ -115,7 +115,7 @@ Inline fuses protect the 12V and 5V DC lines that come off the step-down regulat
 2. **Measure.** Put the multimeter across the suspect fuse (or measure voltage before and after it). A blown fuse reads **OL** (open) in continuity/resistance mode, or full voltage on one side and 0 V on the other.
 3. **De-energise.** Turn the branch off (regulator input or the bay's MAIN) before pulling a fuse. Measure resistance only with power off.
 4. **Replace with the rating on the holder label** — the sim's 5V and 12V lines use 10 A blade fuses†.
-5. **Verify.** Pi LEDs light, the Pis boot, and the next Orca health check flips the robots back from Connection Failed.
+5. **Verify.** Pi LEDs light, the Pis boot, and the next Orka health check flips the robots back from Connection Failed.
 
 > **Illustrative (sim only):** Fuse ratings, colours and holder labels are the sim's†. Safe-practice steps (power off before servicing, measure resistance de-energised) are general electrical practice.
 

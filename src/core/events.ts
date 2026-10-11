@@ -53,11 +53,11 @@ export interface EventMap {
   /* ── UI / apps ── */
   /** An overlay was opened or closed. */
   'ui.overlayChanged': { from: string; to: string };
-  /** A computer app navigated to a route (e.g. app "orca", route "/entities/merchant-config/3/edit"). */
+  /** A computer app navigated to a route (e.g. app "orka", route "/entities/merchant-config/3/edit"). */
   'app.navigated': { app: string; route: string };
   /** A computer app was opened (window created/focused). */
   'app.opened': { app: string };
-  /** Generic UI action inside an app that lessons may wait for (e.g. "orca.clickEdit"). */
+  /** Generic UI action inside an app that lessons may wait for (e.g. "orka.clickEdit"). */
   'app.action': { app: string; action: string; data?: Record<string, unknown> };
   /** A Field Manual entry was unlocked ("New entry" sparkle). */
   'manual.entryUnlocked': { entryId: string; source: string };
@@ -140,8 +140,8 @@ export interface EventMap {
   /** Process bonus (GP §3.3). */
   'pb.awarded': { pbId: string; points: number; ticketId: string | null };
   'teachCard.shown': { teachCardId: string; trigger: string; ref: string };
-  /** Jared walked over and performed an escalated fix (narration lines are chat/dialogue). */
-  'npc.jaredFix': { ticketId: string; phase: 'started' | 'finished' };
+  /** Jaden walked over and performed an escalated fix (narration lines are chat/dialogue). */
+  'npc.jadenFix': { ticketId: string; phase: 'started' | 'finished' };
 
   /* ── Drills ── */
   'drill.started': { drillId: string; mode: string | null; daily: boolean };

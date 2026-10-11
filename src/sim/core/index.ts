@@ -1,5 +1,5 @@
 /**
- * sim-core — the physical lab + Orca half of the simulation (Sim = docs/design/40-simulation.md).
+ * sim-core — the physical lab + Orka half of the simulation (Sim = docs/design/40-simulation.md).
  *
  * This barrel is the documented helper surface for code outside `src/sim/core` (the impl wiring, and
  * sim-devops' terminal / runners when `CoreServices` does not cover a read). Rules for callers:
@@ -19,9 +19,9 @@ export { hostsStep } from './hosts';
 export { networkStep } from './network';
 export { rigsStep } from './rigs';
 export { devicesStep } from './devices';
-export { collisStep } from './collis';
-export { orcaStep } from './orca/sync';
-export { lazStep, printer3dStep } from './laz';
+export { kollisStep } from './kollis';
+export { orkaStep } from './orka/sync';
+export { lazoStep, printer3dStep } from './lazo';
 export { faultsStep } from './faults/engine';
 
 /* ── network & workstation ADB (Sim §1.9, §3.15) ── */
@@ -43,10 +43,10 @@ export {
   hostCleanDisk,
   hostRunSchedTask,
   diskFreeGb,
-  callusScreenText,
+  kallusScreenText,
   parseControllerYaml,
-  gortMainCardFiles,
-  gortCardFilesAt,
+  gorthMainCardFiles,
+  gorthCardFilesAt,
   corp_LOGS,
   DEBUG_LOG,
 } from './hosts';
@@ -54,18 +54,18 @@ export {
 /* ── power (Sim §3.13) ── */
 export { measure, moveToOutlet, plug, unplug, removeFuse, insertFuse, replaceFuse, toggleStrip, togglePsu, toggleRegulator, resetBreaker, fuseBranchLive } from './power';
 
-/* ── Orca (Sim §3.2–§3.6, §3.23) ── */
-export { orcaDown, robotByName, setRobotStatus, noteDisplayText, manualCheckoutToast, STATUSES } from './orca/status';
-export { piHealth, piIpOf, runHealthCheck } from './orca/health';
-export { capabilityDocument, checkout, release, matchPreview, parseCapsJson, isDeviceTypeConstant, summary, firstMismatch, CANONICAL_KEYS } from './orca/checkout';
-export { xyTouch, xyTouchLine, xyTarget } from './orca/xyTouch';
-export { rigOf, saveRobot, saveDevice, saveCapability, saveMerchant, saveScreen, saveScreenLocation, saveCardProfile, saveScreenCompareImage, deleteEntity, resolveNote, addManualNote } from './orca/entities';
-export { syncScreenLocationFile, syncAllFromGort } from './orca/sync';
-export { http, orcaRest } from './rest';
+/* ── Orka (Sim §3.2–§3.6, §3.23) ── */
+export { orkaDown, robotByName, setRobotStatus, noteDisplayText, manualCheckoutToast, STATUSES } from './orka/status';
+export { piHealth, piIpOf, runHealthCheck } from './orka/health';
+export { capabilityDocument, checkout, release, matchPreview, parseCapsJson, isDeviceTypeConstant, summary, firstMismatch, CANONICAL_KEYS } from './orka/checkout';
+export { xyTouch, xyTouchLine, xyTarget } from './orka/xyTouch';
+export { rigOf, saveRobot, saveDevice, saveCapability, saveMerchant, saveScreen, saveScreenLocation, saveCardProfile, saveScreenCompareImage, deleteEntity, resolveNote, addManualNote } from './orka/entities';
+export { syncScreenLocationFile, syncAllFromGorth } from './orka/sync';
+export { http, orkaRest } from './rest';
 
-/* ── probes, Callus, Laz, printers (Sim §3.6, §3.16, §3.17, §3.24) ── */
-export { cardAction, callusStatusBody, probeState, reseatRibbon } from './collis';
-export { startLaz, printerStart } from './laz';
+/* ── probes, Kallus, Lazo, printers (Sim §3.6, §3.16, §3.17, §3.24) ── */
+export { cardAction, kallusStatusBody, probeState, reseatRibbon } from './kollis';
+export { startLazo, printerStart } from './lazo';
 
 /* ── devices (Sim §3.8–§3.11) ── */
 export {

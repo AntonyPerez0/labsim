@@ -128,6 +128,6 @@ export type CertPracticalDef =
       simultaneousAtGameMin?: number;
       /** R5: no HUD objective text. */
       hudObjectives: boolean;
-      /** R4: ≥ 1 hardware, ≥ 1 Orca, ≥ 1 code/config incident. */
-      requireCategories?: readonly ('hardware' | 'orca' | 'code-config')[];
+      /** R4: ≥ 1 hardware, ≥ 1 Orka, ≥ 1 code/config incident. */
+      requireCategories?: readonly ('hardware' | 'orka' | 'code-config')[];
     };

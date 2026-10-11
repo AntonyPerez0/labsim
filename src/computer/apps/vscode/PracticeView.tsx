@@ -1,5 +1,5 @@
 /**
- * Pigeon Practice side bar (an "extension" view): exercise list with best times, the current exercise's brief,
+ * Parrot Practice side bar (an "extension" view): exercise list with best times, the current exercise's brief,
  * Check / Hint / New variant, goal checklist and the known-good action lines to copy.
  */
 import { useState } from 'react';
@@ -46,7 +46,7 @@ function Rich({ text }: { text: string }) {
 }
 
 export function PracticeView({ model }: { model: VsModel }) {
-  const stats = useGame((s) => s.progress.pigeonPractice);
+  const stats = useGame((s) => s.progress.parrotPractice);
   const [showRef, setShowRef] = useState(false);
   const p = model.practice;
   const ex = p ? EXERCISES_BY_ID[p.exerciseId] : null;
@@ -54,13 +54,13 @@ export function PracticeView({ model }: { model: VsModel }) {
 
   return (
     <div className="vsc-view vsc-practice">
-      <div className="vsc-view__title">PIGEON PRACTICE</div>
+      <div className="vsc-view__title">PARROT PRACTICE</div>
       {p && ex ? (
         <div className="vsc-practice__cur">
           <div className="vsc-practice__title">
             {ex.title} <span className={`vsc-chip vsc-chip--l${ex.level}`}>{ex.topic}</span>
           </div>
-          <div className="vsc-practice__file vsc-dim vsc-small">pigeon-practice/{p.file}</div>
+          <div className="vsc-practice__file vsc-dim vsc-small">parrot-practice/{p.file}</div>
           {((p.ctx['brief'] as string[] | undefined) ?? []).map((l, i) => (
             <p key={i} className="vsc-practice__brief">
               <Rich text={l} />
@@ -119,7 +119,7 @@ export function PracticeView({ model }: { model: VsModel }) {
         </div>
       ) : (
         <p className="vsc-view__pad vsc-dim vsc-small">
-          Repeatable drills for editing Pigeon JSON tests the way the team does: fix syntax, plumb variables, swap card profiles, map receipt screens, build tests from known-good lines. Each start generates a new variant.
+          Repeatable drills for editing Parrot JSON tests the way the team does: fix syntax, plumb variables, swap card profiles, map receipt screens, build tests from known-good lines. Each start generates a new variant.
         </p>
       )}
 
@@ -143,7 +143,7 @@ export function PracticeView({ model }: { model: VsModel }) {
       </div>
       {showRef ? (
         <div className="vsc-practice__ref">
-          <p className="vsc-dim vsc-small">Copy whole lines instead of typing JSON (also in pigeon/tests/_templates/known_good_actions.json).</p>
+          <p className="vsc-dim vsc-small">Copy whole lines instead of typing JSON (also in parrot/tests/_templates/known_good_actions.json).</p>
           {KNOWN_GOOD.map((l) => (
             <div key={l} className="vsc-practice__refline" title="Click to copy" onClick={() => getWindowManager()?.clipboard.write(l, 'vscode')}>
               <code>{l}</code>

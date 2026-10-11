@@ -7,6 +7,6 @@
 import './events';
 export * from './types';
 export type * from './api';
-export type { OrcaEntityName, RigCommandName, TouchResult } from './events';
+export type { OrkaEntityName, RigCommandName, TouchResult } from './events';
 export { sim } from './impl';
-export { createInitialLabState, createEmptyLabState, createDisplayState, createOrderState, createRigState, createTerminalDevice, createHost, createOrcaRobot } from './initialState';
+export { createInitialLabState, createEmptyLabState, createDisplayState, createOrderState, createRigState, createTerminalDevice, createHost, createOrkaRobot } from './initialState';

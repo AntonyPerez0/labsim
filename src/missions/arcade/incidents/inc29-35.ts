@@ -1,5 +1,5 @@
 /**
- * GP §3.5 INC29–INC35: uia-remote config locks (theme/kernelType, Duet IPs), reserving before a local
+ * GP §3.5 INC29–INC35: uia-relay config locks (theme/kernelType, Duet IPs), reserving before a local
  * run, waitForScreen(), open() scroll direction, a PR review and the missing teardown.
  */
 import type { IncidentDef } from '../../types';
@@ -21,7 +21,7 @@ import {
   wm,
 } from './helpers';
 
-const ALEX_CFG = '~/CodeWithMe/alex/uia-remote/config.properties';
+const ALEX_CFG = '~/CodeWithMe/alex/uia-relay/config.properties';
 
 export const INC29: IncidentDef = {
   id: 'INC29',
@@ -79,13 +79,13 @@ export const INC30: IncidentDef = {
   rigs: { roles: ['duet'], default: 'r2-d2', scope: 'rig', describe: '`duet` (R2-D2, already Reserved by you)' },
   escalatable: false,
   unlockedBy: 'M14',
-  tags: ['uia.config', 'orca.tethered', 'uia.multidevice'],
+  tags: ['uia.config', 'orka.tethered', 'uia.multidevice'],
   factIds: ['F193', 'F190', 'F191', 'F192', 'F151'],
   ticket: { title: (b) => `Run TaxTestDuet locally on ${hrn(b)} — it can't find the customer display`, reporter: 'morgan' },
   setup: () => ({
     scenario: [
-      OP('orca.setStatus', { robot: '$R', status: 'RESERVED', by: 'player' }),
-      OP('repo.clone', { repo: 'uia-remote' }),
+      OP('orka.setStatus', { robot: '$R', status: 'RESERVED', by: 'player' }),
+      OP('repo.clone', { repo: 'uia-relay' }),
       OP('config.write', { fixture: 'target', robot: '$R' }),
       F('config.value', { key: 'customerFacingDeviceIp', value: '10.42.30.19' }),
     ],
@@ -133,23 +133,23 @@ export const INC31: IncidentDef = {
   rigs: { roles: ['tethered'], default: 'megatron', scope: 'rig', describe: 'tethered/any (default MEGATRON)' },
   escalatable: false,
   unlockedBy: 'M06',
-  tags: ['orca.status.reserved', 'tools.intellij', 'uia.taxtest'],
+  tags: ['orka.status.reserved', 'tools.intellij', 'uia.taxtest'],
   factIds: ['F112', 'F113', 'F028', 'F183', 'F185', 'F186', 'F187'],
   ticket: { title: (b) => `Please run TaxTest locally on ${hrn(b)} to verify my fix`, reporter: 'morgan' },
-  setup: () => ({ scenario: [OP('repo.clone', { repo: 'uia-remote' }), OP('config.write', { fixture: 'target', robot: '$R' })] }),
+  setup: () => ({ scenario: [OP('repo.clone', { repo: 'uia-relay' }), OP('config.write', { fixture: 'target', robot: '$R' })] }),
   reveal: 'immediate',
   symptoms: [
-    sym('Orca', (b) => `${hrn(b)} is Available; PL2 checks out a tethered rig every 30 s.`),
-    sym('Jenkins', (b) => `While you hold it: [orca] candidate ${rig(b)}: Reserved — skipped`),
+    sym('Orka', (b) => `${hrn(b)} is Available; PL2 checks out a tethered rig every 30 s.`),
+    sym('Jenkins', (b) => `While you hold it: [orka] candidate ${rig(b)}: Reserved — skipped`),
     sym('IDE', 'TaxTest PASSED (4/4 steps) — MFD_O1 / CFD_O1 / MFD_O2 / Step 4.'),
   ],
   diagnosisPath: ['Before running locally, take the rig away from Jenkins: Reserved.', 'Run TaxTest from IntelliJ and watch the four steps.', 'Release the rig back to Available.'],
   hints: [
     'Jenkins will happily check this rig out in the middle of your run. How do you stop that?',
-    (b) => `Orca → ${hrn(b)} → Status = Reserved, then IntelliJ ▶ TaxTest.`,
-    (b) => `Reserved → run TaxTest (≈ 25 s) → PASS → Orca → ${hrn(b)} → Available.`,
+    (b) => `Orka → ${hrn(b)} → Status = Reserved, then IntelliJ ▶ TaxTest.`,
+    (b) => `Reserved → run TaxTest (≈ 25 s) → PASS → Orka → ${hrn(b)} → Available.`,
   ],
-  fix: { handsOn: (b) => `Orca → ${hrn(b)} → Reserved → IntelliJ ▶ TaxTest (≈ 25 s; log TaxTest PASSED (4/4 steps)) → Orca → Available.` },
+  fix: { handsOn: (b) => `Orka → ${hrn(b)} → Reserved → IntelliJ ▶ TaxTest (≈ 25 s; log TaxTest PASSED (4/4 steps)) → Orka → Available.` },
   success: (b) =>
     c.all(
       c.eq(p.localRun('TaxTest').result, 'PASS'),
@@ -160,7 +160,7 @@ export const INC31: IncidentDef = {
     ),
   diagnosisCall: dc(
     (b) => `Set ${hrn(b)} to Reserved`,
-    ['Unavailable', 'Unavailable still lets named jobs take the rig, and Orca resets it afterwards. Which status is for local runs?'],
+    ['Unavailable', 'Unavailable still lets named jobs take the rig, and Orka resets it afterwards. Which status is for local runs?'],
     ['Offline', 'Offline is the placeholder while a rig is being built.'],
     ['Nothing', 'PL2 checks out an Available tethered rig every 30 s. What happens mid-run?'],
   ),
@@ -171,7 +171,7 @@ export const INC31: IncidentDef = {
       'no-reserve',
       'Run without reserving',
       200,
-      on('test.localRunStarted', { testName: 'TaxTest' }, (pl, s) => boundTo(s, 'INC31', pl.robotName) && Object.values(s.lab.orca.robots).find((r) => r.name === pl.robotName)?.status !== 'RESERVED'),
+      on('test.localRunStarted', { testName: 'TaxTest' }, (pl, s) => boundTo(s, 'INC31', pl.robotName) && Object.values(s.lab.orka.robots).find((r) => r.name === pl.robotName)?.status !== 'RESERVED'),
       teach('PL2 checked the rig out mid-run.', 'Reserved blocks Jenkins pipelines while you run locally. (Ref §3)', 'Reserve first, then run.'),
     ),
     wm('no-release', 'Forget to release', 0, undefined, teach('PL2 stays blocked.', 'Reserved blocks Jenkins until you release it.', 'Set the rig back to Available after the run.')),
@@ -235,13 +235,13 @@ export const INC33: IncidentDef = {
   rigs: { candidates: ['tars'], default: 'tars', scope: 'rig', describe: 'Flux rigs, local run (default TARS, Reserved)' },
   escalatable: false,
   unlockedBy: 'M13',
-  tags: ['uia.scroll', 'uia.config', 'orca.devicetype'],
+  tags: ['uia.scroll', 'uia.config', 'orka.devicetype'],
   factIds: ['F177', 'F195', 'F176'],
   ticket: { title: (b) => `My local HomeScreenTest on ${hrn(b)} can't find the Register app`, reporter: 'alex' },
   setup: () => ({
     scenario: [
-      OP('orca.setStatus', { robot: '$R', status: 'RESERVED', by: 'alex' }),
-      OP('repo.clone', { repo: 'uia-remote' }),
+      OP('orka.setStatus', { robot: '$R', status: 'RESERVED', by: 'alex' }),
+      OP('repo.clone', { repo: 'uia-relay' }),
       OP('config.write', { fixture: 'target', robot: '$R' }),
       F('config.value', { key: 'deviceType', value: 'Micro' }),
     ],
@@ -285,8 +285,8 @@ export const INC34: IncidentDef = {
   unlockedBy: 'M13',
   tags: ['uia.layout', 'uia.sync', 'adb.port', 'tools.github', 'uia.pom'],
   factIds: ['F164', 'F179', 'F180', 'F198', 'F173'],
-  ticket: { title: "Review labsim-lab/uia-remote PR #431 'Add LockScreen page object'", reporter: 'alex' },
-  setup: () => ({ scenario: [OP('github.seedPr', { repo: 'uia-remote', number: 431, fixture: 'uia-431-lockscreen', author: 'alex', title: 'Add LockScreen page object' })] }),
+  ticket: { title: "Review labsim-lab/uia-relay PR #431 'Add LockScreen page object'", reporter: 'alex' },
+  setup: () => ({ scenario: [OP('github.seedPr', { repo: 'uia-relay', number: 431, fixture: 'uia-431-lockscreen', author: 'alex', title: 'Add LockScreen page object' })] }),
   reveal: 'immediate',
   symptoms: [
     sym('GitHub', 'app/src/main/java/com/labsim/uia/AppRegistration.java +2 lines'),
@@ -302,16 +302,16 @@ export const INC34: IncidentDef = {
   fix: { handsOn: 'Line comments with the review reasons QA never modifies main, Missing mandatory isScreenPresent(), portNumber must be 5444 → Request changes.' },
   success: () =>
     c.all(
-      c.contains(p.pr('uia-remote', 431).commentTags, 'main-edit'),
-      c.contains(p.pr('uia-remote', 431).commentTags, 'missing-isScreenPresent'),
-      c.contains(p.pr('uia-remote', 431).commentTags, 'port-5555'),
-      c.notContains(p.pr('uia-remote', 431).commentTags, 'extends-BaseTest'),
-      c.eq(p.pr('uia-remote', 431).verdict, 'REQUEST_CHANGES'),
+      c.contains(p.pr('uia-relay', 431).commentTags, 'main-edit'),
+      c.contains(p.pr('uia-relay', 431).commentTags, 'missing-isScreenPresent'),
+      c.contains(p.pr('uia-relay', 431).commentTags, 'port-5555'),
+      c.notContains(p.pr('uia-relay', 431).commentTags, 'extends-BaseTest'),
+      c.eq(p.pr('uia-relay', 431).verdict, 'REQUEST_CHANGES'),
     ),
   diagnosisCall: 'none',
   wrongButTempting: [
-    wm('approve', 'Approve', 200, on('github.prReviewed', { repo: 'uia-remote', number: 431, verdict: 'APPROVED' }), teach('It merged — and its port 5555 config will bite later.', 'main is never modified by QA; every screen class needs waitForScreen() and isScreenPresent(); portNumber is 5444. (Ref §4)', 'Request changes with those three reasons.')),
-    wm('flag-basetest', 'Flag "extends BaseTest"', 50, on('github.prCommented', { repo: 'uia-remote', number: 431, reason: 'extends-BaseTest' }), teach('False flag.', 'Every screen class extends BaseTest, which provides setup, teardown and instance variables. (Ref §4)', 'Remove that comment.')),
+    wm('approve', 'Approve', 200, on('github.prReviewed', { repo: 'uia-relay', number: 431, verdict: 'APPROVED' }), teach('It merged — and its port 5555 config will bite later.', 'main is never modified by QA; every screen class needs waitForScreen() and isScreenPresent(); portNumber is 5444. (Ref §4)', 'Request changes with those three reasons.')),
+    wm('flag-basetest', 'Flag "extends BaseTest"', 50, on('github.prCommented', { repo: 'uia-relay', number: 431, reason: 'extends-BaseTest' }), teach('False flag.', 'Every screen class extends BaseTest, which provides setup, teardown and instance variables. (Ref §4)', 'Remove that comment.')),
   ],
   teaches: 'Ref §4: app/src/main is never modified by QA; waitForScreen() and isScreenPresent() are mandatory; portNumber is 5444.',
 };

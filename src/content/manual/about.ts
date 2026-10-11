@@ -10,35 +10,35 @@ export const ABOUT_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
     id: "who-is-who",
     title: "Who's Who & Who to Ask",
     category: "Lab Basics",
-    summary: "The people you will work with, what each one owns, and the escalation path — especially which problems go to {{jared}} and which are yours to fix.",
+    summary: "The people you will work with, what each one owns, and the escalation path — especially which problems go to {{jaden}} and which are yours to fix.",
     factIds: ["F111", "F116", "F130", "F133", "F138", "F159", "F214", "F252"],
     tags: ["people.roles", "lab.orientation"],
     related: ["lab-tour", "ts-connection-failed", "teams-and-history"],
-    keywords: ["mentor", "escalation", "{{jared}}", "{{tate}}", "{{david}}", "{{morgan}}", "{{riley}}", "{{sam}}", "{{alex}}", "contact"],
+    keywords: ["mentor", "escalation", "{{jaden}}", "{{nate}}", "{{devin}}", "{{morgan}}", "{{riley}}", "{{sam}}", "{{alex}}", "contact"],
     practice: ["INC01", "INC02", "DR14"],
     body: `## Mentors
 
 | Person | Owns | Ask them about |
 |---|---|---|
-| **{{jared}}** — hardware & lab lead | Builds the rigs; calibrated the lab hardware to a true (0,0) origin {F130}; merged the coordinate PR that ended the receipt-QR breakage {F214} | Connection Failed hardware escalations {F111}, power, rig mechanics, coordinate PRs |
-| **{{tate}}** — Orca developer | Built the custom filtering UI on Orca's Robot list {F116}; extended Merchant Config with App ID, App Secret and API Key {F138} | Robot statuses, Orca entities and fields, Merchant Config |
-| **{{david}}** — SDK frameworks | Oversees the SDK frameworks that use dynamic JSON capability lookups {F133}, including the Terminal SDK | Robot Capabilities, Go SDK pipelines |
-| **{{morgan}}** — uia-remote author (your onboarding mentor) | Created uia-remote because no prior framework could automate native tethered setups {F159} | uia-remote, config.properties, ADB, Pigeon, test design |
+| **{{jaden}}** — hardware & lab lead | Builds the rigs; calibrated the lab hardware to a true (0,0) origin {F130}; merged the coordinate PR that ended the receipt-QR breakage {F214} | Connection Failed hardware escalations {F111}, power, rig mechanics, coordinate PRs |
+| **{{nate}}** — Orka developer | Built the custom filtering UI on Orka's Robot list {F116}; extended Merchant Config with App ID, App Secret and API Key {F138} | Robot statuses, Orka entities and fields, Merchant Config |
+| **{{devin}}** — SDK frameworks | Oversees the SDK frameworks that use dynamic JSON capability lookups {F133}, including the Terminal SDK | Robot Capabilities, Go SDK pipelines |
+| **{{morgan}}** — uia-relay author (your onboarding mentor) | Created uia-relay because no prior framework could automate native tethered setups {F159} | uia-relay, config.properties, ADB, Parrot, test design |
 
-> **Illustrative (sim only):** The reference calls the uia-remote author "the presenter"; the game names that person {{morgan}}†. {{jared}}, {{tate}} and {{david}} are named in the reference.
+> **Illustrative (sim only):** The reference calls the uia-relay author "the presenter"; the game names that person {{morgan}}†. {{jaden}}, {{nate}} and {{devin}} are named in the reference.
 
 ## Coworkers you will meet in the Arcade†
 
 - **{{riley}}** — IPX QA engineer in the office. {{riley}}'s desk device listens on the default ADB port 5555, which is exactly why the lab uses 5444 ([[adb-port-5444]]).
-- **{{sam}}** — PayCore engineer who runs card matrices on ROSIE, a PayCore standalone rig kept **Unavailable** ([[orca-statuses]]).
+- **{{sam}}** — PayCrest engineer who runs card matrices on ROSIE, a PayCrest standalone rig kept **Unavailable** ([[orka-statuses]]).
 - **{{alex}}** — a new hire who copies old configs and asks good questions. Explaining things to {{alex}} is a good test of what you know.
 - **Jenkins Bot** — files tickets automatically when pipelines fail.
 
 ## The escalation path
 
-1. **Read the evidence first.** Orca's Notes (endpoint + error), the Jenkins console, the camera stream, the tablet banner. If you are still stuck after **15 minutes**, ask the team: that is the 15-minute rule {F252}.
-2. **Hardware Connection Failed → {{jared}}.** A crashed Pi board or a Minix box running Callus going offline is a hardware problem; escalate it with the endpoint and error text ([[ts-connection-failed]]).
-3. **Config problems are yours.** A wrong Merchant Config field, a lower-case \`DEVICE_TYPE\`, a 5555 in \`config.properties\`, a missing capability — fix them yourself. Bouncing config problems to {{jared}} wastes the lab's hardware time.
+1. **Read the evidence first.** Orka's Notes (endpoint + error), the Jenkins console, the camera stream, the tablet banner. If you are still stuck after **15 minutes**, ask the team: that is the 15-minute rule {F252}.
+2. **Hardware Connection Failed → {{jaden}}.** A crashed Pi board or a Minix box running Kallus going offline is a hardware problem; escalate it with the endpoint and error text ([[ts-connection-failed]]).
+3. **Config problems are yours.** A wrong Merchant Config field, a lower-case \`DEVICE_TYPE\`, a 5555 in \`config.properties\`, a missing capability — fix them yourself. Bouncing config problems to {{jaden}} wastes the lab's hardware time.
 4. **Never paper over a failed ping.** Manually setting a Connection Failed robot back to Available hides a real fault.
 5. **Ask before taking someone's rig.** Reserved rigs and active runs belong to the engineer running them.
 
@@ -52,26 +52,26 @@ export const ABOUT_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
     summary: "Every place LabSim compresses time, simplifies physics or invents a detail — so you know exactly which habits transfer to the real lab unchanged and which numbers are game-only.",
     factIds: ["F099", "F106", "F107", "F155", "F213", "F228", "F229", "F092", "F217"],
     tags: ["lab.orientation"],
-    related: ["illustrative-details", "orca-health-check", "lab-tour"],
+    related: ["illustrative-details", "orka-health-check", "lab-tour"],
     keywords: ["differences", "realism", "simplification", "illustrative", "sim only", "strict", "compressed", "time scale", "force health check"],
     body: `## Never simplified
 
 These behave exactly as in the real lab, in every mode — they are the point of the game:
 
-- The **five Orca statuses** and their rules ([[orca-statuses]]).
+- The **five Orka statuses** and their rules ([[orka-statuses]]).
 - The **health check** cadence: every 5 minutes, a dropped or non-200 ping means Connection Failed; Offline is skipped {F099} {F106} {F107}.
 - **ADB on port 5444**; 5555 is the default and the cause of the coworker collision ([[adb-port-5444]]).
-- The **power chain** and the 18V rule: LabSim devices and Collis probes only on commercial AC strips {F228} {F229}.
+- The **power chain** and the 18V rule: LabSim devices and Kollis probes only on commercial AC strips {F228} {F229}.
 - The **Device Type** enum is ALL CAPS and case-sensitive.
 - \`config.properties\` locks (\`theme=avocado\`, \`kernelType=CPA\`, \`portNumber=5444\`) and the Stand Duet same-IP rule.
 - The status tablet's tabs and buttons, the yellow banner after a manual move, and Park All.
-- uia-remote's folder layout, packages, page-object rules and the Tax test flow.
+- uia-relay's folder layout, packages, page-object rules and the Tax test flow.
 
 ## Compressed for play
 
 | Real world | In LabSim | Why |
 |---|---|---|
-| Health check every 5 real minutes | Every 5 **game** minutes. Arcade shifts run the clock at 5× (a ping every 60 real seconds). Academy and Free Play add Orca's tutorial **Force health check** button† and fast-forward ×30 | Waiting 5 real minutes is not fun; the rule (recovery appears at the next ping, Offline is skipped) is still taught and scored |
+| Health check every 5 real minutes | Every 5 **game** minutes. Arcade shifts run the clock at 5× (a ping every 60 real seconds). Academy and Free Play add Orka's tutorial **Force health check** button† and fast-forward ×30 | Waiting 5 real minutes is not fun; the rule (recovery appears at the next ping, Offline is skipped) is still taught and scored |
 | Jenkins runs take many minutes | About 60 real seconds per run in a shift | Pipelines stay visible inside a short shift |
 | A big lab | The room is compacted; fast-walk in shifts | Diagnosis is about thinking, not walking |
 | ~300 solder joints per robot {F092} | You re-seat connectors and sort bolts instead of soldering | Taught as a fact and a craft, not a grind |
@@ -102,11 +102,11 @@ These are deliberate shortcuts for determinism and play (the simulation design's
 | B16 | Render timing | Screens take a randomised time to render; without \`waitForScreen()\` a page object clicks too early at a fixed moment | Real render times vary more |
 | B17 | Code | Page-object code is checked by pattern-level "code facts", not compiled | A real compiler and runtime |
 | B18 | Two runners, one device | The first screen change by one makes the other's next wait or assertion fail | Real collisions are messier |
-| B19 | Laz / Ubi | OOBE steps take fixed times (≈ 53 s); Ubi resolves merchants from a table | |
-| B20 | Scheduled clone | Mirrors the card files from Gort's main branch exactly, in 20 s | |
+| B19 | Lazo / Ubo | OOBE steps take fixed times (≈ 53 s); Ubo resolves merchants from a table | |
+| B20 | Scheduled clone | Mirrors the card files from Gorth's main branch exactly, in 20 s | |
 | B21 | Security agent | The NUC's security agent fills the disk at a fixed rate and restores itself after tampering | |
 | B22 | Ollama | Answers are templated from the receipt's numbers; a "misread" is a seeded scenario, not model behaviour | A real model can be wrong in any way |
-| B23 | Reviewers | Scripted: {{jared}} checks coordinates to ±0.5 mm, {{morgan}} checks the listed code rules, {{tate}} never merges; each reacts 20 s after a PR opens | Real people |
+| B23 | Reviewers | Scripted: {{jaden}} checks coordinates to ±0.5 mm, {{morgan}} checks the listed code rules, {{nate}} never merges; each reacts 20 s after a PR opens | Real people |
 | B24 | Jenkins | Fixed stage durations, 8 executors, no agents or plugins beyond what is described | Real Jenkins |
 | B25 | adb | A subset of commands; one ADB server on your workstation; each device's ADB listens on exactly one TCP port | The full tool |
 | B26 | Device staging | Scenario set-up can drive a device to a screen instantly | |
@@ -137,38 +137,38 @@ Where the reference is silent, LabSim invents plausible details and marks them *
 
 | Id | Detail |
 |---|---|
-| S01 | Orca's pool has **42** rigs (the reference says "40+" {F115}); 12 are modelled in 3D. \`Gort\` is a repo, not a rig |
-| S02 | The host map: GPU blade \`10.42.1.5\`, Orca \`orca.lab.local\` → \`10.42.1.10:8080\` (MySQL schema \`orca\`, port 3306), Jenkins \`10.42.1.11:8080\`, Ollama \`10.42.1.12:11434\` (model \`llava\`), Robot Pis \`10.42.10.<n>\` (REST \`:8000\`, camera \`:8081/stream.mjpg\`), Callus boxes \`10.42.20.<n>:9000\`, LabSim devices \`10.42.30.<n>\`, your workstation \`10.42.50.17\`, coworker desk devices \`10.42.60.<n>\` |
+| S01 | Orka's pool has **42** rigs (the reference says "40+" {F115}); 12 are modelled in 3D. \`Gorth\` is a repo, not a rig |
+| S02 | The host map: GPU blade \`10.42.1.5\`, Orka \`orka.lab.local\` → \`10.42.1.10:8080\` (MySQL schema \`orka\`, port 3306), Jenkins \`10.42.1.11:8080\`, Ollama \`10.42.1.12:11434\` (model \`llava\`), Robot Pis \`10.42.10.<n>\` (REST \`:8000\`, camera \`:8081/stream.mjpg\`), Kallus boxes \`10.42.20.<n>:9000\`, LabSim devices \`10.42.30.<n>\`, your workstation \`10.42.50.17\`, coworker desk devices \`10.42.60.<n>\` |
 | S03 | The exact Device Type enum strings (\`FLUX_3\`, \`MICRO_3\`, \`STAND_DUET\`, …) and the shared profile name \`FLUX_GEN3\` |
-| S04 | The uia-remote author's name, {{morgan}} |
+| S04 | The uia-relay author's name, {{morgan}} |
 | S05 | The rig roster: which device sits in which rig, IPs and starting statuses |
-| S06 | REST paths: \`GET /health\` on the Pi, Orca \`POST /api/xy_touch\`, \`POST /api/card/{swipe,dip,tap}\`, Pi paths \`/adb\`, \`/dip\`, \`/tap\`, \`/swipe\` |
+| S06 | REST paths: \`GET /health\` on the Pi, Orka \`POST /api/xy_touch\`, \`POST /api/card/{swipe,dip,tap}\`, Pi paths \`/adb\`, \`/dip\`, \`/tap\`, \`/swipe\` |
 | S07 | Jenkins job names, parameters \`ROBOT_NAME\`, \`DEVICE_TYPE\`, \`MERCHANT\`, \`CARD_PROFILE\` and env keys \`RUN_TYPE\`, \`PORT_NUMBER\`, \`THEME\`, \`KERNEL_TYPE\`, \`APP_ID\`, \`APP_SECRET\`, \`API_KEY\` |
-| S08 | Card profile names, the test Visa Track Data, Gort paths \`cards/emv/*.json\` and \`cards/nfc/*.json\`, the scheduled task \`GortCardSync\`, \`C:\\gort\\cards\\…\` |
-| S09 | Merchant names (\`AUTO-US-NOPIN-01/02\`, \`GO-SDK-US-01\`, \`PAYCORE-STANDALONE-01\`, \`WESTERS-CA-01\`) and their keys |
+| S08 | Card profile names, the test Visa Track Data, Gorth paths \`cards/emv/*.json\` and \`cards/nfc/*.json\`, the scheduled task \`GorthCardSync\`, \`C:\\gorth\\cards\\…\` |
+| S09 | Merchant names (\`AUTO-US-NOPIN-01/02\`, \`GO-SDK-US-01\`, \`PAYCREST-STANDALONE-01\`, \`WESTERLY-CA-01\`) and their keys |
 | S10 | Screen names (\`TENDER_CASH_DISCOUNT\`, \`PIN_ENTRY\`, \`RECEIPT_OPTIONS_4\`, \`RECEIPT_OPTIONS_5\`), every millimetre value, and the 3.0 mm QR shift |
 | S11 | Tax Item 5 = $10.00 at 8.25 % → tax $0.83, total $10.83 |
 | S12 | The config keys \`unlockPasscode\`, \`backendEnv\`, \`robotName\` and \`SIM-…\` serials |
 | S13 | Tablet texts "TEST IN PROGRESS — CONTROLS LOCKED" and "Status: LOCK RELEASED — PARK REQUIRED"; Park XY / X / Y leaving the banner yellow |
 | S14 | The Pi service name \`robot-controller\`, the Wine binary path, disk figures, the prompt \`pi@wall-e:~ $\` |
 | S15 | The Ollama prompt/response and the receipt numbers |
-| S16 | GitHub org \`labsim-lab\` and the folder names inside Gort and Pigeon |
+| S16 | GitHub org \`labsim-lab\` and the folder names inside Gorth and Parrot |
 | S17 | What the tablet's **Phone** group does (a phone carriage and power-button pusher for mobile-runner tests) — the photo shows the buttons, not their purpose |
 | S18 | The Lab Safety Card wording |
 | S19 | *How* port 5555 reached a coworker's device (connect refused → the runner falls back to the first device the ADB server already knows). The reference only says 5555 caused collisions where scripts controlled coworkers' desk devices |
-| S20 | The seeded lesson faults (Rack B fuse, EVE Pi unplug, the JONNY-5 typo, BUMBLEBEE's Offset Y 1.5, OPTIMUS empty MFD/CFD, missing API Key, Pigeon missing comma, MICRO_3 receipt coordinates, \`DEVICE_TYPE=flux_3\`) |
+| S20 | The seeded lesson faults (Rack B fuse, EVE Pi unplug, the JONNY-5 typo, BUMBLEBEE's Offset Y 1.5, OPTIMUS empty MFD/CFD, missing API Key, Parrot missing comma, MICRO_3 receipt coordinates, \`DEVICE_TYPE=flux_3\`) |
 
 ## Also invented (simulation, gameplay and world designs)
 
 | Group | Invented details |
 |---|---|
 | Network | Every IP and hostname, ports other than ADB 5444 / 5555, the lab switch, latencies |
-| REST | Pi endpoints (\`/health\`, \`/adb\`, \`/dip\`, \`/tap\`, \`/swipe\` …), Callus endpoints, Orca paths such as \`/api/xy_touch\` and \`/api/card/*\`, every status code and JSON body |
-| Strings | Orca Notes formats, health-log lines, console lines, error messages, tablet texts beyond the photo, toasts |
+| REST | Pi endpoints (\`/health\`, \`/adb\`, \`/dip\`, \`/tap\`, \`/swipe\` …), Kallus endpoints, Orka paths such as \`/api/xy_touch\` and \`/api/card/*\`, every status code and JSON body |
+| Strings | Orka Notes formats, health-log lines, console lines, error messages, tablet texts beyond the photo, toasts |
 | Hardware | Screen sizes and button coordinates, the 3.0 mm QR shift, travel limits and speeds, fuse ratings and labels, regulator topology, the SmartStripe Probe's role, the look of a Stand 2 |
-| Orca behaviour | Orca restoring a Connection Failed robot by itself at the next 200 ping (the reference describes only how Connection Failed is set); a checkout marking a robot "in use" without changing its status; queued builds waiting for a matching Available robot |
-| Orca data | The 42-rig roster beyond the reference's examples, environments, device rows and serials, merchants and their fields, capability keys, Screen Compare rows, test card numbers and Track Data, the Interac test PIN |
-| Software | Job names and parameters, pipeline script lines, stage names, page-object class names beyond the reference's examples, test names, commits and PR numbers, Pigeon field spellings, LSTR error texts, Go SDK messages, Laz/Ubi console lines, Ollama prompts and answers, Wine paths |
+| Orka behaviour | Orka restoring a Connection Failed robot by itself at the next 200 ping (the reference describes only how Connection Failed is set); a checkout marking a robot "in use" without changing its status; queued builds waiting for a matching Available robot |
+| Orka data | The 42-rig roster beyond the reference's examples, environments, device rows and serials, merchants and their fields, capability keys, Screen Compare rows, test card numbers and Track Data, the Interac test PIN |
+| Software | Job names and parameters, pipeline script lines, stage names, page-object class names beyond the reference's examples, test names, commits and PR numbers, Parrot field spellings, LSTR error texts, Go SDK messages, Lazo/Ubo console lines, Ollama prompts and answers, Wine paths |
 | People & time | {{riley}}, {{sam}} and {{alex}}; LabChat and \`LAB-####\` tickets; review and reply delays; the in-game calendar |
 
 ## What is NOT illustrative

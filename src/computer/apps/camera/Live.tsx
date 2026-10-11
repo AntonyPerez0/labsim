@@ -7,7 +7,7 @@ import { getState, useGame } from '@/core/store';
 import { sim } from '@/sim';
 import { emitAppAction, fmtStamp, fmtTime24, putImage, type WindowManagerApi } from '@/computer/apps';
 import { displaySizeMm } from '@/render2d';
-import type { OrcaRobot } from '@/sim/types';
+import type { OrkaRobot } from '@/sim/types';
 import { captureProfile, useCaptureJob } from './capture';
 import { cameraDef, drawOverlays, drawStreamFrame, frameDataUrl, FRAME_H, FRAME_W, type FrameTag } from './frames';
 import { isRecording } from './recorder';
@@ -38,8 +38,8 @@ function useStatus(url: string) {
 export function LivePage(props: LiveProps) {
   const { url, robotName, wm } = props;
   const { status, retry } = useStatus(url);
-  const robots = useGame((s) => s.lab.orca.robots);
-  const robot: OrcaRobot | null = useMemo(() => (robotName ? Object.values(robots).find((r) => r.name === robotName) ?? null : null), [robots, robotName]);
+  const robots = useGame((s) => s.lab.orka.robots);
+  const robot: OrkaRobot | null = useMemo(() => (robotName ? Object.values(robots).find((r) => r.name === robotName) ?? null : null), [robots, robotName]);
   const users = useMemo(() => Object.values(robots).filter((r) => (r.cameraStreamUrl ?? '').trim().toLowerCase() === url.toLowerCase()), [robots, url]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [fill, setFill] = useState(false);
@@ -113,7 +113,7 @@ export function LivePage(props: LiveProps) {
     }
     if (!r.ok) return r.error;
     const lab = getState().lab;
-    // Snapshots go to GIMP/Ollama/OCR, which measure against the sim frame model (Orca boxes such as
+    // Snapshots go to GIMP/Ollama/OCR, which measure against the sim frame model (Orka boxes such as
     // CFD_TOTAL 412,288,236×44): always the frame-model render, not the 3D live view.
     const dataUrl = frameDataUrl(lab, url, status.cameraId, { live: false });
     if (dataUrl) putImage({ ref: r.value.imageRef, dataUrl, width: FRAME_W, height: FRAME_H, kind: 'webcam' });
