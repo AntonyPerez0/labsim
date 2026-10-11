@@ -47,11 +47,11 @@ function entranceAndDesks(): InteractableSpec[] {
     ia('desk.player.card-reader', 'USB card reader', [E('Swipe test card', { requiresTool: TEST_CARDS, effect: 'workstation Card Reader utility receives the track data (INC55)' })], [], 'desks', 'lab'),
     ia('desk.player.sticky-notes', 'Sticky notes', [], ['ADB → :5444 (NOT 5555!)', 'orca.lab.local:8080 · jenkins.lab.local:8080', 'theme=avocado · kernelType=CPA'], 'desks', 'lab'),
     ia('tool.ruler', 'Steel ruler', [E('Pick up', { effect: 'carried; E on any device screen = Measure (snaps to the screen top-left (0,0))' })], ['150 mm steel rule'], 'desks', 'lab'),
-    ia('desk.coworker-1.device', "Coworker's Flex", [
+    ia('desk.coworker-1.device', "Coworker's Flux", [
       E('Look at screen', { effect: 'uprightFocusPose' }),
       R('Tap screen', { sim: "sim.device.touch(deviceId, 'primary', x, y, 'player')" }),
     ], ['Desk device — ADB on 5555'], 'desks', 'lab', { focus: 'upright' }),
-    ia('desk.coworker-2.device', "Coworker's Mini", [
+    ia('desk.coworker-2.device', "Coworker's Micro", [
       E('Look at screen', { effect: 'uprightFocusPose' }),
       R('Tap screen', { sim: "sim.device.touch(deviceId, 'primary', x, y, 'player')" }),
     ], ['Desk device — ADB on 5555'], 'desks', 'lab', { focus: 'upright' }),
@@ -107,7 +107,7 @@ function powerWall(): InteractableSpec[] {
     ia('power.trace', 'Power trace', [E('Start trace', { effect: 'hotspot mode: W1 → MW-1 → 24V rail → REG-12V → REG-5V → fuses → NUC SHELF → PI SHELVES (M03)' })], [], 'power-wall', 'lab', { reach: wall }),
     ia('tool.multimeter', 'Multimeter', [E('Pick up', { effect: 'hotbar 2' })], [], 'power-wall', 'lab'),
     ia('power.fuse-tray', 'Spare fuses', [E('Take fuse', { effect: 'hotbar 3; R cycles 5 / 7.5 / 10 / 15 A' })], ['5 A tan · 7.5 A brown · 10 A red · 15 A blue'], 'power-wall', 'lab'),
-    ia('power.bench.flex4-psu', 'Flex 4 power brick', [E('Pick up', { effect: 'carry; plug via any socket target' })], [], 'power-wall', 'lab'),
+    ia('power.bench.flux4-psu', 'Flux 4 power brick', [E('Pick up', { effect: 'carry; plug via any socket target' })], [], 'power-wall', 'lab'),
     ia('power.bench.collis-spare', 'Spare Collis probe', [E('Pick up', { effect: 'carry; plug via any socket target' })], [], 'power-wall', 'lab'),
     ia('power.bench.desk-fan', 'Desk fan', [E('Pick up', { effect: 'carry; plug via any socket target' })], [], 'power-wall', 'lab'),
   );
@@ -170,12 +170,12 @@ function serverFabWalls(): InteractableSpec[] {
     out.push(ia(wallDrawerId(label), `Drawer ${label}`, [E('Open', { effect: 'take item' })], [label], 'jared', 'lab', { reach: REACH.wallBoard }));
   }
   for (const n of [1, 2, 3, 4, 5] as const) {
-    const tape = n === 2 ? 'SPARE FLEX 2' : n === 3 ? 'SPARE MINI 3' : null;
+    const tape = n === 2 ? 'SPARE FLUX 2' : n === 3 ? 'SPARE MICRO 3' : null;
     out.push(ia(`chest.husky.d${n}`, `Husky drawer ${n}`, [E('Open / Close', { effect: tape ? `sound drawer; take ${tape}` : 'sound drawer' })], tape ? [tape] : [], 'jared', 'lab'));
   }
   out.push(
     ia('cabinet.storage', 'Storage cabinet', [E('Sign out spare', { effect: '120 s (gameplay) → spare Collis probe' })], ['SPARES — SIGN OUT WITH JARED'], 'jared', 'lab'),
-    ia('cabinet.storage.legacy-shelf', 'Legacy shelf', [E('Place / Take', { effect: 'legacy Flex 1 (INC42)' })], [], 'jared', 'lab'),
+    ia('cabinet.storage.legacy-shelf', 'Legacy shelf', [E('Place / Take', { effect: 'legacy Flux 1 (INC42)' })], [], 'jared', 'lab'),
     ia('wall.whiteboard', 'Whiteboard', [E('Use whiteboard', { effect: 'focus + diagram builder overlay' })], [], 'west-wall', 'lab', { reach: REACH.wallBoard, focus: 'board' }),
     ia('wall.roadmap', 'Roadmap board', [E('Sort roadmap', { effect: 'overlay' })], [], 'west-wall', 'lab', { reach: REACH.wallBoard, focus: 'board' }),
   );
@@ -192,11 +192,11 @@ function serverFabWalls(): InteractableSpec[] {
   for (const it of LIBRARY_ITEMS) {
     out.push(ia(it.id, it.item.replace(/ on (stand|its base)| upright in a printed stand/g, ''), [
       E('Pick up / Put back'),
-      G('Compare', { effect: 'M02 step 6: highlights the Flex 4 printer block next to the Pocket' }),
+      G('Compare', { effect: 'M02 step 6: highlights the Flux 4 printer block next to the Pocket' }),
     ], [it.lipCard], 'east-wall', 'lab', { focus: 'upright' }));
   }
   out.push(
-    ia('library.trays', 'Family trays', [E('Place on tray', { when: 'Carrying a library device' })], ['STATION · MINI · FLEX · COMPACT'], 'east-wall', 'lab'),
+    ia('library.trays', 'Family trays', [E('Place on tray', { when: 'Carrying a library device' })], ['STAND · MICRO · FLUX · COMPASS'], 'east-wall', 'lab'),
     ia('coffee.machine', 'Coffee machine', [E('Make coffee', { effect: '6 s, fills the mug' })], [], 'east-wall', 'lab'),
   );
   return out;

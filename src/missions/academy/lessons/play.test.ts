@@ -78,10 +78,10 @@ describe('Academy play-throughs (sim + runtime)', () => {
     expect(lab().power.fuses['F-RACKB-5V']?.blown).toBe(false);
     ackAll(); // Jared's line, then the 18V-exception dialogue (M03.10)
     expect(stepId()).toBe('M03.11');
-    sim.power.plug('psu-flex4-new', { kind: 'dc-rail', targetId: 'T-24V-SPARE' }, 'player');
+    sim.power.plug('psu-flux4-new', { kind: 'dc-rail', targetId: 'T-24V-SPARE' }, 'player');
     advance(0.1);
     expect(state().session.academy?.wrongActions).toBeGreaterThanOrEqual(1);
-    sim.power.plug('psu-flex4-new', { kind: 'ac-strip', targetId: 'STRIP-W', socket: 3 }, 'player');
+    sim.power.plug('psu-flux4-new', { kind: 'ac-strip', targetId: 'STRIP-W', socket: 3 }, 'player');
     sim.power.plug('psu-collis-spare', { kind: 'ac-strip', targetId: 'STRIP-W', socket: 4 }, 'player');
     simTicks(5);
     expect(stepId()).toBe('M03.12');
@@ -128,7 +128,7 @@ describe('Academy play-throughs (sim + runtime)', () => {
     const r = sim.rig.command('wall-e', 'park.all', 'player');
     simTicks(2);
     // Sim §3.7.6: rejected with LOCKED while a test is active. The tablet overlay also emits tablet.lockout.shown.
-    if (r.ok) action('tablet', 'tablet.lockout.shown', { robot: 'wall-e', holder: 'Java/uia-remote-regression-flex #4120', blockedClick: true });
+    if (r.ok) action('tablet', 'tablet.lockout.shown', { robot: 'wall-e', holder: 'Java/uia-remote-regression-flux #4120', blockedClick: true });
     expect(stepId()).toBe('M01.07');
     ackAll();
     // Clearing the fault only ends the loop: the build finishes its pass and releases WALL-E first.
@@ -145,14 +145,14 @@ describe('Academy play-throughs (sim + runtime)', () => {
     expect(stepId()).toBe('M01.08');
   }, 20_000);
 
-  it('M07: HRN typo fixed without touching Name; new FLEX_2 device linked; Tap URL; tethering; offsets', () => {
+  it('M07: HRN typo fixed without touching Name; new FLUX_2 device linked; Tap URL; tethering; offsets', () => {
     start('M07', 'M07.03');
     const robot = (n: string) => Object.values(lab().orca.robots).find((r) => r.name === n)!;
     sim.orca.saveRobot({ id: robot('johnny-5').id, humanReadableName: 'JOHNNY-5' }, 'player');
     simTicks(1);
     expect(stepId()).toBe('M07.04');
     jump('M07', 'M07.06');
-    const created = sim.orca.saveDevice({ name: 'johnny-5-flex2', deviceType: 'FLEX_2', serial: 'SIM-F2-000015', ip: '10.42.30.15' }, 'player');
+    const created = sim.orca.saveDevice({ name: 'johnny-5-flux2', deviceType: 'FLUX_2', serial: 'SIM-F2-000015', ip: '10.42.30.15' }, 'player');
     expect(created.ok).toBe(true);
     if (created.ok) sim.orca.saveRobot({ id: robot('johnny-5').id, deviceId: created.value }, 'player');
     simTicks(1);
@@ -178,9 +178,9 @@ describe('Academy play-throughs (sim + runtime)', () => {
     expect(stepId()).toBe('M07.12');
   });
 
-  it('M09: the 5-option FLEX_4 map is created next to the untouched 4-option map', () => {
+  it('M09: the 5-option FLUX_4 map is created next to the untouched 4-option map', () => {
     start('M09', 'M09.11');
-    const created = sim.orca.saveScreen({ name: 'RECEIPT_OPTIONS_5', deviceType: 'FLEX_4', optionCount: 5, description: 'Receipt options with Scan for receipt' }, 'player');
+    const created = sim.orca.saveScreen({ name: 'RECEIPT_OPTIONS_5', deviceType: 'FLUX_4', optionCount: 5, description: 'Receipt options with Scan for receipt' }, 'player');
     expect(created.ok).toBe(true);
     if (!created.ok) return;
     const pts: [string, number][] = [['Print', 74], ['Email', 86], ['Text', 98], ['No Receipt', 110], ['Scan for receipt', 122]];
@@ -189,19 +189,19 @@ describe('Academy play-throughs (sim + runtime)', () => {
     expect(stepId()).toBe('M09.12');
   });
 
-  it('M11: the saved lower-case DEVICE_TYPE fails the checkout with ENUM_CASE; FLEX_3 checks out WALL-E', () => {
+  it('M11: the saved lower-case DEVICE_TYPE fails the checkout with ENUM_CASE; FLUX_3 checks out WALL-E', () => {
     start('M11', 'M11.04');
-    const b = sim.jenkins.build('Java/uia-remote-regression-flex', {}, 'player');
+    const b = sim.jenkins.build('Java/uia-remote-regression-flux', {}, 'player');
     expect(b.ok).toBe(true);
     simTicks(400);
-    const last = sim.jenkins.recentBuilds('Java/uia-remote-regression-flex', 1)[0];
+    const last = sim.jenkins.recentBuilds('Java/uia-remote-regression-flux', 1)[0];
     expect(last?.result).toBe('FAILURE');
     expect(last?.failureCode).toBe('ENUM_CASE');
-    action('jenkins', 'jenkins.console.opened', { buildId: last!.id, jobId: 'Java/uia-remote-regression-flex', number: last!.number, state: 'finished', result: 'FAILURE' });
+    action('jenkins', 'jenkins.console.opened', { buildId: last!.id, jobId: 'Java/uia-remote-regression-flux', number: last!.number, state: 'finished', result: 'FAILURE' });
     expect(stepId()).toBe('M11.05');
     ackAll(1);
     expect(stepId()).toBe('M11.06');
-    sim.jenkins.build('Java/uia-remote-regression-flex', { DEVICE_TYPE: 'FLEX_3' }, 'player');
+    sim.jenkins.build('Java/uia-remote-regression-flux', { DEVICE_TYPE: 'FLUX_3' }, 'player');
     simTicks(100);
     expect(stepId()).toBe('M11.07');
   });

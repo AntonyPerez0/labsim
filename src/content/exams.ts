@@ -69,7 +69,7 @@ export const EXAMS: ExamBlueprint[] = resolvePeople<ExamBlueprint[]>([
         { id: 'P2-1', setup: "A random rig's Pi is unplugged.", playerMust: 'Detect Connection Failed, read the Notes, escalate to {{jared}} with the endpoint.', pass: 'Correct escalation choice; status never manually overridden.', factIds: ['F107', 'F108', 'F109', 'F110', 'F111'] },
         { id: 'P2-2', setup: 'JOHNNY-5-style hardware swap on a random rig.', playerMust: 'Create a Device, relink Robot Device, keep the old Device; fix the Human Readable Name.', pass: 'Old device untouched; robot linked; tablet shows the right Human Readable Name.', factIds: ['F117', 'F118', 'F119', 'F120'] },
         { id: 'P2-3', setup: 'A firmware drop adds a conditional receipt option on one device type.', playerMust: 'Measure, create the 5-option map, keep the 4-option map, PR → merge.', pass: 'Both maps exist, coordinates ±0.5 mm.', factIds: ['F213', 'F214', 'F215', 'F216', 'F142'] },
-        { id: 'P2-4', setup: 'Canadian PIN job queued with an ADB bot selected.', playerMust: 'Re-target to the Compact touch robot and choose Interac.', pass: 'Job runs on a physical bot with INTERAC_CA_DIP.', factIds: ['F217', 'F218', 'F219', 'F220', 'F225'] },
+        { id: 'P2-4', setup: 'Canadian PIN job queued with an ADB bot selected.', playerMust: 'Re-target to the Compass touch robot and choose Interac.', pass: 'Job runs on a physical bot with INTERAC_CA_DIP.', factIds: ['F217', 'F218', 'F219', 'F220', 'F225'] },
       ],
     },
     xp: 500,
@@ -88,7 +88,7 @@ export const EXAMS: ExamBlueprint[] = resolvePeople<ExamBlueprint[]>([
       moduleQuotas: { M11: 6, M12: 5, M13: 12, M14: 10, M15: 6, M16: 6 },
       tierMix: { core: 0.8, supporting: 0.2, trivia: 0 },
       criticalFactIds: R3_CRITICAL,
-      criticalNotes: 'F198 + F200 (5444, collisions) · F164 (never modify main) · F180 (mandatory screen methods) · F193 (Duo same IP) · F197 (CPA) · F210 (misleading "select print")',
+      criticalNotes: 'F198 + F200 (5444, collisions) · F164 (never modify main) · F180 (mandatory screen methods) · F193 (Duet same IP) · F197 (CPA) · F210 (misleading "select print")',
     },
     practical: {
       summary: '4 tasks · 35 min',
@@ -97,8 +97,8 @@ export const EXAMS: ExamBlueprint[] = resolvePeople<ExamBlueprint[]>([
       tasks: [
         { id: 'P3-1', setup: 'Broken config.properties (port 5555, wrong theme/kernel, empty CFD IP) for a tethered rig.', playerMust: 'Fix the file, reserve the rig, run TaxTest, release the rig.', pass: 'Validator 11/11; test passes; rig Reserved during the run and Available after; no coworker device touched.', factIds: ['F188', 'F189', 'F190', 'F191', 'F192', 'F193', 'F194', 'F195', 'F196', 'F197', 'F198', 'F199', 'F200', 'F201', 'F112', 'F183', 'F184', 'F185', 'F186', 'F187'] },
         { id: 'P3-2', setup: 'Pigeon test with a missing bracket, then a "select print" timeout.', playerMust: 'Fix the JSON; diagnose stale coordinates via the camera; approve the coordinate PR.', pass: 'Build green; diagnosis choice correct.', factIds: ['F208', 'F209', 'F210', 'F211'] },
-        { id: 'P3-3', setup: 'Station Duo test using Screen Compare fails after a 10 px shift.', playerMust: 'Replace it with a UIA 2.3 dual-screen assertion; both IPs equal in config.', pass: 'Run green with the layout shifted.', factIds: ['F151', 'F152', 'F153', 'F154', 'F155', 'F156', 'F193'] },
-        { id: 'P3-4', setup: 'New screen class without mandatory methods + Flex scroll bug.', playerMust: 'Add waitForScreen() / isScreenPresent(); fix open().', pass: '3 consecutive green runs on a Flex and a Mini.', factIds: ['F177', 'F178', 'F179', 'F180'] },
+        { id: 'P3-3', setup: 'Stand Duet test using Screen Compare fails after a 10 px shift.', playerMust: 'Replace it with a UIA 2.3 dual-screen assertion; both IPs equal in config.', pass: 'Run green with the layout shifted.', factIds: ['F151', 'F152', 'F153', 'F154', 'F155', 'F156', 'F193'] },
+        { id: 'P3-4', setup: 'New screen class without mandatory methods + Flux scroll bug.', playerMust: 'Add waitForScreen() / isScreenPresent(); fix open().', pass: '3 consecutive green runs on a Flux and a Micro.', factIds: ['F177', 'F178', 'F179', 'F180'] },
       ],
     },
     xp: 700,

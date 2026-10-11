@@ -38,10 +38,9 @@ function Wallpaper() {
     <div className="ws-wallpaper" aria-hidden="true">
       <svg className="ws-wallpaper-leaf" viewBox="0 0 100 100">
         <g fill="rgba(110, 231, 160, .10)">
-          <circle cx="29" cy="29" r="21" />
-          <circle cx="71" cy="29" r="21" />
-          <circle cx="29" cy="71" r="21" />
-          <circle cx="71" cy="71" r="21" />
+          <rect x="8" y="14" width="84" height="18" rx="2" />
+          <rect x="8" y="41" width="59" height="18" rx="2" />
+          <rect x="8" y="68" width="71" height="18" rx="2" />
         </g>
       </svg>
       <div className="ws-wallpaper-brand">

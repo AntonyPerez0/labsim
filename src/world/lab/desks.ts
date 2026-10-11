@@ -399,7 +399,7 @@ function buildMorganDesk(ctx: LabCtx, b: StaticBatch): void {
 interface CoworkerDevice {
   id: string;
   type: DeviceTypeCode;
-  family: 'FLEX' | 'MINI';
+  family: 'FLUX' | 'MICRO';
   screen: DynScreen;
   screenMesh: Mesh | null;
   group: Group;
@@ -430,7 +430,7 @@ function buildCoworkerDesks(ctx: LabCtx, b: StaticBatch): CoworkerDevice[] {
   b.at(-3.65, 0, 4.7, Math.PI, () => pcTower(ctx, b));
 
   const out: CoworkerDevice[] = [];
-  for (const [id, type, holder] of [['desk.coworker-1.device', 'FLEX_3', 'dock'], ['desk.coworker-2.device', 'MINI_3', 'stand']] as const) {
+  for (const [id, type, holder] of [['desk.coworker-1.device', 'FLUX_3', 'dock'], ['desk.coworker-2.device', 'MICRO_3', 'stand']] as const) {
     const p = getProp(id);
     const model = DEVICE_MODELS[type];
     const sz = screenCanvasSize(model.screen!.mm[0], model.screen!.mm[1], 'medium');
@@ -448,7 +448,7 @@ function buildCoworkerDesks(ctx: LabCtx, b: StaticBatch): CoworkerDevice[] {
     const rotDeg = p.rotY;
     const c = localToWorld([p.pos[0], DESK_TOP, p.pos[2]], rotDeg, face.centre);
     const nRot = localToWorld([0, 0, 0], rotDeg, face.normal);
-    out.push({ id, type, family: type.startsWith('FLEX') ? 'FLEX' : 'MINI', screen, screenMesh, group, focus: uprightFocusPose(c, [nRot[0], face.normal[1], nRot[2]]) as CoworkerDevice['focus'] });
+    out.push({ id, type, family: type.startsWith('FLUX') ? 'FLUX' : 'MICRO', screen, screenMesh, group, focus: uprightFocusPose(c, [nRot[0], face.normal[1], nRot[2]]) as CoworkerDevice['focus'] });
     ctx.ia.proxy(group, 0.22, 0.2, 0.2, xf(0, 0.1, 0), 'device-proxy');
   }
   return out;
@@ -460,7 +460,7 @@ function deskDevice(lab: LabState, c: CoworkerDevice): TerminalDevice | undefine
   const onDesk = devs.filter((d) => d.rigId?.startsWith('desk-'));
   return (
     devs.find((d) => (d as { propId?: string }).propId === c.id) ??
-    // exact model first (seed: Riley's desk Flex 3, Sam's desk Mini 3), then the family
+    // exact model first (seed: Riley's desk Flux 3, Sam's desk Micro 3), then the family
     onDesk.find((d) => d.type === c.type) ??
     onDesk.find((d) => d.type.startsWith(c.family)) ??
     undefined

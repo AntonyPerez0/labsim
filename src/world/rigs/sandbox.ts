@@ -77,7 +77,7 @@ function seedDemoLab(): void {
         rigId: r.id,
         serial: `SIM-${cfg.type.replace('_', '')}-${String(n).padStart(4, '0')}`,
         display: createDisplayState(scr, { rev: 1 }),
-        secondaryDisplay: cfg.type === 'STATION_DUO' ? createDisplayState('customer-cart', { rev: 1 }) : null,
+        secondaryDisplay: cfg.type === 'STAND_DUET' ? createDisplayState('customer-cart', { rev: 1 }) : null,
         order: createOrderState('ORD-1001', { lines: [{ name: 'Tax Item 5', priceCents: 1000, qty: 1, taxable: true }], subtotalCents: 1000, taxCents: 83, totalCents: 1083 }),
         apps: ['Register', 'Orders', 'Transactions', 'Sale', 'Authorizations', 'Customers', 'Items', 'Reports', 'Employees', 'Inventory', 'Rewards', 'Gift Cards', 'Help', 'App Market', 'Settings', 'Setup'],
       });
@@ -324,12 +324,12 @@ async function boot(): Promise<void> {
         if (what.locked) r.dashboardLocked = true;
         if (what.tab) r.tablet = { ...r.tablet, tab: what.tab };
         const def = TOUCH_RIGS.find((x) => x.id === what.rig);
-        render2d.drawTablet(ctx, lab, r, { id: 1, name: what.rig, humanReadableName: def?.hrn ?? what.rig.toUpperCase(), status: 'AVAILABLE', checkout: what.locked ? { buildId: 'Java/uia-remote-regression-flex#4120', jobId: 'Java/uia-remote-regression-flex' } : null } as never, { widthPx: 1280, heightPx: 800, timeMs: performance.now() });
+        render2d.drawTablet(ctx, lab, r, { id: 1, name: what.rig, humanReadableName: def?.hrn ?? what.rig.toUpperCase(), status: 'AVAILABLE', checkout: what.locked ? { buildId: 'Java/uia-remote-regression-flux#4120', jobId: 'Java/uia-remote-regression-flux' } : null } as never, { widthPx: 1280, heightPx: 800, timeMs: performance.now() });
         return;
       }
       const dev = createTerminalDevice('flat', what.type, {
         display: createDisplayState(what.screen, { params: what.params ?? {}, rev: 1 }),
-        secondaryDisplay: what.type.startsWith('STATION_DUO') ? createDisplayState(what.screen, { params: what.params ?? {}, rev: 1 }) : null,
+        secondaryDisplay: what.type.startsWith('STAND_DUET') ? createDisplayState(what.screen, { params: what.params ?? {}, rev: 1 }) : null,
         order: createOrderState('ORD-1001', { lines: [{ name: 'Tax Item 5', priceCents: 1000, qty: 1, taxable: true }, { name: 'Coffee', priceCents: 250, qty: 1, taxable: true }], subtotalCents: 1250, taxCents: 104, totalCents: 1354 }),
         apps: ['Register', 'Orders', 'Transactions', 'Sale', 'Authorizations', 'Customers', 'Items', 'Reports', 'Employees', 'Inventory', 'Rewards', 'Gift Cards', 'Help', 'App Market', 'Settings', 'Setup', 'Dining'],
       });

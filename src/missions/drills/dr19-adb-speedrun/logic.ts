@@ -32,10 +32,10 @@ export interface AdbDevice {
 
 /** GP §2.4.3: TARS, DATA, BUMBLEBEE, WALL-E (Cur §0.4 IPs). */
 export const SPEEDRUN_DEVICES: readonly AdbDevice[] = [
-  { name: 'tars', hrn: 'TARS', ip: '10.42.30.32', type: 'FLEX_4' },
-  { name: 'data', hrn: 'DATA', ip: '10.42.30.31', type: 'MINI_3' },
-  { name: 'bumblebee', hrn: 'BUMBLEBEE', ip: '10.42.30.13', type: 'MINI_3' },
-  { name: 'wall-e', hrn: 'WALL-E', ip: '10.42.30.11', type: 'FLEX_3' },
+  { name: 'tars', hrn: 'TARS', ip: '10.42.30.32', type: 'FLUX_4' },
+  { name: 'data', hrn: 'DATA', ip: '10.42.30.31', type: 'MICRO_3' },
+  { name: 'bumblebee', hrn: 'BUMBLEBEE', ip: '10.42.30.13', type: 'MICRO_3' },
+  { name: 'wall-e', hrn: 'WALL-E', ip: '10.42.30.11', type: 'FLUX_3' },
 ];
 
 export interface AppNode {

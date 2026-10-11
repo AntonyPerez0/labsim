@@ -118,22 +118,22 @@ describe('DR01 Status Triage', () => {
 
 describe('DR02 config.properties Speed-Build', () => {
   const items = itemsOf(DRILLS_BY_ID.DR02!) as DrillItem<ConfigData>[];
-  it('targets follow the validator: Duo IPs equal, family deviceType, locks', () => {
+  it('targets follow the validator: Duet IPs equal, family deviceType, locks', () => {
     for (const it of items) {
       const t = it.data.target;
       expect(Object.keys(t)).toEqual([...CONFIG_KEYS]);
       expect([t.theme, t.kernelType, t.portNumber]).toEqual(['avocado', 'CPA', '5444']);
-      expect(['Mini', 'Flex', 'Station']).toContain(t.deviceType);
-      if (it.data.variant === 'duo') expect(t.customerFacingDeviceIp).toBe(t.merchantFacingDeviceIp);
+      expect(['Micro', 'Flux', 'Stand']).toContain(t.deviceType);
+      if (it.data.variant === 'duet') expect(t.customerFacingDeviceIp).toBe(t.merchantFacingDeviceIp);
       if (it.data.variant === 'tethered') expect(t.runType).toBe('tethered');
-      if (it.data.variant === 'flex') expect(t.deviceType).toBe('Flex');
+      if (it.data.variant === 'flux') expect(t.deviceType).toBe('Flux');
     }
-    expect(items.some((i) => i.data.variant === 'duo') && items.some((i) => i.data.variant === 'wiki')).toBe(true);
+    expect(items.some((i) => i.data.variant === 'duet') && items.some((i) => i.data.variant === 'wiki')).toBe(true);
   });
   it('MEGATRON target is identical to Cur M14', () => {
     const it = items.find((i) => i.data.rig === 'megatron')!;
     expect(CONFIG_KEYS.map((k) => `${k}=${it.data.target[k]}`)).toEqual([
-      'runType=tethered', 'merchantFacingDeviceIp=10.42.30.21', 'customerFacingDeviceIp=10.42.30.22', 'serial=SIM-S2-000021', 'deviceType=Station', 'theme=avocado', 'kernelType=CPA', 'portNumber=5444', 'unlockPasscode=0000', 'backendEnv=DEV1', 'robotName=megatron',
+      'runType=tethered', 'merchantFacingDeviceIp=10.42.30.21', 'customerFacingDeviceIp=10.42.30.22', 'serial=SIM-S2-000021', 'deviceType=Stand', 'theme=avocado', 'kernelType=CPA', 'portNumber=5444', 'unlockPasscode=0000', 'backendEnv=DEV1', 'robotName=megatron',
     ]);
   });
   it('grades lines and scores +40/key, +100 all', () => {
@@ -165,10 +165,10 @@ describe('DR03 Port Patrol', () => {
 });
 
 describe('DR04 Power Path', () => {
-  const board: BoardData = { title: '', nodes: ['wall', 'strip', 'meanwell', 'reg12', 'reg5', 'fuseA', 'fuseB', 'pi', 'nuc', 'flex4', 'collis', 'motor'], columns: [] };
+  const board: BoardData = { title: '', nodes: ['wall', 'strip', 'meanwell', 'reg12', 'reg5', 'fuseA', 'fuseB', 'pi', 'nuc', 'flux4', 'collis', 'motor'], columns: [] };
   const good: Wire[] = [
     { from: 'wall', to: 'meanwell' }, { from: 'wall', to: 'strip' }, { from: 'meanwell', to: 'reg12' }, { from: 'meanwell', to: 'reg5' }, { from: 'meanwell', to: 'motor' },
-    { from: 'reg12', to: 'fuseA' }, { from: 'fuseA', to: 'nuc' }, { from: 'reg5', to: 'fuseB' }, { from: 'fuseB', to: 'pi' }, { from: 'strip', to: 'flex4' }, { from: 'strip', to: 'collis' },
+    { from: 'reg12', to: 'fuseA' }, { from: 'fuseA', to: 'nuc' }, { from: 'reg5', to: 'fuseB' }, { from: 'fuseB', to: 'pi' }, { from: 'strip', to: 'flux4' }, { from: 'strip', to: 'collis' },
   ];
   it('accepts the reference graph and flags missing fuses', () => {
     expect(checkBoard(board, good).perfect).toBe(true);
@@ -179,9 +179,9 @@ describe('DR04 Power Path', () => {
     expect(boardPoints(r, 0, 10, 0)).toBe(50 * r.correct - 100);
   });
   it('sparks LabSim/Collis on DC and over-voltage', () => {
-    expect(sparkFor('reg5', 'flex4', good)).toMatch(/18 V/);
+    expect(sparkFor('reg5', 'flux4', good)).toMatch(/18 V/);
     expect(sparkFor('meanwell', 'collis', good)).toBeTruthy();
-    expect(sparkFor('strip', 'flex4', good)).toBeNull();
+    expect(sparkFor('strip', 'flux4', good)).toBeNull();
     expect(sparkFor('reg12', 'pi', good)).toBeTruthy();
     expect(sparkFor('wall', 'pi', good)).toBeTruthy();
     expect(sparkFor('fuseA', 'nuc', good)).toBeNull();
@@ -200,7 +200,7 @@ describe('DR05 Coordinate Hunter', () => {
     expect(edgeErrorPoints(6.1)).toBe(0);
     expect(huntPoints({ x: 408, y: 287, w: 237, h: 43 }, it.data.rect, 0, 'A', false)).toMatchObject({ e: 2.5, edgePts: 100, correct: true });
   });
-  it('mode B uses MINI_3 px/mm and only screencaps', () => {
+  it('mode B uses MICRO_3 px/mm and only screencaps', () => {
     const t = targetsFor('B');
     expect(t.every((x) => x.shot.source === 'screencap')).toBe(true);
     const items = itemsOf(DRILLS_BY_ID.DR05!, 3, 'B') as DrillItem<HuntData>[];
@@ -208,8 +208,8 @@ describe('DR05 Coordinate Hunter', () => {
       expect(i.data.mm).not.toBeNull();
       expect(mmOk(i.data, ((i.data.rect.x + i.data.rect.w / 2) / PX_PER_MM.x), ((i.data.rect.y + i.data.rect.h / 2) / PX_PER_MM.y))).toBe(true);
     }
-    // Print on RECEIPT_OPTIONS_5 (MINI_GEN3 table: 86.0, 43.0 mm).
-    const print = SHOTS['mini3-receipt5'].els.find((e) => e.id === 'Print')!;
+    // Print on RECEIPT_OPTIONS_5 (MICRO_GEN3 table: 86.0, 43.0 mm).
+    const print = SHOTS['micro3-receipt5'].els.find((e) => e.id === 'Print')!;
     expect(Math.abs((print.x + print.w / 2) / PX_PER_MM.x - 86)).toBeLessThan(0.1);
   });
   it('mode C checks the Pigeon block strictly', () => {
@@ -248,13 +248,13 @@ describe('DR06 JSON Medic', () => {
 });
 
 describe('DR07 Receipt Map', () => {
-  it('FLEX_4 maps are the Cur §0.6 reference set', () => {
-    const m = receiptMaps('FLEX_4').maps;
+  it('FLUX_4 maps are the Cur §0.6 reference set', () => {
+    const m = receiptMaps('FLUX_4').maps;
     expect(m[4].map((b) => [b.name, b.x, b.y])).toEqual([['Print', 34, 71], ['Email', 34, 83], ['Text', 34, 95], ['No Receipt', 34, 107]]);
     expect(m[5].map((b) => [b.name, b.y])).toEqual([['Print', 74], ['Email', 86], ['Text', 98], ['No Receipt', 110], ['Scan for receipt', 122]]);
   });
   it('a tap on the other map\'s spot is caught', () => {
-    const d = receiptItem('FLEX_4', 5, 'Print').data as ReceiptData;
+    const d = receiptItem('FLUX_4', 5, 'Print').data as ReceiptData;
     expect(gradeTap(d, 34, 74).result).toBe('hit');
     expect(gradeTap(d, 34, 71).result).toBe('other-map');
     expect(gradeTap(d, 34, 86).result).toBe('wrong-button');
@@ -280,11 +280,11 @@ describe('DR08 POM Builder / Doctor', () => {
       expect(src.includes('waitForScreen() {')).toBe(!n.includes('add-wait'));
       expect(src.includes('isScreenPresent() {')).toBe(!n.includes('add-present'));
       expect(src.includes('extends BaseTest')).toBe(!n.includes('add-extends'));
-      if (n.includes('swap-scroll')) expect(src).toMatch(/FLEX\) \{\n\s+scrollHorizontallyTo/);
+      if (n.includes('swap-scroll')) expect(src).toMatch(/FLUX\) \{\n\s+scrollHorizontallyTo/);
       expect(gradeDoctor(it.data, n).perfect).toBe(true);
       expect(gradeDoctor(it.data, [...n, it.data.options.find((o) => !n.includes(o))!]).perfect).toBe(false);
     }
-    expect(doctorSource({ cls: 'HomeScreen', locators: [['a', 'By.text("A")']], helpers: [] } as never, []).join('\n')).toMatch(/FLEX\) \{\n\s+scrollVerticallyTo/);
+    expect(doctorSource({ cls: 'HomeScreen', locators: [['a', 'By.text("A")']], helpers: [] } as never, []).join('\n')).toMatch(/FLUX\) \{\n\s+scrollVerticallyTo/);
   });
 });
 
@@ -324,7 +324,7 @@ describe('DR11 Caps Lock', () => {
     const items = itemsOf(DRILLS_BY_ID.DR11!) as DrillItem<{ context: string; value: string; valid: boolean }>[];
     for (const it of items) {
       if (it.data.context === 'jenkins') expect((DEVICE_TYPE_CODES as readonly string[]).includes(it.data.value)).toBe(it.data.valid);
-      else expect(['Mini', 'Flex', 'Station'].includes(it.data.value)).toBe(it.data.valid);
+      else expect(['Micro', 'Flux', 'Stand'].includes(it.data.value)).toBe(it.data.valid);
     }
   });
 });
@@ -420,7 +420,7 @@ describe('mixed rounds', () => {
   it('routes items to their owning drill', async () => {
     const { ownerOf } = await import('./common/mixed');
     expect(ownerOf('DR01-07')).toBe('DR01');
-    expect(ownerOf('DR11:jenkins:flex_3')).toBe('DR11');
+    expect(ownerOf('DR11:jenkins:flux_3')).toBe('DR11');
     expect(ownerOf('q:Q123')).toBe('DR10');
     expect(ownerOf('weird')).toBeNull();
   });

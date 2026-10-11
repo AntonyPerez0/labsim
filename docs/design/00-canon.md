@@ -73,12 +73,14 @@ WALL-E, EVE, BUMBLEBEE, R2-D2, JOHNNY-5, BAYMAX, SETI, ROSIE (touch robots), MEG
 (tethered MFD/CFD test beds as in the photo — environments DEV1 and STG), DATA & TARS (ADB-only bots).
 
 ## Device type enum (Orca `DeviceType`, ALL CAPS — this is why Jenkins env vars are all caps)
-`STATION_2018, STATION_2, STATION_DUO, STATION_DUO_2, STATION_DUO_3, MINI_2, MINI_3, MINI_4,
-FLEX_1, FLEX_2, FLEX_3, FLEX_4, FLEX_POCKET, COMPACT`.
-Testing profiles: FLEX_3 / FLEX_4 / FLEX_POCKET share one profile (`FLEX_GEN3`), POCKET has
-`hasPrinter=false`. MINI_3 is the hot-swap equivalent for printerless STATION_DUO_2. COMPACT is the
+`STAND_2018, STAND_2, STAND_DUET, STAND_DUET_2, STAND_DUET_3, MICRO_2, MICRO_3, MICRO_4,
+FLUX_1, FLUX_2, FLUX_3, FLUX_4, FLUX_POCKET, COMPASS`.
+Testing profiles: FLUX_3 / FLUX_4 / FLUX_POCKET share one profile (`FLUX_GEN3`), POCKET has
+`hasPrinter=false`. MICRO_3 is the hot-swap equivalent for printerless STAND_DUET_2. COMPASS is the
 Canadian-market terminal used on Westers test beds. `deviceType` in config.properties uses the family
-(`Mini`, `Flex`, `Station`).
+(`Micro`, `Flux`, `Stand`).
+The family names (Stand, Stand Duet, Micro, Flux, Flux Pocket, Compass) and the three-bar LabSim mark are
+deliberately fictional stand-ins: never use a real vendor's product names or logo in code, art or text.
 
 ## Visual reference
 Photos in `docs/reference/images/` (see README there). Matte black 3D-printed PLA fixtures, black

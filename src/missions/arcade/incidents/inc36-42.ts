@@ -1,7 +1,7 @@
 /**
- * GP §3.5 INC36–INC42: brittle Duo CFD OCR (10 px shift, case/typo), the UI Automator 2.3 migration,
- * Jenkins env-var case, the PayCore rig overwrite, named jobs on Unavailable rigs, and the Flex 1 →
- * Flex 2 upgrade through a new Device entity.
+ * GP §3.5 INC36–INC42: brittle Duet CFD OCR (10 px shift, case/typo), the UI Automator 2.3 migration,
+ * Jenkins env-var case, the PayCore rig overwrite, named jobs on Unavailable rigs, and the Flux 1 →
+ * Flux 2 upgrade through a new Device entity.
  */
 import type { IncidentDef } from '../../types';
 import { c, on, p } from '../../types';
@@ -24,21 +24,21 @@ import {
 
 const CMP = 'CFD_TOTAL';
 const PO_PATH = 'app/src/androidTest/java/com/labsim/uia/pageobjects/CfdThankYouScreen.java';
-const FLEX_JOB = 'Java/uia-remote-regression-flex';
+const FLUX_JOB = 'Java/uia-remote-regression-flux';
 
 export const INC36: IncidentDef = {
   id: 'INC36',
-  name: 'Duo CFD OCR broken by a 10-pixel shift',
+  name: 'Duet CFD OCR broken by a 10-pixel shift',
   difficulty: 3,
   base: 400,
   parS: 240,
   severity: 'P1',
-  rigs: { roles: ['duo'], default: 'r2-d2', scope: 'rig', describe: '`duo` (R2-D2)' },
+  rigs: { roles: ['duet'], default: 'r2-d2', scope: 'rig', describe: '`duet` (R2-D2)' },
   escalatable: false,
   unlockedBy: 'M16',
   tags: ['orca.screencompare', 'vision.tesseract', 'pigeon.gimp'],
   factIds: ['F153', 'F154', 'F155', 'F156', 'F212'],
-  ticket: { title: 'Duo CFD suite red after the app update', reporter: 'jenkins-bot' },
+  ticket: { title: 'Duet CFD suite red after the app update', reporter: 'jenkins-bot' },
   setup: () => ({ scenario: [F('ocr.labelShift', { device: '$DEV', px: 10 })] }),
   reveal: 'pipeline',
   symptoms: [
@@ -69,17 +69,17 @@ export const INC36: IncidentDef = {
 
 export const INC37: IncidentDef = {
   id: 'INC37',
-  name: 'Duo CFD OCR broken by capitalisation or a typo',
+  name: 'Duet CFD OCR broken by capitalisation or a typo',
   difficulty: 2,
   base: 300,
   parS: 180,
   severity: 'P1',
-  rigs: { roles: ['duo'], default: 'r2-d2', scope: 'rig', describe: '`duo`' },
+  rigs: { roles: ['duet'], default: 'r2-d2', scope: 'rig', describe: '`duet`' },
   escalatable: false,
   unlockedBy: 'M16',
   tags: ['orca.screencompare', 'vision.tesseract'],
   factIds: ['F155', 'F153'],
-  ticket: { title: 'Duo CFD suite red: OCR mismatch', reporter: 'jenkins-bot' },
+  ticket: { title: 'Duet CFD suite red: OCR mismatch', reporter: 'jenkins-bot' },
   setup: () => ({ scenario: [F('ocr.capitalisation', { device: '$DEV' })] }),
   reveal: 'pipeline',
   onSpawn: () => [{ do: 'chat', author: 'morgan', text: 'Heads-up: the CFD "layout v2" copy change (Total instead of TOTAL) is intended.', delayS: 30 }],
@@ -99,7 +99,7 @@ export const INC37: IncidentDef = {
     'Expected string no longer matches (case/typo)',
     ['Box shifted', 'A shifted box mangles glyphs. These letters are clean.'],
     ['Camera dark', 'A dark camera gives no text at all.'],
-    ['CFD not tethered', 'The Duo is one terminal with two displays — and the OCR read its CFD fine.'],
+    ['CFD not tethered', 'The Duet is one terminal with two displays — and the OCR read its CFD fine.'],
   ),
   wrongButTempting: [
     wm('move-box', 'Move the box', 0, orcaSave('screenCompareImage', { fields: ['bbox', 'x', 'y', 'w', 'h'] }), teach('No effect.', 'The crop is fine; the string differs. A capitalisation change or a typo breaks the suite. (Ref §3)', 'Fix the expected text.')),
@@ -131,12 +131,12 @@ export const INC37: IncidentDef = {
 
 export const INC38: IncidentDef = {
   id: 'INC38',
-  name: 'Migrate the last Duo OCR check to UI Automator 2.3',
+  name: 'Migrate the last Duet OCR check to UI Automator 2.3',
   difficulty: 5,
   base: 900,
   parS: 600,
   severity: 'P2',
-  rigs: { roles: ['duo'], default: 'r2-d2', scope: 'rig', describe: '`duo` (R2-D2)' },
+  rigs: { roles: ['duet'], default: 'r2-d2', scope: 'rig', describe: '`duet` (R2-D2)' },
   escalatable: false,
   unlockedBy: 'M16',
   plannedWork: true,
@@ -146,16 +146,16 @@ export const INC38: IncidentDef = {
   setup: () => ({ scenario: [OP('repo.clone', { repo: 'uia-remote' })] }),
   reveal: 'immediate',
   symptoms: [
-    sym('IDE', 'testactions/DuoCheckoutTest.java: assertTrue(orca.screenCompare("CFD_THANK_YOU")); with a TODO to migrate it like CFD_TOTAL.'),
-    sym('Orca', 'Screen Compare Images: CFD_THANK_YOU still active (used by DuoCheckoutTest).'),
+    sym('IDE', 'testactions/DuetCheckoutTest.java: assertTrue(orca.screenCompare("CFD_THANK_YOU")); with a TODO to migrate it like CFD_TOTAL.'),
+    sym('Orca', 'Screen Compare Images: CFD_THANK_YOU still active (used by DuetCheckoutTest).'),
   ],
   diagnosisPath: [
     'Orca → R2-D2 → Reserved.',
-    'IntelliJ → uia-remote → branch feat/duo-cfd-thank-you-uia23.',
+    'IntelliJ → uia-remote → branch feat/duet-cfd-thank-you-uia23.',
     'Create pageobjects/CfdThankYouScreen.java (extends BaseTest; Zone 1 locator on the CFD display; waitForScreen() and isScreenPresent()).',
-    'DuoCheckoutTest: replace the screenCompare assertion with cfdThankYou.waitForScreen(); assertTrue(cfdThankYou.isScreenPresent());',
-    'config.properties: runType=tethered, both IPs 10.42.30.14, deviceType=Station, portNumber=5444.',
-    'Run DuoCheckoutTest locally → PASS.',
+    'DuetCheckoutTest: replace the screenCompare assertion with cfdThankYou.waitForScreen(); assertTrue(cfdThankYou.isScreenPresent());',
+    'config.properties: runType=tethered, both IPs 10.42.30.14, deviceType=Stand, portNumber=5444.',
+    'Run DuetCheckoutTest locally → PASS.',
     'Push, open a PR → {{morgan}} merges if checks pass.',
     'Orca → Screen Compare Images → CFD_THANK_YOU → mark Deprecated (do not delete).',
     'Orca → R2-D2 → Available.',
@@ -163,20 +163,20 @@ export const INC38: IncidentDef = {
   hints: [
     'This is a project: reserve the rig, write the page object, swap the assertion, test, merge, deprecate, release.',
     `IntelliJ → new class in pageobjects: CfdThankYouScreen with a By.text("Thank you").displayId(cfdDisplayId) locator, waitForScreen() and isScreenPresent().`,
-    P('Reserve R2-D2 → page object → replace the assertion in DuoCheckoutTest → run it locally (PASS) → push + PR ({{morgan}} merges) → deprecate CFD_THANK_YOU → R2-D2 Available.'),
+    P('Reserve R2-D2 → page object → replace the assertion in DuetCheckoutTest → run it locally (PASS) → push + PR ({{morgan}} merges) → deprecate CFD_THANK_YOU → R2-D2 Available.'),
   ],
   walkthrough: (b) => [
     { text: `Orca → ${hrn(b)} → Reserved`, doneWhen: c.status(rig(b), 'RESERVED') },
     { text: `Create ${PO_PATH}`, doneWhen: c.truthy(p.codeFact('isScreenPresent', 'local:CfdThankYouScreen')) },
-    { text: 'DuoCheckoutTest: replace the screenCompare assertion', doneWhen: c.falsy(p.codeFact('screenCompare', 'local:DuoCheckoutTest')) },
-    { text: 'Run DuoCheckoutTest locally', doneWhen: c.eq(p.localRun('DuoCheckoutTest').result, 'PASS') },
+    { text: 'DuetCheckoutTest: replace the screenCompare assertion', doneWhen: c.falsy(p.codeFact('screenCompare', 'local:DuetCheckoutTest')) },
+    { text: 'Run DuetCheckoutTest locally', doneWhen: c.eq(p.localRun('DuetCheckoutTest').result, 'PASS') },
     { text: 'Push and open a PR', doneWhen: c.eq(p.pr('uia-remote').state, 'MERGED') },
     { text: 'Orca → Screen Compare Images → CFD_THANK_YOU → Deprecated', doneWhen: c.truthy(p.screenCompare('CFD_THANK_YOU').deprecated) },
     { text: `Orca → ${hrn(b)} → Available`, doneWhen: c.status(rig(b), 'AVAILABLE') },
   ],
   fix: {
     handsOn: P(
-      'Reserved → branch → CfdThankYouScreen (Zone 1: private final BySelector thankYou = By.text("Thank you").displayId(cfdDisplayId); Zone 2: waitForScreen() { device.wait(Until.hasObject(thankYou), TIMEOUT_MS); } and isScreenPresent()) → DuoCheckoutTest uses cfdThankYou.waitForScreen(); assertTrue(cfdThankYou.isScreenPresent()); → local PASS → PR ({{morgan}} merges) → CFD_THANK_YOU Deprecated → Available. (Selector style is illustrative; the fact taught is that UI Automator 2.3 natively locates elements on both screens.)',
+      'Reserved → branch → CfdThankYouScreen (Zone 1: private final BySelector thankYou = By.text("Thank you").displayId(cfdDisplayId); Zone 2: waitForScreen() { device.wait(Until.hasObject(thankYou), TIMEOUT_MS); } and isScreenPresent()) → DuetCheckoutTest uses cfdThankYou.waitForScreen(); assertTrue(cfdThankYou.isScreenPresent()); → local PASS → PR ({{morgan}} merges) → CFD_THANK_YOU Deprecated → Available. (Selector style is illustrative; the fact taught is that UI Automator 2.3 natively locates elements on both screens.)',
     ),
   },
   success: (b) =>
@@ -184,9 +184,9 @@ export const INC38: IncidentDef = {
       c.truthy(p.gitFile('uia-remote', PO_PATH).exists),
       c.truthy(p.codeFact('waitForScreen', 'CfdThankYouScreen')),
       c.truthy(p.codeFact('isScreenPresent', 'CfdThankYouScreen')),
-      c.falsy(p.codeFact('screenCompare', 'DuoCheckoutTest')),
-      c.eq(p.localRun('DuoCheckoutTest').result, 'PASS'),
-      c.label(c.wasTrue(c.all(c.status(rig(b), 'RESERVED'), c.eq(p.localRun('DuoCheckoutTest').result, 'RUNNING'))), 'Ran locally while Reserved'),
+      c.falsy(p.codeFact('screenCompare', 'DuetCheckoutTest')),
+      c.eq(p.localRun('DuetCheckoutTest').result, 'PASS'),
+      c.label(c.wasTrue(c.all(c.status(rig(b), 'RESERVED'), c.eq(p.localRun('DuetCheckoutTest').result, 'RUNNING'))), 'Ran locally while Reserved'),
       c.truthy(p.screenCompare('CFD_THANK_YOU').exists),
       c.truthy(p.screenCompare('CFD_THANK_YOU').deprecated),
       c.status(rig(b), 'AVAILABLE'),
@@ -196,29 +196,29 @@ export const INC38: IncidentDef = {
   wrongButTempting: [
     wm('delete-compare', 'Delete the Screen Compare row before the merge', 100, orcaSave('screenCompareImage', { action: 'delete' }), teach('Another suite still referenced it.', 'Deprecate OCR checks as they are migrated; UI Automator 2.3 replaces them. (Ref §3)', 'Mark it Deprecated instead.')),
     wm('po-in-testactions', 'Put the page object in testactions', 50, on('git.fileEdited', { repo: 'uia-remote' }, (pl) => /testactions\/CfdThankYouScreen\.java$/.test(pl.path)), teach('Wrong package.', 'pageobjects holds screen classes; testactions holds tests. (Ref §4)', 'Move it to pageobjects.')),
-    wm('skip-reserved', 'Skip Reserved', 200, on('test.localRunStarted', { testName: 'DuoCheckoutTest' }, (pl, s) => Object.values(s.lab.orca.robots).find((r) => r.name === pl.robotName)?.status !== 'RESERVED'), teach('Your run collided with Jenkins.', 'Reserve the rig before running locally. (Ref §3)', 'Orca → Reserved first.')),
-    wm('ip-mismatch', 'CFD IP ≠ MFD IP', 0, undefined, teach('The run fails to find the CFD.', 'On a Station Duo both IPs are the same. (Ref §4)', 'Set both to 10.42.30.14.')),
+    wm('skip-reserved', 'Skip Reserved', 200, on('test.localRunStarted', { testName: 'DuetCheckoutTest' }, (pl, s) => Object.values(s.lab.orca.robots).find((r) => r.name === pl.robotName)?.status !== 'RESERVED'), teach('Your run collided with Jenkins.', 'Reserve the rig before running locally. (Ref §3)', 'Orca → Reserved first.')),
+    wm('ip-mismatch', 'CFD IP ≠ MFD IP', 0, undefined, teach('The run fails to find the CFD.', 'On a Stand Duet both IPs are the same. (Ref §4)', 'Set both to 10.42.30.14.')),
   ],
   teaches: 'Ref §3: OCR Screen Compare is being deprecated. Ref §1: UI Automator v2.3 adds native dual-screen element tracking. Ref §4: project structure, mandatory methods, config.',
 };
 
 /** INC39 variant table: saved wrong value → the exact enum. */
 const ENV_CASES: readonly { id: string; label: string; value: string; correct: string; job: string }[] = [
-  { id: 'A', label: 'flex_3', value: 'flex_3', correct: 'FLEX_3', job: FLEX_JOB },
-  { id: 'B', label: 'Flex_3', value: 'Flex_3', correct: 'FLEX_3', job: FLEX_JOB },
-  { id: 'C', label: 'flex_4', value: 'flex_4', correct: 'FLEX_4', job: FLEX_JOB },
-  { id: 'D', label: 'FLEX3', value: 'FLEX3', correct: 'FLEX_3', job: FLEX_JOB },
-  { id: 'E', label: 'PL4 mini_3', value: 'mini_3', correct: 'MINI_3', job: 'Java/uia-remote-regression-mini' },
+  { id: 'A', label: 'flux_3', value: 'flux_3', correct: 'FLUX_3', job: FLUX_JOB },
+  { id: 'B', label: 'Flux_3', value: 'Flux_3', correct: 'FLUX_3', job: FLUX_JOB },
+  { id: 'C', label: 'flux_4', value: 'flux_4', correct: 'FLUX_4', job: FLUX_JOB },
+  { id: 'D', label: 'FLUX3', value: 'FLUX3', correct: 'FLUX_3', job: FLUX_JOB },
+  { id: 'E', label: 'PL4 micro_3', value: 'micro_3', correct: 'MICRO_3', job: 'Java/uia-remote-regression-micro' },
 ];
 
 function envCase(id: string) {
   const e = ENV_CASES.find((x) => x.id === id)!;
   return {
-    ticket: { title: `${e.job.split('/')[1]} fails at checkout`, reporter: 'jenkins-bot' as const, misleading: { title: e.correct.startsWith('MINI') ? 'No Mini rigs are available?' : 'No Flex rigs are available?' } },
+    ticket: { title: `${e.job.split('/')[1]} fails at checkout`, reporter: 'jenkins-bot' as const, misleading: { title: e.correct.startsWith('MICRO') ? 'No Micro rigs are available?' : 'No Flux rigs are available?' } },
     setup: () => ({ scenario: [F('jenkins.envCase', { job: e.job, value: e.value }), OP('jenkins.startBuild', { job: e.job, by: 'jenkins' })] }),
     symptoms: [
       sym('Jenkins', `[orca] checkout request deviceType=${e.value}\njava.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.${e.value}\nFAILURE`),
-      sym('Orca', e.correct.startsWith('MINI') ? 'BUMBLEBEE is Available (capacity is fine).' : 'WALL-E and EVE are Available (capacity is fine).'),
+      sym('Orca', e.correct.startsWith('MICRO') ? 'BUMBLEBEE is Available (capacity is fine).' : 'WALL-E and EVE are Available (capacity is fine).'),
     ],
     hints: [
       'Orca has free robots. Read exactly what the checkout asked for.',
@@ -232,7 +232,7 @@ function envCase(id: string) {
 
 export const INC39: IncidentDef = {
   id: 'INC39',
-  name: 'Jenkins env var case (flex_3)',
+  name: 'Jenkins env var case (flux_3)',
   difficulty: 1,
   base: 200,
   parS: 120,
@@ -247,13 +247,13 @@ export const INC39: IncidentDef = {
   diagnosisPath: ['Orca has capacity; the checkout itself threw.', 'Read the exception: the enum constant does not exist.', 'Set the exact ALL-CAPS value and rebuild.'],
   diagnosisCall: dc(
     "The env var value isn't the exact ALL-CAPS enum",
-    ['No Flex rigs available', 'Orca shows matching rigs Available. Read the exception.'],
+    ['No Flux rigs available', 'Orca shows matching rigs Available. Read the exception.'],
     ['Orca down', 'Orca answered with an IllegalArgumentException — it is up.'],
     ['Wrong folder', 'The job ran; it failed at checkout. Read what it asked for.'],
   ),
   wrongButTempting: [
     wm('fix-enum', 'Change the enum in Orca', 150, undefined, teach('The enum is the source of truth.', 'Device Type is an enum; that is why Jenkins env vars must be ALL CAPS. (Ref §3)', 'Fix the job parameter.')),
-    wm('gen3', 'DEVICE_TYPE=FLEX_GEN3', 0, buildWith(FLEX_JOB, (pp) => pp.DEVICE_TYPE === 'FLEX_GEN3'), teach('Same exception.', 'FLEX_GEN3 is a testing profile, not a DeviceType constant.', 'Use FLEX_3 or FLEX_4.')),
+    wm('gen3', 'DEVICE_TYPE=FLUX_GEN3', 0, buildWith(FLUX_JOB, (pp) => pp.DEVICE_TYPE === 'FLUX_GEN3'), teach('Same exception.', 'FLUX_GEN3 is a testing profile, not a DeviceType constant.', 'Use FLUX_3 or FLUX_4.')),
     wm('available-again', 'Set WALL-E Available again', 0, undefined, teach('It already is.', 'Capacity was never the problem.', 'Read the checkout exception.')),
   ],
   teaches: 'Ref §3: the Device Type enum is why Jenkins env vars must be ALL CAPS. Ref §1: Jenkins injects runtime env vars. JHipster generates the enums.',
@@ -305,9 +305,9 @@ export const INC40: IncidentDef = {
       id: 'B',
       label: "Real run: a general job takes ROSIE",
       overrides: {
-        setup: () => ({ scenario: [F('orca.statusOverride', { robot: '$R', status: 'AVAILABLE', by: 'alex' }), OP('jenkins.startBuild', { job: FLEX_JOB, params: { DEVICE_TYPE: 'FLEX_POCKET' }, by: 'riley' })] }),
+        setup: () => ({ scenario: [F('orca.statusOverride', { robot: '$R', status: 'AVAILABLE', by: 'alex' }), OP('jenkins.startBuild', { job: FLUX_JOB, params: { DEVICE_TYPE: 'FLUX_POCKET' }, by: 'riley' })] }),
         symptoms: [
-          sym('Jenkins', P("{{riley}}'s build: [orca] checkout → rosie (FLEX_POCKET) OK · ubi: routing merchant switch → AUTO-US-NOPIN-01 · laz: merchant active")),
+          sym('Jenkins', P("{{riley}}'s build: [orca] checkout → rosie (FLUX_POCKET) OK · ubi: routing merchant switch → AUTO-US-NOPIN-01 · laz: merchant active")),
           sym('Jenkins', 'PL8: [paycore] merchant mismatch: expected PAYCORE-STANDALONE-01, got AUTO-US-NOPIN-01'),
           sym('Notes', P('STATUS Unavailable → Available ({{alex}})')),
         ],
@@ -331,7 +331,7 @@ export const INC41: IncidentDef = {
   ticket: { title: 'I need a Visa/Discover/AmEx matrix run on ROSIE now — Jenkins says no robot', reporter: 'sam' },
   setup: () => ({ scenario: [OP('jenkins.startBuild', { job: 'Java/paycore-standalone-matrix', params: { ROBOT_NAME: '' }, by: 'sam' })] }),
   reveal: 'immediate',
-  symptoms: [sym('Jenkins', 'No Available robot matches FLEX_POCKET (rosie is Unavailable)')],
+  symptoms: [sym('Jenkins', 'No Available robot matches FLUX_POCKET (rosie is Unavailable)')],
   diagnosisPath: ['The only matching rig is Unavailable — on purpose.', 'Unavailable rigs are checked out only by their exact unique Name.', 'Build with ROBOT_NAME=rosie; leave the status alone.'],
   hints: [
     'ROSIE is Unavailable on purpose. How does a job get an Unavailable rig?',
@@ -349,7 +349,7 @@ export const INC41: IncidentDef = {
     "Unavailable rigs need the robot's exact unique Name in the job",
     ['ROSIE broken', 'ROSIE passes its health checks. Read the checkout message.'],
     ['Must set it Available first', 'Setting a PayCore rig Available invites general pipelines to overwrite its merchant.'],
-    ['Wrong device type', 'The checkout matched FLEX_POCKET correctly — and found only an Unavailable rig.'],
+    ['Wrong device type', 'The checkout matched FLUX_POCKET correctly — and found only an Unavailable rig.'],
   ),
   wrongButTempting: [
     gw('set-available', 'GW05', 'Set ROSIE Available'),
@@ -370,31 +370,31 @@ export const INC41: IncidentDef = {
 
 export const INC42: IncidentDef = {
   id: 'INC42',
-  name: 'Hardware upgrade: Flex 1 → Flex 2 (new Device entity)',
+  name: 'Hardware upgrade: Flux 1 → Flux 2 (new Device entity)',
   difficulty: 4,
   base: 600,
   parS: 420,
   severity: 'P2',
-  rigs: { roles: ['flex-legacy'], default: 'johnny-5', scope: 'rig', describe: '`flex-legacy` (JOHNNY-5)' },
+  rigs: { roles: ['flux-legacy'], default: 'johnny-5', scope: 'rig', describe: '`flux-legacy` (JOHNNY-5)' },
   escalatable: false,
   unlockedBy: 'M07',
   plannedWork: true,
   tags: ['orca.device', 'orca.devicetype', 'power.18v', 'hw.devices', 'orca.status.offline'],
   factIds: ['F119', 'F120', 'F228', 'F229', 'F105', 'F058'],
   processBonuses: ['PB01', 'PB02', 'PB05', 'PB07'],
-  ticket: { title: (b) => P(`Upgrade ${hrn(b)} from Flex 1 to Flex 2 (Husky chest, drawer 2)`), reporter: 'jared' },
+  ticket: { title: (b) => P(`Upgrade ${hrn(b)} from Flux 1 to Flux 2 (Husky chest, drawer 2)`), reporter: 'jared' },
   setup: () => ({}),
   reveal: 'immediate',
   symptoms: [
-    sym('World', 'A spare Flex 2 (serial SIM-F2-000015) waits in the Husky chest, drawer 2.'),
-    sym('Orca', (b) => `${hrn(b)} → Robot Device ${String(b.vars.device)} (FLEX_1).`),
+    sym('World', 'A spare Flux 2 (serial SIM-F2-000015) waits in the Husky chest, drawer 2.'),
+    sym('Orca', (b) => `${hrn(b)} → Robot Device ${String(b.vars.device)} (FLUX_1).`),
   ],
   diagnosisPath: [
     'Orca → Offline (PB01).',
-    'MOTOR off; remove the two 2.5 mm cradle-clamp bolts; unplug the Flex 1 PSU and hub cable; keep the Flex 1 for rollback.',
-    'Seat the Flex 2, clamp, connect the hub, plug its PSU into the AC strip; boot (30 s).',
+    'MOTOR off; remove the two 2.5 mm cradle-clamp bolts; unplug the Flux 1 PSU and hub cable; keep the Flux 1 for rollback.',
+    'Seat the Flux 2, clamp, connect the hub, plug its PSU into the AC strip; boot (30 s).',
     'Read the serial SIM-F2-000015; the IP stays the same.',
-    'Orca → Devices → Create FLEX_2 row; do not edit or delete the Flex 1 row.',
+    'Orca → Devices → Create FLUX_2 row; do not edit or delete the Flux 1 row.',
     'Robot → Robot Device → the new row → Save.',
     'adb connect …:5444; adb shell getprop ro.product.model.',
     'MOTOR on → Park All → Available → confirmation build.',
@@ -402,31 +402,31 @@ export const INC42: IncidentDef = {
   hints: [
     'Upgrades keep the legacy configuration intact. Plan the Orca half before the hardware half.',
     'Orca → Devices → Create (new row) — then Robot → Robot Device. Never edit the old row.',
-    (b) => `Offline → swap the hardware (PSU on the AC strip) → Create ${rig(b)}-flex2 (FLEX_2, SIM-F2-000015, ${deviceIp(b)}) → link it → Park All → Available → build.`,
+    (b) => `Offline → swap the hardware (PSU on the AC strip) → Create ${rig(b)}-flux2 (FLUX_2, SIM-F2-000015, ${deviceIp(b)}) → link it → Park All → Available → build.`,
   ],
   walkthrough: (b) => [
     { text: `Orca → ${hrn(b)} → Offline`, doneWhen: c.status(rig(b), 'OFFLINE') },
-    { text: 'Swap the Flex 1 for the Flex 2 (PSU on the AC strip)', doneWhen: c.happened(on('device.swapped', { rigId: rig(b) })) },
-    { text: `Orca → Devices → Create ${rig(b)}-flex2 (FLEX_2)`, doneWhen: c.eq(p.device(`${rig(b)}-flex2`).type, 'FLEX_2') },
-    { text: `Robot Device → ${rig(b)}-flex2`, doneWhen: c.eq(p.robot(rig(b)).deviceId, `${rig(b)}-flex2`) },
+    { text: 'Swap the Flux 1 for the Flux 2 (PSU on the AC strip)', doneWhen: c.happened(on('device.swapped', { rigId: rig(b) })) },
+    { text: `Orca → Devices → Create ${rig(b)}-flux2 (FLUX_2)`, doneWhen: c.eq(p.device(`${rig(b)}-flux2`).type, 'FLUX_2') },
+    { text: `Robot Device → ${rig(b)}-flux2`, doneWhen: c.eq(p.robot(rig(b)).deviceId, `${rig(b)}-flux2`) },
     { text: 'MOTOR on → Park All → Available', doneWhen: c.status(rig(b), 'AVAILABLE') },
   ],
-  fix: { handsOn: (b) => `Offline → hardware swap → Create ${rig(b)}-flex2 (FLEX_2, SIM-F2-000015, ${deviceIp(b)}) → Robot Device = ${rig(b)}-flex2 → Park All → Available → confirmation build. Keep ${String(b.vars.device)}.` },
+  fix: { handsOn: (b) => `Offline → hardware swap → Create ${rig(b)}-flux2 (FLUX_2, SIM-F2-000015, ${deviceIp(b)}) → Robot Device = ${rig(b)}-flux2 → Park All → Available → confirmation build. Keep ${String(b.vars.device)}.` },
   success: (b) =>
     c.all(
-      c.eq(p.robot(rig(b)).deviceId, `${rig(b)}-flex2`),
-      c.eq(p.device(`${rig(b)}-flex2`).type, 'FLEX_2'),
+      c.eq(p.robot(rig(b)).deviceId, `${rig(b)}-flux2`),
+      c.eq(p.device(`${rig(b)}-flux2`).type, 'FLUX_2'),
       c.truthy(p.device(String(b.vars.device)).exists),
-      c.eq(p.device(String(b.vars.device)).type, 'FLEX_1'),
+      c.eq(p.device(String(b.vars.device)).type, 'FLUX_1'),
       c.status(rig(b), 'AVAILABLE'),
       c.label(c.nextBuild({ robots: [rig(b)] }), 'Confirmation build'),
     ),
   diagnosisCall: 'none',
   wrongButTempting: [
-    gw('edit-in-place', 'GW10', 'Edit the Flex 1 Device row in place'),
-    gw('delete-legacy', 'GW09', 'Delete the Flex 1 Device row'),
-    gw('psu-dc', 'GW01', 'Flex 2 PSU on a DC rail'),
-    wm('skip-link', 'Skip relinking Robot Device', 0, undefined, teach('Tests drive a Flex 2 with the Flex 1 layout → red builds.', 'The Robot Device field links to the Device entity; relink after the swap. (Ref §3)', 'Robot → Robot Device → the new row.')),
+    gw('edit-in-place', 'GW10', 'Edit the Flux 1 Device row in place'),
+    gw('delete-legacy', 'GW09', 'Delete the Flux 1 Device row'),
+    gw('psu-dc', 'GW01', 'Flux 2 PSU on a DC rail'),
+    wm('skip-link', 'Skip relinking Robot Device', 0, undefined, teach('Tests drive a Flux 2 with the Flux 1 layout → red builds.', 'The Robot Device field links to the Device entity; relink after the swap. (Ref §3)', 'Robot → Robot Device → the new row.')),
   ],
-  teaches: 'Ref §3 Robot Device decoupling: a Flex 1 → Flex 2 upgrade keeps the legacy configuration for quick rollback (Cur M07 does the Orca half; here the player also does the hardware half).',
+  teaches: 'Ref §3 Robot Device decoupling: a Flux 1 → Flux 2 upgrade keeps the legacy configuration for quick rollback (Cur M07 does the Orca half; here the player also does the hardware half).',
 };

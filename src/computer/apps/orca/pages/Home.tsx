@@ -7,7 +7,7 @@ import type { OrcaRobot } from '@/sim/types';
 import { Whale } from '../icons';
 import { STATUSES, StatusChip, hhmmss, useOrca, withQuery } from '../shared';
 
-/** Jenkins build route for a build id "Java/uia-remote-regression-flex#4127". */
+/** Jenkins build route for a build id "Java/uia-remote-regression-flux#4127". */
 export function jenkinsBuildRoute(buildId: string): string | null {
   const m = /^(.+)#(\d+)$/.exec(buildId);
   if (!m) return null;

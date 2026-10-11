@@ -26,28 +26,28 @@ describe('presets (Sim §6.5, §4.4.2)', () => {
     expect(lab().orca.healthCheck.log[0]!.lines[0]).toMatch(/^2026-10-05 08:00:00 {2}health-check run #1 — /);
   });
 
-  it('academy:M07 sets up the Orca editing lesson (HRN typo, swapped Flex 2, blank Tap URL, cleared tether, offsets)', () => {
+  it('academy:M07 sets up the Orca editing lesson (HRN typo, swapped Flux 2, blank Tap URL, cleared tether, offsets)', () => {
     sim.reset({ preset: 'academy:M07' });
     expect(robot('johnny-5').humanReadableName).toBe('JONNY-5');
     expect(robot('johnny-5').tapUrl).toBe('');
     expect(robot('optimus').mfdDeviceId).toBeNull();
     expect(robot('bumblebee').offsetYMm).toBe(1.5);
-    expect(lab().rigs['johnny-5']!.deviceIds).toEqual(['dev-spare-flex2']);
-    expect(device('dev-spare-flex2')).toMatchObject({ ip: '10.42.30.15', orcaDeviceName: '', rigId: 'johnny-5', supply: { kind: 'ac-strip', targetId: 'STRIP-B', socket: 1 } });
+    expect(lab().rigs['johnny-5']!.deviceIds).toEqual(['dev-spare-flux2']);
+    expect(device('dev-spare-flux2')).toMatchObject({ ip: '10.42.30.15', orcaDeviceName: '', rigId: 'johnny-5', supply: { kind: 'ac-strip', targetId: 'STRIP-B', socket: 1 } });
     sim.tick(50);
-    expect(device('dev-spare-flex2').power).toBe('booting');
-    expect(device('dev-johnny-5-flex1')).toMatchObject({ power: 'off', rigId: 'storage-shelf', ip: '' });
+    expect(device('dev-spare-flux2').power).toBe('booting');
+    expect(device('dev-johnny-5-flux1')).toMatchObject({ power: 'off', rigId: 'storage-shelf', ip: '' });
     // The player creates the Device row (serial binding, Sim §1.15) and relinks Robot Device.
-    const id = sim.orca.saveDevice({ name: 'johnny-5-flex2', deviceType: 'FLEX_2', serial: 'SIM-F2-000015', ip: '10.42.30.15', label: 'Flex 2 (JOHNNY-5)' }, 'player');
+    const id = sim.orca.saveDevice({ name: 'johnny-5-flux2', deviceType: 'FLUX_2', serial: 'SIM-F2-000015', ip: '10.42.30.15', label: 'Flux 2 (JOHNNY-5)' }, 'player');
     expect(id.ok).toBe(true);
-    expect(device('dev-spare-flex2').orcaDeviceName).toBe('johnny-5-flex2');
-    expect(lab().orca.devices[id.ok ? id.value : 0]!.simDeviceId).toBe('dev-spare-flex2');
+    expect(device('dev-spare-flux2').orcaDeviceName).toBe('johnny-5-flux2');
+    expect(lab().orca.devices[id.ok ? id.value : 0]!.simDeviceId).toBe('dev-spare-flux2');
   });
 
   it('academy:M16 stages R2-D2 on Review Order with the CFD showing TOTAL $10.83 and CFD_TOTAL deleted', () => {
     sim.reset({ preset: 'academy:M16' });
-    expect(device('dev-r2-d2-duo').display.screen).toBe('review-order');
-    expect(device('dev-r2-d2-duo').secondaryDisplay!.screen).toBe('customer-cart');
+    expect(device('dev-r2-d2-duet').display.screen).toBe('review-order');
+    expect(device('dev-r2-d2-duet').secondaryDisplay!.screen).toBe('customer-cart');
     expect(Object.values(lab().orca.screenCompareImages).some((c) => c.name === 'CFD_TOTAL')).toBe(false);
   });
 });
@@ -56,7 +56,7 @@ describe('determinism (Sim §6.4, §6.6)', () => {
   const script = () => {
     fresh('test', 1234);
     sim.faults.inject({ faultId: 'fuse.blown', params: { fuse: '@random' } });
-    sim.faults.applySetup({ op: 'device.stage', params: { device: 'dev-wall-e-flex3', stage: 'payment-prompt' } });
+    sim.faults.applySetup({ op: 'device.stage', params: { device: 'dev-wall-e-flux3', stage: 'payment-prompt' } });
     sim.orca.card('wall-e', 'SWIPE', 'VISA_STD_SWIPE', 'player');
     sim.jenkins.build('Java/uia-remote-tethered-tax', { ROBOT_NAME: 'megatron' }, 'player');
     run(30_000);

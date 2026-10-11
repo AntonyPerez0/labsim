@@ -19,7 +19,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     kind: 'mentor',
     fromReference: false,
     illustrative: true,
-    askAbout: ['uia-remote structure and page objects', 'config.properties', 'ADB on port 5444', 'Pigeon (LSTR)', 'Station Duo OCR and UI Automator 2.3'],
+    askAbout: ['uia-remote structure and page objects', 'config.properties', 'ADB on port 5444', 'Pigeon (LSTR)', 'Stand Duet OCR and UI Automator 2.3'],
     voice: { wave: 'sine', hz: 520 },
     anchor: 'npc.morgan.desk',
     outfit: 'Teal hoodie, dark jeans, sticker-covered laptop',

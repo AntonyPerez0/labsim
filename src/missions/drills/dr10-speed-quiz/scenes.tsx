@@ -1,6 +1,6 @@
 /**
  * DR10 hotspot renders (SVG): the POWER panel, the status tablet's Motion Control tab and tab bar, a Robot
- * Pi, a Station Duo and the power wall. Every clickable region carries `data-region` = an id from
+ * Pi, a Stand Duet and the power wall. Every clickable region carries `data-region` = an id from
  * `SCENE_REGIONS` (logic.ts). Shapes follow the reference photos (Cur §0.5 prop descriptions).
  */
 import type { ReactNode } from 'react';
@@ -148,7 +148,7 @@ function TabletTabs(p: SceneProps) {
           <text x={44 + i * 240 + 113} y="134" fontSize="18" fontWeight="800" textAnchor="middle" fill={i === 0 ? '#fff' : '#1f2937'}>{label}</text>
         </R>
       ))}
-      <text x="44" y="200" fontSize="15" fill="#4b5563">Rig description: Flex 3 touch robot (photo rig). Dedicated webcam.</text>
+      <text x="44" y="200" fontSize="15" fill="#4b5563">Rig description: Flux 3 touch robot (photo rig). Dedicated webcam.</text>
       <text x="44" y="230" fontSize="15" fill="#4b5563">Robot Pi 10.42.10.11 · device 10.42.30.11 · Orca: Available</text>
     </TabletFrame>
   );
@@ -201,7 +201,7 @@ function PiBoard(p: SceneProps) {
   );
 }
 
-function StationDuo(p: SceneProps) {
+function StandDuet(p: SceneProps) {
   return (
     <svg viewBox="0 0 700 380" className="dr10-svg">
       <rect x="40" y="300" width="420" height="40" rx="10" fill="#d9dde2" />
@@ -223,7 +223,7 @@ function StationDuo(p: SceneProps) {
         <text x="580" y="200" fill="#111" fontSize="16" fontWeight="800" textAnchor="middle" transform="rotate(-6 580 220)">TOTAL $10.83</text>
         <text x="580" y="226" fill="#6b7280" fontSize="12" textAnchor="middle" transform="rotate(-6 580 220)">CFD (customer)</text>
       </R>
-      <text x="350" y="30" fill="#aab4bd" fontSize="13" textAnchor="middle">R2-D2 · STATION_DUO · 10.42.30.14</text>
+      <text x="350" y="30" fill="#aab4bd" fontSize="13" textAnchor="middle">R2-D2 · STAND_DUET · 10.42.30.14</text>
     </svg>
   );
 }
@@ -278,8 +278,8 @@ export function Scene({ scene, ...p }: SceneProps & { scene: HotspotScene }) {
       return <TabletTabs {...p} />;
     case 'pi-board':
       return <PiBoard {...p} />;
-    case 'station-duo':
-      return <StationDuo {...p} />;
+    case 'stand-duet':
+      return <StandDuet {...p} />;
     case 'power-wall':
       return <PowerWall {...p} />;
   }

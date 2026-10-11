@@ -138,7 +138,7 @@ export function drawButton(sc: ScreenCtx, btn: Btn): void {
       const gs = t.S(3.6);
       const gx = t.X(btn.x + btn.w / 2) - t.S(9);
       const gy = t.Y(cy);
-      const ink = btn.id === 'Print' && !(sc.device.type !== 'FLEX_POCKET' && sc.device.type !== 'COMPACT') ? '#a0a6ae' : C.navy;
+      const ink = btn.id === 'Print' && !(sc.device.type !== 'FLUX_POCKET' && sc.device.type !== 'COMPASS') ? '#a0a6ae' : C.navy;
       switch (btn.id) {
         case 'Print':
           G.printer(c, gx, gy, gs, ink);

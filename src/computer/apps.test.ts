@@ -69,15 +69,15 @@ describe('routes', () => {
   });
 
   it('ignores trailing slashes (Jenkins) and decodes params', () => {
-    const m = matchRoute(APP_ROUTES.jenkins.console, '/job/Java/job/uia-remote-regression-flex/4127/console/');
-    expect(m?.params).toEqual({ folder: 'Java', job: 'uia-remote-regression-flex', number: '4127' });
+    const m = matchRoute(APP_ROUTES.jenkins.console, '/job/Java/job/uia-remote-regression-flux/4127/console/');
+    expect(m?.params).toEqual({ folder: 'Java', job: 'uia-remote-regression-flux', number: '4127' });
     expect(matchRoute(APP_ROUTES.jenkins.view, '/view/Java')?.params.view).toBe('Java');
   });
 
   it('captures *rest params including slashes (GitHub branches with "/")', () => {
-    const route = buildRoute(APP_ROUTES.github.blob, { repo: 'gort', ref: 'fix/flex4-receipt-qr/config/screen-locations/FLEX_4/RECEIPT_OPTIONS_5.json' });
-    expect(route).toBe('/labsim-lab/gort/blob/fix/flex4-receipt-qr/config/screen-locations/FLEX_4/RECEIPT_OPTIONS_5.json');
-    expect(matchRoute(APP_ROUTES.github.blob, route)?.params.ref).toBe('fix/flex4-receipt-qr/config/screen-locations/FLEX_4/RECEIPT_OPTIONS_5.json');
+    const route = buildRoute(APP_ROUTES.github.blob, { repo: 'gort', ref: 'fix/flux4-receipt-qr/config/screen-locations/FLUX_4/RECEIPT_OPTIONS_5.json' });
+    expect(route).toBe('/labsim-lab/gort/blob/fix/flux4-receipt-qr/config/screen-locations/FLUX_4/RECEIPT_OPTIONS_5.json');
+    expect(matchRoute(APP_ROUTES.github.blob, route)?.params.ref).toBe('fix/flux4-receipt-qr/config/screen-locations/FLUX_4/RECEIPT_OPTIONS_5.json');
     const file = buildRoute(APP_ROUTES.intellij.file, { repo: 'uia-remote', path: 'app/src/main/java/com/labsim/uia/AppRegistration.java' });
     expect(matchRoute(APP_ROUTES.intellij.file, file)?.params).toEqual({ repo: 'uia-remote', path: 'app/src/main/java/com/labsim/uia/AppRegistration.java' });
   });

@@ -52,7 +52,7 @@ function inspectedPart(id: string): string | null {
     if (!id.includes(rig)) continue;
     if (/\bpi\b|\.pi(\.|$)|-pi/.test(id)) return `${rig}:pi`;
     if (/tablet|screen|mfd|cfd/.test(id)) return `${rig}:tablet`;
-    if (/device|flex|mini|station|compact|duo|pocket|cradle/.test(id)) return `${rig}:device`;
+    if (/device|flux|micro|stand|compass|duet|pocket|cradle/.test(id)) return `${rig}:device`;
   }
   return null;
 }

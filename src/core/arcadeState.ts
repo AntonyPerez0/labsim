@@ -153,7 +153,7 @@ export interface TicketState {
 
 export interface PipelineState {
   id: PipelineId;
-  /** Jenkins job path (`Java/uia-remote-regression-flex`). */
+  /** Jenkins job path (`Java/uia-remote-regression-flux`). */
   job: string;
   active: boolean;
   activationOrder: number;
@@ -167,9 +167,9 @@ export interface PipelineState {
   params: Record<string, string>;
   lastResult: 'SUCCESS' | 'FAILURE' | 'BLOCKED' | null;
   lastRobot: string | null;
-  /** Latest console line for the HUD strip tooltip (`[orca] no Available FLEX_3 robot — build waiting in queue`). */
+  /** Latest console line for the HUD strip tooltip (`[orca] no Available FLUX_3 robot — build waiting in queue`). */
   lastConsoleLine: string | null;
-  /** Run counter (PL1 alternates DEVICE_TYPE FLEX_3 / FLEX_4 by parity). */
+  /** Run counter (PL1 alternates DEVICE_TYPE FLUX_3 / FLUX_4 by parity). */
   runIndex: number;
   attempts: number;
   gotRig: number;

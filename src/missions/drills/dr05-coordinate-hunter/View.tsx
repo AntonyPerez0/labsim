@@ -239,7 +239,7 @@ export function View(props: DrillComponentProps) {
               <div className="dr05-bonus">
                 <div className="dr05-bonus__title">Screen Location (mm)</div>
                 <div className="dr05-bonus__hint">
-                  MINI_3: {PX_PER_MM.x} px/mm (x) · {PX_PER_MM.y} px/mm (y). Centre = (x + w/2, y + h/2) ÷ px/mm.
+                  MICRO_3: {PX_PER_MM.x} px/mm (x) · {PX_PER_MM.y} px/mm (y). Centre = (x + w/2, y + h/2) ÷ px/mm.
                 </div>
                 <div className="dr05-opts__row">
                   <label className="dr05-num">

@@ -4,11 +4,11 @@
  *
  * Graded keys = the curriculum validator's 11 keys (Cur M14). Targets follow the sim's `targetConfig`
  * (Sim §4.4.4) built from the same roster, so the drill agrees with the in-game Config Assistant:
- * tethered when the MFD is populated or the device is a Station Duo (MFD IP = CFD IP, F193); `deviceType` is
- * the family (Mini, Flex, Station — F195); theme `avocado`, kernelType `CPA`, portNumber `5444` are locked
+ * tethered when the MFD is populated or the device is a Stand Duet (MFD IP = CFD IP, F193); `deviceType` is
+ * the family (Micro, Flux, Stand — F195); theme `avocado`, kernelType `CPA`, portNumber `5444` are locked
  * (F196–F198). Standalone rigs use `runType=standalone` [illus., Cur M11] with an empty CFD IP.
  *
- * Required traps per round: a tethered card, a Flex card, then a Station Duo card (R2-D2 `10.42.30.14`) or an
+ * Required traps per round: a tethered card, a Flux card, then a Stand Duet card (R2-D2 `10.42.30.14`) or an
  * "old wiki" card that starts pre-filled with `theme=classic`, `kernelType=SPA`, `portNumber=5555`.
  *
  * Scoring (custom): +40 per correct key, +100 for all 11 (GP §2.4.3); a perfect file also earns a speed bonus
@@ -44,27 +44,27 @@ export interface ConfigData {
   devices: RigDevice[];
   passcode: string;
   /** Card flavour. */
-  variant: 'tethered' | 'flex' | 'duo' | 'wiki' | 'standalone';
+  variant: 'tethered' | 'flux' | 'duet' | 'wiki' | 'standalone';
   /** Pre-filled lines (old wiki card), else []. */
   start: string[];
   target: Record<ConfigKey, string>;
 }
 
-const familyOf = (t: DeviceTypeCode): string => (t.startsWith('STATION') ? 'Station' : t.startsWith('MINI') ? 'Mini' : t.startsWith('FLEX') ? 'Flex' : 'Compact');
+const familyOf = (t: DeviceTypeCode): string => (t.startsWith('STAND') ? 'Stand' : t.startsWith('MICRO') ? 'Micro' : t.startsWith('FLUX') ? 'Flux' : 'Compass');
 const ip = (octet: number): string => `10.42.30.${octet}`;
 /** `SIM-<model>-0000<octet>` (Sim §2.4). */
 const serialOf = (type: DeviceTypeCode, octet: number): string => `SIM-${DEVICE_TYPES[type].serialPrefix}-0000${String(octet).padStart(2, '0')}`;
-const isDuo = (t: DeviceTypeCode): boolean => t.startsWith('STATION_DUO');
+const isDuet = (t: DeviceTypeCode): boolean => t.startsWith('STAND_DUET');
 
-/** Rig cards eligible for DR02: rigs you could run locally (Available, or Unavailable by name) — Compact rigs skipped (config.properties deviceType is Mini, Flex or Station). */
-const ELIGIBLE = ROSTER.filter((r) => familyOf(r.device.type) !== 'Compact' && (r.status === 'AVAILABLE' || r.status === 'UNAVAILABLE'));
+/** Rig cards eligible for DR02: rigs you could run locally (Available, or Unavailable by name) — Compass rigs skipped (config.properties deviceType is Micro, Flux or Stand). */
+const ELIGIBLE = ROSTER.filter((r) => familyOf(r.device.type) !== 'Compass' && (r.status === 'AVAILABLE' || r.status === 'UNAVAILABLE'));
 export const TETHERED_RIGS = ELIGIBLE.filter((r) => !!r.cfd);
-export const FLEX_RIGS = ELIGIBLE.filter((r) => !r.cfd && familyOf(r.device.type) === 'Flex');
-export const DUO_RIGS = ELIGIBLE.filter((r) => isDuo(r.device.type));
-export const OTHER_RIGS = ELIGIBLE.filter((r) => !r.cfd && !isDuo(r.device.type) && familyOf(r.device.type) !== 'Flex');
+export const FLUX_RIGS = ELIGIBLE.filter((r) => !r.cfd && familyOf(r.device.type) === 'Flux');
+export const DUET_RIGS = ELIGIBLE.filter((r) => isDuet(r.device.type));
+export const OTHER_RIGS = ELIGIBLE.filter((r) => !r.cfd && !isDuet(r.device.type) && familyOf(r.device.type) !== 'Flux');
 
 export function targetFor(r: RosterRow): Record<ConfigKey, string> {
-  const duo = isDuo(r.device.type);
+  const duo = isDuet(r.device.type);
   const tethered = !!r.cfd || duo;
   const mfdIp = ip(r.device.ip);
   return {
@@ -85,7 +85,7 @@ export function targetFor(r: RosterRow): Record<ConfigKey, string> {
 function devicesOf(r: RosterRow): RigDevice[] {
   const d = (role: RigDevice['role'], type: DeviceTypeCode, octet: number): RigDevice => ({ role, type, model: DEVICE_TYPES[type].displayName, ip: ip(octet), serial: serialOf(type, octet) });
   if (r.cfd) return [d('MFD', r.device.type, r.device.ip), d('CFD', r.cfd.type, r.cfd.ip)];
-  if (isDuo(r.device.type)) return [d('MFD + CFD', r.device.type, r.device.ip)];
+  if (isDuet(r.device.type)) return [d('MFD + CFD', r.device.type, r.device.ip)];
   return [d('Device', r.device.type, r.device.ip)];
 }
 
@@ -102,20 +102,20 @@ export function wikiStart(t: Record<ConfigKey, string>): string[] {
 export function configItem(r: RosterRow, variant: ConfigData['variant']): DrillItem<ConfigData> {
   const target = targetFor(r);
   const facts = ['F190', 'F191', 'F192', 'F195', 'F196', 'F197', 'F198'];
-  if (variant === 'duo') facts.push('F193');
+  if (variant === 'duet') facts.push('F193');
   return {
     id: `DR02:${variant}:${r.name}`,
     tags: ['uia.config', 'adb.port', 'orca.tethered'],
     factIds: facts,
     teach: teach(
       `${r.name}: ${CONFIG_KEYS.map((k) => `${k}=${target[k]}`).filter((_, i) => i < 5).join(' · ')} …`,
-      variant === 'duo'
-        ? 'Station Duo: one terminal, two displays — merchantFacingDeviceIp and customerFacingDeviceIp are the exact same IP; deviceType is the family (Station).'
+      variant === 'duet'
+        ? 'Stand Duet: one terminal, two displays — merchantFacingDeviceIp and customerFacingDeviceIp are the exact same IP; deviceType is the family (Stand).'
         : variant === 'wiki'
           ? 'The old wiki is stale: theme is locked to avocado, kernelType to CPA (SPA is legacy) and portNumber to 5444 (5555 is the ADB default that hit coworkers\' desk devices).'
           : variant === 'tethered'
             ? 'MFD populated → runType=tethered with both IPs; serial = the primary terminal (MFD); deviceType = the MFD\'s family.'
-            : 'deviceType is the family (Mini, Flex or Station), not the Device Type enum; theme=avocado, kernelType=CPA, portNumber=5444 are locked.',
+            : 'deviceType is the family (Micro, Flux or Stand), not the Device Type enum; theme=avocado, kernelType=CPA, portNumber=5444 are locked.',
       { ref: 'Ref §4.5', factIds: facts, illustrative: true, tag: 'uia.config', doInstead: 'Read the rig card top to bottom: runType, IPs, serial, family, then the three locks.' },
     ),
     data: {
@@ -154,11 +154,11 @@ export interface KeyGrade {
 }
 
 const KEY_WHY: Record<ConfigKey, (t: Record<ConfigKey, string>, d: ConfigData) => string> = {
-  runType: (t) => (t.runType === 'tethered' ? 'tethered for multi-device setups (MFD populated, or a Station Duo)' : 'standalone single device (Jenkins env block uses the same word)'),
+  runType: (t) => (t.runType === 'tethered' ? 'tethered for multi-device setups (MFD populated, or a Stand Duet)' : 'standalone single device (Jenkins env block uses the same word)'),
   merchantFacingDeviceIp: () => 'the MFD terminal\'s local IP',
-  customerFacingDeviceIp: (t, d) => (d.variant === 'duo' ? 'Station Duo: the exact same IP as the MFD' : t.customerFacingDeviceIp ? 'the CFD terminal\'s local IP' : 'standalone: leave it empty'),
+  customerFacingDeviceIp: (t, d) => (d.variant === 'duet' ? 'Stand Duet: the exact same IP as the MFD' : t.customerFacingDeviceIp ? 'the CFD terminal\'s local IP' : 'standalone: leave it empty'),
   serial: () => 'hardware serial of the primary terminal (the MFD)',
-  deviceType: () => 'the family — Mini, Flex or Station — not the ALL-CAPS enum',
+  deviceType: () => 'the family — Micro, Flux or Stand — not the ALL-CAPS enum',
   theme: () => 'locked to avocado (legacy theme toggles are deprecated)',
   kernelType: () => 'locked to CPA (Core Payments Application; SPA is legacy)',
   portNumber: () => 'locked to 5444 — 5555 is the ADB default that collided with coworkers\' desk devices',
@@ -205,12 +205,12 @@ export function generateConfig(rng: RngState, state: RootState | null, index: nu
     const r = index === 0 && chance(rng, 0.5) ? ROSTER.find((x) => x.name === 'megatron')! : pick(rng, fresh(TETHERED_RIGS));
     return configItem(r, 'tethered');
   }
-  if (slot === 1) return configItem(pick(rng, fresh(FLEX_RIGS)), 'flex');
+  if (slot === 1) return configItem(pick(rng, fresh(FLUX_RIGS)), 'flux');
   if (chance(rng, 0.5)) {
-    const r = chance(rng, 0.6) ? ROSTER.find((x) => x.name === 'r2-d2')! : pick(rng, fresh(DUO_RIGS));
-    return configItem(r, 'duo');
+    const r = chance(rng, 0.6) ? ROSTER.find((x) => x.name === 'r2-d2')! : pick(rng, fresh(DUET_RIGS));
+    return configItem(r, 'duet');
   }
-  return configItem(pick(rng, fresh([...OTHER_RIGS, ...FLEX_RIGS, ...TETHERED_RIGS])), 'wiki');
+  return configItem(pick(rng, fresh([...OTHER_RIGS, ...FLUX_RIGS, ...TETHERED_RIGS])), 'wiki');
 }
 
 export const DR02: DrillDef<ConfigData> = {

@@ -7,8 +7,8 @@
  *   Type's px/mm (±0.5 mm). Only device screenshots (screencaps) — never the webcam snapshot.
  * - Mode C: also type the Pigeon block `{"x":…, "y":…, "w":…, "h":…, "expected":"…"}` (Cur M15/M16 keys).
  *
- * Screens: the R2-D2 CFD webcam snapshot (Cur M16 target `TOTAL $10.83` at 412, 288, 236 × 44 — S10) and Mini 3
- * screencaps built from the sim's MINI_GEN3 firmware tables (mm → px with MINI_3's px/mm, Sim §2.2), so the
+ * Screens: the R2-D2 CFD webcam snapshot (Cur M16 target `TOTAL $10.83` at 412, 288, 236 × 44 — S10) and Micro 3
+ * screencaps built from the sim's MICRO_GEN3 firmware tables (mm → px with MICRO_3's px/mm, Sim §2.2), so the
  * mm answers match the lab's Screen Locations. Facts: F030, F212, F153, F142, F155.
  * Scoring (custom): edge points × streak multiplier (an item counts as correct at e ≤ 3); modes B/C add +100
  * (× multiplier) when the conversion / block is right. 90 s round (boxing to the pixel needs the zoom loupe).
@@ -45,20 +45,20 @@ export interface ShotEl extends PxRect {
   align?: 'left' | 'center' | 'right';
 }
 
-export type ShotId = 'duo-cfd-cart' | 'mini3-receipt5' | 'mini3-register' | 'mini3-payment' | 'mini3-tender' | 'mini3-tip';
+export type ShotId = 'duet-cfd-cart' | 'micro3-receipt5' | 'micro3-register' | 'micro3-payment' | 'micro3-tender' | 'micro3-tip';
 
 export interface Shot {
   id: ShotId;
   file: string;
   /** Where the screenshot came from. */
   source: 'webcam' | 'screencap';
-  deviceType: 'STATION_DUO' | 'MINI_3';
+  deviceType: 'STAND_DUET' | 'MICRO_3';
   title: string;
   els: ShotEl[];
 }
 
-/** MINI_3 px/mm (Sim §2.2: screencap px = round(mm × pxPerMm)). */
-export const PX_PER_MM = DEVICE_TYPES.MINI_3.pxPerMm ?? { x: 1280 / 172.3, y: 800 / 107.7 };
+/** MICRO_3 px/mm (Sim §2.2: screencap px = round(mm × pxPerMm)). */
+export const PX_PER_MM = DEVICE_TYPES.MICRO_3.pxPerMm ?? { x: 1280 / 172.3, y: 800 / 107.7 };
 
 function fromLayout(e: LayoutEl, tone: ShotEl['tone'] = 'plain'): ShotEl {
   const x = Math.round((e.x - e.w / 2) * PX_PER_MM.x);
@@ -68,15 +68,15 @@ function fromLayout(e: LayoutEl, tone: ShotEl['tone'] = 'plain'): ShotEl {
   return { id: e.id, kind: e.kind === 'qr' ? 'qr' : 'button', text: e.kind === 'qr' ? '' : e.id, x, y, w, h, target: e.kind === 'button', tone, size: Math.min(34, Math.round(h * 0.42)) };
 }
 
-const M3 = LAYOUTS.MINI_GEN3.screens;
+const M3 = LAYOUTS.MICRO_GEN3.screens;
 const bar = (title: string): ShotEl => ({ id: 'bar', kind: 'bar', text: title, x: 0, y: 0, w: SHOT_W, h: 84, target: false });
 
 export const SHOTS: Record<ShotId, Shot> = {
-  'duo-cfd-cart': {
-    id: 'duo-cfd-cart',
+  'duet-cfd-cart': {
+    id: 'duet-cfd-cart',
     file: 'r2d2_cfd.png',
     source: 'webcam',
-    deviceType: 'STATION_DUO',
+    deviceType: 'STAND_DUET',
     title: 'R2-D2 CFD (webcam snapshot)',
     els: [
       { id: 'bar', kind: 'bar', text: 'Your order', x: 0, y: 0, w: SHOT_W, h: 84, target: false },
@@ -88,18 +88,18 @@ export const SHOTS: Record<ShotId, Shot> = {
       { id: 'hint', kind: 'text', text: 'Please follow the prompts on the merchant display', x: 300, y: 640, w: 680, h: 36, target: false, size: 24, align: 'center' },
     ],
   },
-  'mini3-receipt5': { id: 'mini3-receipt5', file: 'bumblebee_receipt.png', source: 'screencap', deviceType: 'MINI_3', title: 'BUMBLEBEE · RECEIPT_OPTIONS_5', els: [bar('Receipt'), ...(M3.RECEIPT_OPTIONS_5 ?? []).map((e) => fromLayout(e))] },
-  'mini3-register': {
-    id: 'mini3-register',
+  'micro3-receipt5': { id: 'micro3-receipt5', file: 'bumblebee_receipt.png', source: 'screencap', deviceType: 'MICRO_3', title: 'BUMBLEBEE · RECEIPT_OPTIONS_5', els: [bar('Receipt'), ...(M3.RECEIPT_OPTIONS_5 ?? []).map((e) => fromLayout(e))] },
+  'micro3-register': {
+    id: 'micro3-register',
     file: 'bumblebee_register.png',
     source: 'screencap',
-    deviceType: 'MINI_3',
+    deviceType: 'MICRO_3',
     title: 'BUMBLEBEE · REGISTER_HOME',
     els: (M3.REGISTER_HOME ?? []).filter((e) => e.kind === 'button').map((e) => fromLayout(e, e.id === 'Review Order' ? 'primary' : e.id === 'Register' ? 'plain' : 'plain')),
   },
-  'mini3-payment': { id: 'mini3-payment', file: 'bumblebee_payment.png', source: 'screencap', deviceType: 'MINI_3', title: 'BUMBLEBEE · PAYMENT', els: [bar('Payment'), ...(M3.PAYMENT ?? []).filter((e) => e.kind === 'button').map((e) => fromLayout(e, e.id === 'Charge' ? 'primary' : e.id === 'Cancel' ? 'danger' : 'plain'))] },
-  'mini3-tender': { id: 'mini3-tender', file: 'bumblebee_tender.png', source: 'screencap', deviceType: 'MINI_3', title: 'BUMBLEBEE · TENDER_CASH_DISCOUNT', els: [bar('Cash discount'), ...(M3.TENDER_CASH_DISCOUNT ?? []).map((e) => fromLayout(e, 'primary'))] },
-  'mini3-tip': { id: 'mini3-tip', file: 'bumblebee_tip.png', source: 'screencap', deviceType: 'MINI_3', title: 'BUMBLEBEE · TIP', els: [bar('Add a tip'), ...(M3.TIP ?? []).map((e) => fromLayout(e, 'plain'))] },
+  'micro3-payment': { id: 'micro3-payment', file: 'bumblebee_payment.png', source: 'screencap', deviceType: 'MICRO_3', title: 'BUMBLEBEE · PAYMENT', els: [bar('Payment'), ...(M3.PAYMENT ?? []).filter((e) => e.kind === 'button').map((e) => fromLayout(e, e.id === 'Charge' ? 'primary' : e.id === 'Cancel' ? 'danger' : 'plain'))] },
+  'micro3-tender': { id: 'micro3-tender', file: 'bumblebee_tender.png', source: 'screencap', deviceType: 'MICRO_3', title: 'BUMBLEBEE · TENDER_CASH_DISCOUNT', els: [bar('Cash discount'), ...(M3.TENDER_CASH_DISCOUNT ?? []).map((e) => fromLayout(e, 'primary'))] },
+  'micro3-tip': { id: 'micro3-tip', file: 'bumblebee_tip.png', source: 'screencap', deviceType: 'MICRO_3', title: 'BUMBLEBEE · TIP', els: [bar('Add a tip'), ...(M3.TIP ?? []).map((e) => fromLayout(e, 'plain'))] },
 };
 
 export interface HuntData {
@@ -195,7 +195,7 @@ export function generateHunt(rng: RngState, state: RootState | null, index: numb
   const all = targetsFor(mode);
   const recent = recentKeys(state, 6);
   // The canonical Cur M16 target opens every Mode A/C round.
-  if (index === 0 && mode !== 'B') return huntItem(SHOTS['duo-cfd-cart'], SHOTS['duo-cfd-cart'].els.find((e) => e.id === 'total')!);
+  if (index === 0 && mode !== 'B') return huntItem(SHOTS['duet-cfd-cart'], SHOTS['duet-cfd-cart'].els.find((e) => e.id === 'total')!);
   const fresh = all.filter((t) => !recent.includes(`DR05:${t.shot.id}:${t.el.id}`));
   const t = pick(rng, fresh.length ? fresh : all);
   return huntItem(t.shot, t.el);

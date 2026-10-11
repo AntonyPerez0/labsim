@@ -126,9 +126,9 @@ export const STATUS_TRIAGE_ITEMS: readonly DrillItem<TriageData>[] = [
   /* ── Offline ── */
   t('Offline', `${J} is still soldering ROBBY's new limit switches; the rig is half built.`, '', { facts: ['F105'] }),
   t('Offline', 'Health log line below. What is BAYMAX\'s status?', 'Orca bypasses the 5-minute health check for Offline units — that is what SKIPPED means.', { facts: ['F106'], render: { kind: 'health', lines: ['08:15:00  wall-e   200 OK', '08:15:00  baymax   SKIPPED (Offline)'] }, tags: ['orca.healthcheck'] }),
-  t('Offline', "A brand-new Flex 4 rig was just racked; its Card Profiles and Screen Locations aren't entered yet.", 'Assembling data profiles is Offline work — the rig is not ready for any pipeline.', { facts: ['F105'] }),
+  t('Offline', "A brand-new Flux 4 rig was just racked; its Card Profiles and Screen Locations aren't entered yet.", 'Assembling data profiles is Offline work — the rig is not ready for any pipeline.', { facts: ['F105'] }),
   t('Offline', 'Which status does Orca skip during the 5-minute health check?', '', { facts: ['F106'], level: 1, tags: ['orca.healthcheck'] }),
-  t('Offline', `${ALEX} unboxed a Mini 3 and is printing its cradle; the rig won't be ready until Friday.`, 'A rig that is physically being built sits in the manual Offline placeholder.', { facts: ['F105'] }),
+  t('Offline', `${ALEX} unboxed a Micro 3 and is printing its cradle; the rig won't be ready until Friday.`, 'A rig that is physically being built sits in the manual Offline placeholder.', { facts: ['F105'] }),
   t('Offline', 'You set DATA aside to rebuild its data profiles after a merchant change.', '', { facts: ['F105'] }),
   t('Offline', "DALEK is Offline for a rebuild. Its Pi is powered down all day. What do the 08:15, 08:20 and 08:25 checks do to its status?", 'Nothing — Offline units are bypassed by the health check, so DALEK stays Offline however long the Pi is down.', { facts: ['F106'], level: 3, tags: ['orca.healthcheck'] }),
 
@@ -148,7 +148,7 @@ export const STATUS_TRIAGE_ITEMS: readonly DrillItem<TriageData>[] = [
   t('Unavailable', 'A general pipeline (blank `ROBOT_NAME`) is refused this rig, but a job that passes its exact name gets it.', '', { facts: ['F102'], tags: ['jenkins.checkout'] }),
 
   /* ── Available ── */
-  t('Available', 'Orca row below. Status?', 'Online, healthy, no reservation, no named-only flag: open to general checkouts.', { facts: ['F101'], render: { kind: 'orca', lines: ['seti · COMPACT · DEV1', 'last health 08:15 · 200 OK', 'reserved by — · named-only: no'] } }),
+  t('Available', 'Orca row below. Status?', 'Online, healthy, no reservation, no named-only flag: open to general checkouts.', { facts: ['F101'], render: { kind: 'orca', lines: ['seti · COMPASS · DEV1', 'last health 08:15 · 200 OK', 'reserved by — · named-only: no'] } }),
   t('Available', 'Ping: `HTTP/1.1 200 OK {"status":"ok","robot":"wall-e"}` on an ordinary rig nobody has claimed.', 'A 200 on an ordinary, unclaimed rig: healthy and open to any pipeline.', { facts: ['F101', 'F107'], render: { kind: 'terminal', lines: ['$ curl -i http://10.42.10.11:8000/health', 'HTTP/1.1 200 OK', '{"status":"ok","robot":"wall-e"}'] }, tags: ['orca.healthcheck'] }),
   t('Available', 'The previous pipeline released WALL-E after a passing build; nothing is wrong with the rig.', 'A general (un-named) checkout releases an ordinary rig back to Available.', { facts: ['F101'], render: { kind: 'jenkins', lines: ['[orca] released wall-e → Available', 'Finished: SUCCESS'] }, illustrative: true, tags: ['jenkins.checkout'] }),
   t('Available', 'Which status means online, healthy and open to general pipeline checkouts?', '', { facts: ['F101'], level: 1 }),

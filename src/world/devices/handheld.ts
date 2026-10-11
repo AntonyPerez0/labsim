@@ -1,6 +1,6 @@
 /**
- * Handheld LabSim devices (World §3.1, §3.3): Flex 1 / 2 / 3 / 4, Flex Pocket (no printer) and the
- * countertop Compact wedge. Built in the device-local frame (origin = active-area centre on the
+ * Handheld LabSim devices (World §3.1, §3.3): Flux 1 / 2 / 3 / 4, Flux Pocket (no printer) and the
+ * countertop Compass wedge. Built in the device-local frame (origin = active-area centre on the
  * glass, +Y = screen top, +Z = face normal, mm).
  */
 import { Matrix4 } from 'three';
@@ -13,7 +13,7 @@ import type { DeviceBuildOptions, DeviceHandle } from './types';
 /** Body front face sits 0.5 mm below the glass top (the screen plane is 0.4 mm below it). */
 const FRONT_Z = -0.5;
 
-export function buildFlex(type: DeviceTypeCode, opts: DeviceBuildOptions): DeviceHandle {
+export function buildFlux(type: DeviceTypeCode, opts: DeviceBuildOptions): DeviceHandle {
   const model = modelFor(type);
   const d = devCtx(opts);
   const m = d.kit.mats;
@@ -23,12 +23,12 @@ export function buildFlex(type: DeviceTypeCode, opts: DeviceBuildOptions): Devic
   const topY = sh / 2 + mg.top;
   const botY = -(sh / 2 + mg.bottom);
   const cy = (topY + botY) / 2;
-  const radius = type === 'FLEX_1' ? 7 : 6;
+  const radius = type === 'FLUX_1' ? 7 : 6;
   // main body (white front shell)
   put(d, rboxG(W, H, D, radius, 3), m.labwhite, { p: [0, cy, FRONT_Z - D / 2] });
-  // back colour: Flex 1 dark-grey back, Flex 2 grey back band, Flex 4 textured grip band
-  if (type === 'FLEX_1') put(d, rboxG(W - 1.5, H - 1.5, 3, radius - 1, 2), m.deviceGreyBack, { p: [0, cy, FRONT_Z - D + 1.2] });
-  if (type === 'FLEX_2' || type === 'FLEX_4') put(d, rboxG(W - 1, 60, 1.6, 3, 2), type === 'FLEX_4' ? m.plasticGrey : m.deviceGreyBack, { p: [0, cy - 20, FRONT_Z - D - 0.2] });
+  // back colour: Flux 1 dark-grey back, Flux 2 grey back band, Flux 4 textured grip band
+  if (type === 'FLUX_1') put(d, rboxG(W - 1.5, H - 1.5, 3, radius - 1, 2), m.deviceGreyBack, { p: [0, cy, FRONT_Z - D + 1.2] });
+  if (type === 'FLUX_2' || type === 'FLUX_4') put(d, rboxG(W - 1, 60, 1.6, 3, 2), type === 'FLUX_4' ? m.plasticGrey : m.deviceGreyBack, { p: [0, cy - 20, FRONT_Z - D - 0.2] });
   // printer bulge on the back of the top end
   let paper: DeviceHandle['anchors']['paper'] = null;
   let backZ = FRONT_Z - D;
@@ -42,16 +42,16 @@ export function buildFlex(type: DeviceTypeCode, opts: DeviceBuildOptions): Devic
     backZ = FRONT_Z - T;
   }
   const scr = screenStack(d, 'primary', sw, sh, [0, 0, 0], {}, 1.4, model.primaryScreen?.logicalMm);
-  // bezel details: logo on the bottom bezel, front camera (Flex 4), sensor slit
+  // bezel details: logo on the bottom bezel, front camera (Flux 4), sensor slit
   const logo = d.opts.logo ?? model.logo;
   if (logo !== 'none') {
-    const lr = logoRect(d.kit, logo === 'leaf' ? 'leaf' : 'wordmark', '#8b8f93');
-    if (logo === 'leaf') decal(d, lr, 7, 7, { p: [0, botY + mg.bottom * 0.55, 0.05] });
+    const lr = logoRect(d.kit, logo === 'mark' ? 'mark' : 'wordmark', '#8b8f93');
+    if (logo === 'mark') decal(d, lr, 7, 7, { p: [0, botY + mg.bottom * 0.55, 0.05] });
     else decal(d, lr, 22, 6.6, { p: [0, botY + mg.bottom * 0.62, 0.05] });
   }
-  sensorDot(d, [0, topY - mg.top * 0.45, 0.05], type === 'FLEX_4' ? 3 : 2);
-  if (type === 'FLEX_4') sensorDot(d, [10, topY - mg.top * 0.45, 0.05], 1.6);
-  // label tape and serial sticker on the bottom bezel (VID: `FLEX 3`)
+  sensorDot(d, [0, topY - mg.top * 0.45, 0.05], type === 'FLUX_4' ? 3 : 2);
+  if (type === 'FLUX_4') sensorDot(d, [10, topY - mg.top * 0.45, 0.05], 1.6);
+  // label tape and serial sticker on the bottom bezel (VID: `FLUX 3`)
   const tapeText = d.opts.tape;
   if (tapeText) {
     const t = tapeLabel(d.kit, tapeText, 3.2);
@@ -88,11 +88,11 @@ function decal2Serial(d: DevCtx, serial: string, at: [number, number, number]): 
 }
 
 /**
- * LabSim Compact (CA): countertop wedge 90 × 185 × 58, front edge 30, white top with a dark-grey
+ * LabSim Compass (CA): countertop wedge 90 × 185 × 58, front edge 30, white top with a dark-grey
  * base. Face tilt from the wedge geometry; the `CA` sticker sits on the bottom bezel.
  */
-export function buildCompact(opts: DeviceBuildOptions): DeviceHandle {
-  const type: DeviceTypeCode = 'COMPACT';
+export function buildCompass(opts: DeviceBuildOptions): DeviceHandle {
+  const type: DeviceTypeCode = 'COMPASS';
   const model = modelFor(type);
   const d = devCtx(opts);
   const m = d.kit.mats;

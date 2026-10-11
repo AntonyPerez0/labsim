@@ -458,7 +458,7 @@ describe('helpers', () => {
     expect(ids5444).toContain('config-properties');
     expect(searchManual('').length).toBe(0);
     expect(searchManual('xyzzy-nothing')).toEqual([]);
-    for (const h of searchManual('Station Duo')) expect(h.snippet.length).toBeLessThanOrEqual(162);
+    for (const h of searchManual('Stand Duet')) expect(h.snippet.length).toBeLessThanOrEqual(162);
   });
 
   it('glossary lookup works by term and alias', () => {

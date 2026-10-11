@@ -30,7 +30,7 @@ The reference photos show an XY gantry built like a 3D printer's {F240}:
 
 ## Tapping
 
-The solenoid is remote-firing: its **plunger drops** onto the screen to tap {F080}. The tap cycle seen in the Flex 3 video {F243}:
+The solenoid is remote-firing: its **plunger drops** onto the screen to tap {F080}. The tap cycle seen in the Flux 3 video {F243}:
 
 1. The gantry moves the head over the target button.
 2. The plunger drops and taps.
@@ -45,7 +45,7 @@ The solenoid is remote-firing: its **plunger drops** onto the screen to tap {F08
 
 ## Around the device
 
-- The device (a Flex in the photo) sits in an **angled black 3D-printed cradle**, with the grey **UL Transaction Security (Collis)** probe box on the shelf beside it {F242}.
+- The device (a Flux in the photo) sits in an **angled black 3D-printed cradle**, with the grey **UL Transaction Security (Collis)** probe box on the shelf beside it {F242}.
 - A **webcam** watches the screen — the source of camera streams and OCR screenshots {F088}.
 - A **front-mounted status tablet** shows the robot's dashboard {F089} ([[status-tablet]]).
 
@@ -158,7 +158,7 @@ Each arm is held by a magnetic lock {F081}; the limit switches define the (0,0) 
     summary: "ADB bots are purely programmatic and can't touch a screen or enter a PIN; physical bots have mechanical touch probes and are required for Canadian PIN flows and ADB-blind displays.",
     factIds: ["F217", "F218", "F219", "F220", "F221", "F222", "F223", "F144", "F151"],
     tags: ["orca.screens", "bots.types", "bots.pin"],
-    related: ["orca-screens-xytouch", "card-testing-philosophy", "station-duo-dual-screen", "device-families"],
+    related: ["orca-screens-xytouch", "card-testing-philosophy", "stand-duet-dual-screen", "device-families"],
     keywords: ["ADB bot", "physical bot", "interactive bot", "PIN", "Canada", "Interac", "Secure Touch", "Gen 2", "Core OS", "ADB-blind", "DATA", "TARS", "SETI"],
     practice: ["INC52", "INC64", "DR09"],
     body: `## Two kinds of robot
@@ -176,8 +176,8 @@ In Orca, an xy_touch on an ADB bot becomes an electronic ADB touch; on a touch r
 ## Choosing a robot
 
 - **US, PIN-bypass merchant, ADB-visible screen** → an ADB bot is fine.
-- **Canadian Interac with PIN** → a physical bot on a Compact (Westers bed). An ADB bot simply cannot do it.
-- **Station Duo CFD** → it is blind to ADB {F151}, so legacy suites needed a physical bot or OCR ([[station-duo-dual-screen]]).
+- **Canadian Interac with PIN** → a physical bot on a Compass (Westers bed). An ADB bot simply cannot do it.
+- **Stand Duet CFD** → it is blind to ADB {F151}, so legacy suites needed a physical bot or OCR ([[stand-duet-dual-screen]]).
 
 > **Warning:** Never "fix" a Canadian PIN test by switching the merchant to one that bypasses PIN. Canada mandates physical PIN entry; re-target the job to a physical bot.
 
@@ -185,7 +185,7 @@ In Orca, an xy_touch on an ADB bot becomes an electronic ADB touch; on a touch r
 
 The team is partnering with the **Core OS Team** on a software framework that bypasses physical robotics for **Secure Touch PIN entry** {F222}. Under Gen 2, physical robotics are reserved exclusively for non-negotiable hardware interactions such as **card dipping** {F223}. It is roadmap work — today, PINs still need a physical bot.
 
-> **Illustrative (sim only):** In the sim, DATA and TARS are the ADB bots and SETI is the Compact touch robot†.
+> **Illustrative (sim only):** In the sim, DATA and TARS are the ADB bots and SETI is the Compass touch robot†.
 `,
   },
 ]);

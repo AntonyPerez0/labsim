@@ -38,14 +38,14 @@ export const DEVICE_TYPE_JAVA = `package com.labsim.orca.domain.enumeration;
 
 /** The DeviceType enumeration. ALL CAPS — Jenkins env vars must match exactly. */
 public enum DeviceType {
-    STATION_2018, STATION_2, STATION_DUO, STATION_DUO_2, STATION_DUO_3,
-    MINI_2, MINI_3, MINI_4,
-    FLEX_1, FLEX_2, FLEX_3, FLEX_4, FLEX_POCKET,
-    COMPACT
+    STAND_2018, STAND_2, STAND_DUET, STAND_DUET_2, STAND_DUET_3,
+    MICRO_2, MICRO_3, MICRO_4,
+    FLUX_1, FLUX_2, FLUX_3, FLUX_4, FLUX_POCKET,
+    COMPASS
 }
 `;
 
-const DEVICE_TYPES = 'STATION_2018,STATION_2,STATION_DUO,STATION_DUO_2,STATION_DUO_3,MINI_2,MINI_3,MINI_4,FLEX_1,FLEX_2,FLEX_3,FLEX_4,FLEX_POCKET,COMPACT';
+const DEVICE_TYPES = 'STAND_2018,STAND_2,STAND_DUET,STAND_DUET_2,STAND_DUET_3,MICRO_2,MICRO_3,MICRO_4,FLUX_1,FLUX_2,FLUX_3,FLUX_4,FLUX_POCKET,COMPASS';
 
 const JHIPSTER: Record<string, string> = {
   '.jhipster/Robot.json': entity(
@@ -453,7 +453,7 @@ public class CheckoutService {
 
     public Robot checkout(CheckoutRequest req) {
         for (String raw : req.deviceTypeValues()) {
-            DeviceType.valueOf(raw); // IllegalArgumentException: No enum constant …DeviceType.flex_3
+            DeviceType.valueOf(raw); // IllegalArgumentException: No enum constant …DeviceType.flux_3
         }
         Map<String, Object> required = req.mergedRequirements(); // 409 on conflicting keys
         if (!req.robotName().isBlank()) {

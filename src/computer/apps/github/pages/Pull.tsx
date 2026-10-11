@@ -141,7 +141,7 @@ function Conversation(props: { repo: GitRepo; pr: PullRequest }) {
             <div className="gh-tl-card-body" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {list.map((c) => (
                 <div key={c.id} className="gh-inline-thread">
-                  <div className="gh-flex" style={{ padding: '6px 12px', background: 'var(--gh-subtle)', borderBottom: '1px solid var(--gh-border-muted)', fontFamily: 'var(--gh-mono)', fontSize: 12 }}>
+                  <div className="gh-flux" style={{ padding: '6px 12px', background: 'var(--gh-subtle)', borderBottom: '1px solid var(--gh-border-muted)', fontFamily: 'var(--gh-mono)', fontSize: 12 }}>
                     <a href="#" onClick={(e) => (e.preventDefault(), navigate(pullRoute(repo.id, pr.number, 'files')))}>
                       {c.path}
                     </a>
@@ -331,7 +331,7 @@ function MergeBox(props: { repo: GitRepo; pr: PullRequest }) {
           <div className="gh-mb-actions">
             {error ? <div className="gh-flash gh-flash-error" style={{ margin: 0 }}>{error}</div> : null}
             {confirm ? (
-              <div className="gh-flex">
+              <div className="gh-flux">
                 <button type="button" className="gh-btn gh-btn-primary" onClick={merge} autoFocus>
                   Confirm {method === 'merge' ? 'merge' : method === 'squash' ? 'squash and merge' : 'rebase and merge'}
                 </button>
@@ -340,7 +340,7 @@ function MergeBox(props: { repo: GitRepo; pr: PullRequest }) {
                 </button>
               </div>
             ) : (
-              <div className="gh-flex">
+              <div className="gh-flux">
                 <div className="gh-btn-group" data-hint="github.mergeButton">
                   <button type="button" className="gh-btn gh-btn-primary" disabled={blocked} onClick={() => setConfirm(true)}>
                     {label}
@@ -382,7 +382,7 @@ function MergeBox(props: { repo: GitRepo; pr: PullRequest }) {
                   </Popover>
                 </div>
                 {prot && blocked ? (
-                  <label className="gh-flex gh-muted" style={{ fontSize: 12, opacity: 0.7 }}>
+                  <label className="gh-flux gh-muted" style={{ fontSize: 12, opacity: 0.7 }}>
                     <input type="checkbox" disabled /> Merge without waiting for requirements to be met
                   </label>
                 ) : null}
@@ -477,7 +477,7 @@ function ReviewPopover(props: { repo: GitRepo; pr: PullRequest; pending: Pending
         </button>
       }
     >
-      <div className="gh-flex" style={{ marginBottom: 8 }}>
+      <div className="gh-flux" style={{ marginBottom: 8 }}>
         <b>Finish your review</b>
         <span className="gh-spacer" />
         <Popover
@@ -539,7 +539,7 @@ function ReviewPopover(props: { repo: GitRepo; pr: PullRequest; pending: Pending
           </label>
         );
       })}
-      <div className="gh-flex" style={{ justifyContent: 'flex-end', marginTop: 8 }}>
+      <div className="gh-flux" style={{ justifyContent: 'flex-end', marginTop: 8 }}>
         <button type="button" className="gh-btn gh-btn-primary" onClick={submit} disabled={verdict === 'COMMENT' && !body.trim() && !props.pending.length}>
           Submit review
         </button>
@@ -568,7 +568,7 @@ function FilesChanged(props: { repo: GitRepo; pr: PullRequest }) {
   };
   return (
     <>
-      <div className="gh-flex" style={{ marginBottom: 16, position: 'sticky', top: 0, background: '#fff', zIndex: 5, padding: '8px 0', borderBottom: '1px solid var(--gh-border-muted)' }}>
+      <div className="gh-flux" style={{ marginBottom: 16, position: 'sticky', top: 0, background: '#fff', zIndex: 5, padding: '8px 0', borderBottom: '1px solid var(--gh-border-muted)' }}>
         <span className="gh-muted">
           {pr.files.length} file{pr.files.length === 1 ? '' : 's'}
         </span>
@@ -683,7 +683,7 @@ export function PullPage(props: { repo: GitRepo; number: number; tab: Tab }) {
                   <a className="gh-commit-title" href="#" onClick={(e) => (e.preventDefault(), navigate(commitRoute(repo.id, c.sha)))}>
                     {firstLine(c.message)}
                   </a>
-                  <div className="gh-flex gh-muted" style={{ fontSize: 12, marginTop: 4, gap: 6 }}>
+                  <div className="gh-flux gh-muted" style={{ fontSize: 12, marginTop: 4, gap: 6 }}>
                     <Avatar who={c.author} size={16} playerInitials={playerInitials} /> <b style={{ color: 'var(--gh-fg)' }}>{login(c.author)}</b> committed <Rel ms={c.atMs} />
                   </div>
                 </div>
@@ -696,11 +696,11 @@ export function PullPage(props: { repo: GitRepo; number: number; tab: Tab }) {
         {props.tab === 'checks' ? (
           <div className="gh-row">
             <div className="gh-file-tree" style={{ flex: '0 0 280px', position: 'static' }}>
-              <div className="gh-flex" style={{ padding: 6, fontWeight: 600 }}>
+              <div className="gh-flux" style={{ padding: 6, fontWeight: 600 }}>
                 {pr.checks === 'success' ? <Oct name="checkCircle" color="#1a7f37" /> : pr.checks === 'failure' ? <Oct name="xCircle" color="#d1242f" /> : <Oct name="dot" color="#9a6700" />}
                 Jenkins
               </div>
-              <div className="gh-flex" style={{ padding: '4px 6px 4px 28px', fontSize: 13 }}>
+              <div className="gh-flux" style={{ padding: '4px 6px 4px 28px', fontSize: 13 }}>
                 pr-build
               </div>
             </div>

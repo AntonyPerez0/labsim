@@ -2,13 +2,13 @@
 import type { PipelineId } from '@/core/state';
 
 export const PIPELINE_JOBS: Readonly<Record<PipelineId, string>> = {
-  PL1: 'Java/uia-remote-regression-flex',
+  PL1: 'Java/uia-remote-regression-flux',
   PL2: 'Java/uia-remote-tethered-tax',
   PL3: 'Java/pigeon-android-sale-swipe',
-  PL4: 'Java/uia-remote-regression-mini',
+  PL4: 'Java/uia-remote-regression-micro',
   PL5: 'Java/contact-canada-pin-sale',
   PL6: 'Java/go-sdk-sale-smoke',
-  PL7: 'Java/uia-remote-duo-cfd',
+  PL7: 'Java/uia-remote-duet-cfd',
   PL8: 'Java/paycore-standalone-matrix',
 };
 

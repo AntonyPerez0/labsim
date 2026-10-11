@@ -38,7 +38,7 @@ export function OrgPage(props: { tab: 'overview' | 'repositories' }) {
         <div>
           <h1 style={{ fontSize: 24, fontWeight: 600 }}>labsim-lab</h1>
           <div className="gh-muted">LabSim automation lab</div>
-          <div className="gh-flex gh-muted" style={{ fontSize: 12, marginTop: 6, gap: 12 }}>
+          <div className="gh-flux gh-muted" style={{ fontSize: 12, marginTop: 6, gap: 12 }}>
             <span>
               <Oct name="people" /> 8 followers
             </span>

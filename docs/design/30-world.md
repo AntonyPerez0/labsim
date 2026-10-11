@@ -3,7 +3,7 @@
 > **Doc:** `docs/design/30-world.md` · **Depends on:** `00-canon.md` (wins every conflict) and
 > `docs/reference/REMOVED-internal-reference.md` (domain truth, cited **Ref §n**). Photo evidence is cited as
 > **IMG-T** `walle-status-tablet-front.jpg`, **IMG-R** `tethered-megatron-optimus-rack.jpg`,
-> **IMG-G** `touch-robot-side-gantry.jpg`, **VID** `solenoid-tapping-flex3.mp4` (+ `-frames.jpg`).
+> **IMG-G** `touch-robot-side-gantry.jpg`, **VID** `solenoid-tapping-flux3.mp4` (+ `-frames.jpg`).
 > **Consumers:** `src/world/**` (room, props, rigs, bindings), `src/render2d/**` (device screens, status tablet),
 > `src/sim/devices/layouts.ts` (button rectangles — the layout tables in §4 ARE that file's data),
 > `src/engine/**` (materials, textures, lighting, audio recipes, quality presets), missions (anchor and prop ids).
@@ -40,16 +40,16 @@
 
 | # | Decision | Why / what other docs must do |
 |---|---|---|
-| D1 | **Physical roster = 10-curriculum §0.4 device assignments** (see §2.10). Rack A: WALL-E (Flex 3), EVE (Flex 4), R2-D2 (Station Duo), BUMBLEBEE (Mini 3). Rack B: JOHNNY-5 (Flex 1 → Flex 2), SETI (Compact), BAYMAX (Station 2018), ROSIE (Flex Pocket). Tethered: MEGATRON (MFD Station 2 + CFD Mini 2, DEV1), OPTIMUS (MFD Mini 3 + CFD Mini 3, STG). ADB: DATA (Mini 3), TARS (Flex 4). | Lessons are written against these devices; 20-gameplay §3.1 says the world doc owns placement and incidents bind by role tag. Role-tag remap in §0.3. |
+| D1 | **Physical roster = 10-curriculum §0.4 device assignments** (see §2.10). Rack A: WALL-E (Flux 3), EVE (Flux 4), R2-D2 (Stand Duet), BUMBLEBEE (Micro 3). Rack B: JOHNNY-5 (Flux 1 → Flux 2), SETI (Compass), BAYMAX (Stand 2018), ROSIE (Flux Pocket). Tethered: MEGATRON (MFD Stand 2 + CFD Micro 2, DEV1), OPTIMUS (MFD Micro 3 + CFD Micro 3, STG). ADB: DATA (Micro 3), TARS (Flux 4). | Lessons are written against these devices; 20-gameplay §3.1 says the world doc owns placement and incidents bind by role tag. Role-tag remap in §0.3. |
 | D2 | **Power topology (physical):** wall 120 V AC → one Mean Well `MW-1` (LRS-600-24) → central **24 V DC rail** (bus bar on the power wall) → step-down regulators on the power wall: `REG-12V` (label "12V DC · NUC") and three `REG-5V-A/-B/-C` (label "5V DC · 10A") → inline rack fuses `F-12V`, `F-5V-A`, `F-5V-B`, `F-5V-C` → cable tray → rack-top 5 V distribution block → per-bay **MAIN** switch → per-bay inline fuse `F-<RIG>-5V` → Raspberry Pi. 24 V also runs (unfused branch, per rack) to each bay's **MOTOR** switch → motor PCB. LabSim devices and Collis probes use their own AC bricks on commercial AC strips (Ref §6). | Satisfies both curriculum M03 (rack-level "Rack B 5V fuse" on the power wall) and gameplay INC03 (per-rig fuse after MAIN, multimeter chain 24 V → 5.08 V → 0 V). Gameplay's `MW-A/MW-B` both map to `MW-1` ("central 24V DC rail", Ref §6). |
 | D3 | **Fuse hardware:** ATO blade fuses in black inline holders with a smoked translucent cap; every holder carries a white tape label with its id and rating. All 5 V and 12 V fuses are **10 A (red)**†. Spare tray holds 5 A tan, 7.5 A brown, 10 A red, 15 A blue. | Matches 20-gameplay GW04 ("10 A red", holder label "10A"). |
 | D4 | **Cameras:** every touch bay has its own gooseneck webcam (IMG-T/IMG-G). Rack B's four bay webcams are wired to one **Rack B camera Pi** that serves a 2×2 mosaic (the reference's "shared across 4 rigs"). The tethered rack has one bench webcam; the ADB shelf has one webcam; the tethered Pi can serve those two as a 1×2 mosaic. Which Orca URL points at which stream is sim data. | Supports curriculum (Rack B shared, MEGATRON/OPTIMUS shared) and gameplay CAM-A (four rigs on one stream) — Appendix B. |
 | D5 | **Tablet status strings** are rendered from `RigState.tablet.statusText`. Recommended values: green `OK`; yellow after a manual push `LOCK RELEASED — PARK REQUIRED` (curriculum S13); yellow after Steppers Enable / MOTOR restored `NOT HOMED — PARK REQUIRED`†; grey `Controller unreachable` (gameplay); red `FAULT — <reason>`†. Lockout overlay line 1 `TEST IN PROGRESS — CONTROLS LOCKED` (curriculum S13), line 2 `<job> #<n>` (gameplay). | 20-gameplay's `MANUAL MOVE — PARK REQUIRED` should be replaced by the two strings above. |
-| D6 | **Station 2 look†:** the reference never describes a Station 2. Following the reference's example "a Station 2 tethered to a Mini 2" and curriculum's MEGATRON roster, the photo's **MEGATRON MFD** face (8-inch white bezel, `lab` wordmark, IMG-R) *is* the Station 2 display head. In the device library it sits on a white Station base with printer. | Keeps IMG-R exact (four equal 8-inch faces) and the roster intact. Field Manual badges the Station 2 look as illustrative. |
+| D6 | **Stand 2 look†:** the reference never describes a Stand 2. Following the reference's example "a Stand 2 tethered to a Micro 2" and curriculum's MEGATRON roster, the photo's **MEGATRON MFD** face (8-inch white bezel, `lab` wordmark, IMG-R) *is* the Stand 2 display head. In the device library it sits on a white Stand base with printer. | Keeps IMG-R exact (four equal 8-inch faces) and the roster intact. Field Manual badges the Stand 2 look as illustrative. |
 | D7 | **Device orientation in touch rigs:** screen face-up and **level**, top edge toward the back of the bay, chip-slot edge toward the front (dip arm just behind the fascia, IMG-T). Screen +x → bay +X (player's right), screen +y → toward the player (+Z). Gantry home (0,0) = screen top-left = the rear-left corner of the screen; limit switches are slid along the extrusions to that point per rig (Jared's true-(0,0) calibration, Ref §3). | Screens read upright to a player looking down into a lower bay; the tethered/ADB screens face the aisle. |
 | D8 | WALL-E's right-hand fascia panel reads **`SETI`** with USB ports labelled `Minix` / `Raspberry Pi`, exactly as IMG-T. Fascia panels get re-used between rigs†; only SETI's own fascia also reads `SETI`. All other rigs' side panels are blank (ports only). | Curriculum M01 step 10 inspects `prop.seti-panel` to the right of WALL-E's tablet. Field Manual note: "identify a rig by its tablet header, never by its side panel"†. |
 | D9 | **Interaction keys used by world verbs:** `E` primary (also left-click), `R` secondary, `G` tertiary, hold-`E` for long presses, LMB-drag for draggables. World **never binds `F` or `Q`** (20-gameplay uses them for flashlight / holster). Hold-RMB inspect is engine-global. | `InteractVerb.key` already allows E/R/G; add an optional `holdMs` (§9.1). |
-| D10 | Hand-held multimeter spawns on the **power bench** (M03 "grab the multimeter" at the power wall); the steel ruler spawns on **your desk** and M09's setup moves it to `anchor.ruler.rack-a`. Spare fuses: power-bench fuse tray **and** the red parts bin. Spare Flex 2 / Mini 3 in Husky drawers 2 / 3; legacy Flex 1 and the spare Collis probe in the locked storage cabinet. | Merges 10-curriculum and 20-gameplay item locations. |
+| D10 | Hand-held multimeter spawns on the **power bench** (M03 "grab the multimeter" at the power wall); the steel ruler spawns on **your desk** and M09's setup moves it to `anchor.ruler.rack-a`. Spare fuses: power-bench fuse tray **and** the red parts bin. Spare Flux 2 / Micro 3 in Husky drawers 2 / 3; legacy Flux 1 and the spare Collis probe in the locked storage cabinet. | Merges 10-curriculum and 20-gameplay item locations. |
 | D11 | **Callus shelf** stands between Rack A and Rack B and holds the Collis probes (one per touch bay, beside its bay, rear ribbon going straight into the bay — "Collis probe box on the right shelf", IMG-G) plus four Windows box slots: `MINIX-01`, `MINIX-02`, `NUC-03`, and a spare slot (`NUC-01`/`MINIX-03` when the sim seeds them). | Curriculum `loc.callus-shelf`; gameplay MINIX-03/NUC-01 roles. |
 | D12 | Touch-rig **Lower/Raise** = slow solenoid stroke (curriculum M04 step 8). If the sim also stores `solenoid.heightAdjustMm`, the world adds it to the head's rest height. | Both interpretations render correctly. |
 
@@ -57,17 +57,17 @@
 
 | Gameplay role tags | Gameplay default rig | Physical rig in this doc |
 |---|---|---|
-| touch, collis, flexgen3, printer | WALL-E | **WALL-E** (Flex 3) |
-| touch, collis, mini | EVE | **BUMBLEBEE** (Mini 3) |
-| touch, collis, flex-legacy, printer (spare Flex 2 in Husky drawer 2) | BUMBLEBEE | **JOHNNY-5** (Flex 1, upgraded to Flex 2 in curriculum M07 = INC42) |
-| touch, duo, ocr | R2-D2 | **R2-D2** (Station Duo) |
-| touch, collis, canada, physical-pin | JOHNNY-5 | **SETI** (Compact) |
-| touch, collis, paycore (Unavailable) | BAYMAX | **ROSIE** (Flex Pocket) |
-| touch, collis, flexgen3, printerless | SETI | **ROSIE** (Flex Pocket); incidents that need it Available set that in their setup |
-| touch, build (Offline) | ROSIE | **BAYMAX** (Station 2018; curriculum M06 sets it Offline) |
-| legacy-nuc-motion | EVE | **EVE** (Flex 4); its `EVE MOTION` USB lead runs to the Callus-shelf spare slot when NUC-01 is seeded |
+| touch, collis, flexgen3, printer | WALL-E | **WALL-E** (Flux 3) |
+| touch, collis, mini | EVE | **BUMBLEBEE** (Micro 3) |
+| touch, collis, flux-legacy, printer (spare Flux 2 in Husky drawer 2) | BUMBLEBEE | **JOHNNY-5** (Flux 1, upgraded to Flux 2 in curriculum M07 = INC42) |
+| touch, duet, ocr | R2-D2 | **R2-D2** (Stand Duet) |
+| touch, collis, canada, physical-pin | JOHNNY-5 | **SETI** (Compass) |
+| touch, collis, paycore (Unavailable) | BAYMAX | **ROSIE** (Flux Pocket) |
+| touch, collis, flexgen3, printerless | SETI | **ROSIE** (Flux Pocket); incidents that need it Available set that in their setup |
+| touch, build (Offline) | ROSIE | **BAYMAX** (Stand 2018; curriculum M06 sets it Offline) |
+| legacy-nuc-motion | EVE | **EVE** (Flux 4); its `EVE MOTION` USB lead runs to the Callus-shelf spare slot when NUC-01 is seeded |
 | tethered dev1 / stg | MEGATRON / OPTIMUS | same |
-| adb-only, printerless / adb-only, flexgen3, printer | DATA / TARS | **DATA** (Mini 3) / **TARS** (Flex 4) |
+| adb-only, printerless / adb-only, flexgen3, printer | DATA / TARS | **DATA** (Micro 3) / **TARS** (Flux 4) |
 | shared camera ×4 (CAM-A) | MEGATRON's Pi | `cam.rack-b-mosaic` (JOHNNY-5, SETI, BAYMAX, ROSIE) **or** `cam.bench-mosaic` (MEGATRON, OPTIMUS, DATA, TARS) — sim picks |
 | AC strips `STRIP-A/B/C` | racks | `power.strip.a`, `power.strip.b`, `power.strip.c1`+`c2` (Callus shelf), plus `power.strip.t`, `power.strip.d`, `power.strip.w` (§1.4) |
 
@@ -140,7 +140,7 @@ Scale: 1 character = 0.25 m in X, 1 row = 0.50 m in Z. North (z = −5) is at th
 | W | `wall.whiteboard` | R | `wall.roadmap` |
 | p (west) | posters `poster.esd/pool/5444` | X | `table.build` (half-built rig) |
 | VV | `shelf.device-library` + family trays | KK | `counter.coffee` |
-| 1 / 2 | `desk.coworker-1` (Sam†, desk Flex :5555) / `desk.coworker-2` (Riley†, desk Mini :5555) | M | `desk.morgan` |
+| 1 / 2 | `desk.coworker-1` (Sam†, desk Flux :5555) / `desk.coworker-2` (Riley†, desk Micro :5555) | M | `desk.morgan` |
 | Y | `desk.player` (your workstation) | bb | trash + recycling |
 | h | `wall.history` (frames + match plaques) | E | `spawn.entrance` |
 
@@ -168,7 +168,7 @@ Aisle widths (clear floor): rear aisle 1.80 m (z −4.40 … −2.60); rack-fron
 | `loc.print-corner` | 3D print corner | (−5.75, 0, −3.75) | 1.3 | Prusa, Bambu Lab, CAD laptop |
 | `loc.jared-bench` | Jared's bench | (2.70, 0, −3.75) | 1.3 | soldering, scope, bolt bins, red/blue bins, drawers |
 | `loc.husky` | Husky chest | (4.80, 0, −4.00) | 0.7 | spare devices (drawers 2, 3) |
-| `loc.storage` | Storage cabinet | (6.42, 0, −4.00) | 0.7 | locked spares, legacy Flex 1 |
+| `loc.storage` | Storage cabinet | (6.42, 0, −4.00) | 0.7 | locked spares, legacy Flux 1 |
 | `loc.whiteboard` | Whiteboard | (−6.10, 0, −1.80) | 1.4 | architecture diagram + roadmap board |
 | `loc.build-table` | Build table | (−4.40, 0, 1.55) | 1.2 | half-built rig, 10 ft extrusion |
 | `loc.device-library` | Device library | (6.10, 0, 0.30) | 1.3 | one of every device + family trays |
@@ -211,9 +211,9 @@ All floor props carry a collider = footprint AABB + 0.02 m (exceptions in §1.8)
 | `desk.morgan` | Laptop (open) + one 24" monitor + generic boxy toy robot + small plant | (−0.90, 0, 4.625) | as desk | 180 |
 | `desk.morgan.chair` | Chair | (−0.90, 0, 4.02) | — | 0 |
 | `desk.coworker-1` | Two monitors, headphones | (−6.10, 0, 4.625) | as desk | 180 |
-| `desk.coworker-1.device` | Flex on a white charging dock, screen on (Register) — ADB 5555 desk device (curriculum `prop.coworker-device`) | (−6.45, 0.74, 4.55) | dock 0.11 × 0.09 × 0.05 | 160 |
+| `desk.coworker-1.device` | Flux on a white charging dock, screen on (Register) — ADB 5555 desk device (curriculum `prop.coworker-device`) | (−6.45, 0.74, 4.55) | dock 0.11 × 0.09 × 0.05 | 160 |
 | `desk.coworker-2` | One monitor, mug | (−4.30, 0, 4.625) | as desk | 180 |
-| `desk.coworker-2.device` | 8" Mini on the desk (Riley's, gameplay INC27) | (−3.95, 0.74, 4.62) | — | 200 |
+| `desk.coworker-2.device` | 8" Micro on the desk (Riley's, gameplay INC27) | (−3.95, 0.74, 4.62) | — | 200 |
 | `desk.coworker-1.chair` / `-2.chair` | Chairs | (−6.10, 0, 4.02) / (−4.30, 0, 4.02) | — | 0 |
 | `bin.trash` / `bin.recycle` | Grey / blue bins | (2.20, 0, 4.78) / (2.50, 0, 4.78) | Ø 0.30 × 0.40 | — |
 | `poster.lab` | Landscape poster `KEEP THE RIGS GREEN` (§6.4) | (−2.60, 1.60, 4.99) | 0.91 × 0.61 | 180 |
@@ -238,7 +238,7 @@ All floor props carry a collider = footprint AABB + 0.02 m (exceptions in §1.8)
 | `bench.power` | ESD laminate #9aa3a8 top, black frame, under-shelf at 0.20 | (−0.70, 0, −4.70) | 3.00 × 0.60 × 0.90 | 0 |
 | `tool.multimeter` | Hand-held DMM in yellow holster, probes coiled (pickup → hotbar 2) | (−1.60, 0.90, −4.55) | 0.09 × 0.18 × 0.05 | 0 |
 | `power.fuse-tray` | Clear-lid compartment box: 6 × 5 A tan, 6 × 7.5 A brown, 6 × 10 A red, 6 × 15 A blue | (−1.25, 0.90, −4.55) | 0.20 × 0.12 × 0.03 | 0 |
-| `power.bench.flex4-psu` | New Flex 4 power brick (white, 18 V AC brick, 1.8 m cord) | (−0.30, 0.90, −4.60) | 0.110 × 0.060 × 0.032 | 15 |
+| `power.bench.flux4-psu` | New Flux 4 power brick (white, 18 V AC brick, 1.8 m cord) | (−0.30, 0.90, −4.60) | 0.110 × 0.060 × 0.032 | 15 |
 | `power.bench.collis-spare` | Spare Collis probe (grey, UL label) + its AC brick | (0.20, 0.90, −4.60) | 0.15 × 0.11 × 0.045 | 0 |
 | `power.bench.desk-fan` | Desk fan (stored; gameplay INC17 moves it onto STRIP-B) | (0.55, 0.20, −4.70) | 0.25 × 0.15 × 0.32 | 0 |
 
@@ -279,7 +279,7 @@ All floor props carry a collider = footprint AABB + 0.02 m (exceptions in §1.8)
 | `wall.drawers` | Two 64-drawer organisers side by side (x 4.30–5.30, y 1.20–1.60) on wall brackets directly above the Husky chest (IMG-R), grey frame, clear drawers | (4.80, 1.40, −4.92) | 2 × (0.50 × 0.16 × 0.40) | 0 |
 | `jared.bench-light` | Warm-white LED bar along the bench back edge | (2.70, 1.02, −4.95) | 2.80 × 0.02 × 0.01 | 0 |
 | `chest.husky` | Rolling tool cabinet, black body, full-width chrome pulls, `HUSKY` badge on top front, round emblem on the bottom door, 4 casters; drawers 1 (top) … 5 | (4.80, 0, −4.75) | 0.69 × 0.46 × 1.00 | 0 |
-| `cabinet.storage` | Grey steel cabinet: lower doors locked (keypad), open upper shelves at 1.05/1.45 with LabSim boxes; `cabinet.storage.legacy-shelf` holds the legacy Flex 1 after INC42 | (6.42, 0, −4.75) | 1.05 × 0.45 × 1.95 | 0 |
+| `cabinet.storage` | Grey steel cabinet: lower doors locked (keypad), open upper shelves at 1.05/1.45 with LabSim boxes; `cabinet.storage.legacy-shelf` holds the legacy Flux 1 after INC42 | (6.42, 0, −4.75) | 1.05 × 0.45 × 1.95 | 0 |
 
 **West wall** (rotY 90; wall face x = −6.985)
 
@@ -296,7 +296,7 @@ All floor props carry a collider = footprint AABB + 0.02 m (exceptions in §1.8)
 | Id | Description | Position | Size | rotY |
 |---|---|---|---|---|
 | `shelf.device-library` | White melamine wall shelving on black brackets: base cabinet top 0.90 (family trays), S1 top 1.25 (D 0.30), S2 top 1.62 (D 0.35), header sign `DEVICE LIBRARY — ONE OF EVERY LABSIM WE TEST` at y 2.05; z −0.90…1.50 | (6.775, 0, 0.30) | 2.40 × 0.45 × 2.00 | −90 |
-| `library.trays` | 4 trays 0.56 (z) × 0.36 × 0.04 on the base top at z −0.57, 0.01, 0.59, 1.17, lip labels `STATION`, `MINI`, `FLEX`, `COMPACT` | x 6.80, y 0.90 | — | −90 |
+| `library.trays` | 4 trays 0.56 (z) × 0.36 × 0.04 on the base top at z −0.57, 0.01, 0.59, 1.17, lip labels `STAND`, `MICRO`, `FLUX`, `COMPASS` | x 6.80, y 0.90 | — | −90 |
 | `library.<model>` | 14 items (§3.2) | §3.2 | — | −90 |
 | `counter.coffee` | Laminate counter, mini fridge (decor) under | (6.70, 0, 3.35) | 0.90 × 0.60 × 0.90 | −90 |
 | `coffee.machine` | Black drip/pod machine, blue power LED, carafe | (6.80, 0.90, 3.20) | 0.25 × 0.35 × 0.38 | −90 |
@@ -422,7 +422,7 @@ NPC look and animation: Appendix A.
 | `prop.regulator-12v`, `prop.regulator-5v10a` | `power.reg.12v`, `power.reg.5v-b` |
 | `prop.fuse-5v-b`, `prop.fuse-spares`, `prop.multimeter` | `power.fuse.5v-b`, `power.fuse-tray`, `tool.multimeter` |
 | `prop.ac-strip` | `power.strip.w` |
-| `prop.flex4-psu-brick`, `prop.collis-probe-spare` | `power.bench.flex4-psu`, `power.bench.collis-spare` |
+| `prop.flux4-psu-brick`, `prop.collis-probe-spare` | `power.bench.flux4-psu`, `power.bench.collis-spare` |
 | `prop.nuc-03`, `prop.minix-01` | `callus.nuc-03`, `callus.minix-01` |
 | `prop.collis-probe-a` | `collis.wall-e` |
 | `prop.eve.pi-power` | `rig.eve.pi-power` |
@@ -437,7 +437,7 @@ NPC look and animation: Appendix A.
 ---
 ## 2. Touch-robot rig construction (mm)
 
-Derived from IMG-T (front), IMG-G (inside a shelf), VID (tapping a Flex 3). One builder (`src/world/rigs/bay.ts`)
+Derived from IMG-T (front), IMG-G (inside a shelf), VID (tapping a Flux 3). One builder (`src/world/rigs/bay.ts`)
 makes every touch rig from the shared parts below plus the per-rig table in §2.10.
 
 ### 2.1 Rack frame and bay heights
@@ -500,13 +500,13 @@ Rule for every cradle: the device lies **face-up with its screen surface level a
 
 | Cradle id | Holds | Shape (mm) | Notes |
 |---|---|---|---|
-| `flex-cradle-gen3` | Flex 3, Flex 4 | Trapezoid tray 96 W × 230 D, side walls 28 high with 30° chamfers, a wedge under the printer end to level the screen (IMG-G "angled cradle"), front lip cut-out 60 × 14 for the card path | Front lip label tape `FLEX 3` / `FLEX 4` on the device itself (VID). |
-| `flex-cradle-pocket` | Flex Pocket | 96 W × 185 D, no printer wedge | |
-| `flex-cradle-gen1` / `-gen2` | Flex 1 / Flex 2 | 98 W × 220 D / 96 W × 232 D | Swap in INC42 (gen1 → gen2). |
-| `compact-cradle` | Compact | 104 W × 200 D tray + 40 mm wedge (the Compact is thicker at the rear) | |
-| `mini-dock` | Mini 2 / Mini 3 | Wedge dock 222 W × 175 D; its sloped bed cancels the Mini's 30° screen tilt so the face is level; open back for the printer door | |
-| `station-tray` | Station 2018 display head (detached from its stand) | Flat tray 362 W × 244 D × 70 H with corner clamps; head connected to its base on the shelf rear by its flat cable | |
-| `station-duo-tray` | Station Duo MFD head + CFD | Two trays: CFD tray 227 W × 162 D at the front, MFD tray 362 W × 244 D behind it with a 15 mm gap | |
+| `flux-cradle-gen3` | Flux 3, Flux 4 | Trapezoid tray 96 W × 230 D, side walls 28 high with 30° chamfers, a wedge under the printer end to level the screen (IMG-G "angled cradle"), front lip cut-out 60 × 14 for the card path | Front lip label tape `FLUX 3` / `FLUX 4` on the device itself (VID). |
+| `flux-cradle-pocket` | Flux Pocket | 96 W × 185 D, no printer wedge | |
+| `flux-cradle-gen1` / `-gen2` | Flux 1 / Flux 2 | 98 W × 220 D / 96 W × 232 D | Swap in INC42 (gen1 → gen2). |
+| `compass-cradle` | Compass | 104 W × 200 D tray + 40 mm wedge (the Compass is thicker at the rear) | |
+| `micro-dock` | Micro 2 / Micro 3 | Wedge dock 222 W × 175 D; its sloped bed cancels the Micro's 30° screen tilt so the face is level; open back for the printer door | |
+| `stand-tray` | Stand 2018 display head (detached from its stand) | Flat tray 362 W × 244 D × 70 H with corner clamps; head connected to its base on the shelf rear by its flat cable | |
+| `stand-duet-tray` | Stand Duet MFD head + CFD | Two trays: CFD tray 227 W × 162 D at the front, MFD tray 362 W × 244 D behind it with a 15 mm gap | |
 
 ### 2.5 XY gantry (2020/2040 aluminium, NEMA-17, GT2)
 
@@ -579,7 +579,7 @@ Pose angles (arm direction pointing toward −Z, angle measured from horizontal,
 | Bay fuse holder (`rig.<id>.fuse`) | Inline ATO holder 55 × 22 × 18, black body, smoked translucent cap (`smokedPlastic`), red 10 A blade inside; tape label `F-<RIG>-5V 10A` (e.g. `F-WALL-E-5V 10A`) | zip-tied to the door-side rear post at (±205, 70, −850) | Blown: the blade's link is broken with a brown scorch (fuse texture variant), visible with the flashlight + inspect (INC03) |
 | Motor controller PCB (`rig.<id>.motor-pcb`) | Green PCB 100 × 70 × 1.6 on 4 brass standoffs (10 mm) on the hex-mesh; DB-25 female connector (53 × 12, silver shell) on the top edge with a grey 25-way ribbon to the loom; 3 purple stepper-driver modules 15 × 20 with silver heatsinks 9 × 9 × 5; green screw terminals labelled `24V IN`, `SOL`, `SERVO`; USB-B port; silkscreen `25-PIN MOTOR CTRL · MADE IN HONG KONG†` and the rig name hand-written in silver marker | vertical board on the back mesh, opposite the door side: Rack A centre (+110, 205, −893), Rack B (−110, 205, −893), facing +Z | Power LED (green 2 mm) on when MAIN; driver LEDs (red 1 mm) on when MOTOR + steppers enabled. EVE (legacy-nuc-motion): a grey USB lead tagged `EVE MOTION` leaves the PCB through the open side to the Callus shelf spare slot |
 | Webcam (`rig.<id>.webcam`) | Black webcam 72 × 31 × 30, glossy front, lens Ø 12, white activity LED; on a black gooseneck (Ø 8, 400 long) clamped to the left front post top at (−225, 425, −10) | camera at (−150, 410, −120), aimed at the rig's camera target (§2.10) | LED on while a stream client is connected; USB unplugged state (INC08 variant B): cable hangs from the gooseneck |
-| Device AC brick (`rig.<id>.device-psu`) | White (Flex/Mini) or black (Station) 18 V AC brick 110 × 60 × 32, cord up the rear post to the rack's AC strip; DC cable (white, VID) to the device | floor, door side (±150, 0, −640) | Unplugged → device dark |
+| Device AC brick (`rig.<id>.device-psu`) | White (Flux/Micro) or black (Stand) 18 V AC brick 110 × 60 × 32, cord up the rear post to the rack's AC strip; DC cable (white, VID) to the device | floor, door side (±150, 0, −640) | Unplugged → device dark |
 | Collis ribbon | Grey 20-way ribbon (red edge stripe) entering through the open side from the Collis probe on `shelf.callus` at the same level, along the floor to the dip tower | enters at x ±225 (Callus side), y 30 | Unseated state is at the Collis end (§2.14) |
 | Rack-top distribution (`power.rackdist.a` / `.b`) | Printed box 300 × 60 × 70 on the U41 plate front with 4 USB-C leads (5 V) and 4 two-pin leads (24 V) dropping down the rear posts; tape `RACK A · 5V IN (F-5V-A) · 24V MOTOR IN`; green `5V` and orange `24V` LEDs | rack-local (0, 1.880, +0.40) | LEDs follow rail voltage |
 | Rack AC strip (`power.strip.a` / `.b`) | 1U rack-mount 6-outlet strip at the rear, illuminated switch; tape `STRIP-A — LABSIM / COLLIS ONLY` | rack-local (0, 1.885…1.929, −0.47), facing the rear aisle | Outlet n occupied ⇔ load plugged; switch LED red when on |
@@ -608,14 +608,14 @@ Screen sizes from §3.1. `homeX/homeZ` = the screen's top-left in bay-local mm (
 
 | Rig | Rack / bay | Device (type) | Cradle | Screen W × H | homeX, homeZ | maxX, maxY | Secondary display (gantry mm) | Slot (x, y, z) | Power key z, sled rail x | NFC landmark (screen mm) | Camera target (bay-local) | Side panel text | Door side |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| `wall-e` | A / 4 | Flex 3 (`FLEX_3`) | flex-cradle-gen3 | 68.0 × 136.0 | −34.0, −343.0 | 80, 148 | — | (0, 89, −160) | −335, 64 | (34.0, 111.0) | screen centre (0, 100, −275) | `SETI` (D8) | −X |
-| `eve` | A / 3 | Flex 4 (`FLEX_4`) | flex-cradle-gen3 | 68.0 × 136.0 | −34.0, −346.0 | 80, 148 | — | (0, 89, −160) | −338, 64 | (34.0, 111.0) | (0, 100, −278) | — | −X |
-| `r2-d2` | A / 2 | Station Duo (`STATION_DUO`): MFD head + CFD | station-duo-tray | MFD 309.9 × 174.3; CFD 172.3 × 107.7 | −154.95, −535.0 | 309.9, 352 | CFD top-left at (68.8, 239.0) | CFD edge (0, 85, −160) | −517, 198 | CFD (86.2, 119.7) | **CFD** centre (0, 100, −242) | — | −X |
-| `bumblebee` | A / 1 | Mini 3 (`MINI_3`) | mini-dock | 172.3 × 107.7 | −86.15, −296.0 | 184, 120 | — | (0, 82.5, −160) | −298, 127 | (86.2, 119.7) | (0, 100, −242) | — | −X |
-| `johnny-5` | B / 4 | Flex 1 (`FLEX_1`) → Flex 2 (`FLEX_2`) after M07/INC42 | flex-cradle-gen1 → gen2 | 62.3 × 110.7 → 68.0 × 136.0 | −31.15, −335.0 → −34.0, −348.0 | 74, 123 → 80, 148 | — | (0, 87, −160) → (0, 88, −160) | −335 → −338, 65 → 64 | (31.2, 85.7) → (34.0, 111.0) | (0, 100, −280) → (0, 100, −280) | — | +X |
-| `seti` | B / 3 | Compact (`COMPACT`) | compact-cradle | 62.3 × 110.7 | −31.15, −311.0 | 74, 123 | — | (0, 85, −160) | −305, 68 | (31.2, 85.7) | (0, 100, −256) | `SETI` | +X |
-| `baymax` | B / 2 | Station 2018 (`STATION_2018`) head | station-tray | 309.9 × 174.3 | −154.95, −370.0 | 309.9, 186 | — | (0, 85, −160) | −352, 198 | (155.0, 192.3) | (0, 100, −283) | — | +X |
-| `rosie` | B / 1 | Flex Pocket (`FLEX_POCKET`) | flex-cradle-pocket | 68.0 × 136.0 | −34.0, −320.0 | 80, 148 | — | (0, 90, −160) | −302, 64 | (34.0, 111.0) | (0, 100, −252) | — | +X |
+| `wall-e` | A / 4 | Flux 3 (`FLUX_3`) | flux-cradle-gen3 | 68.0 × 136.0 | −34.0, −343.0 | 80, 148 | — | (0, 89, −160) | −335, 64 | (34.0, 111.0) | screen centre (0, 100, −275) | `SETI` (D8) | −X |
+| `eve` | A / 3 | Flux 4 (`FLUX_4`) | flux-cradle-gen3 | 68.0 × 136.0 | −34.0, −346.0 | 80, 148 | — | (0, 89, −160) | −338, 64 | (34.0, 111.0) | (0, 100, −278) | — | −X |
+| `r2-d2` | A / 2 | Stand Duet (`STAND_DUET`): MFD head + CFD | stand-duet-tray | MFD 309.9 × 174.3; CFD 172.3 × 107.7 | −154.95, −535.0 | 309.9, 352 | CFD top-left at (68.8, 239.0) | CFD edge (0, 85, −160) | −517, 198 | CFD (86.2, 119.7) | **CFD** centre (0, 100, −242) | — | −X |
+| `bumblebee` | A / 1 | Micro 3 (`MICRO_3`) | micro-dock | 172.3 × 107.7 | −86.15, −296.0 | 184, 120 | — | (0, 82.5, −160) | −298, 127 | (86.2, 119.7) | (0, 100, −242) | — | −X |
+| `johnny-5` | B / 4 | Flux 1 (`FLUX_1`) → Flux 2 (`FLUX_2`) after M07/INC42 | flux-cradle-gen1 → gen2 | 62.3 × 110.7 → 68.0 × 136.0 | −31.15, −335.0 → −34.0, −348.0 | 74, 123 → 80, 148 | — | (0, 87, −160) → (0, 88, −160) | −335 → −338, 65 → 64 | (31.2, 85.7) → (34.0, 111.0) | (0, 100, −280) → (0, 100, −280) | — | +X |
+| `seti` | B / 3 | Compass (`COMPASS`) | compass-cradle | 62.3 × 110.7 | −31.15, −311.0 | 74, 123 | — | (0, 85, −160) | −305, 68 | (31.2, 85.7) | (0, 100, −256) | `SETI` | +X |
+| `baymax` | B / 2 | Stand 2018 (`STAND_2018`) head | stand-tray | 309.9 × 174.3 | −154.95, −370.0 | 309.9, 186 | — | (0, 85, −160) | −352, 198 | (155.0, 192.3) | (0, 100, −283) | — | +X |
+| `rosie` | B / 1 | Flux Pocket (`FLUX_POCKET`) | flux-cradle-pocket | 68.0 × 136.0 | −34.0, −320.0 | 80, 148 | — | (0, 90, −160) | −302, 64 | (34.0, 111.0) | (0, 100, −252) | — | +X |
 
 Mechanical check (all rigs): `cx = homeX + x − 26` stays within [−180.95, +128.95] ⊂ [−183, 183]; `az = homeZ + y` stays within [−535, −183] ⊂ [−560, −80]. When JOHNNY-5's device is swapped, the world moves both limit-switch brackets to the new home (visible re-calibration) and swaps the cradle mesh.
 
@@ -655,7 +655,7 @@ Rack-local frame: origin at `rack.t` footprint centre (2.40, 0, −2.05), +Z tow
 | Frame | 4-post black rack 0.60 × 0.90 × 1.80, posts 45 × 45 at x ±0.2775, z ±0.4275. No rack-unit numbering (IMG-R). |
 | Shelves | Black steel with **rounded-slot** perforation (`perforatedSteel` variant: slots 8 × 22 mm, staggered, pitch 18 × 32 mm, IMG-R): S0 top y 0.10, S1 0.50, **S2 0.93 (dock shelf)**, **S3 1.50 (directly above the MFD row, IMG-R top)**, top plate 1.77–1.80. |
 | Device panel | Two vertical 2020 uprights (silver) at x ±0.235, z −0.05, from S2 to S3; cross members at y 1.02 and 1.43; short horizontal extrusion stubs with printed brackets protrude left of each face (IMG-R). |
-| **Four faces** (front surfaces at z 0.000, vertical) | `rig.megatron.mfd` centre (−0.112, 1.340) · `rig.optimus.mfd` (+0.112, 1.340) · `rig.megatron.cfd` (−0.112, 1.120) · `rig.optimus.cfd` (+0.112, 1.120). Face 0.210 × 0.160 (Mini 3 faces 0.208 × 0.158). Devices: MEGATRON MFD = Station 2 head, MEGATRON CFD = Mini 2, OPTIMUS MFD/CFD = Mini 3 (D1, D6). Bodies extend behind the faces (Mini wedges up to 0.17 deep). The Station 2's base sits on S1 behind the docks with its cable up the left upright. |
+| **Four faces** (front surfaces at z 0.000, vertical) | `rig.megatron.mfd` centre (−0.112, 1.340) · `rig.optimus.mfd` (+0.112, 1.340) · `rig.megatron.cfd` (−0.112, 1.120) · `rig.optimus.cfd` (+0.112, 1.120). Face 0.210 × 0.160 (Micro 3 faces 0.208 × 0.158). Devices: MEGATRON MFD = Stand 2 head, MEGATRON CFD = Micro 2, OPTIMUS MFD/CFD = Micro 3 (D1, D6). Bodies extend behind the faces (Micro wedges up to 0.17 deep). The Stand 2's base sits on S1 behind the docks with its cable up the left upright. |
 | Face labels (IMG-R) | On each face's top bezel three separate white label-tape pieces (`labelTape`, black `LABEL` text, cap 9 mm): left `MEGATRON` / `OPTIMUS`, centre `MFD` / `CFD`, right `DEV1` / `STG`, followed by the bezel's 3 mm black sensor dot. Callout text: `MEGATRON  MFD  DEV1`, `OPTIMUS  CFD  STG`. |
 | Face logos (IMG-R) | MEGATRON MFD and MEGATRON CFD: `lab` wordmark bottom-left; OPTIMUS MFD/CFD: four-leaf glyph only. Bottom-centre chip slot with **green arrow light-pipe** (60 × 8 mm: two ▲ arrows + centre bar, `ledGreen` at intensity 2.5) on every face. |
 | MFD top-edge stickers | Swipe-direction icons `▶▬` black (MEGATRON MFD) and `▬▶` green (OPTIMUS MFD) at the top-left edge (IMG-R). |
@@ -665,7 +665,7 @@ Rack-local frame: origin at `rack.t` footprint centre (2.40, 0, −2.05), +Z tow
 | Shelf Pi (`rig.tethered.pi`) | Pi in a black case **standing upright** between the two inner docks at x 0.000, z +0.36, RJ45 at the top, green ACT LED and green PCB edge visible (IMG-R). Serves MEGATRON + OPTIMUS (one Pi per shelf, Ref §1). |
 | Cables (IMG-R) | Hubs: Ethernet light-blue (MEGATRON) and white (OPTIMUS), USB black/white, DC power black; three red four-lobed printed cable keepers (decor); slack loops coiled on S2 between the docks. |
 | Bench webcam (`rig.tethered.webcam`) | Gooseneck from S3's front lip at (0.00, 1.49, 0.40); camera at (0.00, 1.45, 0.38) aimed at (0.00, 1.23, 0.00), vertical FOV 46°. |
-| Lower shelves | S1 (0.50): 8-port switch, Station 2 base, spare hub, cable box. S0 (0.10): `power.strip.t` (6-outlet strip, rear), 4 device AC bricks. S3 top: two cardboard boxes. |
+| Lower shelves | S1 (0.50): 8-port switch, Stand 2 base, spare hub, cable box. S0 (0.10): `power.strip.t` (6-outlet strip, rear), 4 device AC bricks. S3 top: two cardboard boxes. |
 | Background match | From the IMG-R viewpoint (2.55, 1.30, −0.75) looking at (2.40, 1.10, −2.10) with a 70° horizontal FOV: `room.column` fills the left edge, `wall.bins` (red over blue) appears just right of the rack, `wall.drawers` further right, `chest.husky` below the drawers — verify with a screenshot test (§10.6). |
 
 ### 2.13 ADB shelf `shelf.adb` — DATA & TARS
@@ -674,8 +674,8 @@ Shelf-local frame: origin (0.85, 0, −1.90), +Z to the aisle. Black perforated 
 
 | Part | Spec |
 |---|---|
-| `rig.data.device` | Mini 3 on its standard stand (screen tilted 30° back, facing the aisle) at (−0.25, 1.00, +0.05). |
-| `rig.tars.device` | Flex 4 in an upright printed dock (70° from horizontal) at (+0.22, 1.00, +0.05). |
+| `rig.data.device` | Micro 3 on its standard stand (screen tilted 30° back, facing the aisle) at (−0.25, 1.00, +0.05). |
+| `rig.tars.device` | Flux 4 in an upright printed dock (70° from horizontal) at (+0.22, 1.00, +0.05). |
 | Labels | White tape `DATA` and `TARS` on the front lip (y 0.99) under each device; yellow tape `ADB ONLY — NO PIN` at (0, 0.97, +0.30). |
 | `rig.adb.pi` | Pi (black case) on the lower tier at (−0.30, 0.45, −0.10), Ethernet + USB to both devices. |
 | Other | 5-port switch (+0.05, 0.45, −0.10), `power.strip.d` (6 outlets) on the lower tier rear, two AC bricks. |
@@ -709,22 +709,22 @@ Real-world-approximate dimensions; † marks LabSim-chosen values where public s
 
 | Type | Display name | Body W × H × D (mm) | Primary screen (diag, px, active mm) | Secondary | Printer | Distinctive features |
 |---|---|---|---|---|---|---|
-| `STATION_2018` | Station 2018 | head 350 × 232 × 30 on a swivel stand; base 330 × 105 × 230; overall 350 × 360 × 250 | 14.0", 1920 × 1080, 309.9 × 174.3 | — | yes (base) | Black-glass front with 20 mm bezels, white back shell, silver hinge arm, base with paper door and green leaf on its front; card-reader module on the head's bottom edge†. |
-| `STATION_2` | Station 2† | head 210 × 160 × 28 (= IMG-R MEGATRON MFD face); base 240 × 95 × 200 | 8.0", 1280 × 800, 172.3 × 107.7 | — | yes (base) | White bezel, `lab` wordmark bottom-left, bottom chip slot with green arrow light-pipe, top-edge swipe slot (D6). |
-| `STATION_DUO` | Station Duo | MFD head 350 × 232 × 30 + CFD 215 × 150 × 30 on the stand's back; base 330 × 105 × 230 | MFD 14.0", 1920 × 1080, 309.9 × 174.3 | CFD 8.0", 1280 × 800, 172.3 × 107.7 (ADB-blind on legacy UIA, Ref §3) | yes | Two screens back-to-back on one stand; CFD has the card reader (chip slot bottom edge, swipe top edge). |
-| `STATION_DUO_2` | Station Duo 2 | as Duo; base 330 × 70 × 230 | as Duo | as Duo | **no** | Shorter base without paper door; library card `STATION DUO 2 (NO PRINTER)`. |
-| `STATION_DUO_3` | Station Duo 3 (upcoming) | sealed box 420 × 300 × 260 | — | — | — | Library only: white box with green band, label `STATION DUO 3 — UPCOMING`. |
-| `MINI_2` | Mini (2nd gen) | face 210 × 160; wedge body 210 W × 125 H (rear) × 170 D, front edge 35 thick | 8.0", 1280 × 800, 172.3 × 107.7 | — | yes (rear) | White bezel, `lab` wordmark, chip slot + green arrows, top-edge swipe slot, separate connectivity hub. |
-| `MINI_3` | Mini (3rd gen) | face 208 × 158; wedge 208 × 120 × 165, front edge 35 | 8.0", 1280 × 800, 172.3 × 107.7 | — | yes† | Slimmer bezel, four-leaf glyph only (IMG-R OPTIMUS). |
-| `MINI_4` | Mini 4 (upcoming) | sealed box 260 × 220 × 200 | — | — | — | Library only: `MINI 4 — UPCOMING`. |
-| `FLEX_1` | Flex (1st gen) | 84 × 205 × 26 (printer end 52 thick over the top 70) | 5.0", 720 × 1280, 62.3 × 110.7 | — | yes | White front, dark-grey back, thick bezel (top 30, bottom 64.3). |
-| `FLEX_2` | Flex 2 | 82 × 218 × 24 (printer 50) | 6.0", 720 × 1440, 68.0 × 136.0 | — | yes | White, grey back band, top 30 / bottom 52. |
-| `FLEX_3` | Flex 3 | 82 × 215 × 22 (printer 48) | 6.0", 720 × 1440, 68.0 × 136.0 | — | yes | White, flat back, top 32 / bottom 47; label tape `FLEX 3` and a serial sticker on the bottom bezel (VID). |
-| `FLEX_4` | Flex 4 | 82 × 218 × 22 (printer 48) | 6.0", 720 × 1440, 68.0 × 136.0 | — | yes | As Flex 3 + front-camera dot and a grey textured grip band on the back; top 32 / bottom 50. |
-| `FLEX_POCKET` | Flex Pocket | 82 × 172 × 20 | 6.0", 720 × 1440, 68.0 × 136.0 | — | **no** | Flex 3 body with the printer block removed (flat top end); top 12 / bottom 24. Shares the FLEX_GEN3 profile (canon). |
-| `COMPACT` | LabSim Compact (CA) | 90 × 185 × 58 countertop wedge (front edge 30) | 5.0", 720 × 1280, 62.3 × 110.7† | — | yes† | White with dark-grey base, small `CA` country sticker†, top 34 / bottom 40.3; PIN-capable display (Canadian Interac flows). |
+| `STAND_2018` | Stand 2018 | head 350 × 232 × 30 on a swivel stand; base 330 × 105 × 230; overall 350 × 360 × 250 | 14.0", 1920 × 1080, 309.9 × 174.3 | — | yes (base) | Black-glass front with 20 mm bezels, white back shell, silver hinge arm, base with paper door and green leaf on its front; card-reader module on the head's bottom edge†. |
+| `STAND_2` | Stand 2† | head 210 × 160 × 28 (= IMG-R MEGATRON MFD face); base 240 × 95 × 200 | 8.0", 1280 × 800, 172.3 × 107.7 | — | yes (base) | White bezel, `lab` wordmark bottom-left, bottom chip slot with green arrow light-pipe, top-edge swipe slot (D6). |
+| `STAND_DUET` | Stand Duet | MFD head 350 × 232 × 30 + CFD 215 × 150 × 30 on the stand's back; base 330 × 105 × 230 | MFD 14.0", 1920 × 1080, 309.9 × 174.3 | CFD 8.0", 1280 × 800, 172.3 × 107.7 (ADB-blind on legacy UIA, Ref §3) | yes | Two screens back-to-back on one stand; CFD has the card reader (chip slot bottom edge, swipe top edge). |
+| `STAND_DUET_2` | Stand Duet 2 | as Duet; base 330 × 70 × 230 | as Duet | as Duet | **no** | Shorter base without paper door; library card `STAND DUET 2 (NO PRINTER)`. |
+| `STAND_DUET_3` | Stand Duet 3 (upcoming) | sealed box 420 × 300 × 260 | — | — | — | Library only: white box with green band, label `STAND DUET 3 — UPCOMING`. |
+| `MICRO_2` | Micro (2nd gen) | face 210 × 160; wedge body 210 W × 125 H (rear) × 170 D, front edge 35 thick | 8.0", 1280 × 800, 172.3 × 107.7 | — | yes (rear) | White bezel, `lab` wordmark, chip slot + green arrows, top-edge swipe slot, separate connectivity hub. |
+| `MICRO_3` | Micro (3rd gen) | face 208 × 158; wedge 208 × 120 × 165, front edge 35 | 8.0", 1280 × 800, 172.3 × 107.7 | — | yes† | Slimmer bezel, four-leaf glyph only (IMG-R OPTIMUS). |
+| `MICRO_4` | Micro 4 (upcoming) | sealed box 260 × 220 × 200 | — | — | — | Library only: `MICRO 4 — UPCOMING`. |
+| `FLUX_1` | Flux (1st gen) | 84 × 205 × 26 (printer end 52 thick over the top 70) | 5.0", 720 × 1280, 62.3 × 110.7 | — | yes | White front, dark-grey back, thick bezel (top 30, bottom 64.3). |
+| `FLUX_2` | Flux 2 | 82 × 218 × 24 (printer 50) | 6.0", 720 × 1440, 68.0 × 136.0 | — | yes | White, grey back band, top 30 / bottom 52. |
+| `FLUX_3` | Flux 3 | 82 × 215 × 22 (printer 48) | 6.0", 720 × 1440, 68.0 × 136.0 | — | yes | White, flat back, top 32 / bottom 47; label tape `FLUX 3` and a serial sticker on the bottom bezel (VID). |
+| `FLUX_4` | Flux 4 | 82 × 218 × 22 (printer 48) | 6.0", 720 × 1440, 68.0 × 136.0 | — | yes | As Flux 3 + front-camera dot and a grey textured grip band on the back; top 32 / bottom 50. |
+| `FLUX_POCKET` | Flux Pocket | 82 × 172 × 20 | 6.0", 720 × 1440, 68.0 × 136.0 | — | **no** | Flux 3 body with the printer block removed (flat top end); top 12 / bottom 24. Shares the FLUX_GEN3 profile (canon). |
+| `COMPASS` | LabSim Compass (CA) | 90 × 185 × 58 countertop wedge (front edge 30) | 5.0", 720 × 1280, 62.3 × 110.7† | — | yes† | White with dark-grey base, small `CA` country sticker†, top 34 / bottom 40.3; PIN-capable display (Canadian Interac flows). |
 
-Screen margins (mm, used by §2.10): Station heads top 22 / bottom 35.7 / sides 20.05; Duo CFD top 14 / bottom 28.3 / sides 21.35; Mini 2 top 22 / bottom 30.3 / sides 18.85; Mini 3 top 22 / bottom 28.3 / sides 17.85; Station 2 head as Mini 2. Power key: right edge, 40 mm from the top end (Flex 3/4/2, Compact, Station heads), 30 mm (Flex 1, Pocket), 20 mm (Minis). NFC landmark: handhelds/Compact `(W/2, H − 25)` on screen; Minis/Station 2/Duo CFD `(W/2, H + 12)` on the bezel; Station 2018 / Duo MFD `(W/2, H + 18)`.
+Screen margins (mm, used by §2.10): Stand heads top 22 / bottom 35.7 / sides 20.05; Duet CFD top 14 / bottom 28.3 / sides 21.35; Micro 2 top 22 / bottom 30.3 / sides 18.85; Micro 3 top 22 / bottom 28.3 / sides 17.85; Stand 2 head as Micro 2. Power key: right edge, 40 mm from the top end (Flux 3/4/2, Compass, Stand heads), 30 mm (Flux 1, Pocket), 20 mm (Micros). NFC landmark: handhelds/Compass `(W/2, H − 25)` on screen; Micros/Stand 2/Duet CFD `(W/2, H + 12)` on the bezel; Stand 2018 / Duet MFD `(W/2, H + 18)`.
 
 ### 3.2 Device library placement (`library.<model>`)
 
@@ -732,31 +732,31 @@ East wall shelving (rotY −90, items face −X). Base top 0.90 (trays), S1 top 
 
 | Id | Item | Position | Lip card |
 |---|---|---|---|
-| `library.station-2018` | Station 2018 on stand | (6.82, 1.62, −0.65) | `STATION 2018` |
-| `library.station-2` | Station 2 head on its base | (6.82, 1.62, −0.27) | `STATION 2` |
-| `library.station-duo-1` | Station Duo | (6.82, 1.62, 0.07) | `STATION DUO` |
-| `library.station-duo-2` | Station Duo 2 | (6.82, 1.62, 0.47) | `STATION DUO 2 (NO PRINTER)` |
-| `library.box-duo-3` | Sealed box | (6.80, 1.62, 0.98) | `STATION DUO 3 — UPCOMING` |
-| `library.mini-2` | Mini 2 on stand | (6.85, 1.25, −0.68) | `MINI 2` |
-| `library.mini-3` | Mini 3 on stand | (6.85, 1.25, −0.42) | `MINI 3` |
-| `library.box-mini-4` | Sealed box | (6.85, 1.25, −0.13) | `MINI 4 — UPCOMING` |
-| `library.flex-1` … `library.flex-4` | Flex 1, 2, 3, 4 upright in printed stands | (6.86, 1.25, 0.12 / 0.28 / 0.44 / 0.60) | `FLEX 1` … `FLEX 4` |
-| `library.flex-pocket` | Flex Pocket | (6.86, 1.25, 0.76) | `FLEX POCKET (NO PRINTER)` |
-| `library.compact` | Compact | (6.85, 1.25, 0.98) | `COMPACT (CANADA)` |
+| `library.stand-2018` | Stand 2018 on stand | (6.82, 1.62, −0.65) | `STAND 2018` |
+| `library.stand-2` | Stand 2 head on its base | (6.82, 1.62, −0.27) | `STAND 2` |
+| `library.stand-duet-1` | Stand Duet | (6.82, 1.62, 0.07) | `STAND DUET` |
+| `library.stand-duet-2` | Stand Duet 2 | (6.82, 1.62, 0.47) | `STAND DUET 2 (NO PRINTER)` |
+| `library.box-duet-3` | Sealed box | (6.80, 1.62, 0.98) | `STAND DUET 3 — UPCOMING` |
+| `library.micro-2` | Micro 2 on stand | (6.85, 1.25, −0.68) | `MICRO 2` |
+| `library.micro-3` | Micro 3 on stand | (6.85, 1.25, −0.42) | `MICRO 3` |
+| `library.box-micro-4` | Sealed box | (6.85, 1.25, −0.13) | `MICRO 4 — UPCOMING` |
+| `library.flux-1` … `library.flux-4` | Flux 1, 2, 3, 4 upright in printed stands | (6.86, 1.25, 0.12 / 0.28 / 0.44 / 0.60) | `FLUX 1` … `FLUX 4` |
+| `library.flux-pocket` | Flux Pocket | (6.86, 1.25, 0.76) | `FLUX POCKET (NO PRINTER)` |
+| `library.compass` | Compass | (6.85, 1.25, 0.98) | `COMPASS (CANADA)` |
 
 Library devices are powered off (screens use the glass material) except during M02, when the picked-up device shows its boot logo. They are draggable onto `library.trays`.
 
 ### 3.3 Shared construction recipe
 
-Every device builder (`src/world/rigs/devices/<family>.ts`) returns a `Group` with named children: `body`, `bezel`, `glass`, `screen` (and `screen2` for the Duo CFD), `logo`, `slot`, `printer` (if any), `powerKey`, `labels`. Construction:
+Every device builder (`src/world/rigs/devices/<family>.ts`) returns a `Group` with named children: `body`, `bezel`, `glass`, `screen` (and `screen2` for the Duet CFD), `logo`, `slot`, `printer` (if any), `powerKey`, `labels`. Construction:
 
-1. **Body**: rounded box (`RoundedBoxGeometry`, radius 4–8 mm by family) or an extruded side profile (Mini/Compact wedges, Flex printer bulge) — `labwhite` (#ecebe5) or `deviceGreyBack` (#5b5f63) for backs.
-2. **Front bezel**: a thin rounded panel 0.6 mm proud of the body; white (`labwhite`) or black glass (Station 2018/Duo MFD: `screenGlass`).
+1. **Body**: rounded box (`RoundedBoxGeometry`, radius 4–8 mm by family) or an extruded side profile (Micro/Compass wedges, Flux printer bulge) — `labwhite` (#ecebe5) or `deviceGreyBack` (#5b5f63) for backs.
+2. **Front bezel**: a thin rounded panel 0.6 mm proud of the body; white (`labwhite`) or black glass (Stand 2018/Duet MFD: `screenGlass`).
 3. **Screen stack** (§3.5): `screen` plane exactly the active area, 0.4 mm under the glass top; `glass` plane covering the bezel opening.
 4. **Logo**: canvas decal (`labLogo` generator §6.2): wordmark variant or leaf-only; grey #8b8f93 on white bezels, white on dark.
-5. **Card features**: chip slot = a dark recessed slot 64 × 2 × 10 deep on the bottom edge face (+ the green arrow light-pipe on Mini/Station 2/Duo CFD faces); swipe channel = 3 mm groove along the top edge (Mini/Station 2/CFD) or right side (Flex).
-6. **Printer** (Flex/Station/Mini where `hasPrinter`): paper door outline + 58 mm paper slot; receipt paper strip mesh that extrudes during `printing` (58 mm wide, up to 120 mm, `paperWhite` with the receipt texture from `render2d.drawReceipt`).
-7. **Labels**: lab tape (e.g. `FLEX 3`) + serial sticker `S/N SIM-…` (serial from the sim device) on the bottom bezel / back.
+5. **Card features**: chip slot = a dark recessed slot 64 × 2 × 10 deep on the bottom edge face (+ the green arrow light-pipe on Micro/Stand 2/Duet CFD faces); swipe channel = 3 mm groove along the top edge (Micro/Stand 2/CFD) or right side (Flux).
+6. **Printer** (Flux/Stand/Micro where `hasPrinter`): paper door outline + 58 mm paper slot; receipt paper strip mesh that extrudes during `printing` (58 mm wide, up to 120 mm, `paperWhite` with the receipt texture from `render2d.drawReceipt`).
+7. **Labels**: lab tape (e.g. `FLUX 3`) + serial sticker `S/N SIM-…` (serial from the sim device) on the bottom bezel / back.
 
 Triangle budget per device: ≤ 1.2 k (Low LOD 400). Corner radius segments 3 (Low 1).
 
@@ -767,8 +767,8 @@ Triangle budget per device: ≤ 1.2 k (Low LOD 400). Corner radius segments 3 (L
 | LabSim connectivity hub (IMG-R) | White rounded box 120 (D) × 165 (H) × 40 (W) standing on its long edge; port face (40 × 165) from top: RJ45 with link LED, grey printed icons, round DC barrel (power in), two stacked USB-A ports | `labwhite`; port recesses dark grey; link LED green 2 mm (blinks with traffic). |
 | SmartStripe probe dongle | Black USB dongle 75 × 22 × 12, green LED 3 mm on top-front, flat cable to the probe blade | LED = probe ready; off when unplugged. |
 | SmartStripe probe blade | Black card 85 × 54 × 0.8, white text `SmartStripe Probe` | |
-| Device AC brick | 110 × 60 × 32 white (Flex/Mini) or black (Station), embossed `18V⎓†` | Plug: NEMA 1-15 two-prong. |
-| Flex charging dock (coworker desk) | White 110 × 90 × 50 cradle with pogo pins | |
+| Device AC brick | 110 × 60 × 32 white (Flux/Micro) or black (Stand), embossed `18V⎓†` | Plug: NEMA 1-15 two-prong. |
+| Flux charging dock (coworker desk) | White 110 × 90 × 50 cradle with pogo pins | |
 | Test cards (inventory) | 85.6 × 54 × 0.76; Visa-style blue/white `TEST CARD · VISA†` and red `TEST CARD · INTERAC†`, EMV chip, black magstripe | Viewmodels (§9.5). |
 
 ### 3.5 Where the screen texture lives
@@ -833,12 +833,12 @@ Buttons: primary = `green` fill, white text; secondary = white fill, `line` bord
 
 | Class | Reference size (mm) | Used by (testing profile → device types) | Derivation |
 |---|---|---|---|
-| **P** | 68.0 × 136.0 | FLEX_GEN3 (Flex 3, Flex 4, Flex Pocket), FLEX_GEN2 (Flex 2) | Tables in §4.3 (exact). |
-| **P-s** | 62.3 × 110.7 | FLEX_GEN1 (Flex 1), COMPACT | P scaled: x·0.91618, y·0.81397, fonts ·0.814, rounded to 0.1 mm — **except** receipt pills and the QR shift (§4.3 receipt-options), which keep their mm sizes. |
-| **L8** | 172.3 × 107.7 | MINI_GEN2 (Mini 2), MINI_GEN3 (Mini 3, Mini 4), STATION_2, STATION_DUO **CFD** | Tables in §4.4 (exact). |
-| **L14** | 309.9 × 174.3 | STATION_2018, STATION_DUO **MFD** | L8 scaled: x·1.79861, y·1.61838, fonts ·1.618 — same receipt exception. Key centres listed in §4.5. |
+| **P** | 68.0 × 136.0 | FLUX_GEN3 (Flux 3, Flux 4, Flux Pocket), FLUX_GEN2 (Flux 2) | Tables in §4.3 (exact). |
+| **P-s** | 62.3 × 110.7 | FLUX_GEN1 (Flux 1), COMPASS | P scaled: x·0.91618, y·0.81397, fonts ·0.814, rounded to 0.1 mm — **except** receipt pills and the QR shift (§4.3 receipt-options), which keep their mm sizes. |
+| **L8** | 172.3 × 107.7 | MICRO_GEN2 (Micro 2), MICRO_GEN3 (Micro 3, Micro 4), STAND_2, STAND_DUET **CFD** | Tables in §4.4 (exact). |
+| **L14** | 309.9 × 174.3 | STAND_2018, STAND_DUET **MFD** | L8 scaled: x·1.79861, y·1.61838, fonts ·1.618 — same receipt exception. Key centres listed in §4.5. |
 
-Launcher scrolling (Ref §4: `open(appName)` scrolls vertically on Flex, horizontally on Mini/Station): P/P-s launchers scroll **vertically** in 22 mm rows; L8/L14 launchers page **horizontally** (10 apps per page).
+Launcher scrolling (Ref §4: `open(appName)` scrolls vertically on Flux, horizontally on Micro/Stand): P/P-s launchers scroll **vertically** in 22 mm rows; L8/L14 launchers page **horizontally** (10 apps per page).
 
 ### 4.3 Class P screens (68.0 × 136.0 mm) — exact
 
@@ -926,7 +926,7 @@ Visible-page centres: Register (13, 26), Orders (34, 26), Transactions (55, 26),
 | Prompt | centred, baseline 38 | `Tap, insert, or swipe card` 3.0 mm `ink` |
 | Icons | 15 × 15 centred at (13, 58), (34, 58), (55, 58) | contactless waves, chip card with ↓ arrow, card with → arrow; 1 Hz pulse |
 | Icon labels | baselines 70 | `Tap`, `Insert`, `Swipe` 2.2 mm |
-| Tap target | circle Ø 14 at (34, 111) | contactless glyph, caption `Tap here` 2.0 mm baseline 121 — the Flex NFC landmark (§2.10) |
+| Tap target | circle Ø 14 at (34, 111) | contactless glyph, caption `Tap here` 2.0 mm baseline 121 — the Flux NFC landmark (§2.10) |
 | ● `Cancel` | (20, 124, 28, 9) c(34, 128.5) | text button `navy` 2.6 mm |
 
 **`pin-entry`** (Secure Touch PIN pad, exactly as VID: dark keys on light blue, 0 in the right column, red/yellow/green function row)
@@ -1041,14 +1041,14 @@ Visible-page centres: Register (13, 26), Orders (34, 26), Transactions (55, 26),
 
 Computed with the §4.2 scale factors (receipt pills keep 5.0 mm height, QR shift stays **3.0 mm**: P-s 5-option = 4-option + 3.0; L14 likewise).
 
-| Screen · button | P-s (62.3 × 110.7): FLEX_GEN1, COMPACT | L14 (309.9 × 174.3): STATION_2018, Duo MFD |
+| Screen · button | P-s (62.3 × 110.7): FLUX_GEN1, COMPASS | L14 (309.9 × 174.3): STAND_2018, Duet MFD |
 |---|---|---|
 | register · `Tax Item 5` | (16.9, 22.4) | (36.0, 45.3) |
 | register · `Review Order` | (31.2, 97.7) | (253.6, 150.5) |
 | review-order · `Pay` | (31.2, 97.7) | (253.6, 150.5) |
 | tender-select · `Charge` | (31.2, 97.7) | (253.6, 150.5) |
 | cash-discount · `Cash` / `Card` | (20.2, 47.6) / (49.9, 47.6) | (91.7, 102.0) / (223.0, 102.0) |
-| PIN `1` `2` `3` | (12.8, 35.0) (31.2, 35.0) (49.5, 35.0) | — (Station heads have no PIN pad; PIN entry happens on the Duo **CFD**, L8) |
+| PIN `1` `2` `3` | (12.8, 35.0) (31.2, 35.0) (49.5, 35.0) | — (Stand heads have no PIN pad; PIN entry happens on the Duet **CFD**, L8) |
 | PIN `4`–`9` rows | y 48.8 / 62.7 | — |
 | PIN `0` | (49.5, 76.5) | — |
 | PIN `Cancel` / `Clear` / `OK` | (12.8, 90.4) / (31.2, 90.4) / (49.5, 90.4) | — |
@@ -1059,7 +1059,7 @@ Computed with the §4.2 scale factors (receipt pills keep 5.0 mm height, QR shif
 
 † 5th option centre = 4-option `No Receipt` + scaled pitch + 3.0 mm.
 
-Hit tolerance reference (for incident designers): receipt pills ±2.5 mm vertical; PIN keys ±7 × ±9 (P); `Charge`/`Pay`/`Review Order` ±7 vertical (P); tender `Card` ±11.5 horizontal. A legacy Offset only *misses* when it exceeds those half-sizes (e.g. 20-gameplay INC14's "misses Charge" needs Offset Y ≥ 7.5 mm on P, or target the receipt pills with ≥ 2.6 mm). Log strings that quote mm values must be generated from these tables (INC14's `PAYMENT/Charge` on FLEX_GEN3 is (34.0, 120.0) + offsets).
+Hit tolerance reference (for incident designers): receipt pills ±2.5 mm vertical; PIN keys ±7 × ±9 (P); `Charge`/`Pay`/`Review Order` ±7 vertical (P); tender `Card` ±11.5 horizontal. A legacy Offset only *misses* when it exceeds those half-sizes (e.g. 20-gameplay INC14's "misses Charge" needs Offset Y ≥ 7.5 mm on P, or target the receipt pills with ≥ 2.6 mm). Log strings that quote mm values must be generated from these tables (INC14's `PAYMENT/Charge` on FLUX_GEN3 is (34.0, 120.0) + offsets).
 
 ### 4.6 Orca screen names ↔ device screens, and seed Screen Locations
 
@@ -1070,7 +1070,7 @@ Hit tolerance reference (for incident designers): receipt pills ±2.5 mm vertica
 | `REGISTER_HOME` | `register` | `Tax Item 5`, `Coffee`, `Bagel`, `No-Tax Item`, `Gift Card`, `Custom Amount`, `Review Order` |
 | `REVIEW_ORDER` | `review-order` | `Add discount`, `Pay` |
 | `PAYMENT` | `tender-select` | `Card`, `Cash`, `Other tender`, `Charge` |
-| `TENDER_CASH_DISCOUNT` | `cash-discount-tender` | `Cash`, `Card` — **FLEX_GEN3 override: `Card` = (62.0, 58.5)** (curriculum S10; inside the button) |
+| `TENDER_CASH_DISCOUNT` | `cash-discount-tender` | `Cash`, `Card` — **FLUX_GEN3 override: `Card` = (62.0, 58.5)** (curriculum S10; inside the button) |
 | `PAYMENT_PROMPT` | `payment-prompt` | `Cancel` |
 | `TIP` | `tip` | `15%`, `18%`, `20%`, `Custom`, `No Tip` |
 | `SIGNATURE` | `signature` | `Clear`, `Done` |
@@ -1082,7 +1082,7 @@ Hit tolerance reference (for incident designers): receipt pills ±2.5 mm vertica
 | `OOBE_WELCOME` / `_NETWORK` / `_MERCHANT` / `_EMPLOYEE` / `_COMPLETE` | `oobe-*` | as §4.3/§4.4 |
 | `ERROR_DIALOG` | `error` | `OK` |
 
-FLEX_GEN3 seed check (curriculum S10): `RECEIPT_OPTIONS_4` Print (34.0, 71.0), Email (34.0, 83.0), Text (34.0, 95.0), No Receipt (34.0, 107.0); `RECEIPT_OPTIONS_5` Print (34.0, 74.0), Email (34.0, 86.0), Text (34.0, 98.0), No Receipt (34.0, 110.0), Scan for receipt (34.0, 122.0); `TENDER_CASH_DISCOUNT` Cash (22.0, 58.5), Card (62.0, 58.5) — all consistent with §4.3. M09's ruler snaps to the drawn **centre** of the measured button (Print reads `Y 74.0 mm` on the 5-option firmware).
+FLUX_GEN3 seed check (curriculum S10): `RECEIPT_OPTIONS_4` Print (34.0, 71.0), Email (34.0, 83.0), Text (34.0, 95.0), No Receipt (34.0, 107.0); `RECEIPT_OPTIONS_5` Print (34.0, 74.0), Email (34.0, 86.0), Text (34.0, 98.0), No Receipt (34.0, 110.0), Scan for receipt (34.0, 122.0); `TENDER_CASH_DISCOUNT` Cash (22.0, 58.5), Card (62.0, 58.5) — all consistent with §4.3. M09's ruler snaps to the drawn **centre** of the measured button (Print reads `Y 74.0 mm` on the 5-option firmware).
 
 ### 4.7 Printed receipt (`render2d.drawReceipt`)
 
@@ -1139,7 +1139,7 @@ State highlights: the button matching the current state (Steppers `Disable` when
 
 ### 5.3 Robot and Robot Control tabs (†, sim-only content)
 
-**Robot tab** — key/value list at x 80 (labels 22 px `#9fb3d6`) / x 420 (values 24 px white), first baseline 230, pitch 48: `Name` → `wall-e`; `Human Readable Name` → `WALL-E`; `Orca status` → chip (colours = the Orca app's status chips; defaults Available `#2e9e4f`, Unavailable `#8b5cf6`, Offline `#6b7280`, Connection Failed `#dc2626`, Reserved `#2563eb`); `Device` → `FLEX_3 · SIM-…`; `Device IP` → `10.42.30.11:5444`; `Robot Pi` → host IP; `Camera` → stream URL (truncated); `Last health check` → `09:35:00 · 200 OK`; `Magnetic lock` → `ENGAGED` / `RELEASED`. Mini-map box (760, 200, 440, 300): device-screen outline to scale, crosshair + 12 px dot at the gantry position (green; yellow when the lock is released), text `X 12.0 mm   Y 58.5 mm` baseline 540, `Home = limit switches (0,0)` baseline 572.
+**Robot tab** — key/value list at x 80 (labels 22 px `#9fb3d6`) / x 420 (values 24 px white), first baseline 230, pitch 48: `Name` → `wall-e`; `Human Readable Name` → `WALL-E`; `Orca status` → chip (colours = the Orca app's status chips; defaults Available `#2e9e4f`, Unavailable `#8b5cf6`, Offline `#6b7280`, Connection Failed `#dc2626`, Reserved `#2563eb`); `Device` → `FLUX_3 · SIM-…`; `Device IP` → `10.42.30.11:5444`; `Robot Pi` → host IP; `Camera` → stream URL (truncated); `Last health check` → `09:35:00 · 200 OK`; `Magnetic lock` → `ENGAGED` / `RELEASED`. Micro-map box (760, 200, 440, 300): device-screen outline to scale, crosshair + 12 px dot at the gantry position (green; yellow when the lock is released), text `X 12.0 mm   Y 58.5 mm` baseline 540, `Home = limit switches (0,0)` baseline 572.
 
 **Robot Control tab** — jog pad centred (400, 440): blue arrow buttons 110 × 80 (▲ = −Y toward the screen top, ▼ +Y, ◀ −X, ▶ +X) around a green `Tap` button (centre) → `move.to` / `tap.at`; step selector segmented control (220, 600, 360, 56) `0.1 mm | 1 mm | 10 mm`; yellow buttons 300 × 70 at x 670: `Go to (0,0)` (y 300), `Go to centre` (y 390); blue `Wake screen` (y 480) → `phone.pushPower`; readout `X … Y …` at (670, 600). These are illustrative conveniences; every one maps to an existing `RigCommandName`.
 
@@ -1151,7 +1151,7 @@ State highlights: the button matching the current state (Steppers `Disable` when
 | `yellow` | gradient `#f2c12e` → `#f7d86a` → `#f2e08c`; name stays `#121212` | `Status: LOCK RELEASED — PARK REQUIRED` (lock broken) or `Status: NOT HOMED — PARK REQUIRED` (after Steppers Enable / MOTOR restored) | normal; Park group buttons pulse (outline α 0.4 ↔ 1, 1 Hz) |
 | `grey` | gradient `#8b9099` → `#a3a8b0` | `Status: Controller unreachable` | panel shows `Reconnecting to robot controller…` 26 px `#c9d2e3` centred + spinner; buttons hidden |
 | `red` | gradient `#e04b3c` → `#ef7a5a` | `Status: FAULT — <reason>`† | normal, buttons enabled |
-| **Lockout** (`dashboardLocked`) | unchanged | unchanged | Overlay over (0, 112, 1280, 688) `rgba(8,12,22,0.80)`: padlock glyph 96 px white at (640, 330); line 1 `TEST IN PROGRESS — CONTROLS LOCKED` bold 34 px white centred baseline 450; line 2 `<job> #<n>` (e.g. `Java/uia-remote-regression-flex #4120`) 24 px `#b9c6dc` baseline 492; line 3 `Checked out via Orca · unlocks when the build finishes`† 20 px `#8ea0bf` baseline 528. Any tap: overlay shakes ±6 px for 200 ms + quiet `ui-fail`; no command is sent. |
+| **Lockout** (`dashboardLocked`) | unchanged | unchanged | Overlay over (0, 112, 1280, 688) `rgba(8,12,22,0.80)`: padlock glyph 96 px white at (640, 330); line 1 `TEST IN PROGRESS — CONTROLS LOCKED` bold 34 px white centred baseline 450; line 2 `<job> #<n>` (e.g. `Java/uia-remote-regression-flux #4120`) 24 px `#b9c6dc` baseline 492; line 3 `Checked out via Orca · unlocks when the build finishes`† 20 px `#8ea0bf` baseline 528. Any tap: overlay shakes ±6 px for 200 ms + quiet `ui-fail`; no command is sent. |
 | Booting (MAIN just on) | black 1 s → white leaf splash 3 s → normal layout with `Connecting…` in the panel until the Pi is up | — | |
 | Off (MAIN off) | screen mesh hidden, glass = `screenGlass` | — | |
 
@@ -1265,7 +1265,7 @@ Label tape (`label(text, {font: LABEL})`): white tape with 1.5 px darker edges, 
 | WALL-E side panel | `SETI` (vertical) + `Minix`, `Raspberry Pi` | raised PLA (§2.9) |
 | SETI side panel | `SETI` | raised PLA |
 | POWER panel | `POWER`, `MAIN`, `MOTOR`, LabSim logo | raised PLA |
-| Devices in rigs | `FLEX 3`, `FLEX 4`, `FLEX 1` / `FLEX 2`, `FLEX POCKET`, `COMPACT`, `MINI 3`, `STATION 2018`, `STATION DUO`; serial stickers `S/N <serial>` | label tape cap 5 mm on the bottom bezel / sticker |
+| Devices in rigs | `FLUX 3`, `FLUX 4`, `FLUX 1` / `FLUX 2`, `FLUX POCKET`, `COMPASS`, `MICRO 3`, `STAND 2018`, `STAND DUET`; serial stickers `S/N <serial>` | label tape cap 5 mm on the bottom bezel / sticker |
 | Tethered faces | `MEGATRON` · `MFD` · `DEV1`; `OPTIMUS` · `MFD` · `STG`; `MEGATRON` · `CFD` · `DEV1`; `OPTIMUS` · `CFD` · `STG` | 3 tape pieces per face |
 | Tethered docks | `MEGATRON` / `MFD`, `MEGATRON` / `CFD`, `OPTIMUS` / `MFD`, `OPTIMUS` / `CFD` | 2-line tape, cap 18 mm |
 | SmartStripe blade | `SmartStripe Probe` | white print |
@@ -1281,7 +1281,7 @@ Label tape (`label(text, {font: LABEL})`): white tape with 1.5 px darker edges, 
 | Server | `GPU BLADE · 10.42.1.5 · VMs: ORCA / JENKINS / OLLAMA`, `GPU 1` … `GPU 4`, tower tag `RETIRED — replaced by GPU blade` | tape / hang tag |
 | Build table | `130 FT · 22 AWG`, `200+ M2.5 / M5 BOLTS`, `SOLDER JOINTS ≈ 300 ✓✓✓`, `10 FT` | tape / clipboard |
 | Jared's bench | bins `2.5 mm`, `5 mm`; red bin `SPARE PI · SD · FUSES`; blue bin `ETHERNET · USB`; drawers `M2.5 BOLTS`, `M5 BOLTS`, `M2.5 NUTS`, `M5 NUTS`, `SOLENOIDS`, `LIMIT SW`, `V-WHEELS`, `GT2 BELT`, `PULLEYS`, `RIBBON`, `CARD INSERT`, `FUSES 10A`, `HEAT SHRINK`, `ZIP TIES` (others blank) | tape |
-| Husky | drawer 2 `SPARE FLEX 2`, drawer 3 `SPARE MINI 3` | tape |
+| Husky | drawer 2 `SPARE FLUX 2`, drawer 3 `SPARE MICRO 3` | tape |
 | Storage cabinet | `SPARES — SIGN OUT WITH JARED` | sticker |
 | Desk sticky notes (hidden in Strict) | `ADB → :5444 (NOT 5555!)`; `orca.lab.local:8080 · jenkins.lab.local:8080`; `theme=avocado · kernelType=CPA` | sticky notes |
 | Workstation | `WS · 10.42.50.17` | sticker |
@@ -1480,7 +1480,7 @@ Mix rules: the sfx bus ducks ambience by −3 dB for 300 ms on `fuse-pop`, `fry`
 | `desk.player.card-reader` | USB card reader | E [test card] **Swipe test card** → workstation Card Reader utility receives the card's track data (apps doc; INC55) | — |
 | `desk.player.sticky-notes` | Sticky notes | — | the three note texts |
 | `tool.ruler` | Steel ruler | E **Pick up**; while held, E on any device screen **Measure** → ruler snaps to the screen's top-left (0,0) and a measurement overlay shows `X … mm  Y … mm` under the crosshair; clicking a button records its centre (curriculum M09) | `150 mm steel rule` |
-| `desk.coworker-1.device` / `desk.coworker-2.device` | Coworker's Flex / Mini | E **Look at screen** (focus); R **Tap screen** → `sim.device.touch(…, 'player')` | `Desk device — ADB on 5555` |
+| `desk.coworker-1.device` / `desk.coworker-2.device` | Coworker's Flux / Micro | E **Look at screen** (focus); R **Tap screen** → `sim.device.touch(…, 'player')` | `Desk device — ADB on 5555` |
 | `npc.*` | `<Name> — <role>` | E **Talk** | — |
 
 **Touch rigs** (every `<id>` of §2.10; R2-D2's display ids are `.mfd` / `.cfd`)
@@ -1543,7 +1543,7 @@ Mix rules: the sfx bus ducks ambience by −3 dB for 300 ms on `fuse-pop`, `fry`
 | `power.trace` | Power trace | E **Start trace** (M03) → hotspot mode: click W1 → MW-1 → 24V rail → REG-12V → REG-5V → fuses → `→ NUC SHELF` → `→ PI SHELVES`; each correct node lights its cable (emissive orange 1.5) | — |
 | `tool.multimeter` | Multimeter | E **Pick up** → hotbar 2 | — |
 | `power.fuse-tray` | Spare fuses | E **Take fuse** (R cycles 5 / 7.5 / 10 / 15 A) → hotbar 3 | ratings |
-| `power.bench.flex4-psu`, `power.bench.collis-spare`, `power.bench.desk-fan` | Flex 4 power brick / Spare Collis probe / Desk fan | E **Pick up** (carry) → plug via any socket target | |
+| `power.bench.flux4-psu`, `power.bench.collis-spare`, `power.bench.desk-fan` | Flux 4 power brick / Spare Collis probe / Desk fan | E **Pick up** (carry) → plug via any socket target | |
 
 **Server, fabrication, benches, walls, library**
 
@@ -1561,14 +1561,14 @@ Mix rules: the sfx bus ducks ambience by −3 dB for 300 ms on `fuse-pop`, `fry`
 | `jared.label-maker` | Label maker | E **Print label** (Build Day) | — |
 | `wall.bins.red-spares` / `wall.bins.blue-cables` | Red bin / Blue bin | E **Open** → take: spare Pi, SD card, 10 A fuses / Ethernet cable, USB-C lead, micro-USB lead | bin labels |
 | `wall.drawers.<label>` | Drawer `<label>` | E **Open** → take item | label |
-| `chest.husky.d1`…`d5` | Husky drawer `<n>` | E **Open / Close** (`drawer`); take `SPARE FLEX 2` (d2) / `SPARE MINI 3` (d3) | — |
-| `cabinet.storage` | Storage cabinet | E **Sign out spare** (120 s, gameplay) → spare Collis probe; `cabinet.storage.legacy-shelf` E **Place / Take** legacy Flex 1 | `SPARES — SIGN OUT WITH JARED` |
+| `chest.husky.d1`…`d5` | Husky drawer `<n>` | E **Open / Close** (`drawer`); take `SPARE FLUX 2` (d2) / `SPARE MICRO 3` (d3) | — |
+| `cabinet.storage` | Storage cabinet | E **Sign out spare** (120 s, gameplay) → spare Collis probe; `cabinet.storage.legacy-shelf` E **Place / Take** legacy Flux 1 | `SPARES — SIGN OUT WITH JARED` |
 | `wall.whiteboard` | Whiteboard | E **Use whiteboard** → focus + diagram builder overlay | — |
 | `wall.roadmap` | Roadmap board | E **Sort roadmap** → overlay | — |
 | `wall.history.semi/sedi/ipx/paycore` | Team history | — | frame texts (§6.4) |
 | `wall.history.match` | Match the teams | E **Match teams** → overlay | — |
 | `poster.*`, `wall.extrusion-10ft`, `table.build.*` | Poster / 10 ft rail / Build table | — | poster text; `10 ft aluminium rail, cut to size`; BOM callouts §2.15 |
-| `library.<model>` | `<Device name>` | E **Pick up / Put back**; carried + E on `library.trays` **Place on tray**; G **Compare** (M02 step 6: highlights the Flex 4 printer block next to the Pocket) | lip-card text |
+| `library.<model>` | `<Device name>` | E **Pick up / Put back**; carried + E on `library.trays` **Place on tray**; G **Compare** (M02 step 6: highlights the Flux 4 printer block next to the Pocket) | lip-card text |
 | `coffee.machine` | Coffee machine | E **Make coffee** (6 s, fills the mug) | — |
 
 ### 9.3 Focus poses (`engine.focus`)
@@ -1687,8 +1687,8 @@ High texture estimate: tiling materials ≈ 72 MB (1024² RGBA + mips: perforate
 | `entrance` | `spawn.entrance` | Rack row green glow visible; draw calls ≤ preset budget |
 | `img-t` | (−2.60, 1.60, −1.10) → WALL-E tablet | Tablet header `WALL-E` / `Status: OK` / `Brainbox v6`, POWER panel, `SETI` panel, rail numbers 29–40 |
 | `img-r` | (2.55, 1.30, −0.75) → (2.40, 1.10, −2.10), hfov 70° | 2 × 2 faces with labels, `3:45`-style lock screens on MFDs, dark CFDs, docks with labels, Pi, bins/drawers/Husky in the background |
-| `img-g` | through Rack A's open bay-4 door: (−3.30, 1.62, −1.95) → (−2.60, 1.55, −2.05) | Flex 3 in cradle, solenoid over the screen, dip arm with `63`, hex-mesh back |
-| `vid` | `cam.wall-e` snapshot | Upright Flex 3 screen with the solenoid in frame |
+| `img-g` | through Rack A's open bay-4 door: (−3.30, 1.62, −1.95) → (−2.60, 1.55, −2.05) | Flux 3 in cradle, solenoid over the screen, dip arm with `63`, hex-mesh back |
+| `vid` | `cam.wall-e` snapshot | Upright Flux 3 screen with the solenoid in frame |
 | `power-wall` | (−0.70, 1.65, −3.40) → (−0.70, 1.60, −4.98) | Mean Well label, regulators, fuses, strip |
 | `seated` | seated pose | Monitors and desk items |
 | Low-preset perf | SwiftShader, `spawn.entrance`, 300 frames | `engine.stats()` draw calls ≤ 350, triangles ≤ 0.6 M |
@@ -1731,7 +1731,7 @@ De-aimed webcam fault (`webcam.aimedOk = false`): the camera's look-at is offset
 1. Every id in §1.4, §1.5, §2.10 parts, §2.12–§2.14 and §9.2 exists in `PROP_IDS`; every curriculum `prop.*`/`loc.*` in 10-curriculum §0.5 resolves through `PROP_ALIASES` / `LOCATIONS` (content test).
 2. Rail numbers: crosshair on WALL-E's left rail at y 1.5446 m reads `U33`; WALL-E's fascia spans U31.3–U35.6.
 3. For every rig, `xy_touch` of every §4.6 seed location moves the solenoid tip to within 0.1 mm (world space) of the drawn button centre (or the overridden point), and `sim.device.touch` reports the expected `hitButton`.
-4. With `flags.receiptQrFeature` on and Orca still on `RECEIPT_OPTIONS_4`, all four old FLEX_GEN3 taps miss (land 0.5 mm above each pill); with `RECEIPT_OPTIONS_5` they hit.
+4. With `flags.receiptQrFeature` on and Orca still on `RECEIPT_OPTIONS_4`, all four old FLUX_GEN3 taps miss (land 0.5 mm above each pill); with `RECEIPT_OPTIONS_5` they hit.
 5. Park All after a manual push shows the clamp re-coupling, two limit clicks, banner wipe yellow → green; Park X/Y/XY leave the banner yellow when the lock was broken.
 6. Tethered bench screenshot (`img-r`) matches IMG-R's composition; MFD lock screens show the game time; CFDs are dark.
 7. Low preset holds ≥ 30 fps at `spawn.entrance` on the reference integrated GPU and meets §10.2 budgets in SwiftShader.

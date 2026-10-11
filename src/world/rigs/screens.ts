@@ -225,7 +225,7 @@ export class ScreenManager {
     if (!s.fallbackDev) {
       s.fallbackDev = createTerminalDevice(`fallback:${s.b.key}`, s.b.type, {
         display: createDisplayState(s.b.fallback, s.b.fallback === 'customer-idle' ? { brightness: 0.04 } : {}),
-        secondaryDisplay: s.b.type.startsWith('STATION_DUO') ? createDisplayState(s.b.fallback === 'lock' ? 'customer-idle' : s.b.fallback) : null,
+        secondaryDisplay: s.b.type.startsWith('STAND_DUET') ? createDisplayState(s.b.fallback === 'lock' ? 'customer-idle' : s.b.fallback) : null,
       });
     }
     return s.fallbackDev;

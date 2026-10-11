@@ -15,7 +15,7 @@ describe('Orca REST (Sim §3.23)', () => {
     expect((JSON.parse(cf.body) as { name: string }[]).map((r) => r.name)).toEqual(['sonny']);
     expect(sim.orca.rest('GET', '/management/health', null, 'player').body).toBe('{"status":"UP"}');
     const caps = sim.orca.rest('GET', '/api/robots/wall-e/capabilities', null, 'player');
-    expect(JSON.parse(caps.body)).toMatchObject({ deviceType: 'FLEX_3', physicalTouch: true });
+    expect(JSON.parse(caps.body)).toMatchObject({ deviceType: 'FLUX_3', physicalTouch: true });
     const forced = sim.orca.rest('POST', '/api/health-check/run', null, 'player');
     expect(forced.status).toBe(202);
     const card = sim.orca.rest('POST', '/api/card/tap', '{"robot":"wall-e","profile":"VISA_STD_DIP"}', 'player');
@@ -74,11 +74,11 @@ describe('card actions through Callus (Sim §3.6)', () => {
 
   it('the dip arm one tooth off: Callus OK, then CHIP_READ_ERROR on the device (INC16)', () => {
     sim.faults.inject({ faultId: 'rig.dipArmMisaligned', params: { rig: 'wall-e' } });
-    sim.faults.applySetup({ op: 'device.stage', params: { device: 'dev-wall-e-flex3', stage: 'payment-prompt' } });
+    sim.faults.applySetup({ op: 'device.stage', params: { device: 'dev-wall-e-flux3', stage: 'payment-prompt' } });
     expect(sim.orca.card('wall-e', 'DIP', 'VISA_STD_DIP', 'player').ok).toBe(true);
     run(1_500);
-    expect(device('dev-wall-e-flex3').logcat.at(-1)).toBe('E CardReader: CHIP_READ_ERROR');
-    expect(device('dev-wall-e-flex3').display.screen).toBe('payment-prompt');
+    expect(device('dev-wall-e-flux3').logcat.at(-1)).toBe('E CardReader: CHIP_READ_ERROR');
+    expect(device('dev-wall-e-flux3').display.screen).toBe('payment-prompt');
   });
 
   it('a swipe loaded before the payment prompt is armed and fires 0.8 s after the prompt appears', () => {

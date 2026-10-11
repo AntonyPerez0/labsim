@@ -63,10 +63,10 @@ export function PullsPage(props: { repo: GitRepo; q: string }) {
         </div>
         <div className="gh-box">
           <div className="gh-box-head">
-            <button type="button" className="gh-link gh-flex" style={{ color: state === 'open' ? 'var(--gh-fg)' : 'var(--gh-muted)', fontWeight: state === 'open' ? 600 : 400 }} onClick={() => setState('open')}>
+            <button type="button" className="gh-link gh-flux" style={{ color: state === 'open' ? 'var(--gh-fg)' : 'var(--gh-muted)', fontWeight: state === 'open' ? 600 : 400 }} onClick={() => setState('open')}>
               <Oct name="pr" /> {openCount} Open
             </button>
-            <button type="button" className="gh-link gh-flex" style={{ color: state === 'closed' ? 'var(--gh-fg)' : 'var(--gh-muted)', fontWeight: state === 'closed' ? 600 : 400, marginLeft: 8 }} onClick={() => setState('closed')}>
+            <button type="button" className="gh-link gh-flux" style={{ color: state === 'closed' ? 'var(--gh-fg)' : 'var(--gh-muted)', fontWeight: state === 'closed' ? 600 : 400, marginLeft: 8 }} onClick={() => setState('closed')}>
               <Oct name="check" /> {closedCount} Closed
             </button>
             <span className="gh-spacer" />
@@ -98,7 +98,7 @@ export function PullsPage(props: { repo: GitRepo; q: string }) {
                   </div>
                 </div>
                 {p.comments.length ? (
-                  <span className="gh-muted gh-flex" style={{ fontSize: 12, gap: 4 }}>
+                  <span className="gh-muted gh-flux" style={{ fontSize: 12, gap: 4 }}>
                     <Oct name="comment" /> {p.comments.length}
                   </span>
                 ) : null}
@@ -167,7 +167,7 @@ export function ComparePage(props: { repo: GitRepo; range: string }) {
           <BranchSelector repo={repo} current={head || 'choose…'} label="compare:" onPick={(h) => nav(base, h)} />
           {head && headSha ? (
             commits.length ? (
-              <span className="gh-mergeable gh-flex">
+              <span className="gh-mergeable gh-flux">
                 <Oct name="check" /> Able to merge.<span className="gh-muted" style={{ fontWeight: 400 }}> These branches can be automatically merged.</span>
               </span>
             ) : null
@@ -188,7 +188,7 @@ export function ComparePage(props: { repo: GitRepo; range: string }) {
             </p>
           </div>
         ) : existing ? (
-          <div className="gh-box gh-flex" style={{ padding: 16 }}>
+          <div className="gh-box gh-flux" style={{ padding: 16 }}>
             {prIcon(existing)}
             <a href="#" onClick={(e) => (e.preventDefault(), navigate(pullRoute(repo.id, existing.number)))}>
               {existing.title} #{existing.number}
@@ -199,7 +199,7 @@ export function ComparePage(props: { repo: GitRepo; range: string }) {
             </button>
           </div>
         ) : !form ? (
-          <div className="gh-box gh-flex" style={{ padding: 16, background: 'var(--gh-subtle)' }}>
+          <div className="gh-box gh-flux" style={{ padding: 16, background: 'var(--gh-subtle)' }}>
             <span>Discuss and review the changes in this comparison with others.</span>
             <span className="gh-spacer" />
             {!readOnly ? (
@@ -248,7 +248,7 @@ export function ComparePage(props: { repo: GitRepo; range: string }) {
                     {body.trim() ? <Markdown text={body} /> : <p className="gh-muted" style={{ padding: 16 }}>Nothing to preview</p>}
                   </div>
                 )}
-                <div className="gh-flex" style={{ justifyContent: 'flex-end', marginTop: 12 }}>
+                <div className="gh-flux" style={{ justifyContent: 'flex-end', marginTop: 12 }}>
                   <div className="gh-btn-group">
                     <button type="button" className="gh-btn gh-btn-primary" disabled={!(title || lastMsg).trim()} onClick={create} data-hint="github.createPullRequest">
                       Create pull request
@@ -290,7 +290,7 @@ export function ComparePage(props: { repo: GitRepo; range: string }) {
         )}
         {head && commits.length ? (
           <>
-            <div className="gh-box gh-flex" style={{ padding: '12px 16px', marginBottom: 16, gap: 24 }}>
+            <div className="gh-box gh-flux" style={{ padding: '12px 16px', marginBottom: 16, gap: 24 }}>
               <span>
                 <Oct name="commit" /> <b>{commits.length}</b> commit{commits.length === 1 ? '' : 's'}
               </span>

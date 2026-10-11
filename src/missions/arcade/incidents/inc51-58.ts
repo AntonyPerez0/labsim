@@ -27,7 +27,7 @@ import {
 } from './helpers';
 
 const PIN_JOB = 'Java/contact-canada-pin-sale';
-const FLEX_JOB = 'Java/uia-remote-regression-flex';
+const FLUX_JOB = 'Java/uia-remote-regression-flux';
 const GO_MERCHANT = 'GO-SDK-US-01';
 const PL3_RIGS = ['wall-e', 'eve', 'bumblebee', 'johnny-5', 'baymax'];
 /** Canonical Visa test-card tracks (Cur M10) — what the card-reader utility prints. */
@@ -118,9 +118,9 @@ export const INC52: IncidentDef = {
   reveal: 'pipeline',
   symptoms: [
     sym('Jenkins', (b) => `Checked out robot ${rig(b)} (named) · PIN entry requires physical touch · FAILURE`),
-    sym('Orca', 'TARS and DATA are ADB bots; SETI is the Compact touch robot on WESTERS-CA-01 (PIN required).'),
+    sym('Orca', 'TARS and DATA are ADB bots; SETI is the Compass touch robot on WESTERS-CA-01 (PIN required).'),
   ],
-  diagnosisPath: ['The job was pinned to an ADB bot.', 'ADB bots cannot physically enter a PIN; Canada mandates physical PIN entry.', 'Target the physical Compact bot.'],
+  diagnosisPath: ['The job was pinned to an ADB bot.', 'ADB bots cannot physically enter a PIN; Canada mandates physical PIN entry.', 'Target the physical Compass bot.'],
   hints: [
     'What kind of robot can type a PIN on a Canadian terminal?',
     'Jenkins → contact-canada-pin-sale → Build with Parameters → ROBOT_NAME.',
@@ -131,13 +131,13 @@ export const INC52: IncidentDef = {
   diagnosisCall: dc(
     "ADB bots can't enter a PIN; the Canadian flow needs a physical bot",
     ['INTERAC_CA_DIP broken', 'The run never reached the card — it stopped at PIN entry. Which robot was it?'],
-    ['COMPACT unsupported', 'The job ran on TARS, not on a Compact. Read the checkout line.'],
+    ['COMPASS unsupported', 'The job ran on TARS, not on a Compass. Read the checkout line.'],
     ['Port', 'The bot connected fine; it cannot physically touch.'],
   ),
   wrongButTempting: [
-    wm('bypass-merchant', 'Switch to a PIN-bypass merchant', 200, buildWith(PIN_JOB, (pp) => /^AUTO-US-NOPIN/.test(pp.MERCHANT ?? '')), teach("You'd stop testing the Canadian PIN flow.", 'ADB bots only get PIN-bypass merchants, but Canadian workflows mandate physical PIN entry. (Ref §6)', 'Run it on the physical Compact bot.')),
+    wm('bypass-merchant', 'Switch to a PIN-bypass merchant', 200, buildWith(PIN_JOB, (pp) => /^AUTO-US-NOPIN/.test(pp.MERCHANT ?? '')), teach("You'd stop testing the Canadian PIN flow.", 'ADB bots only get PIN-bypass merchants, but Canadian workflows mandate physical PIN entry. (Ref §6)', 'Run it on the physical Compass bot.')),
     wm('gen2', 'Use the Gen 2 software PIN bypass', 100, undefined, teach("It doesn't exist yet.", 'Gen 2 Software PIN Bypass is still being built with the Core OS Team. (Ref §6)', 'Use the physical bot.')),
-    wm('wall-e', 'ROBOT_NAME=wall-e', 50, buildWith(PIN_JOB, (pp) => pp.ROBOT_NAME === 'wall-e'), teach('capability mismatch: deviceType COMPACT required', 'The Compact is the Canadian-market terminal on the Westers beds. (Ref §1)', 'ROBOT_NAME=seti.')),
+    wm('wall-e', 'ROBOT_NAME=wall-e', 50, buildWith(PIN_JOB, (pp) => pp.ROBOT_NAME === 'wall-e'), teach('capability mismatch: deviceType COMPASS required', 'The Compass is the Canadian-market terminal on the Westers beds. (Ref §1)', 'ROBOT_NAME=seti.')),
   ],
   teaches: 'Ref §6: ADB vs physical bots; Canadian payment flows mandate physical PIN entry; the Gen 2 Software PIN Bypass is future work (physical robotics kept for card dipping); card philosophy (Visa + Canadian Interac).',
 };
@@ -155,7 +155,7 @@ export const INC53: IncidentDef = {
   tags: ['cards.diptap', 'cards.callus', 'tools.github', 'arch.repos'],
   factIds: ['F145', 'F147', 'F148', 'F149', 'F035'],
   ticket: { title: (b) => `EMV dips fail on ${hrn(b)}: card not loaded`, reporter: 'jenkins-bot' },
-  setup: () => ({ scenario: [F('card.gortPathWrong', { profile: 'VISA_STD_DIP' }), OP('jenkins.startBuild', { job: FLEX_JOB, params: { ROBOT_NAME: '$R', CARD_PROFILE: 'VISA_STD_DIP' } })] }),
+  setup: () => ({ scenario: [F('card.gortPathWrong', { profile: 'VISA_STD_DIP' }), OP('jenkins.startBuild', { job: FLUX_JOB, params: { ROBOT_NAME: '$R', CARD_PROFILE: 'VISA_STD_DIP' } })] }),
   reveal: 'pipeline',
   symptoms: [
     sym('Jenkins', '[callus] map cards/visa/visa_std_dip.json → C:\\gort\\cards\\visa\\visa_std_dip.json · FileNotFoundException (The system cannot find the path specified)'),
@@ -291,7 +291,7 @@ export const INC56: IncidentDef = {
   tags: ['cards.wine', 'hw.pi', 'tools.terminal'],
   factIds: ['F021', 'F065', 'F019'],
   ticket: { title: (b) => `${hrn(b)}: card-programming step fails after last night's OS update`, reporter: 'jenkins-bot' },
-  setup: () => ({ scenario: [F('pi.wineBroken', { host: '$PI' }), OP('jenkins.startBuild', { job: FLEX_JOB, params: { ROBOT_NAME: '$R', DEVICE_TYPE: '$T', CARD_PROFILE: 'VISA_STD_DIP' } })] }),
+  setup: () => ({ scenario: [F('pi.wineBroken', { host: '$PI' }), OP('jenkins.startBuild', { job: FLUX_JOB, params: { ROBOT_NAME: '$R', DEVICE_TYPE: '$T', CARD_PROFILE: 'VISA_STD_DIP' } })] }),
   reveal: 'pipeline',
   symptoms: [
     sym('Jenkins', '[pi] cardprog: program VISA_STD_DIP → 503 CARDPROG_UNAVAILABLE [illus.]'),

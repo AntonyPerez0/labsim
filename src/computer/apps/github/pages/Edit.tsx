@@ -110,13 +110,13 @@ export function EditPage(props: { repo: GitRepo; refPath: string; isNew: boolean
     <>
       <GhHeader repo={repo.id} tab="code" openPrs={openPrs} />
       <div className="gh-container">
-        <div className="gh-flex" style={{ marginBottom: 16, flexWrap: 'wrap' }}>
+        <div className="gh-flux" style={{ marginBottom: 16, flexWrap: 'wrap' }}>
           <a href="#" style={{ fontWeight: 600 }} onClick={(e) => (e.preventDefault(), navigate(treeRoute(repo.id, ref.branch)))}>
             {repo.name}
           </a>
           {dir
             ? dir.split('/').map((p, i, arr) => (
-                <span key={i} className="gh-flex" style={{ gap: 6 }}>
+                <span key={i} className="gh-flux" style={{ gap: 6 }}>
                   <span className="gh-muted">/</span>
                   <a href="#" onClick={(e) => (e.preventDefault(), navigate(treeRoute(repo.id, ref.branch, arr.slice(0, i + 1).join('/'))))}>
                     {p}
@@ -197,7 +197,7 @@ export function EditPage(props: { repo: GitRepo; refPath: string; isNew: boolean
             Extended description
             <textarea className="gh-textarea" style={{ marginTop: 6, minHeight: 80 }} placeholder="Add an optional extended description.." value={desc} onChange={(e) => setDesc(e.target.value)} />
           </label>
-          <label className="gh-flex" style={{ alignItems: 'flex-start', color: prot ? '#818b98' : undefined, cursor: prot ? 'not-allowed' : 'pointer' }}>
+          <label className="gh-flux" style={{ alignItems: 'flex-start', color: prot ? '#818b98' : undefined, cursor: prot ? 'not-allowed' : 'pointer' }}>
             <input type="radio" name="gh-commit-mode" checked={mode === 'direct'} disabled={prot} onChange={() => setMode('direct')} />
             <span>
               Commit directly to the <span className="gh-branch-chip">{ref.branch}</span> branch
@@ -208,12 +208,12 @@ export function EditPage(props: { repo: GitRepo; refPath: string; isNew: boolean
               ) : null}
             </span>
           </label>
-          <label className="gh-flex" style={{ alignItems: 'flex-start', cursor: 'pointer' }}>
+          <label className="gh-flux" style={{ alignItems: 'flex-start', cursor: 'pointer' }}>
             <input type="radio" name="gh-commit-mode" checked={mode === 'branch'} onChange={() => setMode('branch')} />
             <span style={{ flex: 1 }}>
               Create a <b>new branch</b> for this commit and start a pull request
               {mode === 'branch' ? (
-                <span className="gh-flex" style={{ marginTop: 6 }}>
+                <span className="gh-flux" style={{ marginTop: 6 }}>
                   <Oct name="branch" />
                   <input className="gh-input gh-input-sm" value={branchName} onChange={(e) => setBranchName(e.target.value)} aria-label="New branch name" />
                 </span>

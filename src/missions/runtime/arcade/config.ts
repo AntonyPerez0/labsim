@@ -180,8 +180,8 @@ export const PIPELINES: readonly PipelineDef[] = [
   {
     id: 'PL1',
     job: PIPELINE_JOBS.PL1,
-    requirement: 'DEVICE_TYPE alternates FLEX_3 / FLEX_4; physicalTouch: true',
-    params: (run) => ({ DEVICE_TYPE: run % 2 === 0 ? 'FLEX_3' : 'FLEX_4' }),
+    requirement: 'DEVICE_TYPE alternates FLUX_3 / FLUX_4; physicalTouch: true',
+    params: (run) => ({ DEVICE_TYPE: run % 2 === 0 ? 'FLUX_3' : 'FLUX_4' }),
     eligibleRigs: ['wall-e', 'eve'],
     activationOrder: 1,
     intervalS: 30,
@@ -210,8 +210,8 @@ export const PIPELINES: readonly PipelineDef[] = [
   {
     id: 'PL4',
     job: PIPELINE_JOBS.PL4,
-    requirement: 'DEVICE_TYPE=MINI_3, physical touch',
-    params: () => ({ DEVICE_TYPE: 'MINI_3' }),
+    requirement: 'DEVICE_TYPE=MICRO_3, physical touch',
+    params: () => ({ DEVICE_TYPE: 'MICRO_3' }),
     eligibleRigs: ['bumblebee'],
     activationOrder: 4,
     intervalS: 30,
@@ -220,8 +220,8 @@ export const PIPELINES: readonly PipelineDef[] = [
   {
     id: 'PL5',
     job: PIPELINE_JOBS.PL5,
-    requirement: 'COMPACT, physical touch, CARD_PROFILE=INTERAC_CA_DIP',
-    params: () => ({ DEVICE_TYPE: 'COMPACT', CARD_PROFILE: 'INTERAC_CA_DIP' }),
+    requirement: 'COMPASS, physical touch, CARD_PROFILE=INTERAC_CA_DIP',
+    params: () => ({ DEVICE_TYPE: 'COMPASS', CARD_PROFILE: 'INTERAC_CA_DIP' }),
     eligibleRigs: ['seti'],
     activationOrder: 5,
     intervalS: 30,
@@ -240,8 +240,8 @@ export const PIPELINES: readonly PipelineDef[] = [
   {
     id: 'PL7',
     job: PIPELINE_JOBS.PL7,
-    requirement: 'STATION_DUO',
-    params: () => ({ DEVICE_TYPE: 'STATION_DUO' }),
+    requirement: 'STAND_DUET',
+    params: () => ({ DEVICE_TYPE: 'STAND_DUET' }),
     eligibleRigs: ['r2-d2'],
     activationOrder: 7,
     intervalS: 30,
@@ -287,20 +287,20 @@ export interface RosterRig {
 }
 
 export const ROSTER: Readonly<Record<string, RosterRig>> = {
-  'wall-e': { hrn: 'WALL-E', roles: ['touch', 'collis', 'flexgen3', 'printer'], pi: 'pi-wall-e', piIp: '10.42.10.11', device: 'wall-e-flex3', deviceIp: '10.42.30.11', deviceType: 'FLEX_3', box: 'minix-01', rack: 'rack-a', fuse: 'F-RACKA-5V', camera: 'cam-wall-e', cameraUrl: 'http://10.42.10.11:8081/stream.mjpg' },
-  eve: { hrn: 'EVE', roles: ['touch', 'collis', 'flexgen3', 'printer', 'legacy-nuc-motion'], pi: 'pi-eve', piIp: '10.42.10.12', device: 'eve-flex4', deviceIp: '10.42.30.12', deviceType: 'FLEX_4', box: 'minix-01', rack: 'rack-a', fuse: 'F-RACKA-5V', camera: 'cam-eve', cameraUrl: 'http://10.42.10.12:8081/stream.mjpg' },
-  bumblebee: { hrn: 'BUMBLEBEE', roles: ['touch', 'collis', 'mini', 'printer'], pi: 'pi-bumblebee', piIp: '10.42.10.13', device: 'bumblebee-mini3', deviceIp: '10.42.30.13', deviceType: 'MINI_3', box: 'minix-01', rack: 'rack-a', fuse: 'F-RACKA-5V', camera: 'cam-bumblebee', cameraUrl: 'http://10.42.10.13:8081/stream.mjpg' },
-  'r2-d2': { hrn: 'R2-D2', roles: ['touch', 'collis', 'duo', 'ocr'], pi: 'pi-r2-d2', piIp: '10.42.10.14', device: 'r2-d2-duo', deviceIp: '10.42.30.14', deviceType: 'STATION_DUO', box: 'minix-01', rack: 'rack-a', fuse: 'F-RACKA-5V', camera: 'cam-r2-d2', cameraUrl: 'http://10.42.10.14:8081/stream.mjpg' },
-  'johnny-5': { hrn: 'JOHNNY-5', roles: ['touch', 'collis', 'flex-legacy', 'printer'], pi: 'pi-johnny-5', piIp: '10.42.10.15', device: 'johnny-5-flex1', deviceIp: '10.42.30.15', deviceType: 'FLEX_1', box: 'minix-02', rack: 'rack-b', fuse: 'F-RACKB-5V', camera: 'cam-rackb', cameraUrl: 'http://10.42.10.40:8081/stream.mjpg' },
-  baymax: { hrn: 'BAYMAX', roles: ['touch', 'collis', 'printer', 'rebuild', 'build'], pi: 'pi-baymax', piIp: '10.42.10.16', device: 'baymax-st2018', deviceIp: '10.42.30.16', deviceType: 'STATION_2018', box: 'minix-02', rack: 'rack-b', fuse: 'F-RACKB-5V', camera: 'cam-rackb', cameraUrl: 'http://10.42.10.40:8081/stream.mjpg' },
-  seti: { hrn: 'SETI', roles: ['touch', 'collis', 'canada', 'physical-pin'], pi: 'pi-seti', piIp: '10.42.10.17', device: 'seti-compact', deviceIp: '10.42.30.17', deviceType: 'COMPACT', box: 'minix-02', rack: 'rack-b', fuse: 'F-RACKB-5V', camera: 'cam-rackb', cameraUrl: 'http://10.42.10.40:8081/stream.mjpg' },
-  rosie: { hrn: 'ROSIE', roles: ['touch', 'collis', 'paycore', 'printerless', 'flexgen3'], pi: 'pi-rosie', piIp: '10.42.10.18', device: 'rosie-pocket', deviceIp: '10.42.30.18', deviceType: 'FLEX_POCKET', box: 'minix-02', rack: 'rack-b', fuse: 'F-RACKB-5V', camera: 'cam-rackb', cameraUrl: 'http://10.42.10.40:8081/stream.mjpg' },
-  megatron: { hrn: 'MEGATRON', roles: ['tethered', 'dev1'], pi: 'pi-tethered', piIp: '10.42.10.20', device: 'megatron-mfd', deviceIp: '10.42.30.21', deviceType: 'STATION_2', box: 'minix-02', rack: 'rack-t', fuse: 'F-BENCH-5V', camera: 'cam-tethered', cameraUrl: 'http://10.42.10.20:8081/stream.mjpg' },
-  optimus: { hrn: 'OPTIMUS', roles: ['tethered', 'stg'], pi: 'pi-tethered', piIp: '10.42.10.20', device: 'optimus-mfd', deviceIp: '10.42.30.23', deviceType: 'MINI_3', box: 'minix-02', rack: 'rack-t', fuse: 'F-BENCH-5V', camera: 'cam-tethered', cameraUrl: 'http://10.42.10.20:8081/stream.mjpg' },
-  data: { hrn: 'DATA', roles: ['adb-only', 'mini', 'printer'], pi: 'pi-adb-shelf', piIp: '10.42.10.30', device: 'data-mini3', deviceIp: '10.42.30.31', deviceType: 'MINI_3', box: null, rack: 'adb-shelf', fuse: 'F-BENCH-5V', camera: null, cameraUrl: null },
-  tars: { hrn: 'TARS', roles: ['adb-only', 'flexgen3', 'printer'], pi: 'pi-adb-shelf', piIp: '10.42.10.30', device: 'tars-flex4', deviceIp: '10.42.30.32', deviceType: 'FLEX_4', box: null, rack: 'adb-shelf', fuse: 'F-BENCH-5V', camera: null, cameraUrl: null },
-  vision: { hrn: 'VISION', roles: ['adb-only', 'flexgen3', 'printerless'], pi: 'pi-vision', piIp: '10.42.10.50', device: 'vision-pocket', deviceIp: '10.42.30.50', deviceType: 'FLEX_POCKET', box: null, rack: 'rack-c', fuse: null, camera: null, cameraUrl: 'http://10.42.10.50:8081/stream.mjpg' },
-  'k-9': { hrn: 'K-9', roles: ['adb-only', 'printerless'], pi: 'pi-k-9', piIp: '10.42.10.51', device: 'k-9-duo2', deviceIp: '10.42.30.51', deviceType: 'STATION_DUO_2', box: null, rack: 'rack-c', fuse: null, camera: null, cameraUrl: null },
+  'wall-e': { hrn: 'WALL-E', roles: ['touch', 'collis', 'flexgen3', 'printer'], pi: 'pi-wall-e', piIp: '10.42.10.11', device: 'wall-e-flux3', deviceIp: '10.42.30.11', deviceType: 'FLUX_3', box: 'minix-01', rack: 'rack-a', fuse: 'F-RACKA-5V', camera: 'cam-wall-e', cameraUrl: 'http://10.42.10.11:8081/stream.mjpg' },
+  eve: { hrn: 'EVE', roles: ['touch', 'collis', 'flexgen3', 'printer', 'legacy-nuc-motion'], pi: 'pi-eve', piIp: '10.42.10.12', device: 'eve-flux4', deviceIp: '10.42.30.12', deviceType: 'FLUX_4', box: 'minix-01', rack: 'rack-a', fuse: 'F-RACKA-5V', camera: 'cam-eve', cameraUrl: 'http://10.42.10.12:8081/stream.mjpg' },
+  bumblebee: { hrn: 'BUMBLEBEE', roles: ['touch', 'collis', 'micro', 'printer'], pi: 'pi-bumblebee', piIp: '10.42.10.13', device: 'bumblebee-micro3', deviceIp: '10.42.30.13', deviceType: 'MICRO_3', box: 'minix-01', rack: 'rack-a', fuse: 'F-RACKA-5V', camera: 'cam-bumblebee', cameraUrl: 'http://10.42.10.13:8081/stream.mjpg' },
+  'r2-d2': { hrn: 'R2-D2', roles: ['touch', 'collis', 'duet', 'ocr'], pi: 'pi-r2-d2', piIp: '10.42.10.14', device: 'r2-d2-duet', deviceIp: '10.42.30.14', deviceType: 'STAND_DUET', box: 'minix-01', rack: 'rack-a', fuse: 'F-RACKA-5V', camera: 'cam-r2-d2', cameraUrl: 'http://10.42.10.14:8081/stream.mjpg' },
+  'johnny-5': { hrn: 'JOHNNY-5', roles: ['touch', 'collis', 'flux-legacy', 'printer'], pi: 'pi-johnny-5', piIp: '10.42.10.15', device: 'johnny-5-flux1', deviceIp: '10.42.30.15', deviceType: 'FLUX_1', box: 'minix-02', rack: 'rack-b', fuse: 'F-RACKB-5V', camera: 'cam-rackb', cameraUrl: 'http://10.42.10.40:8081/stream.mjpg' },
+  baymax: { hrn: 'BAYMAX', roles: ['touch', 'collis', 'printer', 'rebuild', 'build'], pi: 'pi-baymax', piIp: '10.42.10.16', device: 'baymax-st2018', deviceIp: '10.42.30.16', deviceType: 'STAND_2018', box: 'minix-02', rack: 'rack-b', fuse: 'F-RACKB-5V', camera: 'cam-rackb', cameraUrl: 'http://10.42.10.40:8081/stream.mjpg' },
+  seti: { hrn: 'SETI', roles: ['touch', 'collis', 'canada', 'physical-pin'], pi: 'pi-seti', piIp: '10.42.10.17', device: 'seti-compass', deviceIp: '10.42.30.17', deviceType: 'COMPASS', box: 'minix-02', rack: 'rack-b', fuse: 'F-RACKB-5V', camera: 'cam-rackb', cameraUrl: 'http://10.42.10.40:8081/stream.mjpg' },
+  rosie: { hrn: 'ROSIE', roles: ['touch', 'collis', 'paycore', 'printerless', 'flexgen3'], pi: 'pi-rosie', piIp: '10.42.10.18', device: 'rosie-pocket', deviceIp: '10.42.30.18', deviceType: 'FLUX_POCKET', box: 'minix-02', rack: 'rack-b', fuse: 'F-RACKB-5V', camera: 'cam-rackb', cameraUrl: 'http://10.42.10.40:8081/stream.mjpg' },
+  megatron: { hrn: 'MEGATRON', roles: ['tethered', 'dev1'], pi: 'pi-tethered', piIp: '10.42.10.20', device: 'megatron-mfd', deviceIp: '10.42.30.21', deviceType: 'STAND_2', box: 'minix-02', rack: 'rack-t', fuse: 'F-BENCH-5V', camera: 'cam-tethered', cameraUrl: 'http://10.42.10.20:8081/stream.mjpg' },
+  optimus: { hrn: 'OPTIMUS', roles: ['tethered', 'stg'], pi: 'pi-tethered', piIp: '10.42.10.20', device: 'optimus-mfd', deviceIp: '10.42.30.23', deviceType: 'MICRO_3', box: 'minix-02', rack: 'rack-t', fuse: 'F-BENCH-5V', camera: 'cam-tethered', cameraUrl: 'http://10.42.10.20:8081/stream.mjpg' },
+  data: { hrn: 'DATA', roles: ['adb-only', 'micro', 'printer'], pi: 'pi-adb-shelf', piIp: '10.42.10.30', device: 'data-micro3', deviceIp: '10.42.30.31', deviceType: 'MICRO_3', box: null, rack: 'adb-shelf', fuse: 'F-BENCH-5V', camera: null, cameraUrl: null },
+  tars: { hrn: 'TARS', roles: ['adb-only', 'flexgen3', 'printer'], pi: 'pi-adb-shelf', piIp: '10.42.10.30', device: 'tars-flux4', deviceIp: '10.42.30.32', deviceType: 'FLUX_4', box: null, rack: 'adb-shelf', fuse: 'F-BENCH-5V', camera: null, cameraUrl: null },
+  vision: { hrn: 'VISION', roles: ['adb-only', 'flexgen3', 'printerless'], pi: 'pi-vision', piIp: '10.42.10.50', device: 'vision-pocket', deviceIp: '10.42.30.50', deviceType: 'FLUX_POCKET', box: null, rack: 'rack-c', fuse: null, camera: null, cameraUrl: 'http://10.42.10.50:8081/stream.mjpg' },
+  'k-9': { hrn: 'K-9', roles: ['adb-only', 'printerless'], pi: 'pi-k-9', piIp: '10.42.10.51', device: 'k-9-duet2', deviceIp: '10.42.30.51', deviceType: 'STAND_DUET_2', box: null, rack: 'rack-c', fuse: null, camera: null, cameraUrl: null },
 };
 
 /** Physically modelled rigs (Arcade binds incidents to these; VISION and K-9 are Orca-only). */

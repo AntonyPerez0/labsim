@@ -3,7 +3,7 @@
  * firmware layouts are the only truth for hit tests, Sim Appendix C "Screen geometry"). A gantry or
  * player touch in screen mm must land on the button drawn at those mm, so every screen plane is
  * built at the sim size and centred where World §3.1 puts the active area (bezels grow/shrink
- * symmetrically). A sim screen larger than the physical opening (STATION_2 on the tethered bench is
+ * symmetrically). A sim screen larger than the physical opening (STAND_2 on the tethered bench is
  * a 14" layout in an 8" head) is drawn uniformly scaled: the plane is smaller than `logicalMm`, and
  * screen-mm ↔ UV conversions always use `logicalMm`.
  */

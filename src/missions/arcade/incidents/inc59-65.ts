@@ -1,6 +1,6 @@
 /**
  * GP §3.5 INC59–INC65: the cracked 3D-printed cradle, Orca's MySQL, two judgement tickets (AI tools,
- * Orca's platform), the Human Readable Name typo, the ADB-blind Duo CFD and a blank Tap URL.
+ * Orca's platform), the Human Readable Name typo, the ADB-blind Duet CFD and a blank Tap URL.
  */
 import type { IncidentBinding, IncidentDef } from '../../types';
 import { c, on, p } from '../../types';
@@ -20,7 +20,7 @@ import {
   wm,
 } from './helpers';
 
-const FLEX_JOB = 'Java/uia-remote-regression-flex';
+const FLUX_JOB = 'Java/uia-remote-regression-flux';
 
 export const INC59: IncidentDef = {
   id: 'INC59',
@@ -47,11 +47,11 @@ export const INC59: IncidentDef = {
   hints: [
     'Is the miss the same everywhere, or does it grow towards one side?',
     (b) => `Inspect ${hrn(b)}'s black cradle and press on the device (E).`,
-    (b) => `${hrn(b)} → Offline → print corner: Prusa or Bambu Lab → cradle_flex_gen3.3mf [illus.] → Print (90 s) → MOTOR off → 4 × 2.5 mm bolts → swap → MOTOR on → Park All → Available → build.`,
+    (b) => `${hrn(b)} → Offline → print corner: Prusa or Bambu Lab → cradle_flux_gen3.3mf [illus.] → Print (90 s) → MOTOR off → 4 × 2.5 mm bolts → swap → MOTOR on → Park All → Available → build.`,
   ],
   fix: {
     handsOn: (b) =>
-      `${hrn(b)} Offline (PB01) → loc.print-corner: Prusa or Bambu Lab → load cradle_flex_gen3.3mf [illus.] → Print (90 real s; work other tickets meanwhile) → MOTOR off → lift the device → screwdriver: 4 × 2.5 mm bolts → swap the cradle → re-seat → MOTOR on → Park All → Available → build.`,
+      `${hrn(b)} Offline (PB01) → loc.print-corner: Prusa or Bambu Lab → load cradle_flux_gen3.3mf [illus.] → Print (90 real s; work other tickets meanwhile) → MOTOR off → lift the device → screwdriver: 4 × 2.5 mm bolts → swap the cradle → re-seat → MOTOR on → Park All → Available → build.`,
   },
   success: (b) => c.all(c.eq(p.rig(rig(b)).cradle, 'NEW'), c.truthy(p.rig(rig(b)).homed), c.status(rig(b), 'AVAILABLE'), c.nextBuild({ robots: [rig(b)] })),
   diagnosisCall: dc(
@@ -115,7 +115,7 @@ export const INC60: IncidentDef = {
 const AI_PAIRS = [
   { left: 'Ollama', right: 'Local LLM runner on the 4-GPU blade; proof-of-concept vision checks of receipt layouts and tip math' },
   { left: 'Claude', right: 'Evaluated in corporate AI initiatives for repository optimisation and automated test generation' },
-  { left: 'Tesseract', right: 'OCR on cropped webcam screenshots for ADB-blind displays (Duo CFD)' },
+  { left: 'Tesseract', right: 'OCR on cropped webcam screenshots for ADB-blind displays (Duet CFD)' },
 ] as const;
 
 export const INC61: IncidentDef = {
@@ -248,12 +248,12 @@ export const INC63: IncidentDef = {
 
 export const INC64: IncidentDef = {
   id: 'INC64',
-  name: '"Write me an ADB tap for the Duo\'s customer screen" (ADB-blind display)',
+  name: '"Write me an ADB tap for the Duet\'s customer screen" (ADB-blind display)',
   difficulty: 2,
   base: 300,
   parS: 180,
   severity: 'P3',
-  rigs: { roles: ['duo'], default: 'r2-d2', scope: 'rig', describe: '`duo` (R2-D2)' },
+  rigs: { roles: ['duet'], default: 'r2-d2', scope: 'rig', describe: '`duet` (R2-D2)' },
   escalatable: false,
   unlockedBy: 'M16',
   tags: ['bots.types', 'uia.v23', 'orca.xytouch', 'adb.usage'],
@@ -265,37 +265,37 @@ export const INC64: IncidentDef = {
     sym('Terminal', (b) => `adb -s ${deviceIp(b)}:5444 shell uiautomator dump → the dump only contains MFD elements (grep -c "Done" window_dump.xml → 0)`),
     sym('World', (b) => `${hrn(b)}'s CFD shows a receipt prompt with "Done".`),
   ],
-  diagnosisPath: ['ADB only sees the MFD on a Station Duo.', 'Tap the CFD physically through Orca\'s xy_touch.', 'Reply with the right approach.'],
+  diagnosisPath: ['ADB only sees the MFD on a Stand Duet.', 'Tap the CFD physically through Orca\'s xy_touch.', 'Reply with the right approach.'],
   hints: [
     'Is "Done" anywhere in the UI dump?',
-    'Orca has a screen CFD_RECEIPT_DONE for STATION_DUO — call xy_touch on the touch robot.',
-    (b) => `curl -X POST http://orca.lab.local:8080/api/xy_touch -H "Content-Type: application/json" -d '{"robot":"${rig(b)}","screen":"CFD_RECEIPT_DONE","button":"Done"}' → "mode":"PHYSICAL_TAP"; reply R_DUO_BLIND.`,
+    'Orca has a screen CFD_RECEIPT_DONE for STAND_DUET — call xy_touch on the touch robot.',
+    (b) => `curl -X POST http://orca.lab.local:8080/api/xy_touch -H "Content-Type: application/json" -d '{"robot":"${rig(b)}","screen":"CFD_RECEIPT_DONE","button":"Done"}' → "mode":"PHYSICAL_TAP"; reply R_DUET_BLIND.`,
   ],
   fix: {
     handsOn: (b) =>
-      `curl -X POST http://orca.lab.local:8080/api/xy_touch -H "Content-Type: application/json" -d '{"robot":"${rig(b)}","screen":"CFD_RECEIPT_DONE","button":"Done"}' → "mode":"PHYSICAL_TAP"; reply R_DUO_BLIND.`,
+      `curl -X POST http://orca.lab.local:8080/api/xy_touch -H "Content-Type: application/json" -d '{"robot":"${rig(b)}","screen":"CFD_RECEIPT_DONE","button":"Done"}' → "mode":"PHYSICAL_TAP"; reply R_DUET_BLIND.`,
   },
   replies: {
     wrongPenalty: 100,
     to: 'riley',
     options: [
-      reply('R_DUO_BLIND', "ADB can't see the Duo's CFD. Tap it physically through Orca's xy_touch on R2-D2, or use a UIA 2.3 dual-screen locator in the test.", true),
-      reply('R_ADB_TAP', 'Use adb shell input tap with the CFD coordinates.', false, { teach: teach('That taps the MFD.', 'On the Station Duo only the primary MFD is exposed to ADB. (Ref §3)', 'Use a physical tap via xy_touch, or a UIA 2.3 dual-screen locator.') }),
+      reply('R_DUET_BLIND', "ADB can't see the Duet's CFD. Tap it physically through Orca's xy_touch on R2-D2, or use a UIA 2.3 dual-screen locator in the test.", true),
+      reply('R_ADB_TAP', 'Use adb shell input tap with the CFD coordinates.', false, { teach: teach('That taps the MFD.', 'On the Stand Duet only the primary MFD is exposed to ADB. (Ref §3)', 'Use a physical tap via xy_touch, or a UIA 2.3 dual-screen locator.') }),
     ],
   },
   success: (b) =>
     c.all(
       c.label(c.happened(on('orca.xyTouch', { robotName: rig(b), screen: 'CFD_RECEIPT_DONE', button: 'Done', ok: true }, (pl) => pl.mode === 'probe' || pl.orcaMode === 'PHYSICAL_TAP')), 'Physical tap on the CFD'),
-      c.eq(p.ticket.reply, 'R_DUO_BLIND'),
+      c.eq(p.ticket.reply, 'R_DUET_BLIND'),
     ),
   diagnosisCall: dc(
-    'The Duo CFD is blind to ADB; use a physical tap or UIA 2.3',
+    'The Duet CFD is blind to ADB; use a physical tap or UIA 2.3',
     ['Wrong port', 'ADB connected and dumped the UI — of the MFD only.'],
     ['Device asleep', 'The CFD is showing the prompt. Is it in the dump?'],
-    ['Wrong IP', 'MFD and CFD share one IP on a Duo. The dump lacks the CFD.'],
+    ['Wrong IP', 'MFD and CFD share one IP on a Duet. The dump lacks the CFD.'],
   ),
   wrongButTempting: [
-    wm('adb-tap', 'adb … input tap <x> <y> with CFD coordinates', 100, on('adb.command', {}, (pl) => /input\s+tap/.test(pl.command) && /10\.42\.30\.14/.test(pl.target ?? '')), teach('It tapped the MFD instead.', 'On the Station Duo only the MFD is exposed to ADB; physical bots are required for ADB-blind displays. (Ref §3, §6)', "Use Orca's xy_touch on the touch robot.")),
+    wm('adb-tap', 'adb … input tap <x> <y> with CFD coordinates', 100, on('adb.command', {}, (pl) => /input\s+tap/.test(pl.command) && /10\.42\.30\.14/.test(pl.target ?? '')), teach('It tapped the MFD instead.', 'On the Stand Duet only the MFD is exposed to ADB; physical bots are required for ADB-blind displays. (Ref §3, §6)', "Use Orca's xy_touch on the touch robot.")),
   ],
   teaches: 'Ref §3: the dual-screen problem (only the MFD is exposed to ADB). Ref §6: physical bots for ADB-blind displays. UI Automator 2.3 dual-screen tracking.',
 };
@@ -316,7 +316,7 @@ export const INC65: IncidentDef = {
   setup: () => ({
     scenario: [
       F('orca.urlWrong', { robot: '$R', field: 'tap', value: '' }),
-      OP('jenkins.startBuild', { job: FLEX_JOB, params: { ROBOT_NAME: '$R', DEVICE_TYPE: '$T', CARD_PROFILE: 'VISA_STD_TAP' } }),
+      OP('jenkins.startBuild', { job: FLUX_JOB, params: { ROBOT_NAME: '$R', DEVICE_TYPE: '$T', CARD_PROFILE: 'VISA_STD_TAP' } }),
     ],
   }),
   reveal: 'pipeline',

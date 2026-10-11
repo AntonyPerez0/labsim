@@ -117,7 +117,7 @@ export const QUIZ_M09: QuizQuestion[] = resolvePeople([
     prompt: "Can an ADB bot enter a PIN?",
     options: [
       "Yes, if Offsets are set",
-      "Only on the Compact",
+      "Only on the Compass",
       "No; ADB bots are purely programmatic and cannot physically touch the screen or enter PINs",
       "Yes, with adb shell input text",
     ],
@@ -135,7 +135,7 @@ export const QUIZ_M09: QuizQuestion[] = resolvePeople([
     prompt: "ADB bots are restricted to which merchant configurations?",
     options: [
       "PayCore standalone merchants",
-      "Station Duo merchants only",
+      "Stand Duet merchants only",
       "Configurations that bypass PIN security",
       "Canadian merchants only",
     ],
@@ -151,7 +151,7 @@ export const QUIZ_M09: QuizQuestion[] = resolvePeople([
     difficulty: 1,
     prompt: "Why does a Canadian payment workflow need a physical bot?",
     options: [
-      "The Compact has no ADB at all",
+      "The Compass has no ADB at all",
       "Westers beds have no Pis",
       "Interac cards cannot be emulated",
       "Canadian flows mandate physical PIN entry",
@@ -170,7 +170,7 @@ export const QUIZ_M09: QuizQuestion[] = resolvePeople([
     options: [
       "Every MFD",
       "Any device with a printer",
-      "Every Flex",
+      "Every Flux",
       "ADB-blind displays",
     ],
     answer: 3,

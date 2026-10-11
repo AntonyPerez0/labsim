@@ -68,7 +68,7 @@ function footprints(cfg: RigDeviceConfig, h: DeviceHandle): Footprint[] {
   const cx = pl.p[0];
   const cz = pl.p[2];
   const model = DEVICE_MODELS[cfg.type];
-  if (cfg.type === 'STATION_DUO') {
+  if (cfg.type === 'STAND_DUET') {
     const mfd: Footprint = { x0: cx - 175, x1: cx + 175, z0: cz - 109.15, z1: cz + 122.85, bottom: 70 };
     const cfd: Footprint = { x0: cx - 107.5, x1: cx + 107.5, z0: cz + 137.85, z1: cz + 287.85, bottom: 70 };
     return [mfd, cfd];
@@ -129,10 +129,10 @@ export function buildTouchRig(kit: RigKit, def: TouchRigDef, serials: Readonly<R
       batch,
       detail,
       screenParent: kit.screens,
-      arrangement: cfg.type.startsWith('STATION') ? 'tray' : 'stand',
+      arrangement: cfg.type.startsWith('STAND') ? 'tray' : 'stand',
       tape: cfg.tape,
       serial: serials[cfg.type] ?? `SIM-${def.id.toUpperCase().replace(/[^A-Z0-9]/g, '')}-${cfg.type.slice(0, 2)}01`,
-      maxBodyDepthMm: cfg.type.startsWith('MINI') ? 95 : undefined,
+      maxBodyDepthMm: cfg.type.startsWith('MICRO') ? 95 : undefined,
     });
     const cb = new B(kit, frame.m, batch, detail);
     buildCradle(cb, cfg.cradle, footprints(cfg, handle));
@@ -153,7 +153,7 @@ export function buildTouchRig(kit: RigKit, def: TouchRigDef, serials: Readonly<R
   const fuse = buildFuseHolder(b.sub({ p: fusePos, r: [0, Math.PI / 2, 0] }), def.fuseTape, [0, 0, 0]);
   b.box(m.whiteNylon, 3, 3, 30, [fusePos[0] + s * 6, fusePos[1] + 14, fusePos[2]], 0.5, undefined, true);
   // ── device AC brick on the floor, door side ──
-  buildAcBrick(b.sub({ p: parts.devicePsu!.pos, r: [0, Math.PI / 2, 0] }), !cfg0.type.startsWith('STATION'));
+  buildAcBrick(b.sub({ p: parts.devicePsu!.pos, r: [0, Math.PI / 2, 0] }), !cfg0.type.startsWith('STAND'));
   // routed round the inner side and the rear of the Pi (a straight run to the post went through the case)
   b.tube(m.cable('cableBlack'), [[parts.devicePsu!.pos[0], 16, parts.devicePsu!.pos[2] - 60], [s * 90, 12, -745], [s * 90, 12, -862], [s * 215, 22, -868], [s * 232, 200, -880], [s * 232, 440, -880]], 5, 6);
 

@@ -1,5 +1,5 @@
 /**
- * GP §3.5 INC29–INC35: uia-remote config locks (theme/kernelType, Duo IPs), reserving before a local
+ * GP §3.5 INC29–INC35: uia-remote config locks (theme/kernelType, Duet IPs), reserving before a local
  * run, waitForScreen(), open() scroll direction, a PR review and the missing teardown.
  */
 import type { IncidentDef } from '../../types';
@@ -71,17 +71,17 @@ export const INC29: IncidentDef = {
 
 export const INC30: IncidentDef = {
   id: 'INC30',
-  name: 'Station Duo local run: MFD and CFD IPs',
+  name: 'Stand Duet local run: MFD and CFD IPs',
   difficulty: 2,
   base: 300,
   parS: 180,
   severity: 'P2',
-  rigs: { roles: ['duo'], default: 'r2-d2', scope: 'rig', describe: '`duo` (R2-D2, already Reserved by you)' },
+  rigs: { roles: ['duet'], default: 'r2-d2', scope: 'rig', describe: '`duet` (R2-D2, already Reserved by you)' },
   escalatable: false,
   unlockedBy: 'M14',
   tags: ['uia.config', 'orca.tethered', 'uia.multidevice'],
   factIds: ['F193', 'F190', 'F191', 'F192', 'F151'],
-  ticket: { title: (b) => `Run TaxTestDuo locally on ${hrn(b)} — it can't find the customer display`, reporter: 'morgan' },
+  ticket: { title: (b) => `Run TaxTestDuet locally on ${hrn(b)} — it can't find the customer display`, reporter: 'morgan' },
   setup: () => ({
     scenario: [
       OP('orca.setStatus', { robot: '$R', status: 'RESERVED', by: 'player' }),
@@ -95,11 +95,11 @@ export const INC30: IncidentDef = {
     sym('IDE', (b) => `[runner] MFD handle ${deviceIp(b)}:5444 connected · [runner] CFD handle 10.42.30.19:5444 → No route to host`),
     sym('World', (b) => `${hrn(b)} is one terminal with two screens.`),
   ],
-  diagnosisPath: ['The CFD handle points at an address with nothing behind it.', 'A Station Duo is one terminal driving two displays.', 'Set both IPs to the Duo\'s IP and re-run.'],
+  diagnosisPath: ['The CFD handle points at an address with nothing behind it.', 'A Stand Duet is one terminal driving two displays.', 'Set both IPs to the Duet\'s IP and re-run.'],
   hints: [
-    'How many devices — and IP addresses — does a Station Duo have?',
+    'How many devices — and IP addresses — does a Stand Duet have?',
     'IntelliJ → config.properties → merchantFacingDeviceIp and customerFacingDeviceIp.',
-    (b) => `customerFacingDeviceIp=${deviceIp(b)} (the same as the MFD), keep runType=tethered, re-run TaxTestDuo.`,
+    (b) => `customerFacingDeviceIp=${deviceIp(b)} (the same as the MFD), keep runType=tethered, re-run TaxTestDuet.`,
   ],
   fix: { handsOn: (b) => `customerFacingDeviceIp=${deviceIp(b)}; re-run.` },
   success: (b) =>
@@ -107,20 +107,20 @@ export const INC30: IncidentDef = {
       c.eq(p.prop('config', 'merchantFacingDeviceIp'), deviceIp(b)),
       c.eq(p.prop('config', 'customerFacingDeviceIp'), deviceIp(b)),
       c.eq(p.prop('config', 'runType'), 'tethered'),
-      c.label(c.verify({ kind: 'local-run', tests: ['TaxTestDuo'], passed: true }), 'TaxTestDuo passes locally'),
+      c.label(c.verify({ kind: 'local-run', tests: ['TaxTestDuet'], passed: true }), 'TaxTestDuet passes locally'),
     ),
   diagnosisCall: dc(
-    'On a Station Duo both IPs are the same',
-    ['CFD unplugged', 'The Duo\'s second screen is part of the same terminal. Which IP did the runner try?'],
+    'On a Stand Duet both IPs are the same',
+    ['CFD unplugged', 'The Duet\'s second screen is part of the same terminal. Which IP did the runner try?'],
     ['Port wrong', 'The MFD handle connected on the same port. Compare the two IPs.'],
     ['Runner bug', 'The runner did exactly what the config said. Read the config.'],
   ),
   wrongButTempting: [
-    wm('cfd-pi', 'CFD IP = the Pi', 100, configEdited, teach('That is the Robot Controller, not a display.', 'On a Station Duo, merchantFacingDeviceIp and customerFacingDeviceIp are the exact same IP. (Ref §4)', 'Use the Duo\'s device IP for both.'), { when: c.matches(p.prop('config', 'customerFacingDeviceIp'), '^10\\.42\\.10\\.') }),
+    wm('cfd-pi', 'CFD IP = the Pi', 100, configEdited, teach('That is the Robot Controller, not a display.', 'On a Stand Duet, merchantFacingDeviceIp and customerFacingDeviceIp are the exact same IP. (Ref §4)', 'Use the Duet\'s device IP for both.'), { when: c.matches(p.prop('config', 'customerFacingDeviceIp'), '^10\\.42\\.10\\.') }),
     wm('standalone', 'runType=standalone', 0, configEdited, teach('The CFD steps are skipped and the assertions fail.', 'runType is tethered for multi-device setups. (Ref §4)', 'Keep runType=tethered.'), { when: c.eq(p.prop('config', 'runType'), 'standalone') }),
-    wm('other-rig', "JOHNNY-5's IP", 200, configEdited, teach('You just drove another rig.', 'Each config targets one rig; a Duo uses its own IP twice. (Ref §4)', 'Use the Duo\'s device IP for both.'), { when: c.eq(p.prop('config', 'customerFacingDeviceIp'), '10.42.30.15') }),
+    wm('other-rig', "JOHNNY-5's IP", 200, configEdited, teach('You just drove another rig.', 'Each config targets one rig; a Duet uses its own IP twice. (Ref §4)', 'Use the Duet\'s device IP for both.'), { when: c.eq(p.prop('config', 'customerFacingDeviceIp'), '10.42.30.15') }),
   ],
-  teaches: 'Ref §4: on a Station Duo, merchantFacingDeviceIp and customerFacingDeviceIp are identical; runType is tethered.',
+  teaches: 'Ref §4: on a Stand Duet, merchantFacingDeviceIp and customerFacingDeviceIp are identical; runType is tethered.',
 };
 
 export const INC31: IncidentDef = {
@@ -232,7 +232,7 @@ export const INC33: IncidentDef = {
   base: 300,
   parS: 180,
   severity: 'P2',
-  rigs: { candidates: ['tars'], default: 'tars', scope: 'rig', describe: 'Flex rigs, local run (default TARS, Reserved)' },
+  rigs: { candidates: ['tars'], default: 'tars', scope: 'rig', describe: 'Flux rigs, local run (default TARS, Reserved)' },
   escalatable: false,
   unlockedBy: 'M13',
   tags: ['uia.scroll', 'uia.config', 'orca.devicetype'],
@@ -243,23 +243,23 @@ export const INC33: IncidentDef = {
       OP('orca.setStatus', { robot: '$R', status: 'RESERVED', by: 'alex' }),
       OP('repo.clone', { repo: 'uia-remote' }),
       OP('config.write', { fixture: 'target', robot: '$R' }),
-      F('config.value', { key: 'deviceType', value: 'Mini' }),
+      F('config.value', { key: 'deviceType', value: 'Micro' }),
     ],
   }),
   reveal: 'immediate',
   symptoms: [
-    sym('IDE', '[HomeScreen] open("Register"): scrolling horizontally (Mini/Station)… ×5 → AssertionError: App \'Register\' not found on HomeScreen'),
+    sym('IDE', '[HomeScreen] open("Register"): scrolling horizontally (Micro/Stand)… ×5 → AssertionError: App \'Register\' not found on HomeScreen'),
     sym('World', (b) => `${hrn(b)}'s launcher scrolls vertically.`),
-    sym('IDE', 'config.properties: deviceType=Mini'),
+    sym('IDE', 'config.properties: deviceType=Micro'),
   ],
-  diagnosisPath: ['The runner scrolled horizontally; the Flex launcher scrolls vertically.', 'open() picks the direction from deviceType.', 'Fix deviceType and re-run.'],
+  diagnosisPath: ['The runner scrolled horizontally; the Flux launcher scrolls vertically.', 'open() picks the direction from deviceType.', 'Fix deviceType and re-run.'],
   hints: [
-    'Which way does a Flex launcher scroll, and which way did the test scroll?',
+    'Which way does a Flux launcher scroll, and which way did the test scroll?',
     'IntelliJ → config.properties → deviceType.',
-    'deviceType=Flex (the family, not the enum), then re-run HomeScreenTest.',
+    'deviceType=Flux (the family, not the enum), then re-run HomeScreenTest.',
   ],
-  fix: { handsOn: 'deviceType=Flex; re-run.' },
-  success: () => c.all(c.eq(p.prop('config', 'deviceType'), 'Flex'), c.label(c.verify({ kind: 'local-run', tests: ['HomeScreenTest'], passed: true }), 'HomeScreenTest passes locally')),
+  fix: { handsOn: 'deviceType=Flux; re-run.' },
+  success: () => c.all(c.eq(p.prop('config', 'deviceType'), 'Flux'), c.label(c.verify({ kind: 'local-run', tests: ['HomeScreenTest'], passed: true }), 'HomeScreenTest passes locally')),
   diagnosisCall: dc(
     'deviceType wrong, so open() scrolled horizontally',
     ['App missing', 'The app is on the device. Which direction did open() scroll?'],
@@ -267,10 +267,10 @@ export const INC33: IncidentDef = {
     ['DEVICE_TYPE case', 'Enum case matters for Jenkins DEVICE_TYPE; config.properties takes the family name.'],
   ),
   wrongButTempting: [
-    wm('always-vertical', 'Make open() always vertical', 150, uiaPushed, teach('Mini and Station now break.', 'open(appName) scrolls vertically on Flex and horizontally on Mini/Station — the abstraction belongs in Zone 2. (Ref §4)', 'Fix deviceType in the config instead.'), { when: c.falsy(p.codeFact('openScroll', 'HomeScreen')) }),
-    wm('enum-in-config', 'deviceType=FLEX_4', 0, configEdited, teach('Run fails: unknown deviceType.', 'config.properties deviceType takes the family (Mini, Flex, Station). (Ref §4)', 'deviceType=Flex.'), { when: c.eq(p.prop('config', 'deviceType'), 'FLEX_4') }),
+    wm('always-vertical', 'Make open() always vertical', 150, uiaPushed, teach('Micro and Stand now break.', 'open(appName) scrolls vertically on Flux and horizontally on Micro/Stand — the abstraction belongs in Zone 2. (Ref §4)', 'Fix deviceType in the config instead.'), { when: c.falsy(p.codeFact('openScroll', 'HomeScreen')) }),
+    wm('enum-in-config', 'deviceType=FLUX_4', 0, configEdited, teach('Run fails: unknown deviceType.', 'config.properties deviceType takes the family (Micro, Flux, Stand). (Ref §4)', 'deviceType=Flux.'), { when: c.eq(p.prop('config', 'deviceType'), 'FLUX_4') }),
   ],
-  teaches: 'Ref §4 Zone 2 abstraction: open(appName) scrolls vertically on Flex and horizontally on Mini/Station; config deviceType drives the layout/scroll logic.',
+  teaches: 'Ref §4 Zone 2 abstraction: open(appName) scrolls vertically on Flux and horizontally on Micro/Stand; config deviceType drives the layout/scroll logic.',
 };
 
 export const INC34: IncidentDef = {

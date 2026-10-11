@@ -89,13 +89,13 @@ The rig's camera stream tells you *how* it misses. Then use this table:
 
 | Console says | Cause | Fix |
 |---|---|---|
-| \`No enum constant …DeviceType.flex_3\` | Lower-case enum value {F122} | \`DEVICE_TYPE=FLEX_3\` |
+| \`No enum constant …DeviceType.flux_3\` | Lower-case enum value {F122} | \`DEVICE_TYPE=FLUX_3\` |
 | Build waits: \`no Available … robot\` | Every matching robot is Reserved, Offline, Connection Failed or Unavailable | Find out which and why (Orca's Robots list); release your own Reserved rigs |
 | \`… is Unavailable\` / skipped | Unavailable needs the exact unique name {F102} | Pass \`ROBOT_NAME=<exact Name>\`†; don't change its status — Orca resets it to Unavailable afterwards {F104} |
 | \`… is Reserved\` | Someone is running locally {F113} | Ask them; never take over another engineer's reservation |
 | \`… is Connection Failed\` | Health ping failed; checkouts blocked {F108} | [[ts-connection-failed]] |
 | Go SDK auth failure / blank \`API_KEY\` | Missing key in Merchant Config {F139} | Orca → Merchant Config → **Edit** {F137} → fill API Key |
-| Test matched to the wrong device (e.g. a printer test on a Flex Pocket) | Capabilities don't express the need {F131} | Add the capability (e.g. \`printer\`) |
+| Test matched to the wrong device (e.g. a printer test on a Flux Pocket) | Capabilities don't express the need {F131} | Add the capability (e.g. \`printer\`) |
 | \`LSTR ParseError … line N\` | Missing comma/bracket; Pigeon has no linter {F208} | Check line N−1; paste a known-good block |
 | \`FAILED at "select print"\` after a timeout | Last step before a printer-payload timeout {F210}; usually stale coordinates {F211} | Watch the recording; fix coordinates |
 | "The job disappeared" | Legacy jobs are split into Java and iOS views {F017} | Look in the other view |
@@ -140,8 +140,8 @@ LabSim devices draw an irregular 18V {F228}; LabSim terminals and Collis probes 
     summary: "Refused connections, a coworker's device being driven by your script, an element that isn't in the dump — the ADB failures you'll actually see and their fixes.",
     factIds: ["F026", "F199", "F200", "F198", "F024", "F151", "F152", "F193"],
     tags: ["adb.port", "adb.usage", "uia.config"],
-    related: ["adb-port-5444", "adb-commands", "config-properties", "station-duo-dual-screen"],
-    keywords: ["ADB", "Connection refused", "5555", "5444", "coworker", "desk device", "uiautomator dump", "element missing", "Station Duo", "CFD", "offline device"],
+    related: ["adb-port-5444", "adb-commands", "config-properties", "stand-duet-dual-screen"],
+    keywords: ["ADB", "Connection refused", "5555", "5444", "coworker", "desk device", "uiautomator dump", "element missing", "Stand Duet", "CFD", "offline device"],
     practice: ["INC27", "INC28", "INC30", "INC64", "DR03"],
     body: `## Symptom → fix
 
@@ -149,8 +149,8 @@ LabSim devices draw an irregular 18V {F228}; LabSim terminals and Collis probes 
 |---|---|---|
 | \`failed to connect to '<ip>:5555': Connection refused\` | You left the port off; ADB defaults to 5555 {F199}; lab devices listen on 5444 {F026} | \`adb connect <ip>:5444\` |
 | A coworker's desk device starts doing your test | Your runner is on 5555 and reached their device {F200} | Stop the run, disconnect it, set \`portNumber=5444\` {F198}, reconnect, re-run |
-| The element isn't in \`window_dump.xml\` on a Station Duo | Only the primary MFD is exposed to ADB {F151}; legacy UIA was blind to the CFD {F152} | Use a UIA 2.3 dual-screen locator or a physical bot ([[station-duo-dual-screen]]) |
-| Duo test can't find the CFD | CFD IP blank or wrong | Station Duo: both IPs are the same address {F193} |
+| The element isn't in \`window_dump.xml\` on a Stand Duet | Only the primary MFD is exposed to ADB {F151}; legacy UIA was blind to the CFD {F152} | Use a UIA 2.3 dual-screen locator or a physical bot ([[stand-duet-dual-screen]]) |
+| Duet test can't find the CFD | CFD IP blank or wrong | Stand Duet: both IPs are the same address {F193} |
 | Device refuses ADB right after a Laz OOBE | The device was reset† | Re-apply the lab ADB settings for port 5444† |
 
 ## Remember
@@ -200,7 +200,7 @@ Callus reads card-profile paths from Gort and drives the Collis probes {F050}. *
 | Symptom | Cause | Fix |
 |---|---|---|
 | \`UiObjectNotFoundException\` on some runs only; the camera shows the tap before the screen finished drawing | The screen class has no \`waitForScreen()\` {F178} | Add \`waitForScreen()\` (and \`isScreenPresent()\`) — both are mandatory {F180} |
-| \`open("Register")\` never finds the app on a Flex, works on a Mini | Scroll branches swapped — Flex must scroll **vertically**, Mini/Station **horizontally** {F177} | Fix the branch in Zone 2; check \`deviceType\` in \`config.properties\` {F195} |
+| \`open("Register")\` never finds the app on a Flux, works on a Micro | Scroll branches swapped — Flux must scroll **vertically**, Micro/Stand **horizontally** {F177} | Fix the branch in Zone 2; check \`deviceType\` in \`config.properties\` {F195} |
 | Tests start on random screens / fail on the first step | The previous test didn't tear down to HomeScreen {F182} | Restore the teardown; start every test from HomeScreen |
 | Can't tell which screen you're on | Use \`isScreenPresent()\` — it returns a boolean {F179} | |
 | Your local run fails halfway because the screen changed under it | A Jenkins build checked out the same rig | **Reserve** the rig before running locally {F112}; Reserved blocks Jenkins pipelines {F113} |

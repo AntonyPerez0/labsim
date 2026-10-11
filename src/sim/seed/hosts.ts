@@ -228,20 +228,20 @@ function physicalPiSupply(pi: PiDef): PowerHookup {
 }
 
 const PREFIX: Record<string, string> = {
-  STATION_2018: 'S18',
-  STATION_2: 'S2',
-  STATION_DUO: 'SD',
-  STATION_DUO_2: 'SD2',
-  STATION_DUO_3: 'SD3',
-  MINI_2: 'M2',
-  MINI_3: 'M3',
-  MINI_4: 'M4',
-  FLEX_1: 'F1',
-  FLEX_2: 'F2',
-  FLEX_3: 'F3',
-  FLEX_4: 'F4',
-  FLEX_POCKET: 'FP',
-  COMPACT: 'CP',
+  STAND_2018: 'S18',
+  STAND_2: 'S2',
+  STAND_DUET: 'SD',
+  STAND_DUET_2: 'SD2',
+  STAND_DUET_3: 'SD3',
+  MICRO_2: 'M2',
+  MICRO_3: 'M3',
+  MICRO_4: 'M4',
+  FLUX_1: 'F1',
+  FLUX_2: 'F2',
+  FLUX_3: 'F3',
+  FLUX_4: 'F4',
+  FLUX_POCKET: 'FP',
+  COMPASS: 'CP',
 };
 export function prefixOf(type: string): string {
   return PREFIX[type] ?? 'XX';

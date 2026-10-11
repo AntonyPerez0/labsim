@@ -1,7 +1,7 @@
 /**
  * Touch-rig device configuration as the SIM sees it (Sim §2.2 / §3.5.4, Appendix C): the gantry's
- * (0,0) is the top-left of the PROBE display (R2-D2: the Duo CFD), in that display's screen mm, and
- * the screens have the sim's sizes (Flex 3/4/Pocket 76.0 × 135.0 …). `layout.ts` (World §2.10) keeps
+ * (0,0) is the top-left of the PROBE display (R2-D2: the Duet CFD), in that display's screen mm, and
+ * the screens have the sim's sizes (Flux 3/4/Pocket 76.0 × 135.0 …). `layout.ts` (World §2.10) keeps
  * the World-doc numbers; this module derives the effective values while keeping every screen centre
  * where World §2.10 puts it:
  *   - `primaryScreenMm`  sim size of the primary display;

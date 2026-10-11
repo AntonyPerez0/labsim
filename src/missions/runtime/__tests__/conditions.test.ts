@@ -19,7 +19,7 @@ describe('condition evaluator', () => {
     expect(compareValues(3, 'gte', 4)).toBe(false);
     expect(compareValues(10.2, 'approx', 10, 0.5)).toBe(true);
     expect(compareValues(10.6, 'approx', 10, 0.5)).toBe(false);
-    expect(compareValues('FLEX_3', 'in', ['FLEX_3', 'FLEX_4'])).toBe(true);
+    expect(compareValues('FLUX_3', 'in', ['FLUX_3', 'FLUX_4'])).toBe(true);
     expect(compareValues(['a', 'b'], 'contains', 'b')).toBe(true);
     expect(compareValues('portNumber=5444', 'matches', '5444$')).toBe(true);
     expect(compareValues(null, 'gt', 0)).toBe(false);
@@ -40,11 +40,11 @@ describe('condition evaluator', () => {
 
   it('matches event history with happened / sequence in the owner scope', () => {
     const scope = createScope({ id: 't1', kind: 'step', ownerId: 'x', cond: null, state: state() });
-    const seq = c.sequence(on('orca.checkoutRejected', { jobId: 'Java/uia-remote-regression-flex' }), on('robot.checkedOut', { name: 'wall-e' }));
+    const seq = c.sequence(on('orca.checkoutRejected', { jobId: 'Java/uia-remote-regression-flux' }), on('robot.checkedOut', { name: 'wall-e' }));
     expect(evaluate(seq, state(), scope)).toBe(false);
     fire('robot.checkedOut', { robotId: 1, name: 'wall-e', buildId: 'b1', byName: false });
     expect(evaluate(seq, state(), scope)).toBe(false); // wrong order
-    fire('orca.checkoutRejected', { buildId: 'b2', jobId: 'Java/uia-remote-regression-flex', reason: 'Reserved' });
+    fire('orca.checkoutRejected', { buildId: 'b2', jobId: 'Java/uia-remote-regression-flux', reason: 'Reserved' });
     fire('robot.checkedOut', { robotId: 1, name: 'wall-e', buildId: 'b2', byName: false });
     expect(evaluate(seq, state(), scope)).toBe(true);
     expect(evaluate(c.happened(on('robot.checkedOut', { name: 'wall-e' }), { min: 2 }), state(), scope)).toBe(true);

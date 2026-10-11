@@ -41,7 +41,7 @@ describe('INC26–INC31 Jenkins folders, local config, ADB', () => {
     expect(resolved(ids)).toBe(true);
   });
 
-  it('INC27 port 5555: falls back to Riley\'s desk Flex; stop, disconnect, 5444, reconnect → clean run', () => {
+  it('INC27 port 5555: falls back to Riley\'s desk Flux; stop, disconnect, 5444, reconnect → clean run', () => {
     start();
     let ev: unknown[] = [];
     let ids: string[] = [];
@@ -77,14 +77,14 @@ describe('INC26–INC31 Jenkins folders, local config, ADB', () => {
   it('INC28 ADB refused after an OOBE: refused (not timeout); adb tcpip 5444 over the shelf Pi\'s USB fixes it', () => {
     start();
     const ids = scenario(
-      { op: 'device.provision', params: { device: 'dev-data-mini3', merchant: 'AUTO-US-NOPIN-02' } },
-      { faultId: 'device.adbTcpReset', params: { device: 'dev-data-mini3' } },
+      { op: 'device.provision', params: { device: 'dev-data-micro3', merchant: 'AUTO-US-NOPIN-02' } },
+      { faultId: 'device.adbTcpReset', params: { device: 'dev-data-micro3' } },
       { op: 'jenkins.seedBuild', params: { job: 'Java/laz-oobe-merchant-swap', params: { ROBOT_NAME: 'data', MERCHANT: 'AUTO-US-NOPIN-02' }, result: 'SUCCESS', robot: 'data', atMs: lab().time.nowMs - 120_000, by: 'riley' } },
     );
     expect(consoleOf(lastBuild('Java/laz-oobe-merchant-swap')!)).toContain('laz: merchant active');
     // First adb command of the session starts the workstation's ADB server (two daemon lines first).
     expect(sh('adb connect 10.42.30.31:5444')).toEqual(['* daemon not running; starting now at tcp:5037', '* daemon started successfully', "failed to connect to '10.42.30.31:5444': Connection refused"]);
-    const b = build('Java/uia-remote-printerless-smoke', { ROBOT_NAME: 'data', DEVICE_TYPE: 'MINI_3' });
+    const b = build('Java/uia-remote-printerless-smoke', { ROBOT_NAME: 'data', DEVICE_TYPE: 'MICRO_3' });
     expect(b.result).toBe('FAILURE');
     expect(consoleOf(b)).toContain("failed to connect to '10.42.30.31:5444': Connection refused");
     nextHealthCheck();
@@ -96,17 +96,17 @@ describe('INC26–INC31 Jenkins folders, local config, ADB', () => {
     run(1_500);
     expect(sh('adb connect 10.42.30.31:5444')).toEqual(['connected to 10.42.30.31:5444']);
     expect(resolved(ids)).toBe(true);
-    expect(build('Java/uia-remote-printerless-smoke', { ROBOT_NAME: 'data', DEVICE_TYPE: 'MINI_3' }).result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-printerless-smoke', { ROBOT_NAME: 'data', DEVICE_TYPE: 'MICRO_3' }).result).toBe('SUCCESS');
   });
 
   it('INC28 real-run variant: Laz skips restore-adb silently; the swap still ends "laz: merchant active"', () => {
     start();
-    scenario({ faultId: 'laz.skipAdbRestore', params: { device: 'dev-data-mini3' } });
+    scenario({ faultId: 'laz.skipAdbRestore', params: { device: 'dev-data-micro3' } });
     const b = build('Java/laz-oobe-merchant-swap', { ROBOT_NAME: 'data', MERCHANT: 'AUTO-US-NOPIN-02' });
     expect(b.result).toBe('SUCCESS');
     expect(b.console).toContain('laz: merchant active');
     expect(consoleOf(b)).not.toContain('laz: adb tcpip 5444');
-    expect(lab().devices['dev-data-mini3']!.adbTcpPort).toBeNull();
+    expect(lab().devices['dev-data-micro3']!.adbTcpPort).toBeNull();
   });
 
   it('INC29 stale wiki config: theme first, then kernelType; fixing both passes', () => {
@@ -131,7 +131,7 @@ describe('INC26–INC31 Jenkins folders, local config, ADB', () => {
     expect(last.passed, last.lines.join('\n')).toBe(true);
   });
 
-  it('INC30 Duo local run: CFD handle at a guessed IP → No route to host; same IP for MFD and CFD passes TaxTestDuo', () => {
+  it('INC30 Duet local run: CFD handle at a guessed IP → No route to host; same IP for MFD and CFD passes TaxTestDuet', () => {
     start();
     const ids = scenario(
       { op: 'orca.setStatus', params: { robot: 'r2-d2', status: 'RESERVED', by: 'player' } },
@@ -139,13 +139,13 @@ describe('INC26–INC31 Jenkins folders, local config, ADB', () => {
       { op: 'config.write', params: { fixture: 'target', robot: 'r2-d2' } },
       { faultId: 'config.value', params: { key: 'customerFacingDeviceIp', value: '10.42.30.19' } },
     );
-    const r1 = local('TaxTestDuo');
+    const r1 = local('TaxTestDuet');
     expect(r1.passed).toBe(false);
     expect(r1.lines).toContain('[runner] MFD handle 10.42.30.14:5444 connected');
     expect(r1.lines).toContain('[runner] CFD handle 10.42.30.19:5444 → No route to host');
     setCfg('customerFacingDeviceIp', '10.42.30.14');
     expect(resolved(ids)).toBe(true);
-    const r2 = local('TaxTestDuo');
+    const r2 = local('TaxTestDuet');
     expect(r2.passed).toBe(true);
     expect(cfg()).toMatch(/^runType=tethered$/m);
   });
@@ -200,19 +200,19 @@ describe('INC32–INC38 uia-remote code and OCR', () => {
     for (let i = 0; i < 3; i++) expect(build('Java/uia-remote-tethered-tax', { ROBOT_NAME: 'megatron' }).result).toBe('SUCCESS');
   });
 
-  it('INC33 deviceType=Mini on TARS: scrolls horizontally ×5, App not found; Flex passes', () => {
+  it('INC33 deviceType=Micro on TARS: scrolls horizontally ×5, App not found; Flux passes', () => {
     start();
     const ids = scenario(
       { op: 'orca.setStatus', params: { robot: 'tars', status: 'RESERVED', by: 'alex' } },
       { op: 'repo.clone', params: { repo: 'uia-remote' } },
       { op: 'config.write', params: { fixture: 'target', robot: 'tars' } },
-      { faultId: 'config.value', params: { key: 'deviceType', value: 'Mini' } },
+      { faultId: 'config.value', params: { key: 'deviceType', value: 'Micro' } },
     );
     const r1 = local('HomeScreenTest');
     expect(r1.passed).toBe(false);
-    expect(r1.lines.filter((l) => l === '[HomeScreen] open("Register"): scrolling horizontally (Mini/Station)…')).toHaveLength(5);
+    expect(r1.lines.filter((l) => l === '[HomeScreen] open("Register"): scrolling horizontally (Micro/Stand)…')).toHaveLength(5);
     expect(r1.lines).toContain("AssertionError: App 'Register' not found on HomeScreen");
-    setCfg('deviceType', 'Flex');
+    setCfg('deviceType', 'Flux');
     expect(resolved(ids)).toBe(true);
     expect(local('HomeScreenTest').passed).toBe(true);
   });
@@ -251,32 +251,32 @@ describe('INC32–INC38 uia-remote code and OCR', () => {
 
   it('INC36 label 10 px down: "TOTAI $10.B3"; box re-measured to y 298 → match and PL7 green', () => {
     start();
-    const ids = scenario({ faultId: 'ocr.labelShift', params: { device: 'dev-r2-d2-duo', px: 10 } });
-    const b = build('Java/uia-remote-duo-cfd');
+    const ids = scenario({ faultId: 'ocr.labelShift', params: { device: 'dev-r2-d2-duet', px: 10 } });
+    const b = build('Java/uia-remote-duet-cfd');
     expect(b.result).toBe('FAILURE');
     expect(b.console).toContain('[ocr] capture webcam → crop 236x44@412,288 → tesseract → "TOTAI $10.B3" → match=false');
     expect(b.failureCode).toBe('OCR_MISMATCH');
     const row = Object.values(lab().orca.screenCompareImages).find((c) => c.name === 'CFD_TOTAL')!;
     sim.orca.saveScreenCompareImage({ id: row.id, bbox: { ...row.bbox, y: 298 } }, 'player');
     expect(resolved(ids)).toBe(true);
-    expect(build('Java/uia-remote-duo-cfd').result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-duet-cfd').result).toBe('SUCCESS');
   });
 
   it('INC37-A capitalisation: "Total $10.83" ≠ "TOTAL $10.83"; Expected = what the CFD shows', () => {
     start();
-    const ids = scenario({ faultId: 'ocr.capitalisation', params: { device: 'dev-r2-d2-duo' } });
-    const b = build('Java/uia-remote-duo-cfd');
+    const ids = scenario({ faultId: 'ocr.capitalisation', params: { device: 'dev-r2-d2-duet' } });
+    const b = build('Java/uia-remote-duet-cfd');
     expect(b.console).toContain('[ocr] capture webcam → crop 236x44@412,288 → tesseract → "Total $10.83" → match=false');
     const row = Object.values(lab().orca.screenCompareImages).find((c) => c.name === 'CFD_TOTAL')!;
     sim.orca.saveScreenCompareImage({ id: row.id, expectedText: 'Total $10.83' } as never, 'player');
     expect(resolved(ids)).toBe(true);
-    expect(build('Java/uia-remote-duo-cfd').result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-duet-cfd').result).toBe('SUCCESS');
   });
 
   it('INC37-B typo in Expected: OCR reads the right text, match=false until fixed', () => {
     start();
     const ids = scenario({ faultId: 'ocr.typo', params: { compare: 'CFD_TOTAL' } });
-    const b = build('Java/uia-remote-duo-cfd');
+    const b = build('Java/uia-remote-duet-cfd');
     expect(b.console).toContain('[ocr] capture webcam → crop 236x44@412,288 → tesseract → "TOTAL $10.83" → match=false');
     const row = Object.values(lab().orca.screenCompareImages).find((c) => c.name === 'CFD_TOTAL')!;
     sim.orca.saveScreenCompareImage({ id: row.id, expectedText: 'TOTAL $10.83' } as never, 'player');
@@ -286,7 +286,7 @@ describe('INC32–INC38 uia-remote code and OCR', () => {
   it('INC38 migrate CFD_THANK_YOU to UIA 2.3: new page object + test change pass locally on a Reserved R2-D2; row deprecated', () => {
     start();
     const row = Object.values(lab().orca.screenCompareImages).find((c) => c.name === 'CFD_THANK_YOU')!;
-    expect(row.usedBy ?? []).toContain('uia-remote:DuoCheckoutTest');
+    expect(row.usedBy ?? []).toContain('uia-remote:DuetCheckoutTest');
     sim.git.clone('uia-remote', 'player');
     const files = lab().repos['uia-remote'].local!.files;
     const totals = files[UIA_PATHS.po('CfdTotalsScreen')]!;
@@ -297,7 +297,7 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Until;
 
-/** CfdThankYouScreen: the Duo customer display "Thank you" (UIA 2.3 display 1). */
+/** CfdThankYouScreen: the Duet customer display "Thank you" (UIA 2.3 display 1). */
 public class CfdThankYouScreen extends BaseTest {
 
     // Zone 1 — element locators
@@ -314,7 +314,7 @@ public class CfdThankYouScreen extends BaseTest {
 }
 `;
     sim.git.writeFile('uia-remote', UIA_PATHS.po('CfdThankYouScreen'), po);
-    const testPath = UIA_PATHS.test('DuoCheckoutTest');
+    const testPath = UIA_PATHS.test('DuetCheckoutTest');
     const t = files[testPath]!
       .replace('import com.labsim.uia.pageobjects.HomeScreen;', 'import com.labsim.uia.pageobjects.CfdThankYouScreen;\nimport com.labsim.uia.pageobjects.HomeScreen;')
       .replace('        assertTrue(orca.screenCompare("CFD_THANK_YOU"));', '        CfdThankYouScreen cfdThankYou = new CfdThankYouScreen();\n        cfd.run(cfdThankYou::waitForScreen);\n        cfd.run(() -> assertTrue(cfdThankYou.isScreenPresent()));');
@@ -322,7 +322,7 @@ public class CfdThankYouScreen extends BaseTest {
     sim.git.writeFile('uia-remote', testPath, t);
     sim.faults.applySetup({ op: 'config.write', params: { fixture: 'target', robot: 'r2-d2' } });
     sim.orca.reserveRobot(robot('r2-d2').id, 'player');
-    const r = local('DuoCheckoutTest');
+    const r = local('DuetCheckoutTest');
     expect(r.lines).toContain('[CFD] Thank you ✓ (UIA 2.3)');
     expect(r.passed).toBe(true);
     sim.orca.saveScreenCompareImage({ id: row.id, deprecated: true } as never, 'player');
@@ -342,23 +342,23 @@ public class CfdThankYouScreen extends BaseTest {
 });
 
 describe('INC39–INC46 Jenkins parameters, statuses, swaps, tethering', () => {
-  it('INC39 DEVICE_TYPE=flex_3: exact enum exception, WALL-E/EVE stay Available; FLEX_3 → green', () => {
+  it('INC39 DEVICE_TYPE=flux_3: exact enum exception, WALL-E/EVE stay Available; FLUX_3 → green', () => {
     start();
-    const ids = scenario({ faultId: 'jenkins.envCase', params: { job: 'Java/uia-remote-regression-flex', value: 'flex_3' } });
-    const b = build('Java/uia-remote-regression-flex');
+    const ids = scenario({ faultId: 'jenkins.envCase', params: { job: 'Java/uia-remote-regression-flux', value: 'flux_3' } });
+    const b = build('Java/uia-remote-regression-flux');
     expect(b.result).toBe('FAILURE');
     expect(b.failureCode).toBe('ENUM_CASE');
-    expect(b.console).toContain('[orca] checkout request deviceType=flex_3');
-    expect(b.console).toContain('java.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.flex_3');
+    expect(b.console).toContain('[orca] checkout request deviceType=flux_3');
+    expect(b.console).toContain('java.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.flux_3');
     expect(b.console.at(-1)).toBe('Finished: FAILURE');
     expect(robot('wall-e').status).toBe('AVAILABLE');
-    const job = sim.jenkins.job('Java/uia-remote-regression-flex')!;
-    sim.jenkins.saveJob(job.id, { savedParams: { ...job.savedParams, DEVICE_TYPE: 'FLEX_3' } }, 'player');
+    const job = sim.jenkins.job('Java/uia-remote-regression-flux')!;
+    sim.jenkins.saveJob(job.id, { savedParams: { ...job.savedParams, DEVICE_TYPE: 'FLUX_3' } }, 'player');
     expect(resolved(ids)).toBe(true);
-    const b2 = build('Java/uia-remote-regression-flex');
-    expect(b2.console).toContain('[orca] checkout → wall-e (FLEX_3) OK');
+    const b2 = build('Java/uia-remote-regression-flux');
+    expect(b2.console).toContain('[orca] checkout → wall-e (FLUX_3) OK');
     expect(b2.result).toBe('SUCCESS');
-    expect(b2.params['DEVICE_TYPE']).toBe('FLEX_3');
+    expect(b2.params['DEVICE_TYPE']).toBe('FLUX_3');
   });
 
   it('INC40 PayCore rig overwritten: merchant mismatch; Unavailable + named Laz swap back → PL8 green, ROSIE Unavailable', () => {
@@ -366,13 +366,13 @@ describe('INC39–INC46 Jenkins parameters, statuses, swaps, tethering', () => {
     const ids = scenario(
       { faultId: 'orca.statusOverride', params: { robot: 'rosie', status: 'AVAILABLE', by: 'alex' } },
       { faultId: 'merchant.overwritten', params: { robot: 'rosie' } },
-      { op: 'jenkins.seedBuild', params: { job: 'Java/uia-remote-regression-flex', params: { DEVICE_TYPE: 'FLEX_POCKET' }, result: 'SUCCESS', robot: 'rosie', by: 'riley', atMs: lab().time.nowMs - 300_000 } },
+      { op: 'jenkins.seedBuild', params: { job: 'Java/uia-remote-regression-flux', params: { DEVICE_TYPE: 'FLUX_POCKET' }, result: 'SUCCESS', robot: 'rosie', by: 'riley', atMs: lab().time.nowMs - 300_000 } },
     );
     expect(notes('rosie')[0]).toMatch(/STATUS Unavailable → Available \(alex\)$/);
     // Riley's seeded build (GP INC40 evidence) shows the overwrite.
-    const riley = lastBuild('Java/uia-remote-regression-flex')!;
+    const riley = lastBuild('Java/uia-remote-regression-flux')!;
     expect(riley.triggeredBy).toBe('riley');
-    expect(riley.console).toContain('[orca] checkout → rosie (FLEX_POCKET) OK');
+    expect(riley.console).toContain('[orca] checkout → rosie (FLUX_POCKET) OK');
     expect(riley.console).toContain('ubi: routing merchant switch → AUTO-US-NOPIN-01');
     expect(riley.console).toContain('laz: merchant active');
     const b = build('Java/paycore-standalone-matrix');
@@ -394,7 +394,7 @@ describe('INC39–INC46 Jenkins parameters, statuses, swaps, tethering', () => {
     start();
     const a = build('Java/paycore-standalone-matrix', { ROBOT_NAME: '' });
     expect(a.failureCode).toBe('ONLY_UNAVAILABLE');
-    expect(consoleOf(a)).toContain('No Available robot matches FLEX_POCKET (rosie is Unavailable)');
+    expect(consoleOf(a)).toContain('No Available robot matches FLUX_POCKET (rosie is Unavailable)');
     const b = build('Java/paycore-standalone-matrix', { ROBOT_NAME: 'ROSIE' });
     expect(b.failureCode).toBe('ROBOT_NOT_FOUND');
     expect(b.console).toContain("[orca] 404 Not Found: no robot named 'ROSIE'");
@@ -421,41 +421,41 @@ describe('INC39–INC46 Jenkins parameters, statuses, swaps, tethering', () => {
     expect(notes('rosie')[0]).toMatch(new RegExp(`STATUS Available → Unavailable \\(orca: named job Java/paycore-standalone-matrix#${b.number} finished\\)$`));
   });
 
-  it('INC42/43 Flex 1 → Flex 2 with a new Device row (legacy row kept), confirmation build; rollback is one dropdown', () => {
+  it('INC42/43 Flux 1 → Flux 2 with a new Device row (legacy row kept), confirmation build; rollback is one dropdown', () => {
     start();
     const j5 = robot('johnny-5');
     const legacy = j5.deviceId!;
     sim.orca.setRobotStatus(j5.id, 'OFFLINE', 'player');
-    expect(sim.device.swapHardware('johnny-5', 'FLEX_2', 'player', { deviceId: 'dev-spare-flex2' }).ok).toBe(true);
-    const id = sim.orca.saveDevice({ name: 'johnny-5-flex2', deviceType: 'FLEX_2', serial: 'SIM-F2-000015', ip: '10.42.30.15', label: 'Flex 2 (JOHNNY-5)' }, 'player');
+    expect(sim.device.swapHardware('johnny-5', 'FLUX_2', 'player', { deviceId: 'dev-spare-flux2' }).ok).toBe(true);
+    const id = sim.orca.saveDevice({ name: 'johnny-5-flux2', deviceType: 'FLUX_2', serial: 'SIM-F2-000015', ip: '10.42.30.15', label: 'Flux 2 (JOHNNY-5)' }, 'player');
     expect(id.ok).toBe(true);
     sim.orca.saveRobot({ id: j5.id, deviceId: id.ok ? id.value : 0 }, 'player');
-    runUntil(() => lab().devices['dev-spare-flex2']!.power === 'on', 40_000);
+    runUntil(() => lab().devices['dev-spare-flux2']!.power === 'on', 40_000);
     sim.orca.setRobotStatus(j5.id, 'AVAILABLE', 'player');
-    expect(lab().orca.devices[legacy]?.deviceType).toBe('FLEX_1');
+    expect(lab().orca.devices[legacy]?.deviceType).toBe('FLUX_1');
     const doc = sim.orca.capabilityDocument(j5.id)!;
-    expect(doc['deviceType']).toBe('FLEX_2');
+    expect(doc['deviceType']).toBe('FLUX_2');
     const b = build('Java/pigeon-android-sale-swipe', { ROBOT_NAME: 'johnny-5' });
     expect(b.result).toBe('SUCCESS');
     // INC43 rollback.
     sim.orca.setRobotStatus(j5.id, 'OFFLINE', 'player');
-    expect(sim.device.swapHardware('johnny-5', 'FLEX_1', 'player', { deviceId: 'dev-johnny-5-flex1' }).ok).toBe(true);
+    expect(sim.device.swapHardware('johnny-5', 'FLUX_1', 'player', { deviceId: 'dev-johnny-5-flux1' }).ok).toBe(true);
     sim.orca.saveRobot({ id: j5.id, deviceId: legacy }, 'player');
-    runUntil(() => lab().devices['dev-johnny-5-flex1']!.power === 'on', 40_000);
+    runUntil(() => lab().devices['dev-johnny-5-flux1']!.power === 'on', 40_000);
     sim.orca.setRobotStatus(j5.id, 'AVAILABLE', 'player');
     expect(build('Java/pigeon-android-sale-swipe', { ROBOT_NAME: 'johnny-5' }).result).toBe('SUCCESS');
   });
 
-  it('INC44 dead Duo 2: No route to host on k-9; K-9 Offline + DEVICE_TYPE=MINI_3 lands on data/bumblebee and passes', () => {
+  it('INC44 dead Duet 2: No route to host on k-9; K-9 Offline + DEVICE_TYPE=MICRO_3 lands on data/bumblebee and passes', () => {
     start();
-    scenario({ faultId: 'device.dead', params: { device: 'dev-k-9-duo2' } });
+    scenario({ faultId: 'device.dead', params: { device: 'dev-k-9-duet2' } });
     const b = build('Java/uia-remote-printerless-smoke');
     expect(b.result).toBe('FAILURE');
     expect(consoleOf(b)).toContain("adb: failed to connect to '10.42.30.51:5444': No route to host");
     nextHealthCheck();
     expect(robot('k-9').status).toBe('AVAILABLE');
     sim.orca.setRobotStatus(robot('k-9').id, 'OFFLINE', 'player');
-    const b2 = build('Java/uia-remote-printerless-smoke', { DEVICE_TYPE: 'MINI_3' });
+    const b2 = build('Java/uia-remote-printerless-smoke', { DEVICE_TYPE: 'MICRO_3' });
     expect(b2.result).toBe('SUCCESS');
     expect(['data', 'bumblebee']).toContain(lab().orca.robots[b2.robotId!]!.name);
   });

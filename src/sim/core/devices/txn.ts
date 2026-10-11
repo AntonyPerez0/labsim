@@ -1,6 +1,6 @@
 /**
  * The LabSim transaction state machine (Sim §3.9): button presses per screen, card events, PIN, tips,
- * signatures, receipts (§3.9.7, §3.10), tethered pairs (§3.9.4) and the Station Duo (§3.9.5),
+ * signatures, receipts (§3.9.7, §3.10), tethered pairs (§3.9.4) and the Stand Duet (§3.9.5),
  * auto-advance timing, and hardware keys / text input.
  */
 import type { CardEntry, CardProfile, TerminalDevice, LabState, ReceiptDoc } from '../../types';
@@ -385,7 +385,7 @@ function receiptChoice(lab: LabState, ctx: Ctx, owner: TerminalDevice, d: Termin
   }
 }
 
-/** After the receipt step: Duo CFD → receipt-done (Done required); otherwise thank-you. */
+/** After the receipt step: Duet CFD → receipt-done (Done required); otherwise thank-you. */
 function afterReceipt(lab: LabState, ctx: Ctx, owner: TerminalDevice, d: TerminalDevice, disp: Disp): void {
   if (disp === 'secondary') setScreen(lab, ctx, d, disp, 'receipt-done');
   else thankYou(lab, ctx, owner, d, disp);

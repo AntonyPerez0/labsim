@@ -158,7 +158,7 @@ export function openDirection(src: string): 'correct' | 'swapped' | 'horizontal-
     const cond = ifm[1]!;
     const thenB = ifm[2]!;
     const elseB = ifm[3]!;
-    const flexInThen = /FLEX/.test(cond) && !/!\s*=|!=/.test(cond);
+    const flexInThen = /FLUX/.test(cond) && !/!\s*=|!=/.test(cond);
     const flexBranch = flexInThen ? thenB : elseB;
     const other = flexInThen ? elseB : thenB;
     const fv = /scrollVerticallyTo/.test(flexBranch);

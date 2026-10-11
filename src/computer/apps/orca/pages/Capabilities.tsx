@@ -14,7 +14,7 @@ import { ENVIRONMENTS, useDeleteFlow } from './common';
 
 const LOOKUPS: CapabilityLookup[] = ['DYNAMIC_JSON', 'NON_DYNAMIC', 'BOTH'];
 const LOOKUP_BADGE: Record<CapabilityLookup, string> = { DYNAMIC_JSON: 'orca-bg-primary', NON_DYNAMIC: 'orca-bg-secondary', BOTH: 'orca-bg-success' };
-const DERIVED = ['deviceType', 'printer', 'physicalTouch', 'pinEntry', 'tethered', 'duo', 'adbOnly', 'testingProfile'];
+const DERIVED = ['deviceType', 'printer', 'physicalTouch', 'pinEntry', 'tethered', 'duet', 'adbOnly', 'testingProfile'];
 
 function Tabs(props: { active: 'rows' | 'documents' | 'match' }) {
   const { navigate } = useOrca();

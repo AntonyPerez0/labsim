@@ -17,7 +17,7 @@ function Deprecated() {
     <div className="orca-alert orca-alert-warning">
       <strong>Deprecated</strong>
       <br />
-      Screen Compare Images (webcam crop → Tesseract OCR) are being phased out. UI Automator 2.3 locates elements on both Station Duo displays natively — migrate checks with displayId locators instead.
+      Screen Compare Images (webcam crop → Tesseract OCR) are being phased out. UI Automator 2.3 locates elements on both Stand Duet displays natively — migrate checks with displayId locators instead.
     </div>
   );
 }

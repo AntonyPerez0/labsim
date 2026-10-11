@@ -109,9 +109,9 @@ function ticket(over: Partial<TicketState> & Pick<TicketState, 'id' | 'incidentI
 }
 
 const TICKETS: TicketState[] = [
-  ticket({ id: 'LAB-4127', incidentId: 'INC01', title: 'WALL-E failed checkout — Connection Failed', severity: 'P1', reporter: 'jenkins-bot', robotId: 'wall-e', status: 'in-progress', ackedAtS: 33, startedAtS: 35, slaSecondsLeft: 118, sla: 'amber', summary: 'Java/uia-remote-regression-flex #4131 could not check out WALL-E: the robot is blocked from checkouts (Connection Failed).' }),
-  ticket({ id: 'LAB-2210', incidentId: 'INC27', title: 'SOMETHING IS TAPPING MY DESK FLEX BY ITSELF', severity: 'P1', reporter: 'riley', robotId: null, basePoints: 350, slaSecondsLeft: 241, summary: 'My desk Flex keeps opening Register and adding “Tax Item 5”. I didn’t touch it!' }),
-  ticket({ id: 'LAB-7783', incidentId: 'INC39', title: 'uia-remote-regression-flex fails at checkout', severity: 'P1', reporter: 'jenkins-bot', robotId: null, basePoints: 200, parS: 120, slaS: 180, slaSecondsLeft: 31, sla: 'red', notYetTaught: true }),
+  ticket({ id: 'LAB-4127', incidentId: 'INC01', title: 'WALL-E failed checkout — Connection Failed', severity: 'P1', reporter: 'jenkins-bot', robotId: 'wall-e', status: 'in-progress', ackedAtS: 33, startedAtS: 35, slaSecondsLeft: 118, sla: 'amber', summary: 'Java/uia-remote-regression-flux #4131 could not check out WALL-E: the robot is blocked from checkouts (Connection Failed).' }),
+  ticket({ id: 'LAB-2210', incidentId: 'INC27', title: 'SOMETHING IS TAPPING MY DESK FLUX BY ITSELF', severity: 'P1', reporter: 'riley', robotId: null, basePoints: 350, slaSecondsLeft: 241, summary: 'My desk Flux keeps opening Register and adding “Tax Item 5”. I didn’t touch it!' }),
+  ticket({ id: 'LAB-7783', incidentId: 'INC39', title: 'uia-remote-regression-flux fails at checkout', severity: 'P1', reporter: 'jenkins-bot', robotId: null, basePoints: 200, parS: 120, slaS: 180, slaSecondsLeft: 31, sla: 'red', notYetTaught: true }),
 ];
 
 function shiftState(): RootState['session']['shift'] {
@@ -146,7 +146,7 @@ function shiftState(): RootState['session']['shift'] {
     bonuses: [],
     pipelines: (['PL1', 'PL2', 'PL3', 'PL4', 'PL5'] as const).map((id, i) => ({
       id,
-      job: ['Java/uia-remote-regression-flex', 'Java/uia-remote-tethered-tax', 'Java/pigeon-android-sale-swipe', 'Java/uia-remote-regression-mini', 'Java/contact-canada-pin-sale'][i]!,
+      job: ['Java/uia-remote-regression-flux', 'Java/uia-remote-tethered-tax', 'Java/pigeon-android-sale-swipe', 'Java/uia-remote-regression-micro', 'Java/contact-canada-pin-sale'][i]!,
       active: true,
       activationOrder: i + 1,
       phase: i === 0 ? 'blocked' : i === 1 ? 'running' : 'waiting',
@@ -157,7 +157,7 @@ function shiftState(): RootState['session']['shift'] {
       params: {},
       lastResult: i === 0 ? 'BLOCKED' : i === 2 ? 'SUCCESS' : i === 3 ? 'FAILURE' : null,
       lastRobot: i === 2 ? 'eve' : i === 3 ? 'bumblebee' : null,
-      lastConsoleLine: i === 0 ? '[orca] no Available FLEX_3 robot — build waiting in queue' : null,
+      lastConsoleLine: i === 0 ? '[orca] no Available FLUX_3 robot — build waiting in queue' : null,
       runIndex: 3,
       attempts: 8,
       gotRig: 6,
@@ -244,13 +244,13 @@ const VIEW_OPTIONS: Record<string, { id: string; text: string }[]> = {
   ],
   INC27: [
     { id: 'A', text: 'portNumber 5555 — the runner fell back to a coworker’s device' },
-    { id: 'B', text: 'Riley’s Flex has malware' },
+    { id: 'B', text: 'Riley’s Flux has malware' },
     { id: 'C', text: 'Orca routed to the wrong rig' },
     { id: 'D', text: 'Wrong deviceType' },
   ],
   INC39: [
     { id: 'A', text: 'The env var value isn’t the exact ALL-CAPS enum' },
-    { id: 'B', text: 'No Flex rigs available' },
+    { id: 'B', text: 'No Flux rigs available' },
     { id: 'C', text: 'Orca down' },
     { id: 'D', text: 'Wrong folder' },
   ],

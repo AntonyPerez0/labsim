@@ -1,7 +1,7 @@
 /**
  * M09 — Screens, Screen Locations & xy_touch (ADB Bots vs Physical Bots) (Cur §2 M09). Mentor {{jared}}.
- * Setup (`academy:M09`, Sim §4.4.2): EVE (FLEX_4) has the "scan for receipt" QR feature: 5 receipt
- * options, every button 3.0 mm lower; Orca has no FLEX_4 `RECEIPT_OPTIONS_5` map and gort's file for it
+ * Setup (`academy:M09`, Sim §4.4.2): EVE (FLUX_4) has the "scan for receipt" QR feature: 5 receipt
+ * options, every button 3.0 mm lower; Orca has no FLUX_4 `RECEIPT_OPTIONS_5` map and gort's file for it
  * was removed. During the lesson (step 9) the runner starts `Java/pigeon-android-tip-sale` on EVE: the
  * literal `RECEIPT_OPTIONS_4` taps Print at 71.0 on a screen whose Print is at 74.0 → miss (camera clip).
  */
@@ -9,7 +9,7 @@ import { c, on, p } from '../../types';
 import type { Condition, LessonDef } from '../../types';
 import { JOB, inject, queued, say } from './helpers';
 
-/** FLEX_4 (`FLEX_GEN3`) firmware truth, Sim §2.10.2 = Cur §0.6. */
+/** FLUX_4 (`FLUX_GEN3`) firmware truth, Sim §2.10.2 = Cur §0.6. */
 const RECEIPT_5: readonly { button: string; x: number; y: number }[] = [
   { button: 'Print', x: 34.0, y: 74.0 },
   { button: 'Email', x: 34.0, y: 86.0 },
@@ -25,10 +25,10 @@ const RECEIPT_4: readonly { button: string; x: number; y: number }[] = [
 ];
 
 const map5Ok: Condition = c.forAll(RECEIPT_5, (b) =>
-  c.all(c.approx(p.screenLocation('FLEX_4', 'RECEIPT_OPTIONS_5', b.button).x, b.x, 0.5), c.approx(p.screenLocation('FLEX_4', 'RECEIPT_OPTIONS_5', b.button).y, b.y, 0.5)),
+  c.all(c.approx(p.screenLocation('FLUX_4', 'RECEIPT_OPTIONS_5', b.button).x, b.x, 0.5), c.approx(p.screenLocation('FLUX_4', 'RECEIPT_OPTIONS_5', b.button).y, b.y, 0.5)),
 );
 const map4Kept: Condition = c.forAll(RECEIPT_4, (b) =>
-  c.all(c.approx(p.screenLocation('FLEX_4', 'RECEIPT_OPTIONS_4', b.button).x, b.x, 0.05), c.approx(p.screenLocation('FLEX_4', 'RECEIPT_OPTIONS_4', b.button).y, b.y, 0.05)),
+  c.all(c.approx(p.screenLocation('FLUX_4', 'RECEIPT_OPTIONS_4', b.button).x, b.x, 0.05), c.approx(p.screenLocation('FLUX_4', 'RECEIPT_OPTIONS_4', b.button).y, b.y, 0.05)),
 );
 
 /** Ruler readings (world `ruler.measured { deviceId, button, xMm, yMm }`) of every 5-option button on EVE, ±0.5 mm. */
@@ -68,11 +68,11 @@ export const M09: LessonDef = {
     {
       id: 'M09.02',
       kind: 'computer-task',
-      hud: 'Open Screens → FLEX_3 → TENDER_CASH_DISCOUNT',
+      hud: 'Open Screens → FLUX_3 → TENDER_CASH_DISCOUNT',
       app: 'orca',
-      route: '/screen?deviceType.equals=FLEX_3',
-      success: c.appAction('orca', 'orca.screenLocations.viewed', (d) => d.deviceType === 'FLEX_3' && d.screen === 'TENDER_CASH_DISCOUNT'),
-      showMe: [{ app: 'orca', route: '/screen?deviceType.equals=FLEX_3', target: 'orca.screens.row:TENDER_CASH_DISCOUNT', action: 'click', caption: 'Cash X 22.0 Y 58.5 · Card X 62.0 Y 58.5' }],
+      route: '/screen?deviceType.equals=FLUX_3',
+      success: c.appAction('orca', 'orca.screenLocations.viewed', (d) => d.deviceType === 'FLUX_3' && d.screen === 'TENDER_CASH_DISCOUNT'),
+      showMe: [{ app: 'orca', route: '/screen?deviceType.equals=FLUX_3', target: 'orca.screens.row:TENDER_CASH_DISCOUNT', action: 'click', caption: 'Cash X 22.0 Y 58.5 · Card X 62.0 Y 58.5' }],
       factIds: ['F141', 'F142'],
     },
     {
@@ -127,7 +127,7 @@ export const M09: LessonDef = {
         {
           id: 'wrong-device',
           on: on('jenkins.buildQueued', { jobId: JOB.canadaPin }, (pl) => pl.params.ROBOT_NAME === 'wall-e'),
-          say: 'Capability mismatch: WALL-E is a Flex 3. The Canadian flow needs the Compact, and the Compact in this room is on SETI.',
+          say: 'Capability mismatch: WALL-E is a Flux 3. The Canadian flow needs the Compass, and the Compass in this room is on SETI.',
         },
       ],
       factIds: ['F220', 'F061', 'F217'],
@@ -181,7 +181,7 @@ export const M09: LessonDef = {
       })),
       hints: [
         { afterS: 60, effect: 'text', text: 'With the ruler in hand, press E on EVE\'s screen: it snaps to the top-left (0,0). Click each button to read its centre.' },
-        { afterS: 120, effect: 'text', text: "EVE's Flex 4 lies flat under the gantry: crouch (C) beside the rack and look in under the dip arm to aim at the screen." },
+        { afterS: 120, effect: 'text', text: "EVE's Flux 4 lies flat under the gantry: crouch (C) beside the rack and look in under the dip arm to aim at the screen." },
       ],
       onComplete: [say('jared', 'Print at 74. It used to be 71. Everything moved down 3 mm.')],
       factIds: ['F213', 'F142', 'F082'],
@@ -189,12 +189,12 @@ export const M09: LessonDef = {
     {
       id: 'M09.11',
       kind: 'computer-task',
-      hud: 'Create the 5-option receipt map for FLEX_4 and keep the 4-option one.',
+      hud: 'Create the 5-option receipt map for FLUX_4 and keep the 4-option one.',
       app: 'orca',
       route: '/screen/new',
       success: c.all(map5Ok, map4Kept),
       objectives: [
-        { id: 'M09.11.screen', text: 'Screens → New: RECEIPT_OPTIONS_5 (FLEX_4)', done: c.eq(p.screenLocation('FLEX_4', 'RECEIPT_OPTIONS_5', 'Print').exists, true) },
+        { id: 'M09.11.screen', text: 'Screens → New: RECEIPT_OPTIONS_5 (FLUX_4)', done: c.eq(p.screenLocation('FLUX_4', 'RECEIPT_OPTIONS_5', 'Print').exists, true) },
         { id: 'M09.11.locs', text: 'Five Screen Locations from your measurements (±0.5 mm)', done: map5Ok },
         { id: 'M09.11.keep', text: 'RECEIPT_OPTIONS_4 unchanged', done: map4Kept },
       ],
@@ -203,7 +203,7 @@ export const M09: LessonDef = {
           id: 'edit-4',
           on: on('app.action', { app: 'orca', action: 'orca.screenLocation.saved' }, (pl) => {
             const d = (pl.data ?? {}) as { screen?: string; deviceType?: string; created?: boolean };
-            return d.screen === 'RECEIPT_OPTIONS_4' && d.deviceType === 'FLEX_4' && d.created === false;
+            return d.screen === 'RECEIPT_OPTIONS_4' && d.deviceType === 'FLUX_4' && d.created === false;
           }),
           say: "Don't touch the 4-option map. The QR option is conditional, so Orca keeps both maps.",
         },
@@ -219,13 +219,13 @@ export const M09: LessonDef = {
       route: '/labsim-lab/gort',
       success: c.happened(on('github.prMerged', { repo: 'gort' })),
       objectives: [
-        { id: 'M09.12.branch', text: 'Branch fix/flex4-receipt-qr with config/screen-locations/FLEX_4/RECEIPT_OPTIONS_5.json', done: c.appAction('github', 'github.file.committed', (d) => d.repo === 'gort') },
-        { id: 'M09.12.pr', text: 'PR: "Add 5-option receipt coordinates for FLEX_4"', done: c.happened(on('github.prCreated', { repo: 'gort' })) },
+        { id: 'M09.12.branch', text: 'Branch fix/flux4-receipt-qr with config/screen-locations/FLUX_4/RECEIPT_OPTIONS_5.json', done: c.appAction('github', 'github.file.committed', (d) => d.repo === 'gort') },
+        { id: 'M09.12.pr', text: 'PR: "Add 5-option receipt coordinates for FLUX_4"', done: c.happened(on('github.prCreated', { repo: 'gort' })) },
         { id: 'M09.12.merge', text: '{{jared}} approves and merges', done: c.happened(on('github.prMerged', { repo: 'gort' })) },
       ],
       hints: [
         { afterS: 60, idle: true, effect: 'text', text: 'gort main is protected: commit on a new branch, then open a pull request.' },
-        { afterS: 120, idle: true, effect: 'text', text: 'Add config/screen-locations/FLEX_4/RECEIPT_OPTIONS_5.json on branch fix/flex4-receipt-qr; title "Add 5-option receipt coordinates for FLEX_4".' },
+        { afterS: 120, idle: true, effect: 'text', text: 'Add config/screen-locations/FLUX_4/RECEIPT_OPTIONS_5.json on branch fix/flux4-receipt-qr; title "Add 5-option receipt coordinates for FLUX_4".' },
         { afterS: 180, idle: true, effect: 'show-me-button' },
       ],
       showMe: [{ app: 'github', route: '/labsim-lab/gort', target: 'github.newPullRequest', action: 'click' }],

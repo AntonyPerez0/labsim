@@ -35,7 +35,7 @@ export interface ParkData {
 
 /** Touch robots with front tablets (Sim roster). */
 const RIGS = ['wall-e', 'eve', 'bumblebee', 'r2-d2', 'johnny-5', 'baymax', 'seti', 'soundwave', 'starscream', 'ratchet', 'c-3po', 'chappie', 'case', 'atlas', 'astro', 'mazinger', 'number-5', 'gerty'];
-const JOBS = ['Java/uia-remote-regression-flex', 'Java/uia-remote-regression-mini', 'Java/pigeon-android-sale-swipe', 'Java/contact-canada-pin-sale'];
+const JOBS = ['Java/uia-remote-regression-flux', 'Java/uia-remote-regression-micro', 'Java/pigeon-android-sale-swipe', 'Java/contact-canada-pin-sale'];
 
 export const ACTION_LABEL: Record<ParkAction, string> = {
   'park-all': 'Park → Park All',

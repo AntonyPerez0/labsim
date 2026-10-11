@@ -53,7 +53,7 @@ export const PROP_ALIASES: Readonly<Record<string, string>> = {
   'prop.fuse-spares': 'power.fuse-tray',
   'prop.multimeter': 'tool.multimeter',
   'prop.ac-strip': 'power.strip.w',
-  'prop.flex4-psu-brick': 'power.bench.flex4-psu',
+  'prop.flux4-psu-brick': 'power.bench.flux4-psu',
   'prop.collis-probe-spare': 'power.bench.collis-spare',
   'prop.nuc-03': 'callus.nuc-03',
   'prop.minix-01': 'callus.minix-01',
@@ -79,8 +79,8 @@ export const PROP_ALIASES: Readonly<Record<string, string>> = {
 };
 
 /**
- * Curriculum NPC alias: `npc.coworker` (the unnamed office coworker with the desk Flex on 5555) is
- * whoever sits at `desk.coworker-1` (the Flex desk).
+ * Curriculum NPC alias: `npc.coworker` (the unnamed office coworker with the desk Flux on 5555) is
+ * whoever sits at `desk.coworker-1` (the Flux desk).
  */
 export const NPC_ALIASES: Readonly<Record<string, string>> = { 'npc.coworker': 'npc.sam' };
 

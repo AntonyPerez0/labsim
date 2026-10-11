@@ -89,7 +89,7 @@ function cache(k: string, v: { ok: boolean; netError: string | null; piIp: strin
   return v;
 }
 
-/** `Java/uia-remote-regression-flex #4120` or `Local run · TaxTest (ws-17)`. */
+/** `Java/uia-remote-regression-flux #4120` or `Local run · TaxTest (ws-17)`. */
 export function lockHolder(rig: RigState): string {
   const lab = getState().lab;
   if (rig.lockedBy?.kind === 'local') {
@@ -125,10 +125,9 @@ function Header(props: { rig: RigState; banner: BannerColor; statusText: string;
       <div className="rdash-logo" aria-hidden="true">
         <svg width="50" height="50" viewBox="0 0 50 50">
           <g fill="currentColor">
-            <circle cx="13" cy="13" r="11" />
-            <circle cx="37" cy="13" r="11" />
-            <circle cx="13" cy="37" r="11" />
-            <circle cx="37" cy="37" r="11" />
+            <rect x="4" y="8" width="42" height="9" rx="1" />
+            <rect x="4" y="21" width="29" height="9" rx="1" />
+            <rect x="4" y="34" width="36" height="9" rx="1" />
           </g>
         </svg>
         <span>lab</span>

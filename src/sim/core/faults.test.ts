@@ -108,8 +108,8 @@ const CASES: Record<string, Case> = {
   'rig.cradleCracked': {
     spec: { faultId: 'rig.cradleCracked', params: { rig: 'eve' } },
     fix: () => {
-      expect(sim.rig.replaceCradle('eve', 'player')).toEqual({ ok: false, error: 'No printed cradle_flex_gen3 on the printer tray — print cradle_flex_gen3.3mf first' });
-      ok(sim.printer3d.start('prusa', 'cradle_flex_gen3.3mf', 'player'));
+      expect(sim.rig.replaceCradle('eve', 'player')).toEqual({ ok: false, error: 'No printed cradle_flux_gen3 on the printer tray — print cradle_flux_gen3.3mf first' });
+      ok(sim.printer3d.start('prusa', 'cradle_flux_gen3.3mf', 'player'));
       run(90_100);
       ok(sim.rig.replaceCradle('eve', 'player'));
     },
@@ -126,20 +126,20 @@ const CASES: Record<string, Case> = {
     waitMs: 4_000,
   },
   'rig.rebuild': { spec: { faultId: 'rig.rebuild', params: { rig: 'baymax' } } },
-  'device.unpowered': { spec: { faultId: 'device.unpowered', params: { device: 'dev-eve-flex4' } }, fix: () => ok(sim.power.plug('psu-eve-flex4', { kind: 'ac-strip', targetId: 'STRIP-A', socket: 6 }, 'player')), waitMs: 31_000 },
-  'device.dead': { spec: { faultId: 'device.dead', params: { device: 'dev-k-9-duo2' } }, fix: () => ok(sim.device.swapHardware('k-9', 'MINI_3', 'player', { deviceId: 'dev-spare-mini3' })) },
-  'device.adbTcpReset': { spec: { faultId: 'device.adbTcpReset', params: { device: 'dev-data-mini3' } }, fix: () => transact((r, ctx) => adbShell(r.lab, ctx, 'SIM-M3-000031', ['tcpip', '5444'], 'terminal')), waitMs: 1_100 },
-  'device.printerNoPaper': { spec: { faultId: 'device.printerNoPaper', params: { device: 'dev-wall-e-flex3' } }, fix: () => ok(sim.device.loadPaper('dev-wall-e-flex3', 'player')) },
+  'device.unpowered': { spec: { faultId: 'device.unpowered', params: { device: 'dev-eve-flux4' } }, fix: () => ok(sim.power.plug('psu-eve-flux4', { kind: 'ac-strip', targetId: 'STRIP-A', socket: 6 }, 'player')), waitMs: 31_000 },
+  'device.dead': { spec: { faultId: 'device.dead', params: { device: 'dev-k-9-duet2' } }, fix: () => ok(sim.device.swapHardware('k-9', 'MICRO_3', 'player', { deviceId: 'dev-spare-micro3' })) },
+  'device.adbTcpReset': { spec: { faultId: 'device.adbTcpReset', params: { device: 'dev-data-micro3' } }, fix: () => transact((r, ctx) => adbShell(r.lab, ctx, 'SIM-M3-000031', ['tcpip', '5444'], 'terminal')), waitMs: 1_100 },
+  'device.printerNoPaper': { spec: { faultId: 'device.printerNoPaper', params: { device: 'dev-wall-e-flux3' } }, fix: () => ok(sim.device.loadPaper('dev-wall-e-flux3', 'player')) },
   'laz.skipAdbRestore': {
     spec: { faultId: 'laz.skipAdbRestore' },
     fix: () => {
-      ok(sim.laz.start('dev-data-mini3', 2, 'player'));
+      ok(sim.laz.start('dev-data-micro3', 2, 'player'));
       run(60_000);
       transact((r, ctx) => adbShell(r.lab, ctx, 'SIM-M3-000031', ['tcpip', '5444'], 'terminal'));
     },
     waitMs: 1_100,
   },
-  'receipt.qrRollout': { spec: { faultId: 'receipt.qrRollout', params: { deviceTypes: ['FLEX_4'], on: false } } },
+  'receipt.qrRollout': { spec: { faultId: 'receipt.qrRollout', params: { deviceTypes: ['FLUX_4'], on: false } } },
   'tether.linkDown': { spec: { faultId: 'tether.linkDown', params: { robot: 'megatron', cable: 'usb' } }, fix: () => expect(sim.device.reseatHub('dev-megatron-mfd', 'usb', 'player')).toEqual({ ok: true, value: { seated: true } }), waitMs: 2_000 },
   'collis.unpowered': { spec: { faultId: 'collis.unpowered', params: { probe: 'collis-wall-e' } }, fix: () => ok(sim.power.plug('psu-collis-wall-e', { kind: 'ac-strip', targetId: 'STRIP-C', socket: 1 }, 'player')), waitMs: 100 },
   'collis.ribbonUnseated': { spec: { faultId: 'collis.ribbonUnseated', params: { probe: 'collis-eve' } }, fix: () => ok(sim.collis.reseatRibbon('collis-eve', 'player')), waitMs: 100 },
@@ -162,26 +162,26 @@ const CASES: Record<string, Case> = {
   },
   'orca.tetherCloned': { spec: { faultId: 'orca.tetherCloned' }, fix: () => ok(sim.orca.saveRobot({ id: 12, mfdDeviceId: null, cfdDeviceId: null }, 'player')) },
   'orca.screenLocationShift': {
-    spec: { faultId: 'orca.screenLocationShift', params: { deviceTypes: ['MINI_3'] } },
+    spec: { faultId: 'orca.screenLocationShift', params: { deviceTypes: ['MICRO_3'] } },
     fix: () => {
-      const scr = Object.values(lab().orca.screens).find((s) => s.deviceType === 'MINI_3' && s.name === 'RECEIPT_OPTIONS_5')!;
+      const scr = Object.values(lab().orca.screens).find((s) => s.deviceType === 'MICRO_3' && s.name === 'RECEIPT_OPTIONS_5')!;
       for (const l of Object.values(lab().orca.screenLocations).filter((x) => x.screenId === scr.id)) ok(sim.orca.saveScreenLocation({ id: l.id, yMm: l.yMm + 3 }, 'player'));
     },
   },
   'orca.screenLocationTypo': {
     spec: { faultId: 'orca.screenLocationTypo' },
     fix: () => {
-      const scr = Object.values(lab().orca.screens).find((s) => s.deviceType === 'FLEX_1' && s.name === 'RECEIPT_OPTIONS_4')!;
+      const scr = Object.values(lab().orca.screens).find((s) => s.deviceType === 'FLUX_1' && s.name === 'RECEIPT_OPTIONS_4')!;
       const l = Object.values(lab().orca.screenLocations).find((x) => x.screenId === scr.id && x.button === 'Print')!;
       ok(sim.orca.saveScreenLocation({ id: l.id, yMm: 66.5 }, 'player'));
     },
   },
   'orca.missingReceiptMap': {
-    spec: { faultId: 'orca.missingReceiptMap', params: { deviceType: 'STATION_2018' } },
+    spec: { faultId: 'orca.missingReceiptMap', params: { deviceType: 'STAND_2018' } },
     fix: () => {
-      const id = sim.orca.saveScreen({ name: 'RECEIPT_OPTIONS_5', deviceType: 'STATION_2018', description: 'Receipt options — 5 options' }, 'player');
+      const id = sim.orca.saveScreen({ name: 'RECEIPT_OPTIONS_5', deviceType: 'STAND_2018', description: 'Receipt options — 5 options' }, 'player');
       ok(id);
-      for (const b of firmwareTruth('STATION_2018', 'RECEIPT_OPTIONS_5')!) ok(sim.orca.saveScreenLocation({ screenId: id.ok ? id.value : 0, button: b.button, xMm: b.x, yMm: b.y }, 'player'));
+      for (const b of firmwareTruth('STAND_2018', 'RECEIPT_OPTIONS_5')!) ok(sim.orca.saveScreenLocation({ screenId: id.ok ? id.value : 0, button: b.button, xMm: b.x, yMm: b.y }, 'player'));
     },
   },
   'orca.statusOverride': { spec: { faultId: 'orca.statusOverride', params: { robot: 'rosie', status: 'AVAILABLE' } }, fix: () => ok(sim.orca.setRobotStatus(8, 'UNAVAILABLE', 'player')) },
@@ -291,13 +291,13 @@ describe('fault engine semantics (Sim §4.1)', () => {
     expect(lab().orca.audit.at(-1)).toMatchObject({ who: 'bulk-import', action: 'UPDATE', entity: 'screenLocation', atMs: -28_200_000 });
   });
 
-  it('device faults: unpowered device goes dark; k-9 dead Duo 2 never boots', () => {
-    sim.faults.inject({ faultId: 'device.unpowered', params: { device: 'dev-eve-flex4' } });
+  it('device faults: unpowered device goes dark; k-9 dead Duet 2 never boots', () => {
+    sim.faults.inject({ faultId: 'device.unpowered', params: { device: 'dev-eve-flux4' } });
     sim.tick(100);
-    expect(device('dev-eve-flex4')).toMatchObject({ power: 'off', battery: { pct: 0, charging: false } });
-    sim.faults.inject({ faultId: 'device.dead', params: { device: 'dev-k-9-duo2' } });
+    expect(device('dev-eve-flux4')).toMatchObject({ power: 'off', battery: { pct: 0, charging: false } });
+    sim.faults.inject({ faultId: 'device.dead', params: { device: 'dev-k-9-duet2' } });
     run(31_000);
-    expect(device('dev-k-9-duo2')).toMatchObject({ power: 'off', state: 'DEAD' });
+    expect(device('dev-k-9-duet2')).toMatchObject({ power: 'off', state: 'DEAD' });
   });
 });
 
@@ -331,9 +331,9 @@ describe('devops fault rows through the shared engine (Sim §4.3.8–§4.3.10)',
   it('jenkins.envCase: the saved lower-case DEVICE_TYPE fails ENUM_CASE; fixing the saved param resolves it', () => {
     const r = sim.faults.inject({ faultId: 'jenkins.envCase' });
     const fid = r.ok ? r.value.instanceId : '';
-    const job = sim.jenkins.job('Java/uia-remote-regression-flex')!;
-    expect(job.savedParams.DEVICE_TYPE).toBe('flex_3');
-    ok(sim.jenkins.saveJob(job.id, { savedParams: { ...job.savedParams, DEVICE_TYPE: 'FLEX_3' } }, 'player'));
+    const job = sim.jenkins.job('Java/uia-remote-regression-flux')!;
+    expect(job.savedParams.DEVICE_TYPE).toBe('flux_3');
+    ok(sim.jenkins.saveJob(job.id, { savedParams: { ...job.savedParams, DEVICE_TYPE: 'FLUX_3' } }, 'player'));
     expect(sim.faults.isResolved(fid)).toBe(true);
   });
 

@@ -23,9 +23,9 @@ const DAY = 86_400_000;
 const HOUR = 3_600_000;
 const MIN = 60_000;
 
-/** Firmware for a device type (Sim §2.4): FLEX_1 is end-of-life and never gets the QR feature. */
+/** Firmware for a device type (Sim §2.4): FLUX_1 is end-of-life and never gets the QR feature. */
 export function factoryFirmware(type: string, receiptQrFeature: boolean): { version: string; receiptQr: boolean } {
-  if (type === 'FLEX_1') return { version: '2.19.4', receiptQr: false };
+  if (type === 'FLUX_1') return { version: '2.19.4', receiptQr: false };
   return receiptQrFeature ? { version: '2.26.10.1', receiptQr: true } : { version: '2.26.08.3', receiptQr: false };
 }
 
@@ -68,7 +68,7 @@ export function seedCore(lab: LabState): void {
     if (row.cfd) addRow(row.cfd, `${DEVICE_TYPES[row.cfd.type].displayName} (${row.hrn}) — CFD`);
   }
   const retiredId = nextDev++;
-  devRows[retiredId] = { id: retiredId, name: 'retired-flex1-legacy', deviceType: 'FLEX_1', serial: 'SIM-F1-000099', ip: '10.42.30.99', label: 'Flex 1 — retired 2025 (history)', simDeviceId: null, retired: true };
+  devRows[retiredId] = { id: retiredId, name: 'retired-flux1-legacy', deviceType: 'FLUX_1', serial: 'SIM-F1-000099', ip: '10.42.30.99', label: 'Flux 1 — retired 2025 (history)', simDeviceId: null, retired: true };
   lab.orca.devices = devRows;
 
   /* ── Robots, rigs, runtime devices, probes ── */
@@ -161,7 +161,7 @@ export function seedCore(lab: LabState): void {
       mk(row.device, 'mfd', `dev-${row.cfd.name}`);
       mk(row.cfd, 'cfd', `dev-${row.device.name}`);
     } else {
-      mk(row.device, DEVICE_TYPES[row.device.type].dualScreenSingleAdb ? 'duo' : 'standalone', null);
+      mk(row.device, DEVICE_TYPES[row.device.type].dualScreenSingleAdb ? 'duet' : 'standalone', null);
     }
 
     // Probe.
@@ -240,7 +240,7 @@ export function seedCore(lab: LabState): void {
   hist(22, robbyAt, 'AVAILABLE', 'OFFLINE', 'jared');
   const dalekAt = -4 * DAY + 9 * HOUR + 15 * MIN;
   addNote(37, note(0, dalekAt, 'jared', 'STATUS', `${ts(dalekAt)} STATUS Available → Offline (jared)`));
-  addNote(37, note(0, dalekAt + 40_000, 'jared', 'MANUAL', `${ts(dalekAt + 40_000)} Flex 1 parked; rebuild queued — J`));
+  addNote(37, note(0, dalekAt + 40_000, 'jared', 'MANUAL', `${ts(dalekAt + 40_000)} Flux 1 parked; rebuild queued — J`));
   hist(37, dalekAt, 'AVAILABLE', 'OFFLINE', 'jared');
   // SONNY Connection Failed since 07:55 (off-screen Pi .74 hung), escalated at 08:02:11.
   const sonnyAt = 7 * HOUR + 55 * MIN;
@@ -270,8 +270,8 @@ export function seedCore(lab: LabState): void {
     if (!typesInLab.has(type)) continue;
     const info = DEVICE_TYPES[type];
     const rowsFor: { name: string; display: 'primary' | 'secondary'; table: string }[] = GENERIC_ORCA_SCREENS.map((n) => ({ name: n, display: 'primary', table: n }));
-    if (type === 'MINI_2' || type === 'MINI_3') rowsFor.push({ name: 'CUSTOMER_CART', display: 'primary', table: 'CUSTOMER_CART' });
-    if (type === 'STATION_DUO' || type === 'STATION_DUO_2') for (const [n, t] of Object.entries(CFD_ORCA_SCREENS)) rowsFor.push({ name: n, display: 'secondary', table: t });
+    if (type === 'MICRO_2' || type === 'MICRO_3') rowsFor.push({ name: 'CUSTOMER_CART', display: 'primary', table: 'CUSTOMER_CART' });
+    if (type === 'STAND_DUET' || type === 'STAND_DUET_2') for (const [n, t] of Object.entries(CFD_ORCA_SCREENS)) rowsFor.push({ name: n, display: 'secondary', table: t });
     for (const s of rowsFor) {
       const layout = LAYOUTS[layoutIdFor(type, s.display)];
       const id = sid++;
@@ -305,7 +305,7 @@ export function seedCore(lab: LabState): void {
 
   /* ── Coworker desk devices (ADB 5555) and spares ── */
   const m1 = merchants[1]!;
-  const cow = (id: string, type: 'FLEX_3' | 'FLEX_4' | 'MINI_3', ip: string, serial: string, desk: string, screen: 'home' | 'lock') => {
+  const cow = (id: string, type: 'FLUX_3' | 'FLUX_4' | 'MICRO_3', ip: string, serial: string, desk: string, screen: 'home' | 'lock') => {
     const apps = appsFor(m1);
     lab.devices[id] = createTerminalDevice(id, type, {
       serial,
@@ -326,10 +326,10 @@ export function seedCore(lab: LabState): void {
       sdcard: {},
     });
   };
-  cow('dev-riley-desk-flex', 'FLEX_3', '10.42.60.4', 'SIM-F3-060004', 'desk-riley', 'home');
-  cow('dev-sam-desk-mini', 'MINI_3', '10.42.60.5', 'SIM-M3-060005', 'desk-sam', 'home');
-  cow('dev-alex-desk-flex', 'FLEX_4', '10.42.60.6', 'SIM-F4-060006', 'desk-alex', 'lock');
-  const spare = (id: string, type: 'FLEX_2' | 'MINI_3', serial: string, drawer: string) => {
+  cow('dev-riley-desk-flux', 'FLUX_3', '10.42.60.4', 'SIM-F3-060004', 'desk-riley', 'home');
+  cow('dev-sam-desk-micro', 'MICRO_3', '10.42.60.5', 'SIM-M3-060005', 'desk-sam', 'home');
+  cow('dev-alex-desk-flux', 'FLUX_4', '10.42.60.6', 'SIM-F4-060006', 'desk-alex', 'lock');
+  const spare = (id: string, type: 'FLUX_2' | 'MICRO_3', serial: string, drawer: string) => {
     const apps = appsFor(m1);
     const fw = factoryFirmware(type, true);
     lab.devices[id] = createTerminalDevice(id, type, {
@@ -353,8 +353,8 @@ export function seedCore(lab: LabState): void {
       sdcard: {},
     });
   };
-  spare('dev-spare-flex2', 'FLEX_2', 'SIM-F2-000015', 'husky-drawer-2');
-  spare('dev-spare-mini3', 'MINI_3', 'SIM-M3-000122', 'husky-drawer-3');
+  spare('dev-spare-flux2', 'FLUX_2', 'SIM-F2-000015', 'husky-drawer-2');
+  spare('dev-spare-micro3', 'MICRO_3', 'SIM-M3-000122', 'husky-drawer-3');
 
   /* ── Hosts, power, Callus ── */
   lab.hosts = seedHosts(lab.time.nowMs);
@@ -368,7 +368,7 @@ export function seedCore(lab: LabState): void {
     }
   }
   // Spare free-standing loads for the spares (unplugged PSU bricks).
-  deviceLoads.push({ loadId: 'psu-spare-flex2', deviceId: 'dev-spare-flex2', label: 'Spare Flex 2 power brick' }, { loadId: 'psu-spare-mini3', deviceId: 'dev-spare-mini3', label: 'Spare Mini 3 power brick' });
+  deviceLoads.push({ loadId: 'psu-spare-flux2', deviceId: 'dev-spare-flux2', label: 'Spare Flux 2 power brick' }, { loadId: 'psu-spare-micro3', deviceId: 'dev-spare-micro3', label: 'Spare Micro 3 power brick' });
   lab.power = seedPower(deviceLoads, collisLoads);
   // Supply mirrors (Sim §1.15): modelled loads are authoritative.
   for (const l of Object.values(lab.power.loads)) {
@@ -407,9 +407,9 @@ export function seedCore(lab: LabState): void {
     '~/.ssh/id_ed25519': '-----BEGIN OPENSSH PRIVATE KEY-----\n(lab key — illustrative)\n-----END OPENSSH PRIVATE KEY-----\n',
     '~/.ssh/id_ed25519.pub': 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAISimLabKeyForWs17 engineer@ws-17\n',
     '~/CAD/': '',
-    '~/CAD/cradle_flex_gen3.3mf': '<3mf:cradle_flex_gen3>',
-    '~/CAD/cradle_mini3.3mf': '<3mf:cradle_mini3>',
-    '~/CAD/cradle_station.3mf': '<3mf:cradle_station>',
+    '~/CAD/cradle_flux_gen3.3mf': '<3mf:cradle_flux_gen3>',
+    '~/CAD/cradle_micro3.3mf': '<3mf:cradle_micro3>',
+    '~/CAD/cradle_stand.3mf': '<3mf:cradle_stand>',
   };
 }
 

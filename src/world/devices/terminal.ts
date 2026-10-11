@@ -1,7 +1,7 @@
 /**
- * Counter-top LabSim terminals (World §3.1, §3.3): Mini 2 / Mini 3 (white wedge with the printer at
- * the rear top), Station 2 head (+ base), Station 2018 / Duo / Duo 2 (black-glass heads on a swivel
- * stand + base; the Duo carries a CFD) and the sealed "upcoming" boxes (Duo 3, Mini 4).
+ * Counter-top LabSim terminals (World §3.1, §3.3): Micro 2 / Micro 3 (white wedge with the printer at
+ * the rear top), Stand 2 head (+ base), Stand 2018 / Duet / Duet 2 (black-glass heads on a swivel
+ * stand + base; the Duet carries a CFD) and the sealed "upcoming" boxes (Duet 3, Micro 4).
  * Device-local frame: origin = primary active-area centre on the glass, +Y screen top, +Z face normal.
  */
 import { Matrix4 } from 'three';
@@ -26,21 +26,21 @@ function tape(d: DevCtx, x: number, y: number): void {
   tapeQuad(d, t.rect, t.w, t.h, { p: [x - t.w / 2, y, 0.06] });
 }
 
-/* ───────────────────────────── Mini 2 / Mini 3 ───────────────────────────── */
+/* ───────────────────────────── Micro 2 / Micro 3 ───────────────────────────── */
 
 /**
- * Mini wedge: face W × Hf (white bezel) on a slope rising from the 35 mm front edge to the
+ * Micro wedge: face W × Hf (white bezel) on a slope rising from the 35 mm front edge to the
  * 125/120 mm rear; the printer sits behind the face at the rear top. Built in counter coordinates
  * (u toward the rear, v up) and mapped into the face frame.
  */
-export function buildMini(type: DeviceTypeCode, opts: DeviceBuildOptions): DeviceHandle {
+export function buildMicro(type: DeviceTypeCode, opts: DeviceBuildOptions): DeviceHandle {
   const model = modelFor(type);
   const d = devCtx(opts);
   const m = d.kit.mats;
   const [W, rearH, depth] = model.bodyMm;
   const front = model.wedgeFrontMm ?? 35;
-  const faceH = type === 'MINI_3' ? 158 : 160;
-  const faceW = type === 'MINI_3' ? 208 : 210;
+  const faceH = type === 'MICRO_3' ? 158 : 160;
+  const faceW = type === 'MICRO_3' ? 208 : 210;
   const [sw, sh] = model.screen!.mm;
   const mg = model.margins!;
   const P0: [number, number] = [4, front + 2];
@@ -76,7 +76,7 @@ export function buildMini(type: DeviceTypeCode, opts: DeviceBuildOptions): Devic
   // bezel: logo bottom-left, light pipe bottom centre, sensor dot top right, swipe groove on top edge
   const logo = d.opts.logo ?? model.logo;
   if (logo === 'wordmark') decal(d, logoRect(d.kit, 'wordmark', '#8b8f93'), 32, 9.6, { p: [-faceW / 2 + 26, botY + mg.bottom * 0.45, 0.05] });
-  else if (logo === 'leaf') decal(d, logoRect(d.kit, 'leaf', '#8b8f93'), 9, 9, { p: [-faceW / 2 + 14, botY + mg.bottom * 0.45, 0.05] });
+  else if (logo === 'mark') decal(d, logoRect(d.kit, 'mark', '#8b8f93'), 9, 9, { p: [-faceW / 2 + 14, botY + mg.bottom * 0.45, 0.05] });
   if (d.opts.lightPipe !== false) lightPipe(d, [0, botY + mg.bottom * 0.45, 0.2]);
   sensorDot(d, [faceW / 2 - 9, topY - mg.top * 0.5, 0.05], 3);
   swipeGroove(d, [0, topY + 0.1, FRONT_Z - 6], 120, 'x');
@@ -101,7 +101,7 @@ export function buildMini(type: DeviceTypeCode, opts: DeviceBuildOptions): Devic
   };
 }
 
-/* ───────────────────────────── Station heads ───────────────────────────── */
+/* ───────────────────────────── Stand heads ───────────────────────────── */
 
 interface HeadSpec {
   w: number;
@@ -117,7 +117,7 @@ interface HeadSpec {
 }
 
 /** A display head (slab) whose active area is centred at `c` (device-local). Returns its screen slot. */
-function head(d: DevCtx, display: 'primary' | 'secondary', s: HeadSpec, c: [number, number, number], logo: 'wordmark' | 'leaf' | 'none'): ScreenSlot {
+function head(d: DevCtx, display: 'primary' | 'secondary', s: HeadSpec, c: [number, number, number], logo: 'wordmark' | 'mark' | 'none'): ScreenSlot {
   const m = d.kit.mats;
   const cy = c[1] + (s.top - s.bottom) / 2;
   if (s.black) {
@@ -130,7 +130,7 @@ function head(d: DevCtx, display: 'primary' | 'secondary', s: HeadSpec, c: [numb
   const scr = screenStack(d, display, s.sw, s.sh, c, {}, s.black ? 0.8 : 1.2, s.logical);
   const botY = c[1] - s.sh / 2 - s.bottom;
   const col = s.black ? '#d8dadc' : '#8b8f93';
-  if (logo === 'leaf') decal(d, logoRect(d.kit, 'leaf', col), 9, 9, { p: [c[0], botY + s.bottom * 0.5, c[2] + 0.05] });
+  if (logo === 'mark') decal(d, logoRect(d.kit, 'mark', col), 9, 9, { p: [c[0], botY + s.bottom * 0.5, c[2] + 0.05] });
   else if (logo === 'wordmark') decal(d, logoRect(d.kit, 'wordmark', col), 30, 9, { p: [c[0] - s.w / 2 + 26, botY + s.bottom * 0.45, c[2] + 0.05] });
   sensorDot(d, [c[0], c[1] + s.sh / 2 + s.top * 0.5, c[2] + 0.05], 3);
   return scr;
@@ -147,11 +147,11 @@ function stationMfd(model: EffectiveModel): HeadSpec {
   return { w, h, d: dd, sw, sh, top: ST_MARGINS.top + grow, bottom: ST_MARGINS.bottom + grow, black: true, logical: model.primaryScreen?.logicalMm };
 }
 
-const DUO_CFD: HeadSpec = { w: 215, h: 150, d: 30, sw: 172.3, sh: 107.7, top: 14, bottom: 28.3, black: true };
-/** Duo CFD centre relative to the MFD screen centre when both lie in one tray (R2-D2, World §2.10). */
-export const DUO_CFD_TRAY_OFFSET: [number, number, number] = [0, -205.7, 0];
+const DUET_CFD: HeadSpec = { w: 215, h: 150, d: 30, sw: 172.3, sh: 107.7, top: 14, bottom: 28.3, black: true };
+/** Duet CFD centre relative to the MFD screen centre when both lie in one tray (R2-D2, World §2.10). */
+export const DUET_CFD_TRAY_OFFSET: [number, number, number] = [0, -205.7, 0];
 
-/** Base with paper door (Station family): W × H × D, white with a black front band and a green leaf. */
+/** Base with paper door (Stand family): W × H × D, white with a black front band and a green three-bar mark. */
 function stationBase(d: DevCtx, at: Matrix4, bw: number, bh: number, bd: number, printer: boolean): void {
   const m = d.kit.mats;
   const P = (pl: Parameters<typeof placeMatrix>[0]) => at.clone().multiply(placeMatrix(pl));
@@ -161,8 +161,8 @@ function stationBase(d: DevCtx, at: Matrix4, bw: number, bh: number, bd: number,
     d.detail.add(boxG(bw - 60, 0.8, 0.6), m.darkPort, P({ p: [0, bh - 0.2, -bd / 2 + 60] }));
     d.detail.add(boxG(0.8, 0.6, bd - 80), m.darkPort, P({ p: [-bw / 2 + 30, bh + 0.1, 0] }));
   }
-  const leaf = logoRect(d.kit, 'leaf', '#2fd468');
-  d.detail.add(planeQuad(leaf, 12, 12), d.kit.decal.material, P({ p: [bw / 2 - 20, bh * 0.45, bd / 2 + 1] }));
+  const mark = logoRect(d.kit, 'mark', '#2fd468');
+  d.detail.add(planeQuad(mark, 12, 12), d.kit.decal.material, P({ p: [bw / 2 - 20, bh * 0.45, bd / 2 + 1] }));
   d.batch.add(rboxG(bw - 12, 4, bd - 12, 2, 1), m.rubber, P({ p: [0, 2, 0] }));
 }
 
@@ -171,21 +171,21 @@ function planeQuad(r: AtlasRect, w: number, h: number) {
 }
 
 /**
- * Station 2018 / Duo / Duo 2 (MFD = L14 head with black glass) and Station 2 (8" white head).
- * `tray`: heads lie in the device frame (Duo CFD in front of the MFD, World §2.10);
+ * Stand 2018 / Duet / Duet 2 (MFD = L14 head with black glass) and Stand 2 (8" white head).
+ * `tray`: heads lie in the device frame (Duet CFD in front of the MFD, World §2.10);
  * `head`: the display head only; `stand`: head on a silver hinge arm above its base.
  */
-export function buildStation(type: DeviceTypeCode, opts: DeviceBuildOptions): DeviceHandle {
+export function buildStand(type: DeviceTypeCode, opts: DeviceBuildOptions): DeviceHandle {
   const model = modelFor(type);
   const d = devCtx(opts);
   const m = d.kit.mats;
-  const duo = type === 'STATION_DUO' || type === 'STATION_DUO_2';
-  const s2 = type === 'STATION_2';
+  const duo = type === 'STAND_DUET' || type === 'STAND_DUET_2';
+  const s2 = type === 'STAND_2';
   const mfd: HeadSpec = s2
     ? { w: 210, h: 160, d: 28, sw: model.screen!.mm[0], sh: model.screen!.mm[1], top: model.margins!.top, bottom: model.margins!.bottom, black: false, logical: model.primaryScreen?.logicalMm }
     : stationMfd(model);
-  const cfdSpec: HeadSpec = { ...DUO_CFD, logical: model.secondaryScreen?.logicalMm };
-  const logo = opts.logo ?? (s2 ? 'wordmark' : 'leaf');
+  const cfdSpec: HeadSpec = { ...DUET_CFD, logical: model.secondaryScreen?.logicalMm };
+  const logo = opts.logo ?? (s2 ? 'wordmark' : 'mark');
   const screens: ScreenSlot[] = [head(d, 'primary', mfd, [0, 0, 0], logo)];
   const mfdBot = -mfd.sh / 2 - mfd.bottom;
   const mfdTop = mfd.sh / 2 + mfd.top;
@@ -193,7 +193,7 @@ export function buildStation(type: DeviceTypeCode, opts: DeviceBuildOptions): De
   let nfc: [number, number, number] = [0, -mfd.sh / 2 - (s2 ? 12 : 18), 0];
   let minY = mfdBot;
   if (!s2 && !duo) {
-    // Station 2018: card-reader module on the head's bottom edge†
+    // Stand 2018: card-reader module on the head's bottom edge†
     put(d, rboxG(110, 14, 24, 4, 2), m.bezelBlack, { p: [0, mfdBot - 6, FRONT_Z - 14] });
     put(d, boxG(64, 1.2, 2), m.darkPort, { p: [0, mfdBot - 13.2, FRONT_Z - 14] }, true);
     chip = [0, mfdBot - 13, FRONT_Z - 14];
@@ -207,22 +207,22 @@ export function buildStation(type: DeviceTypeCode, opts: DeviceBuildOptions): De
   let rest = placeMatrix({ p: [0, 180, 0], r: [-15 * DEG, 0, 0] });
   if (duo) {
     if (opts.arrangement === 'tray') {
-      const c = DUO_CFD_TRAY_OFFSET;
-      screens.push(head(d, 'secondary', cfdSpec, c, 'leaf'));
-      const cBot = c[1] - DUO_CFD.sh / 2 - DUO_CFD.bottom;
-      lightPipe(d, [c[0], cBot + DUO_CFD.bottom * 0.45, c[2] + 0.2]);
-      swipeGroove(d, [c[0], c[1] + DUO_CFD.sh / 2 + DUO_CFD.top + 0.1, FRONT_Z - 6], 120, 'x');
+      const c = DUET_CFD_TRAY_OFFSET;
+      screens.push(head(d, 'secondary', cfdSpec, c, 'mark'));
+      const cBot = c[1] - DUET_CFD.sh / 2 - DUET_CFD.bottom;
+      lightPipe(d, [c[0], cBot + DUET_CFD.bottom * 0.45, c[2] + 0.2]);
+      swipeGroove(d, [c[0], c[1] + DUET_CFD.sh / 2 + DUET_CFD.top + 0.1, FRONT_Z - 6], 120, 'x');
       chipSlot(d, [c[0], cBot - 0.5, FRONT_Z - 15]);
       chip = [c[0], cBot, FRONT_Z - 15];
-      nfc = [c[0], c[1] - DUO_CFD.sh / 2 - 12, 0];
+      nfc = [c[0], c[1] - DUET_CFD.sh / 2 - 12, 0];
       minY = cBot;
     } else {
       // CFD back-to-back on the stand: faces −Z, 20 mm behind the MFD shell
       const back = new Matrix4().copy(placeMatrix({ p: [0, -10, -mfd.d - 26], r: [0, Math.PI, 0] }));
       const saved = d.frame;
       d.frame = saved.clone().multiply(back);
-      screens.push(head(d, 'secondary', cfdSpec, [0, 0, 0], 'leaf'));
-      lightPipe(d, [0, -DUO_CFD.sh / 2 - DUO_CFD.bottom * 0.55, 0.2]);
+      screens.push(head(d, 'secondary', cfdSpec, [0, 0, 0], 'mark'));
+      lightPipe(d, [0, -DUET_CFD.sh / 2 - DUET_CFD.bottom * 0.55, 0.2]);
       d.frame = saved;
     }
   }
@@ -266,8 +266,8 @@ export function buildStation(type: DeviceTypeCode, opts: DeviceBuildOptions): De
   };
 }
 
-/** Station 2 base on its own (it stands on S1 of the tethered rack, cable up to the MFD head). */
-export function buildStationBase(opts: DeviceBuildOptions, type: DeviceTypeCode = 'STATION_2'): void {
+/** Stand 2 base on its own (it stands on S1 of the tethered rack, cable up to the MFD head). */
+export function buildStandBase(opts: DeviceBuildOptions, type: DeviceTypeCode = 'STAND_2'): void {
   const d = devCtx(opts);
   const [bw, bh, bd] = DEVICE_MODELS[type].baseMm ?? [240, 95, 200];
   stationBase(d, d.frame, bw, bh, bd, true);
@@ -282,7 +282,7 @@ export function buildSealedBox(type: DeviceTypeCode, opts: DeviceBuildOptions): 
   const [w, h, dd] = model.bodyMm;
   put(d, rboxG(w, h, dd, 2, 1), m.paperWhite, { p: [0, h / 2, 0] });
   put(d, boxG(w + 0.6, 30, dd + 0.6), m.greenPla, { p: [0, h * 0.35, 0] });
-  const t = tapeLabel(d.kit, type === 'MINI_4' ? 'MINI 4 — UPCOMING' : 'STATION DUO 3 — UPCOMING', 9);
+  const t = tapeLabel(d.kit, type === 'MICRO_4' ? 'MICRO 4 — UPCOMING' : 'STAND DUET 3 — UPCOMING', 9);
   tapeQuad(d, t.rect, Math.min(w - 20, t.w), t.h, { p: [0, h * 0.7, dd / 2 + 0.4] });
   decal(d, logoRect(d.kit, 'wordmark', '#2e9e4f'), 90, 27, { p: [0, h * 0.82, dd / 2 + 0.4] });
   return {

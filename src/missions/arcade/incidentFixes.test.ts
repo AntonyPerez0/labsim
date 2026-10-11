@@ -195,7 +195,7 @@ const FIXES: Record<string, (s: SimApi, b: IncidentBinding) => void> = {
   },
   INC59: (s, b) => {
     const rig = b.rig!;
-    expect(s.printer3d.start('prusa', 'cradle_flex_gen3.3mf', 'player').ok).toBe(true);
+    expect(s.printer3d.start('prusa', 'cradle_flux_gen3.3mf', 'player').ok).toBe(true);
     tick(100);
     s.rig.setSwitch(rig, 'motor', false, 'player');
     s.rig.setDoor(rig, true, 'player');
@@ -213,7 +213,7 @@ const FIXES: Record<string, (s: SimApi, b: IncidentBinding) => void> = {
   },
   INC22: (s) => {
     const l = getState().lab;
-    const scr = Object.values(l.orca.screens).find((x) => x.deviceType === 'FLEX_1' && x.name === 'RECEIPT_OPTIONS_4')!;
+    const scr = Object.values(l.orca.screens).find((x) => x.deviceType === 'FLUX_1' && x.name === 'RECEIPT_OPTIONS_4')!;
     const loc = Object.values(l.orca.screenLocations).find((x) => x.screenId === scr.id && x.button === 'Print')!;
     s.orca.saveScreenLocation({ id: loc.id, yMm: 66.5 }, 'player');
   },
@@ -308,7 +308,7 @@ const FIXES: Record<string, (s: SimApi, b: IncidentBinding) => void> = {
   },
   INC28: () => {
     term('ssh pi@10.42.10.30');
-    term(`adb -s ${getState().lab.devices['dev-data-mini3']!.serial} tcpip 5444`);
+    term(`adb -s ${getState().lab.devices['dev-data-micro3']!.serial} tcpip 5444`);
     term('exit');
     tick(5);
   },
@@ -316,7 +316,7 @@ const FIXES: Record<string, (s: SimApi, b: IncidentBinding) => void> = {
     setConfig(s, { customerFacingDeviceIp: '10.42.30.14' });
   },
   INC33: (s) => {
-    setConfig(s, { deviceType: 'Flex' });
+    setConfig(s, { deviceType: 'Flux' });
   },
   INC37: (s) => {
     const c = Object.values(getState().lab.orca.screenCompareImages).find((x) => x.name === 'CFD_TOTAL')!;
@@ -328,19 +328,19 @@ const FIXES: Record<string, (s: SimApi, b: IncidentBinding) => void> = {
     tick(120);
   },
   INC42: (s) => {
-    const r = s.device.swapHardware('johnny-5', 'FLEX_2', 'player');
+    const r = s.device.swapHardware('johnny-5', 'FLUX_2', 'player');
     expect(r.ok ? 'ok' : r.error).toBe('ok');
     if (!r.ok) return;
     const serial = getState().lab.devices[r.value.deviceId]!.serial;
-    const d = s.orca.saveDevice({ name: 'johnny-5-flex2', deviceType: 'FLEX_2', serial, ip: '10.42.30.15', label: 'Flex 2 (JOHNNY-5)' }, 'player');
+    const d = s.orca.saveDevice({ name: 'johnny-5-flux2', deviceType: 'FLUX_2', serial, ip: '10.42.30.15', label: 'Flux 2 (JOHNNY-5)' }, 'player');
     expect(d.ok ? 'ok' : d.error).toBe('ok');
     if (!d.ok) return;
     s.orca.saveRobot({ id: robotId('johnny-5'), deviceId: d.value }, 'player');
     tick(5);
   },
   INC43: (s) => {
-    const flex1 = Object.values(getState().lab.orca.devices).find((x) => x.name === 'johnny-5-flex1')!;
-    s.orca.saveRobot({ id: robotId('johnny-5'), deviceId: flex1.id }, 'player');
+    const flux1 = Object.values(getState().lab.orca.devices).find((x) => x.name === 'johnny-5-flux1')!;
+    s.orca.saveRobot({ id: robotId('johnny-5'), deviceId: flux1.id }, 'player');
   },
   INC44: (s) => {
     s.orca.setRobotStatus(robotId('k-9'), 'OFFLINE', 'player');
@@ -355,12 +355,12 @@ const FIXES: Record<string, (s: SimApi, b: IncidentBinding) => void> = {
   },
   INC49: (s) => {
     const job = s.jenkins.job('Java/contact-canada-pin-sale')!;
-    expect(s.jenkins.configureScript(job.id, job.script.replace(/deviceType: '[A-Z_0-9]+'/, "deviceType: 'COMPACT'"), 'player').ok).toBe(true);
+    expect(s.jenkins.configureScript(job.id, job.script.replace(/deviceType: '[A-Z_0-9]+'/, "deviceType: 'COMPASS'"), 'player').ok).toBe(true);
   },
   INC50: (s) => {
     const id = merchantId('WESTERS-CA-02');
     s.orca.saveMerchant({ id, ubiRoute: 'ca-central' }, 'player');
-    expect(s.laz.start('dev-seti-compact', id, 'player').ok).toBe(true);
+    expect(s.laz.start('dev-seti-compass', id, 'player').ok).toBe(true);
     tick(120);
   },
   INC56: () => {

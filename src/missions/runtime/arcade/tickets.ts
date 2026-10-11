@@ -585,7 +585,7 @@ function kickVerificationBuild(d: RootState, t: TicketState, rt: TicketRt, now: 
   const node = rt.scope.verifyNodes.find((n) => n.on.kind === 'build' || (n.on.kind === 'event' && BUILD_EVENTS.has(n.on.match.event)));
   if (!node) return;
   const trig: Omit<Extract<DeferredTrigger, { kind: 'build' }>, 'kind'> = node.on.kind === 'build' ? node.on : {};
-  // Exact parameters are part of the fix (INC39 "DEVICE_TYPE=FLEX_3", INC52 "CARD_PROFILE=…"): the player
+  // Exact parameters are part of the fix (INC39 "DEVICE_TYPE=FLUX_3", INC52 "CARD_PROFILE=…"): the player
   // runs that build; a re-run with the job's saved values would prove nothing.
   if (trig.params && Object.keys(trig.params).length) return;
   const robot = trig.robots?.[0] ?? rt.binding.rig ?? null;
@@ -599,7 +599,7 @@ function kickVerificationBuild(d: RootState, t: TicketState, rt: TicketRt, now: 
   const params: Record<string, string> = { ...(pl ? pl.params(0) : {}) };
   if (robot) {
     params.ROBOT_NAME = robot;
-    // Named checkout: the job's DEVICE_TYPE must match the rig's device (jobs default e.g. FLEX_3).
+    // Named checkout: the job's DEVICE_TYPE must match the rig's device (jobs default e.g. FLUX_3).
     const type = robotDeviceType(d.lab, robot);
     if (type) params.DEVICE_TYPE = type;
   }

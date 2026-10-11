@@ -12,7 +12,7 @@ import { lazyDrill } from '../common/lazy';
 import { completedModules, masteryWeight, filterByRoundTags, recentKeys, weightedPick, type RngState } from '../common/rng';
 import { teach } from '../common/teach';
 
-export type HotspotScene = 'power-panel' | 'motion-control' | 'tablet-tabs' | 'pi-board' | 'station-duo' | 'power-wall';
+export type HotspotScene = 'power-panel' | 'motion-control' | 'tablet-tabs' | 'pi-board' | 'stand-duet' | 'power-wall';
 
 /** Clickable regions per scene (the View draws them; ids must match). */
 export const SCENE_REGIONS: Record<HotspotScene, readonly string[]> = {
@@ -20,7 +20,7 @@ export const SCENE_REGIONS: Record<HotspotScene, readonly string[]> = {
   'motion-control': ['steppers-enable', 'steppers-disable', 'park-all', 'park-xy', 'park-x', 'park-y', 'dip-in', 'dip-out', 'tap-in', 'tap-out', 'phone-forward', 'phone-back', 'phone-power', 'sol-down', 'sol-up', 'sol-lower', 'sol-raise'],
   'tablet-tabs': ['tab-robot', 'tab-control', 'tab-motion', 'header-name', 'header-status'],
   'pi-board': ['led-act', 'led-pwr', 'eth', 'usb', 'power-in', 'hdmi', 'gpio'],
-  'station-duo': ['mfd', 'cfd', 'printer'],
+  'stand-duet': ['mfd', 'cfd', 'printer'],
   'power-wall': ['meanwell', 'rail24', 'reg12', 'reg5', 'fuse5', 'ac-strip'],
 };
 
@@ -70,9 +70,9 @@ export const HOTSPOTS: readonly Hot[] = [
   { key: 'hrn', scene: 'tablet-tabs', prompt: 'Click the Human Readable Name Orca pushes to this tablet', target: 'header-name', label: 'WALL-E (header)', why: 'The tablet header shows the robot\'s Human Readable Name — the display string Orca pushes to the front status tablet.', facts: ['F118', 'F233'], tags: ['orca.names', 'hw.tablet'], module: 'M07', ref: 'Ref §3.2' },
   { key: 'act', scene: 'pi-board', prompt: 'Click the Pi\'s green ACT (activity) LED', target: 'led-act', label: 'ACT LED (green)', why: 'A Raspberry Pi has a red PWR LED and a green ACT LED; a dark board with no LEDs points at power (fuse, regulator), not software.', facts: ['F063'], tags: ['hw.pi'], module: 'M05', ref: 'Ref §1.5', illustrative: true },
   { key: 'eth', scene: 'pi-board', prompt: 'The Pi is up but unreachable. Click the port to check first.', target: 'eth', label: 'Ethernet port', why: 'Orca\'s 5-minute health ping reaches the Pi over the network: a lit Pi that fails the ping → check its Ethernet lead.', facts: ['F099', 'F107'], tags: ['hw.pi', 'orca.healthcheck'], module: 'M06', ref: 'Ref §3', illustrative: true },
-  { key: 'mfd', scene: 'station-duo', prompt: 'Station Duo: click the display ADB can see', target: 'mfd', label: 'Primary MFD', why: 'On the Station Duo one terminal drives two displays, but only the primary MFD is exposed to ADB; legacy UI Automator was blind to the CFD.', facts: ['F151', 'F152'], tags: ['duo.ocr'], module: 'M16', ref: 'Ref §3.2' },
-  { key: 'cfd', scene: 'station-duo', prompt: 'Station Duo: click the display the OCR workaround (webcam + Tesseract) watches', target: 'cfd', label: 'Secondary CFD', why: 'Screen Compare / OCR exists because the CFD is ADB-blind: the webcam captures it, the Pi crops to the box and runs Tesseract.', facts: ['F150', 'F153', 'F154'], tags: ['duo.ocr', 'orca.screencompare'], module: 'M16', ref: 'Ref §3.2' },
-  { key: 'strip', scene: 'power-wall', prompt: 'Where does a new Flex 4 power brick plug in? Click it.', target: 'ac-strip', label: 'Commercial AC power strip', why: 'LabSim devices draw an irregular 18 V — LabSim terminals and Collis probes bypass the DC rails and plug into commercial AC power strips.', facts: ['F228', 'F229'], tags: ['power.18v'], module: 'M03', ref: 'Ref §6.3' },
+  { key: 'mfd', scene: 'stand-duet', prompt: 'Stand Duet: click the display ADB can see', target: 'mfd', label: 'Primary MFD', why: 'On the Stand Duet one terminal drives two displays, but only the primary MFD is exposed to ADB; legacy UI Automator was blind to the CFD.', facts: ['F151', 'F152'], tags: ['duet.ocr'], module: 'M16', ref: 'Ref §3.2' },
+  { key: 'cfd', scene: 'stand-duet', prompt: 'Stand Duet: click the display the OCR workaround (webcam + Tesseract) watches', target: 'cfd', label: 'Secondary CFD', why: 'Screen Compare / OCR exists because the CFD is ADB-blind: the webcam captures it, the Pi crops to the box and runs Tesseract.', facts: ['F150', 'F153', 'F154'], tags: ['duet.ocr', 'orca.screencompare'], module: 'M16', ref: 'Ref §3.2' },
+  { key: 'strip', scene: 'power-wall', prompt: 'Where does a new Flux 4 power brick plug in? Click it.', target: 'ac-strip', label: 'Commercial AC power strip', why: 'LabSim devices draw an irregular 18 V — LabSim terminals and Collis probes bypass the DC rails and plug into commercial AC power strips.', facts: ['F228', 'F229'], tags: ['power.18v'], module: 'M03', ref: 'Ref §6.3' },
   { key: 'reg5', scene: 'power-wall', prompt: 'Click the regulator that feeds the Raspberry Pis', target: 'reg5', label: '5 V DC 10 A regulator', why: 'Step-down regulators split the 24 V rail: 12 V DC for the NUCs, 5 V DC 10 A for the Pis.', facts: ['F086', 'F227'], tags: ['power.rails'], module: 'M03', ref: 'Ref §6.3' },
   { key: 'meanwell', scene: 'power-wall', prompt: 'Click the part that turns 120 V AC into the 24 V DC rail', target: 'meanwell', label: 'Mean Well transformer', why: 'Mean Well transformers convert 120 V AC wall power to the central 24 V DC rail.', facts: ['F074', 'F227'], tags: ['power.rails'], module: 'M03', ref: 'Ref §1.5' },
   { key: 'fuse', scene: 'power-wall', prompt: 'Rack B\'s Pis went dark. Click what you test first with the multimeter.', target: 'fuse5', label: 'Rack B 5 V inline fuse', why: 'Inline fuses protect the DC lines; a dark Pi shelf with a healthy regulator points at the 5 V inline fuse.', facts: ['F087'], tags: ['power.fuses'], module: 'M03', ref: 'Ref §1.5' },

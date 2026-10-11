@@ -1,6 +1,6 @@
 /**
  * The materializer's label placement must equal the sim frame model (Apps §6.5): R2-D2's CFD `TOTAL $10.83` at
- * 412, 288, 236 × 44 in the webcam frame (Cur M16 s6) and FLEX_3 `Payment Successful` at 208, 512, 304 × 40 in a
+ * 412, 288, 236 × 44 in the webcam frame (Cur M16 s6) and FLUX_3 `Payment Successful` at 208, 512, 304 × 40 in a
  * screencap (GP INC24).
  */
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -35,13 +35,13 @@ describe('layout-faithful labels', () => {
     }
   });
 
-  it('places FLEX_3 Payment Successful where the screencap frame model has it', () => {
-    expect(sim.faults.applySetup({ op: 'device.stage', params: { device: 'dev-wall-e-flex3', stage: 'approved' } }).ok).toBe(true);
+  it('places FLUX_3 Payment Successful where the screencap frame model has it', () => {
+    expect(sim.faults.applySetup({ op: 'device.stage', params: { device: 'dev-wall-e-flux3', stage: 'approved' } }).ok).toBe(true);
     const lab = getState().lab;
-    const dev = lab.devices['dev-wall-e-flex3']!;
+    const dev = lab.devices['dev-wall-e-flux3']!;
     const scr = screenOf(dev.type, 'primary');
     const els = displayElements(lab, dev, 'primary', scr.px.x, scr.px.y);
-    const model = sim.ocr.frame('img:screencap:dev-wall-e-flex3:live');
+    const model = sim.ocr.frame('img:screencap:dev-wall-e-flux3:live');
     expect(model.ok).toBe(true);
     if (!model.ok) return;
     const l = model.value.labels.find((x) => x.text === 'Payment Successful')!;

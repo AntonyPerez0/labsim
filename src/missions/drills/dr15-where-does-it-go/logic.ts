@@ -65,7 +65,7 @@ export const WHERE_ITEMS: readonly DrillItem<FileData>[] = [
   f('ReceiptScreen.java', 'pageobjects', 'isScreenPresent() { return device.hasObject(printBtn); }', ['uia.pom']),
   f('CfdTotalsScreen.java', 'pageobjects', 'customer-display totals screen: assertTotal(String)', ['uia.pom']),
   f('TaxTest.java', 'testactions', '/* TaxTest — tethered (MFD + CFD) … */ @Test public void taxItem5()', ['uia.taxtest']),
-  f('TaxTestDuo.java', 'testactions', '@Test … cfdTotals.assertTotal("$10.83")', ['uia.taxtest']),
+  f('TaxTestDuet.java', 'testactions', '@Test … cfdTotals.assertTotal("$10.83")', ['uia.taxtest']),
   f('HomeScreenTest.java', 'testactions', '@Test public void opensRegister() { home.open("Register"); … }'),
   f('RefundFlowTest.java', 'testactions', '@Test strings page-object methods + asserts the refund'),
   f('MultiDeviceRunner.java', 'test', 'mfd.run(registerHome::addTaxItem5); cfd.run(cfdTotals::assertTotals);'),

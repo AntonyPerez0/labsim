@@ -33,19 +33,19 @@ export const PX_PER_DEG_PITCH = 6.25;
 const v = (deviceId: string, display: 'primary' | 'secondary', ox: number, oy: number, s: number, tag: string): CameraView => ({ deviceId, display, ox, oy, s, tag });
 
 export const CAMERAS: readonly CameraDef[] = [
-  { id: 'cam-wall-e', hostId: 'pi-wall-e', octet: 11, rigId: 'wall-e', views: [v('dev-wall-e-flex3', 'primary', 397, 112, 3.5, 'WALL-E')] },
-  { id: 'cam-eve', hostId: 'pi-eve', octet: 12, rigId: 'eve', views: [v('dev-eve-flex4', 'primary', 397, 112, 3.5, 'EVE')] },
-  { id: 'cam-bumblebee', hostId: 'pi-bumblebee', octet: 13, rigId: 'bumblebee', views: [v('dev-bumblebee-mini3', 'primary', 296, 145, 4.0, 'BUMBLEBEE')] },
-  { id: 'cam-r2-d2', hostId: 'pi-r2-d2', octet: 14, rigId: 'r2-d2', views: [v('dev-r2-d2-duo', 'secondary', 300, 160, 3.947, 'R2-D2 · CFD')] },
+  { id: 'cam-wall-e', hostId: 'pi-wall-e', octet: 11, rigId: 'wall-e', views: [v('dev-wall-e-flux3', 'primary', 397, 112, 3.5, 'WALL-E')] },
+  { id: 'cam-eve', hostId: 'pi-eve', octet: 12, rigId: 'eve', views: [v('dev-eve-flux4', 'primary', 397, 112, 3.5, 'EVE')] },
+  { id: 'cam-bumblebee', hostId: 'pi-bumblebee', octet: 13, rigId: 'bumblebee', views: [v('dev-bumblebee-micro3', 'primary', 296, 145, 4.0, 'BUMBLEBEE')] },
+  { id: 'cam-r2-d2', hostId: 'pi-r2-d2', octet: 14, rigId: 'r2-d2', views: [v('dev-r2-d2-duet', 'secondary', 300, 160, 3.947, 'R2-D2 · CFD')] },
   {
     id: 'cam-rackb',
     hostId: 'pi-cam-rackb',
     octet: 40,
     rigId: null,
     views: [
-      v('dev-johnny-5-flex1', 'primary', 239, 36, 2.6, 'JOHNNY-5'),
+      v('dev-johnny-5-flux1', 'primary', 239, 36, 2.6, 'JOHNNY-5'),
       v('dev-baymax-st2018', 'primary', 712, 40, 1.6, 'BAYMAX'),
-      v('dev-seti-compact', 'primary', 239, 396, 2.6, 'SETI'),
+      v('dev-seti-compass', 'primary', 239, 396, 2.6, 'SETI'),
       v('dev-rosie-pocket', 'primary', 877, 400, 2.2, 'ROSIE'),
     ],
   },
@@ -62,7 +62,7 @@ export const CAMERAS: readonly CameraDef[] = [
     ],
   },
   { id: 'cam-vision', hostId: 'pi-vision', octet: 50, rigId: 'vision', views: [] },
-  { id: 'cam-rackc', hostId: 'pi-cam-rackc', octet: 60, rigId: null, views: [v('dev-c-3po-duo', 'secondary', 940, 420, 1.6, 'C-3PO · CFD')] },
+  { id: 'cam-rackc', hostId: 'pi-cam-rackc', octet: 60, rigId: null, views: [v('dev-c-3po-duet', 'secondary', 940, 420, 1.6, 'C-3PO · CFD')] },
   { id: 'cam-bb-8', hostId: 'pi-bb-8', octet: 61, rigId: null, views: [] },
   { id: 'cam-bender', hostId: 'pi-bender', octet: 63, rigId: 'bender', views: [] },
   { id: 'cam-rackd', hostId: 'pi-marvin', octet: 64, rigId: null, views: [] },

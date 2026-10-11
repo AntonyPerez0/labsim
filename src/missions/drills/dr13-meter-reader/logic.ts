@@ -113,7 +113,7 @@ export const METER_ITEMS: readonly DrillItem<MeterData>[] = [
     { at: 'reg5', label: '5 V regulator output', mode: 'V⎓', value: '5.07' },
     { at: 'pi', label: 'Pi side of the fuse', mode: 'V⎓', value: '5.06' },
   ], ANS.piSide, [ANS.blownFuse, ANS.regDead, ANS.upstream], 'Power is fine all the way to the Pi — look at the network cable, the Pi itself or Callus instead.', { facts: ['F086', 'F087'], tags: ['power.rails', 'hw.pi'], illustrative: true }),
-  m("A Flex 4's power brick, plugged into the commercial AC strip. Output of the brick:", [{ at: 'lab', label: 'LabSim PSU brick output', mode: 'V⎓', value: '18.2' }], ANS.normal18, [ANS.wrongRail, ANS.regDead, ANS.blownFuse], 'LabSim devices draw an irregular 18 V, so LabSim terminals (and Collis probes) bypass the DC rails entirely and plug into commercial AC power strips.', {
+  m("A Flux 4's power brick, plugged into the commercial AC strip. Output of the brick:", [{ at: 'lab', label: 'LabSim PSU brick output', mode: 'V⎓', value: '18.2' }], ANS.normal18, [ANS.wrongRail, ANS.regDead, ANS.blownFuse], 'LabSim devices draw an irregular 18 V, so LabSim terminals (and Collis probes) bypass the DC rails entirely and plug into commercial AC power strips.', {
     facts: ['F228', 'F229'],
     tags: ['power.18v'],
     branch: 'strip',

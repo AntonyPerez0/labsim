@@ -85,7 +85,7 @@ describe('adb (Sim §3.15)', () => {
     expect(run('adb connect 10.42.30.32:5444').out).toEqual(['connected to 10.42.30.32:5444']);
     expect(run('adb connect 10.42.30.32')).toMatchObject({ out: ["failed to connect to '10.42.30.32:5555': Connection refused"], code: 1 });
     expect(run('adb devices').out).toEqual(['List of devices attached', '10.42.30.32:5444\tdevice', '']);
-    expect(run('adb shell getprop ro.product.model').out).toEqual(['Flex 4']);
+    expect(run('adb shell getprop ro.product.model').out).toEqual(['Flux 4']);
   });
 
   it('5444 never reaches a coworker device; 5555 does — and driving it is recorded', () => {
@@ -175,7 +175,7 @@ describe('curl (Sim §3.23)', () => {
     const r = run(`curl -s -X POST http://orca.lab.local:8080/api/xy_touch -H 'Content-Type: application/json' -d '{"robot":"wall-e","screen":"HOME","button":"Register"}'`);
     expect(r.out[0]).toMatch(/^\{"result":"OK","mode":"PHYSICAL_TAP","x_mm":[\d.]+,"y_mm":[\d.]+/);
     expect(run('curl -s http://10.42.1.12:11434/api/tags | jq -r .models[].name').out).toEqual(['llava:latest']);
-    expect(run('curl -s http://jenkins.lab.local:8080/job/Java/job/uia-remote-regression-flex/lastBuild/api/json').out[0]).toMatch(/^\{"number":4119,"result":"SUCCESS","building":false,"duration":\d+\}$/);
+    expect(run('curl -s http://jenkins.lab.local:8080/job/Java/job/uia-remote-regression-flux/lastBuild/api/json').out[0]).toMatch(/^\{"number":4119,"result":"SUCCESS","building":false,"duration":\d+\}$/);
     expect(run('curl http://nosuch.lab.local/').out).toEqual(['curl: (6) Could not resolve host: nosuch.lab.local']);
   });
 });
@@ -213,17 +213,17 @@ describe('git and GitHub from the terminal (Sim §3.22)', () => {
     });
     const ev: string[] = [];
     const offs = (['github.prReviewed', 'github.prMerged', 'orca.screenLocationsSynced'] as const).map((e) => bus.on(e, (p) => ev.push(`${e}:${'verdict' in p ? p.verdict : 'screen' in p ? p.screen : p.number}`)));
-    run('cd ~/IdeaProjects && git clone git@github.com:labsim-lab/gort.git && cd gort && git checkout -b fix/flex3-receipt5');
-    const path = 'config/screen-locations/FLEX_3/RECEIPT_OPTIONS_5.json';
+    run('cd ~/IdeaProjects && git clone git@github.com:labsim-lab/gort.git && cd gort && git checkout -b fix/flux3-receipt5');
+    const path = 'config/screen-locations/FLUX_3/RECEIPT_OPTIONS_5.json';
     const truth = lab().repos['gort'].local!.files[path]!;
     const nudge = (mm: number): string => truth.replace(/"y": ([\d.]+)/, (_m, y: string) => `"y": ${(Number(y) + mm).toFixed(1)}`);
     sim.git.writeFile('gort', path, nudge(3));
-    run('git commit -am "Shift receipt options" && git push -u origin fix/flex3-receipt5');
-    const pr = sim.git.createPullRequest('gort', 'Shift FLEX_3 receipt options', '', 'fix/flex3-receipt5', 'player');
+    run('git commit -am "Shift receipt options" && git push -u origin fix/flux3-receipt5');
+    const pr = sim.git.createPullRequest('gort', 'Shift FLUX_3 receipt options', '', 'fix/flux3-receipt5', 'player');
     if (!pr.ok) throw new Error(pr.error);
     for (let i = 0; i < 100; i++) sim.tick(250);
     expect(ev).toEqual(['github.prReviewed:CHANGES_REQUESTED']);
-    expect(lab().chat.messages.some((m) => m.author === 'jared' && m.text.includes('Print on FLEX_3 is still 3.0 mm low'))).toBe(true);
+    expect(lab().chat.messages.some((m) => m.author === 'jared' && m.text.includes('Print on FLUX_3 is still 3.0 mm low'))).toBe(true);
     sim.git.writeFile('gort', path, nudge(0.3));
     run('git commit -am "Within tolerance" && git push');
     for (let i = 0; i < 160; i++) sim.tick(250);
@@ -250,7 +250,7 @@ describe('local runs from the terminal (Sim §1.12, §3.19)', () => {
 });
 
 describe('the 5555 collision (Sim §3.15.3, Cur S19)', () => {
-  it('a local run with portNumber=5555 falls back to the first known device — a coworker\'s Flex', { timeout: 60_000 }, () => {
+  it('a local run with portNumber=5555 falls back to the first known device — a coworker\'s Flux', { timeout: 60_000 }, () => {
     run('adb connect 10.42.60.4:5555');
     run('cd IdeaProjects && git clone git@github.com:labsim-lab/uia-remote.git && cd uia-remote && cp config.properties.example config.properties');
     const cfg = lab().repos['uia-remote'].local!.files['config.properties']!.replace(/robotName=.*/, 'robotName=megatron').replace('portNumber=5444', 'portNumber=5555');

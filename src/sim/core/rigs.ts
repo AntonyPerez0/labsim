@@ -741,9 +741,9 @@ export function reseat(lab: LabState, ctx: Ctx, rigId: string, part: RigPart): R
 
 /** Printed cradle part for a device type (Sim §3.24). */
 export function cradlePartFor(type: string): string {
-  if (type.startsWith('FLEX') || type === 'COMPACT') return 'cradle_flex_gen3';
-  if (type.startsWith('MINI')) return 'cradle_mini3';
-  return 'cradle_station';
+  if (type.startsWith('FLUX') || type === 'COMPASS') return 'cradle_flux_gen3';
+  if (type.startsWith('MICRO')) return 'cradle_micro3';
+  return 'cradle_stand';
 }
 
 export function replaceCradle(lab: LabState, ctx: Ctx, rigId: string): Result {
@@ -751,7 +751,7 @@ export function replaceCradle(lab: LabState, ctx: Ctx, rigId: string): Result {
   if (!rig) return err(`unknown rig '${rigId}'`);
   if (!rig.hasGantry) return err('This rig has no printed cradle');
   const dev = rig.deviceIds[0] ? lab.devices[rig.deviceIds[0]] : undefined;
-  const part = cradlePartFor(dev?.type ?? 'FLEX_3');
+  const part = cradlePartFor(dev?.type ?? 'FLUX_3');
   const idx = lab.printer3d.output.indexOf(part);
   if (idx < 0) return err(`No printed ${part} on the printer tray — print ${part}.3mf first`);
   lab.printer3d.output.splice(idx, 1);

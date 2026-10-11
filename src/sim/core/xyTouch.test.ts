@@ -4,7 +4,7 @@ import { collect, device, fresh, lab, run, sim } from './testkit';
 
 vi.setConfig({ testTimeout: 60_000 });
 
-const WALL_E = 'dev-wall-e-flex3';
+const WALL_E = 'dev-wall-e-flux3';
 const stage = (dev: string, s: string) => {
   const r = sim.faults.applySetup({ op: 'device.stage', params: { device: dev, stage: s } });
   expect(r).toEqual({ ok: true, value: undefined });
@@ -22,7 +22,7 @@ function tap(robotName: string, screen: string, button: string, opts?: { target?
 describe('xy_touch modes (Sim §3.5.3)', () => {
   beforeEach(() => fresh());
 
-  it('PHYSICAL_TAP on a touch rig answers after the stroke; ADB_TOUCH on ADB bots / Duo MFD / tethered CFD', () => {
+  it('PHYSICAL_TAP on a touch rig answers after the stroke; ADB_TOUCH on ADB bots / Duet MFD / tethered CFD', () => {
     stage(WALL_E, 'register-order');
     const { res, tap: t } = tap('wall-e', 'REGISTER_HOME', 'Review Order');
     expect(res).toMatchObject({ ok: true, value: { orcaMode: 'PHYSICAL_TAP', xMm: 56, yMm: 124, body: '{"result":"OK","mode":"PHYSICAL_TAP","x_mm":56.0,"y_mm":124.0}' } });
@@ -32,14 +32,14 @@ describe('xy_touch modes (Sim §3.5.3)', () => {
     expect(sim.orca.xyTouch('r2-d2', 'CFD_RECEIPT_DONE', 'Done', 'player')).toMatchObject({ ok: true, value: { orcaMode: 'PHYSICAL_TAP', display: 'secondary' } });
     expect(sim.orca.xyTouch('r2-d2', 'REVIEW_ORDER', 'Pay', 'player')).toMatchObject({ ok: true, value: { orcaMode: 'ADB_TOUCH', display: 'primary' } });
     expect(sim.orca.xyTouch('megatron', 'TIP', 'No Tip', 'player', { target: 'CFD' })).toMatchObject({ ok: true, value: { orcaMode: 'ADB_TOUCH', deviceId: 'dev-megatron-cfd' } });
-    expect(sim.orca.xyTouch('k-9', 'CFD_TIP', 'No Tip', 'player')).toEqual({ ok: false, error: '422 Unprocessable Entity: secondary display of STATION_DUO_2 is not exposed to ADB and robot k-9 has no probe on it' });
+    expect(sim.orca.xyTouch('k-9', 'CFD_TIP', 'No Tip', 'player')).toEqual({ ok: false, error: '422 Unprocessable Entity: secondary display of STAND_DUET_2 is not exposed to ADB and robot k-9 has no probe on it' });
   });
 
   it('errors: unknown robot, missing map, lock held by another build, lock released', () => {
     expect(sim.orca.xyTouch('WALL-E', 'HOME', 'Register', 'player')).toEqual({ ok: false, error: "404 Not Found: no robot named 'WALL-E'" });
-    sim.faults.inject({ faultId: 'orca.missingReceiptMap', params: { deviceType: 'STATION_2018' } });
-    expect(sim.orca.xyTouch('baymax', 'RECEIPT_OPTIONS_5', 'Email', 'player')).toEqual({ ok: false, error: '404 Not Found: no Screen Location for (STATION_2018, RECEIPT_OPTIONS_5, "Email")' });
-    sim.orca.checkout({ buildId: 'Java/uia-remote-regression-flex#4127', jobId: 'Java/uia-remote-regression-flex', robotName: 'wall-e', kind: 'jenkins' });
+    sim.faults.inject({ faultId: 'orca.missingReceiptMap', params: { deviceType: 'STAND_2018' } });
+    expect(sim.orca.xyTouch('baymax', 'RECEIPT_OPTIONS_5', 'Email', 'player')).toEqual({ ok: false, error: '404 Not Found: no Screen Location for (STAND_2018, RECEIPT_OPTIONS_5, "Email")' });
+    sim.orca.checkout({ buildId: 'Java/uia-remote-regression-flux#4127', jobId: 'Java/uia-remote-regression-flux', robotName: 'wall-e', kind: 'jenkins' });
     expect(sim.orca.xyTouch('wall-e', 'HOME', 'Register', 'player')).toEqual({ ok: false, error: '423 Locked: robot wall-e is in use by Jenkins #4127' });
     sim.faults.inject({ faultId: 'rig.lockReleased', params: { rig: 'eve' } });
     expect(sim.orca.xyTouch('eve', 'HOME', 'Register', 'player')).toEqual({ ok: false, error: '409 Conflict: LOCK_RELEASED (park required)' });
@@ -47,7 +47,7 @@ describe('xy_touch modes (Sim §3.5.3)', () => {
 
   it('legacy offsets: BUMBLEBEE Y +1.5 hits icons but misses PAYMENT/Charge (core 1.2, INC14)', () => {
     sim.faults.inject({ faultId: 'orca.offsets', params: { robot: 'bumblebee', yMm: 1.5 } });
-    const dev = 'dev-bumblebee-mini3';
+    const dev = 'dev-bumblebee-micro3';
     stage(dev, 'home');
     expect(tap('bumblebee', 'HOME', 'Register').tap).toMatchObject({ result: 'HIT', hitButton: 'Register' });
     stage(dev, 'review-order');
@@ -71,12 +71,12 @@ describe('receipt QR rollout (Sim §3.10) — 4- vs 5-option maps', () => {
     expect(device(WALL_E).display.receiptOptions).toBe(5);
     expect(tap('wall-e', 'RECEIPT_OPTIONS_4', 'Print').tap).toMatchObject({ result: 'EDGE_REJECT' });
     expect(device(WALL_E).display.screen).toBe('receipt-options');
-    sim.faults.inject({ faultId: 'orca.screenLocationShift', params: { deviceTypes: ['FLEX_3'] } });
+    sim.faults.inject({ faultId: 'orca.screenLocationShift', params: { deviceTypes: ['FLUX_3'] } });
     expect(tap('wall-e', 'RECEIPT_OPTIONS_5', 'Print').tap).toMatchObject({ result: 'EDGE_REJECT' });
     expect(device(WALL_E).display.screen).toBe('receipt-options');
     expect(device(WALL_E).printer.lastPayloadMs).toBeNull();
     // Jared's fix: put the rows back on firmware truth (here via the Orca editor).
-    const scr = Object.values(lab().orca.screens).find((s) => s.deviceType === 'FLEX_3' && s.name === 'RECEIPT_OPTIONS_5')!;
+    const scr = Object.values(lab().orca.screens).find((s) => s.deviceType === 'FLUX_3' && s.name === 'RECEIPT_OPTIONS_5')!;
     const loc = Object.values(lab().orca.screenLocations).find((l) => l.screenId === scr.id && l.button === 'Print')!;
     expect(loc.yMm).toBe(71);
     sim.orca.saveScreenLocation({ id: loc.id, yMm: 74 }, 'player');
@@ -89,7 +89,7 @@ describe('receipt QR rollout (Sim §3.10) — 4- vs 5-option maps', () => {
   it('before the rollout the device shows 4 options and the _4 map hits; the rollout re-renders 5 and the _4 map misses', () => {
     sim.setFlag('receiptQrFeature', false);
     expect(device(WALL_E).firmwareInfo).toEqual({ version: '2.26.08.3', receiptQr: false });
-    expect(device('dev-johnny-5-flex1').firmwareInfo).toEqual({ version: '2.19.4', receiptQr: false });
+    expect(device('dev-johnny-5-flux1').firmwareInfo).toEqual({ version: '2.19.4', receiptQr: false });
     stage(WALL_E, 'receipt-options');
     expect(device(WALL_E).display.receiptOptions).toBe(4);
     expect(sim.device.layout(WALL_E, 'primary').filter((b) => b.kind === 'button').map((b) => `${b.id}@${b.yMm}`)).toEqual(['Print@71', 'Email@83', 'Text@95', 'No Receipt@107']);
@@ -111,10 +111,10 @@ describe('receipt QR rollout (Sim §3.10) — 4- vs 5-option maps', () => {
     expect(device(WALL_E).display.receiptOptions).toBe(4);
   });
 
-  it('FLEX_1 JOHNNY-5: Print at 62.5 instead of 66.5 lands in the gap (INC22)', () => {
+  it('FLUX_1 JOHNNY-5: Print at 62.5 instead of 66.5 lands in the gap (INC22)', () => {
     sim.faults.inject({ faultId: 'orca.screenLocationTypo' });
-    stage('dev-johnny-5-flex1', 'receipt-options');
-    expect(device('dev-johnny-5-flex1').display.receiptOptions).toBe(4);
+    stage('dev-johnny-5-flux1', 'receipt-options');
+    expect(device('dev-johnny-5-flux1').display.receiptOptions).toBe(4);
     expect(tap('johnny-5', 'RECEIPT_OPTIONS_4', 'Print').tap).toMatchObject({ result: 'MISS' });
   });
 });

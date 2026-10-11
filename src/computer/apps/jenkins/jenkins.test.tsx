@@ -13,7 +13,7 @@ import { parseRoute } from './model';
 
 let m: Mounted | null = null;
 let cap: ReturnType<typeof captureActions>;
-const JOB = 'Java/uia-remote-regression-flex';
+const JOB = 'Java/uia-remote-regression-flux';
 
 beforeEach(() => {
   sim.reset({ preset: 'factory' });
@@ -31,17 +31,17 @@ describe('Jenkins routes', () => {
     expect(parseRoute('/')).toMatchObject({ kind: 'dashboard' });
     expect(parseRoute('/view/iOS/')).toMatchObject({ kind: 'view', view: 'iOS' });
     expect(parseRoute('/job/Java/')).toMatchObject({ kind: 'folder', folder: 'Java' });
-    expect(parseRoute('/job/Java/job/uia-remote-regression-flex/')).toMatchObject({ kind: 'job', jobId: JOB });
-    expect(parseRoute('/job/Java/job/uia-remote-regression-flex/build')).toMatchObject({ kind: 'buildWithParameters', jobId: JOB });
-    expect(parseRoute('/job/Java/job/uia-remote-regression-flex/4127/console')).toMatchObject({ kind: 'console', jobId: JOB, number: '4127' });
-    expect(parseRoute('/job/Java/job/uia-remote-regression-flex/configure')).toMatchObject({ kind: 'configure', jobId: JOB });
+    expect(parseRoute('/job/Java/job/uia-remote-regression-flux/')).toMatchObject({ kind: 'job', jobId: JOB });
+    expect(parseRoute('/job/Java/job/uia-remote-regression-flux/build')).toMatchObject({ kind: 'buildWithParameters', jobId: JOB });
+    expect(parseRoute('/job/Java/job/uia-remote-regression-flux/4127/console')).toMatchObject({ kind: 'console', jobId: JOB, number: '4127' });
+    expect(parseRoute('/job/Java/job/uia-remote-regression-flux/configure')).toMatchObject({ kind: 'configure', jobId: JOB });
   });
 });
 
 describe('Jenkins app', () => {
   it('submits Build with Parameters through sim.jenkins.build with the typed values', async () => {
     const spy = vi.spyOn(sim.jenkins, 'build');
-    const host = makeRoutedHost(JenkinsApp, '/job/Java/job/uia-remote-regression-flex/build');
+    const host = makeRoutedHost(JenkinsApp, '/job/Java/job/uia-remote-regression-flux/build');
     m = await mount(<host.Host />);
     expect(cap.of('jenkins.buildWithParameters.opened')[0]).toMatchObject({ jobId: JOB });
     expect(m.container.textContent).toContain('This build requires parameters:');
@@ -56,7 +56,7 @@ describe('Jenkins app', () => {
     const trig = cap.of('jenkins.build.triggered')[0]!;
     expect(trig).toMatchObject({ jobId: JOB, ok: true });
     expect(getState().lab.jenkins.builds[trig.buildId as string]).toBeTruthy();
-    expect(host.routes.at(-1)).toBe('/job/Java/job/uia-remote-regression-flex/');
+    expect(host.routes.at(-1)).toBe('/job/Java/job/uia-remote-regression-flux/');
   });
 
   it('renders the console line by line and reports opened / line clicks', async () => {
@@ -64,7 +64,7 @@ describe('Jenkins app', () => {
     expect(r.ok).toBe(true);
     for (let i = 0; i < 40; i++) act(() => sim.tick(500));
     const b = getState().lab.jenkins.builds[r.ok ? r.value.buildId : '']!;
-    const host = makeRoutedHost(JenkinsApp, `/job/Java/job/uia-remote-regression-flex/${b.number}/console`);
+    const host = makeRoutedHost(JenkinsApp, `/job/Java/job/uia-remote-regression-flux/${b.number}/console`);
     m = await mount(<host.Host />);
     expect(cap.of('jenkins.console.opened')[0]).toMatchObject({ buildId: b.id, number: b.number });
     const text = m.container.querySelector('pre')?.textContent ?? '';
@@ -80,6 +80,6 @@ describe('Jenkins app', () => {
     const host = makeRoutedHost(JenkinsApp, '/view/Java/');
     m = await mount(<host.Host />);
     expect(cap.of('jenkins.view.opened')[0]).toEqual({ view: 'Java' });
-    expect(m.container.textContent).toContain('uia-remote-regression-flex');
+    expect(m.container.textContent).toContain('uia-remote-regression-flux');
   });
 });

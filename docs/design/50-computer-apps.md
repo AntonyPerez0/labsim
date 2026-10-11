@@ -94,7 +94,7 @@ achievements listen to them; nothing else in the computer is observable.
 Rules:
 1. **Route strings.** For browser-hosted apps (`chrome: 'browser'`) the route is the URL *path + query* exactly as
    the address bar shows after the host (`/robot/5/edit`, `/robot?status.in=AVAILABLE&page=1&sort=id,asc`,
-   `/job/Java/job/uia-remote-regression-flex/4127/console`). For desktop apps it is a pseudo-path defined in
+   `/job/Java/job/uia-remote-regression-flux/4127/console`). For desktop apps it is a pseudo-path defined in
    `APP_ROUTES` (`/project/uia-remote/file/app/src/.../HomeScreen.java`, `/stream/r2-d2`). Query keys are emitted
    in the order the app writes them; missions use `matchRoute()` (apps.ts), which ignores query order.
 2. **Route templates** use `:name` for one path segment and `*name` for "the rest of the path" (may contain `/`).
@@ -345,7 +345,7 @@ IntelliJ run finished while IntelliJ is not focused, Orca health-check failures 
   | Ref | Materialized as |
   |---|---|
   | `img:webcam:<cameraId>:<physMs>` | taken by the Camera app at snapshot time (already in the store); if missing (snapshot made by the sim, e.g. Jenkins evidence capture) render the camera's frame **now** (live capture if the feed exists, else the synthetic frame of §8.5) and store it |
-  | `img:screencap:<deviceId>:<physMs>` | `render2d.drawDeviceDisplay(primary)` at the device's native px (`DeviceTypeInfo` resolution, e.g. FLEX_3 720 × 1280) — the materializer watches `lab.workstation.files` and renders new screencap refs **immediately** so the image shows the screen at capture time (the sim says "frozen labels") |
+  | `img:screencap:<deviceId>:<physMs>` | `render2d.drawDeviceDisplay(primary)` at the device's native px (`DeviceTypeInfo` resolution, e.g. FLUX_3 720 × 1280) — the materializer watches `lab.workstation.files` and renders new screencap refs **immediately** so the image shows the screen at capture time (the sim says "frozen labels") |
   | `img:receipt:<rig>:<id>` | receipt text from `lab.ollama.receiptScenarios[ref]` (or the device's `lastReceipt`) formatted per Sim §3.9.7, drawn with `render2d.drawReceipt` on thermal-paper white `#fbfaf5`, 384 px wide, then placed on a dark desk background 1024 × 1365 with 2° rotation and soft shadow (a phone photo of a receipt) |
 
 ### 1.7 Objective pin, hints and "Show me" [game]
@@ -413,7 +413,7 @@ IntelliJ run finished while IntelliJ is not focused, Orca health-check failures 
 ### 1.11 Lesson gating (`session.computer`, written by missions)
 
 `session.computer` (`ComputerGating`, `src/core/sessionState.ts`) narrows the desktop during Academy steps
-(Cur M06 setup: "Orca app unlocked with the Robots page … Jenkins showing only job `Java/uia-remote-regression-flex`").
+(Cur M06 setup: "Orca app unlocked with the Robots page … Jenkins showing only job `Java/uia-remote-regression-flux`").
 Gating focuses the trainee; it is not security, and it never changes lab state.
 
 | Field | Effect |
@@ -489,7 +489,7 @@ Locations listed separately as JHipster does). **Administration ▾**: `User man
 | Right heading | `h1` `Welcome to Orchestrator!` · lead `Controller for Jenkins pipelines and the lab robots.` · `You are logged in as user "admin".` (JHipster) |
 | Status cards | five cards in a row, one per status: big count + chip, click → `/robot?status.in=<STATUS>`. Counts from `lab.orca.robots`. |
 | Health check | `Health check: every 5 minutes · last run 09:35:00 (#7) · next 09:40:00` from `orca.healthCheck` (`lastRunMs`, `runCount`, `nextRunMs`); link `View health-check log`. |
-| Active checkouts | table `Robot · Build · Since`: every robot with `checkout != null` → `wall-e · Java/uia-remote-regression-flex #4127 · 09:41:07` (link to Jenkins build route via `wm.openApp('jenkins', …)`); `manual` checkouts show `manual (admin)`. Empty: `No robots are checked out.` |
+| Active checkouts | table `Robot · Build · Since`: every robot with `checkout != null` → `wall-e · Java/uia-remote-regression-flux #4127 · 09:41:07` (link to Jenkins build route via `wm.openApp('jenkins', …)`); `manual` checkouts show `manual (admin)`. Empty: `No robots are checked out.` |
 | Recent alerts | last 8 unresolved HEALTH notes across robots: timestamp, robot name link, note text in monospace 12 px. |
 
 ### 2.4 Robots (`/robot`) — Tate's filter UI
@@ -502,7 +502,7 @@ Heading `Robots` with buttons `⟳ Refresh list` (`btn-info`) and `+ Create a ne
 | Control | Behaviour | URL query |
 |---|---|---|
 | Status | 5 toggle buttons (multi-select) `Available (33)` `Unavailable (3)` `Offline (2)` `Connection Failed (1)` `Reserved (1)` in chip colours (outline when off) | `status.in=AVAILABLE,RESERVED` |
-| Device type | select `All device types` + the 14 enum values | `deviceType.equals=FLEX_3` |
+| Device type | select `All device types` + the 14 enum values | `deviceType.equals=FLUX_3` |
 | Rig kind | select `All rig kinds`, `Touch`, `Tethered`, `ADB`, `Standalone` | `rigKind.equals=touch` |
 | Environment | select `All environments`, `DEV1`, `DEV2`, `STG`, `QA`, `INT` | `environment.equals=DEV1` |
 | Name | search input `Search name or human readable name…` (contains, case-insensitive, 250 ms debounce, `replace` navigation while typing) | `name.contains=wal` |
@@ -543,8 +543,8 @@ exact; `(?)` marks a help tooltip.
 | | `Environment` | select `DEV1` `DEV2` `STG` `QA` `INT` | required | `environment` |
 | | `Location` | text | max 64 | `location` |
 | | `Description` | textarea 2 rows | max 255 | `description` |
-| Robot Device | `Robot Device` (?) `The physical terminal on this rig. Upgrades get a new Device so the old one stays for rollback.` | select of non-retired Device rows: `johnny-5-flex1 · FLEX_1 · SIM-F1-000015 · 10.42.30.15` | required | `deviceId` |
-| | `Device Type` | read-only badge from the selected device (`FLEX_1`) + `Testing profile FLEX_GEN1` small grey | — | derived |
+| Robot Device | `Robot Device` (?) `The physical terminal on this rig. Upgrades get a new Device so the old one stays for rollback.` | select of non-retired Device rows: `johnny-5-flux1 · FLUX_1 · SIM-F1-000015 · 10.42.30.15` | required | `deviceId` |
+| | `Device Type` | read-only badge from the selected device (`FLUX_1`) + `Testing profile FLUX_GEN1` small grey | — | derived |
 | URL Mappings | `Robot ADB Service URL` | text, monospace | required; pattern `^https?://\S+$` → `This field should follow pattern for "Robot ADB Service URL".` | `adbServiceUrl` |
 | | `Camera Stream URL` | text + `▶ Open stream` link (opens Lab Cameras on that URL) | optional; same pattern | `cameraStreamUrl` |
 | | `Dip URL` / `Tap URL` / `Swipe URL` | text | optional; same pattern | `dipUrl` / `tapUrl` / `swipeUrl` |
@@ -589,11 +589,11 @@ buildId)` → `alert-success` `Released robot <name>.`; emit `orca.robot.release
 ### 2.6 Device (`/device`, `/device/new`, `/device/:id/view|edit`)
 
 Columns `ID` · `Name` · `Device Type` · `Serial` · `IP` · `Label` · `Retired` · `Used by` (robot names linking
-to them; `—`). Filter checkbox `Show retired` [illus.] (off by default; the retired row `retired-flex1-legacy`
+to them; `—`). Filter checkbox `Show retired` [illus.] (off by default; the retired row `retired-flux1-legacy`
 appears when on). Form fields: `Name` (required, pattern as robot name, unique — sim error shown), `Device Type`
 (select of the 14 enum values, required), `Serial` (required, pattern `^[A-Z0-9-]+$`), `IP` (required, IPv4 →
 `This field should follow pattern for "IP".`), `Label` (text), `Retired` (checkbox). A grey info line under
-Device Type shows the enum metrics (`Flex · FLEX_GEN2 · portrait 68.0 × 121.0 mm · 720 × 1280 px · printer`).
+Device Type shows the enum metrics (`Flux · FLUX_GEN2 · portrait 68.0 × 121.0 mm · 720 × 1280 px · printer`).
 Create → `sim.orca.saveDevice` → `A new Device is created with identifier 43`, emit `orca.device.created`.
 Editing a device that is linked to a robot shows `alert-info` `This device is linked to johnny-5. For a hardware
 swap, create a new Device and relink the robot instead.` [illus.] (GW10's lesson). Saving an edit emits
@@ -612,10 +612,10 @@ Three tabs [illus.] in one page:
    (`DYNAMIC_JSON` / `NON_DYNAMIC` / `BOTH` badges) · `Description` · `JSON` (monospace). CRUD as usual
    (`sim.orca.saveCapability`, emit `orca.capability.saved`).
 2. **Robot documents** (`?tab=documents&robot=wall-e`) — robot select (name + HRN) → the robot's capability
-   document (Sim §1.3.4, §2.7.1) rendered **compact, in canonical key order**, exactly as Cur M08 shows it
-   (`{"deviceType":"FLEX_3","printer":true,"physicalTouch":true,…}`) in a monospace box with `Copy`; below, a
+   document (Sim §1.3.4, §2.7.1) rendered **compass, in canonical key order**, exactly as Cur M08 shows it
+   (`{"deviceType":"FLUX_3","printer":true,"physicalTouch":true,…}`) in a monospace box with `Copy`; below, a
    two-column legend `Derived from the robot's device and rig` (deviceType, printer, physicalTouch, pinEntry,
-   tethered, duo, adbOnly, testingProfile) vs `Linked capability rows`. Source: `GET /api/robots/{name}/capabilities`
+   tethered, duet, adbOnly, testingProfile) vs `Linked capability rows`. Source: `GET /api/robots/{name}/capabilities`
    via `sim.orca.rest`. On each robot selection emit `orca.capabilities.viewed`.
 3. **Match preview** (`/robot-capability/match-preview`) — Tate's tool (Cur §7, Sim §3.4.3): textarea
    `Capabilities JSON` (monospace, placeholder `{"goSdk": true, "printer": true}`), select `Environment` (default
@@ -626,7 +626,7 @@ Three tabs [illus.] in one page:
    A `Load from Gort file…` [illus.] dropdown lists `go-sdk/tests/*.json` and `suites/**/*.json` from
    `lab.repos.gort.files` and fills the textarea with that file's `capabilities` object (this is how Cur M08 s5's
    "Match preview no longer lists …" is checked after the IntelliJ edit is pushed — the rig that drops out is
-   `vision`, the GO_SDK Flex Pocket; Sim A.2 records the deviation from Cur's "rosie").
+   `vision`, the GO_SDK Flux Pocket; Sim A.2 records the deviation from Cur's "rosie").
 
 ### 2.8 Merchant Config (`/merchant-config`)
 
@@ -652,11 +652,11 @@ field names). Toggling `Show` on the secret emits `orca.merchant.secretRevealed`
 ### 2.9 Screen (`/screen`) and Screen Location (`/screen-location`)
 
 **Screens list:** filter bar `Device type` select (required-ish: defaults to `All`), `Name` contains, `Display`
-(`All`, `primary`, `secondary`) → query `deviceType.equals=FLEX_3&name.contains=RECEIPT`. Columns `ID` · `Name` ·
+(`All`, `primary`, `secondary`) → query `deviceType.equals=FLUX_3&name.contains=RECEIPT`. Columns `ID` · `Name` ·
 `Device Type` · `Testing Profile` · `Display` · `Options` (`4`, `5 · QR` badge, `—`) · `Description` · `Locations`
 (count). Emit `orca.screens.filtered` on committed filter changes.
 
-**Screen detail** (`/screen/:id/view`, Cur M09 s2 "Open Screens → FLEX_3 → TENDER_CASH_DISCOUNT … then its Screen
+**Screen detail** (`/screen/:id/view`, Cur M09 s2 "Open Screens → FLUX_3 → TENDER_CASH_DISCOUNT … then its Screen
 Locations"): `dl` (Name, Device Type, Testing Profile, Display, Options, Description), then **Screen Locations**
 table `Button` · `X (mm)` · `Y (mm)` · `Last modified` (from `orca.audit`: `bulk-import · yesterday 16:02`,
 `jared · 2026-10-02 11:20`, `—`) · actions `Edit`, `Delete`, `◎ Test tap` [illus.]; button `+ Add location`
@@ -680,7 +680,7 @@ identifier 211` → lands on the new screen's detail so locations can be added. 
 
 **Screen Location list** (`/screen-location`): filters `Device type`, `Screen` (select filtered by device type),
 `Button` contains; columns `ID` · `Screen` · `Device Type` · `Button` · `X (mm)` · `Y (mm)` · `Last modified` ·
-actions. Form: `Screen` (select `RECEIPT_OPTIONS_5 · FLEX_4`), `Button` (exact string, case-sensitive help
+actions. Form: `Screen` (select `RECEIPT_OPTIONS_5 · FLUX_4`), `Button` (exact string, case-sensitive help
 `Exact text passed to xy_touch, e.g. "No Receipt"`), `X (mm)`, `Y (mm)` (number step 0.1, 0…400). Save →
 `sim.orca.saveScreenLocation` → `A Screen Location is updated with identifier 1093`; emit
 `orca.screenLocation.saved`. A banner on both pages [illus.]: `Screen Locations are synced from gort
@@ -704,10 +704,10 @@ verbatim. Save → `A Card Profile is updated with identifier 2`; emit `orca.car
 
 Every page of this entity starts with a **deprecation banner** (`alert-warning`, bold first line): `Deprecated` ·
 `Screen Compare Images (webcam crop → Tesseract OCR) are being phased out. UI Automator 2.3 locates elements on
-both Station Duo displays natively — migrate checks with displayId locators instead.` (Ref §3).
+both Stand Duet displays natively — migrate checks with displayId locators instead.` (Ref §3).
 
 List columns `ID` · `Name` · `Robot` · `Screen` · `X` · `Y` · `W` · `H` (px) · `Expected Text` (monospace, shows
-leading/trailing spaces as `·`) · `Deprecated` (`✓`) · `Used By` (`uia-remote:DuoCfdSuite`). Form: `Name`
+leading/trailing spaces as `·`) · `Deprecated` (`✓`) · `Used By` (`uia-remote:DuetCfdSuite`). Form: `Name`
 (required, `^[A-Z0-9_]+$`), `Robot` (select), `Screen` (text, e.g. `CFD_CART`), `X`, `Y`, `W`, `H` (integers ≥ 0,
 px of the 1280 × 720 webcam frame), `Expected Text` (text; help `Exact, case-sensitive match.`), `Deprecated`
 (checkbox). Save → `sim.orca.saveScreenCompareImage`; emit `orca.screenCompare.saved` (with `created`).
@@ -791,7 +791,7 @@ the stock theme, the Folders, Pipeline, Pipeline: Stage View and Green Balls [il
 |---|---|
 | Fonts | system UI stack 14 px (`--font-size-base`), monospace console 13 px |
 | Header | 56 px, background `#ffffff` with bottom border `#e5e5e5`; left: butler head glyph 28 px (simplified, flat) + `Jenkins` 18 px 600; centre-right: search box (`Search (Ctrl+K)`, rounded 6 px, `#f2f2f3`), bell, user chip `Engineer` (from `progress.playerName`), `log out` (does nothing but reload [illus.]) |
-| Breadcrumb bar | 40 px under the header, `#f8f8f8`: `Dashboard › Java › uia-remote-regression-flex › #4127`, each crumb with a hover chevron dropdown (job context menu) |
+| Breadcrumb bar | 40 px under the header, `#f8f8f8`: `Dashboard › Java › uia-remote-regression-flux › #4127`, each crumb with a hover chevron dropdown (job context menu) |
 | Side panel | 260 px left column, task links with 20 px icons: `+ New Item`, `People`, `Build History`, `Manage Jenkins`, `My Views` on the dashboard; job/build-specific tasks elsewhere. Below: **Build Queue** and **Build Executor Status** widgets (collapsible cards). |
 | Colours | links `#0b6aa2` (hover underline), text `#14141f`, muted `#6d6b7f`, success `#138347`, failure `#e6001f`, unstable `#fe820a`, aborted/disabled `#9a9aaa`, running pulse `#0b6aa2`; tables `.jenkins-table` with 1 px `#e5e5e5` row borders, row hover `#f5f5f7` |
 | Status icons | 24 px circles (Green Balls [illus.]): success green `#138347` ✓, failure red `#e6001f` ✕, unstable orange `#fe820a` !, aborted/not built grey, running = the previous result's colour with a rotating 2 px ring (CSS animation 1 s), queued = grey clock |
@@ -803,8 +803,8 @@ the stock theme, the Folders, Pipeline, Pipeline: Stage View and Green Balls [il
 View tabs above the table (Sim §2.13): `All` · `Java` · `iOS` · `uia-remote` · `SDK-Go` · `Pigeon-LSTR` · `Laz` ·
 `Vision-PoC` · `+` (new view → `Access Denied` [illus.]). The **All** view lists the two **folders** `Java` and
 `iOS` (folder icon, aggregated S/W). `Java` and `iOS` views list their jobs (full names relative to the folder,
-`uia-remote-regression-flex`); the other views list matching jobs with their folder prefix
-(`Java » uia-remote-regression-flex`). Tab clicks navigate (`/view/Java/`) and emit `jenkins.view.opened`
+`uia-remote-regression-flux`); the other views list matching jobs with their folder prefix
+(`Java » uia-remote-regression-flux`). Tab clicks navigate (`/view/Java/`) and emit `jenkins.view.opened`
 (Cur M11 s2 "Both views opened").
 
 Table columns (Jenkins defaults): `S` (status icon) · `W` (weather) · `Name ↓` · `Last Success` (`2 hr 4 min #4126`)
@@ -821,12 +821,12 @@ Windows, REST, Go). iOS jobs live in the iOS folder.` [illus.], the same jobs ta
 * `Build Queue (n)` — `lab.jenkins.queue` entries: job name link + `pending—Waiting for next available executor`;
   `No builds in the queue.` when empty; red `✕` cancels (`sim.jenkins.abort`).
 * `Build Executor Status` — node `Built-In Node` [illus. name `lab-executor`] with `executors` rows: `1  Idle` or
-  `Java » uia-remote-regression-flex #4127` + a progress bar (elapsed ÷ last successful duration, striped when over
+  `Java » uia-remote-regression-flux #4127` + a progress bar (elapsed ÷ last successful duration, striped when over
   100 %) + red `✕` abort. Builds blocked in `Checkout robot` still hold their executor (Sim §3.18.1).
 
 ### 3.3 Job page (`/job/:folder/job/:job/`)
 
-Heading: status icon + `Pipeline uia-remote-regression-flex`, description (from `job.description`), the
+Heading: status icon + `Pipeline uia-remote-regression-flux`, description (from `job.description`), the
 `Disabled` banner when `job.disabled` (`This project is currently disabled` + `Enable` button → D4).
 
 Side panel: `Status`, `Changes`, `Build with Parameters` (parameterised) / `Build Now` (no params), `Configure`,
@@ -851,11 +851,11 @@ Emit `jenkins.job.opened` on open.
 
 ### 3.4 Build with Parameters (`/job/:folder/job/:job/build`)
 
-Heading `Pipeline uia-remote-regression-flex`, text `This build requires parameters:`. One block per `job.params`
+Heading `Pipeline uia-remote-regression-flux`, text `This build requires parameters:`. One block per `job.params`
 in order: parameter name bold (`DEVICE_TYPE`), the control — `string` → text input prefilled with
-`job.savedParams[name] ?? param.default` (so `flex_3` shows up exactly as saved, INC39/Cur M11); `choice` → select;
+`job.savedParams[name] ?? param.default` (so `flux_3` shows up exactly as saved, INC39/Cur M11); `choice` → select;
 `boolean` → checkbox — and the description below in grey (`DEVICE_TYPE`: `Orca DeviceType enum value, ALL CAPS
-(e.g. FLEX_3). Blank = any.` [illus.]; `ROBOT_NAME`: `Exact Orca robot Name (lowercase). Blank = any matching
+(e.g. FLUX_3). Blank = any.` [illus.]; `ROBOT_NAME`: `Exact Orca robot Name (lowercase). Blank = any matching
 Available robot.`; `MERCHANT`: `Merchant Config name`; `CARD_PROFILE`: `Card profile name(s), comma separated`;
 `BACKEND_ENV`: `Backend environment (DEV1, DEV2, STG, QA, INT)`; `BRANCH`: `Git branch`). Button `Build` (primary
 `#0b6aa2`). Submit → `sim.jenkins.build(jobId, values, 'player')` → on success navigate to the job page and show
@@ -869,10 +869,10 @@ not need to finish.
 **Build page:** heading status icon + `#4127 (Oct 5, 2026, 9:41:07 AM)`; side panel `Status`, `Changes`,
 `Console Output`, `Edit Build Information`, `Delete build '#4127'` (denied), `Parameters`, `Pipeline Steps`,
 `Restart from Stage` (denied), `Replay` (denied), `‹ Previous Build`, `Next Build ›`; a red `✕` `Abort` button in the
-heading while running (`sim.jenkins.abort`, confirm `Are you sure you want to abort uia-remote-regression-flex
+heading while running (`sim.jenkins.abort`, confirm `Are you sure you want to abort uia-remote-regression-flux
 #4127?`, emit `jenkins.build.aborted`). Main: `Started by user Engineer` / `Started by timer` / `Started by upstream
 project …` (from `triggeredBy`), `Revision: 7a20f5b…` + `Repository: git@github.com:labsim-lab/uia-remote.git`
-(from the job's `testRef` repo head) [illus. block], `Robot: wall-e (FLEX_3)` [illus.] when `robotId`, `Test Result:
+(from the job's `testRef` repo head) [illus. block], `Robot: wall-e (FLUX_3)` [illus.] when `robotId`, `Test Result:
 2 tests, 0 failures` parsed from the console's `Tests: …` line when finished, and the build's stage row.
 `Parameters` page: table name/value of `build.params` (secrets masked). Build duration `Took 1 min 2 sec` when done.
 
@@ -940,7 +940,7 @@ Emit `jenkins.search` with the query and the result ids when the user submits or
 
 ### 3.10 Notifications and keyboard
 
-Notifications (§1.5): `Build #4127 FAILURE — Java/uia-remote-regression-flex` (red) / `SUCCESS` (green) for builds
+Notifications (§1.5): `Build #4127 FAILURE — Java/uia-remote-regression-flux` (red) / `SUCCESS` (green) for builds
 the player triggered; failures of any job while the Jenkins window is unfocused (one per build). Keyboard:
 `Ctrl+K` search, `Esc` closes search/menus (consumed), `Enter` submits Build with Parameters, `Alt+←/→` history.
 
@@ -1022,7 +1022,7 @@ The tree is built from `local.files` paths. Root node `uia-remote  ~/IdeaProject
 path). Folders sort before files, alphabetical, case-insensitive. Java source roots are marked by path:
 `app/src/main/java` (blue source root), `app/src/test/java` and `app/src/androidTest/java` (green test source roots);
 inside a source root **packages are shown compacted** (`com.labsim.uia`) with sub-packages as children (IntelliJ
-"Compact Middle Packages"). Extra decor nodes at the end: `External Libraries` (expands to `< 17 >`,
+"Compass Middle Packages"). Extra decor nodes at the end: `External Libraries` (expands to `< 17 >`,
 `androidx.test.uiautomator:uiautomator:2.3.0`, `junit:junit:4.13.2`), `Scratches and Consoles`.
 
 Expected factory trees (content comes from the sim seed; this list is what Cur/GP lessons click):
@@ -1043,8 +1043,8 @@ gort                                   uia-remote                               
 │  └─ tests (sale_receipt.json)        │     │     │   CfdPaymentScreen,            │  └─ tender (windows_tender.json)
 ├─ suites                              │     │     │   ReceiptScreen)               └─ lstr.json
 │  └─ contact-canada (pin_sale.json)   │     │     ├─ testactions (HomeScreenTest,
-└─ README.md                           │     │     │   ReceiptScreenTest, SaleTest, TaxTest, TaxTestDuo,
-                                       │     │     │   RefundTest, DuoCfdSuite, DuoCheckoutTest,
+└─ README.md                           │     │     │   ReceiptScreenTest, SaleTest, TaxTest, TaxTestDuet,
+                                       │     │     │   RefundTest, DuetCfdSuite, DuetCheckoutTest,
                                        │     │     │   PrinterlessSmokeTest, PaycoreMatrixTest,
                                        │     │     │   ContactCanadaPinSaleTest)
                                        │     │     └─ BaseTest
@@ -1088,7 +1088,7 @@ gort                                   uia-remote                               
 * **Find bar** (`Ctrl+F`): field + toggles `Cc` (match case), `W` (words), `.*` (regex), result `1/3`, `↑`/`↓`
   (`Shift+F3`/`F3`, also `Enter`/`Shift+Enter`), `✕`/`Esc` (consumed). `Ctrl+R` adds the replace row with
   `Replace`, `Replace All`. **Find in Files** (`Ctrl+Shift+F`): popup with query field and a results list
-  `TaxTestDuo.java 23  assertTrue(orca.screenCompare("CFD_TOTAL"));` — Enter opens at the line.
+  `TaxTestDuet.java 23  assertTrue(orca.screenCompare("CFD_TOTAL"));` — Enter opens at the line.
 * **Navigation:** `Ctrl+G` `Go to Line:Column` dialog; `Ctrl+Shift+N` Go to File popup; `Shift Shift` Search
   Everywhere (tabs `All`, `Classes`, `Files`, `Actions`); `Ctrl+E` Recent Files; `Ctrl+Alt+←/→` back/forward;
   `Ctrl+B`/`Ctrl+click` on a class name opens that class's file (by simple name within the project).
@@ -1154,11 +1154,11 @@ MFD/CFD/Robot Device rows from `lab.orca`): D8 replaces this when the sim provid
 | # | Key | Valid when | Failure text (after `— `) |
 |---|---|---|---|
 | 1 | `robotName` | an Orca robot with that exact Name exists | `no robot named 'X' in Orca` |
-| 2 | `runType` | `tethered` if R's MFD is populated or R's device is a Station Duo, else `standalone` | `must be "tethered" for megatron (MFD populated)` / `must be "standalone"` |
+| 2 | `runType` | `tethered` if R's MFD is populated or R's device is a Stand Duet, else `standalone` | `must be "tethered" for megatron (MFD populated)` / `must be "standalone"` |
 | 3 | `merchantFacingDeviceIp` | MFD device IP (standalone: Robot Device IP) | `expected 10.42.30.21 (megatron-mfd)` |
-| 4 | `customerFacingDeviceIp` | CFD device IP; Duo: **equal to the MFD IP**; standalone: empty or equal to the MFD | `On a Station Duo both IPs are the same address (10.42.30.14)` / `expected 10.42.30.22 (megatron-cfd)` |
+| 4 | `customerFacingDeviceIp` | CFD device IP; Duet: **equal to the MFD IP**; standalone: empty or equal to the MFD | `On a Stand Duet both IPs are the same address (10.42.30.14)` / `expected 10.42.30.22 (megatron-cfd)` |
 | 5 | `serial` | serial of the MFD / Robot Device row | `expected SIM-S2-000021` |
-| 6 | `deviceType` | family of that device type: `Mini`, `Flex`, `Station`, `Compact` | `deviceType is the family (Mini, Flex or Station) — expected "Station"` |
+| 6 | `deviceType` | family of that device type: `Micro`, `Flux`, `Stand`, `Compass` | `deviceType is the family (Micro, Flux or Stand) — expected "Stand"` |
 | 7 | `theme` | `avocado` | `only "avocado" is supported (legacy theme toggles are deprecated)` |
 | 8 | `kernelType` | `CPA` | `use "CPA" (Core Payments Application); SPA is legacy` |
 | 9 | `portNumber` | `5444` | `must be 5444: lab devices listen on 5444; 5555 is the ADB default` |
@@ -1169,7 +1169,7 @@ MFD/CFD/Robot Device rows from `lab.orca`): D8 replaces this when the sim provid
 
 * **Configurations** (combo in the nav bar, `Run › Edit Configurations…` lists them read-only): uia-remote — one
   JUnit configuration per class in `…/testactions/` (`HomeScreenTest`, `ReceiptScreenTest`, `SaleTest`, `TaxTest`,
-  `TaxTestDuo`, `RefundTest`, `DuoCfdSuite`, `DuoCheckoutTest`, `PrinterlessSmokeTest`, `PaycoreMatrixTest`,
+  `TaxTestDuet`, `RefundTest`, `DuetCfdSuite`, `DuetCheckoutTest`, `PrinterlessSmokeTest`, `PaycoreMatrixTest`,
   `ContactCanadaPinSaleTest`, plus classes the player adds); pigeon — `LSTR: <file>` for every `tests/**/*.json`
   outside `_templates`. The last run configuration is selected.
 * **Run** (`▶`, `Shift+F10`, gutter ▶, `Run › Run '<cfg>'`): autosave (§4.5) → `sim.runner.runLocal(repo,
@@ -1198,7 +1198,7 @@ MFD/CFD/Robot Device rows from `lab.orca`): D8 replaces this when the sim provid
 | Branch widget | status bar `⎇ Git: main` (+ `↑1` when `ahead > 0`, `↓2` when `behind > 0`); click or `Ctrl+Shift+\`` opens the **Branches** popup: search field, `+ New Branch…`, `Checkout Tag or Revision…` (disabled), sections `Local` (current marked ★ / tag icon) and `Remote` (`origin/main`, `origin/fix/…`). Branch → submenu `Checkout`, `New Branch from '<b>'…`, `Show Diff with Working Tree` (opens the diff of that branch vs working tree), `Delete` (disabled for current). | `checkout(repo, b, false)` / `checkout(repo, name, true)`; emit `intellij.git.branchCheckedOut` |
 | New Branch | dialog `Create New Branch`, `New branch name:`, `☑ Checkout branch`, `☐ Overwrite existing branch`; invalid names → `Branch name ... is not valid` | `checkout(repo, name, true)` |
 | Commit (`Ctrl+K`, toolbar ✓, Commit tool window Alt+0) | tree `Changes` (modified/added files from `local.dirty` with checkboxes, VCS colours) and `Unversioned Files`; double-click → diff tab `HEAD (Read-only)` ↔ `Your version`; message box placeholder `Commit Message`; buttons `Commit` and `Commit and Push…`; gear: `☐ Amend` (disabled [sim]). Empty message → inline `Specify commit message`; nothing selected → `Select files to commit`. | `stage(repo, paths)` then `commit(repo, msg, 'player')`; balloon `1 file committed: <message>`; emit `intellij.git.committed` |
-| Push (`Ctrl+Shift+K`, toolbar ↗) | dialog `Push Commits to uia-remote`: left `main → origin : main` (new remote branch shown `origin : fix/flex4-receipt-qr` + green `New`), right the commits list (`7a20f5b Fix waitForScreen…  engineer  10/5/2026, 9:41 AM`) and their files; `Push` / `Cancel`. | `push(repo)`; success balloon `Pushed 1 commit to origin/main` or `Pushed fix/flex4-receipt-qr to new branch origin/fix/flex4-receipt-qr` with link **`Create Pull Request`** (opens GitHub on `/labsim-lab/<repo>/compare/main...<branch>`); rejection balloon (red) `Push rejected` + body = the sim error (`! [remote rejected] main -> main (protected branch hook declined)`); emit `intellij.git.pushed { ok, error? }` |
+| Push (`Ctrl+Shift+K`, toolbar ↗) | dialog `Push Commits to uia-remote`: left `main → origin : main` (new remote branch shown `origin : fix/flux4-receipt-qr` + green `New`), right the commits list (`7a20f5b Fix waitForScreen…  engineer  10/5/2026, 9:41 AM`) and their files; `Push` / `Cancel`. | `push(repo)`; success balloon `Pushed 1 commit to origin/main` or `Pushed fix/flux4-receipt-qr to new branch origin/fix/flux4-receipt-qr` with link **`Create Pull Request`** (opens GitHub on `/labsim-lab/<repo>/compare/main...<branch>`); rejection balloon (red) `Push rejected` + body = the sim error (`! [remote rejected] main -> main (protected branch hook declined)`); emit `intellij.git.pushed { ok, error? }` |
 | Pull / Update (`Git › Pull…`, toolbar ↙ `Update Project…`) | dialog `Update Project` (radio `Merge incoming changes into the current branch` / `Rebase`) or `Pull to main` | `pull(repo)`; balloon `1 file updated in 1 commit` / `All files are up-to-date`; emit `intellij.git.pulled` |
 | Rollback | Commit window toolbar `↶` on selected files → confirm `Rollback Changes` | D5 (writeFile with HEAD contents) |
 | Git tool window (Alt+9) | `Log` tab: commit list (graph dot, message, author, date) of the current branch; selecting a commit shows its changed files; double-click a file → diff vs parent | read-only, from `repos[r].commits` |
@@ -1289,7 +1289,7 @@ privileged command without `sudo` prints `Failed to restart <svc>.service: Inter
 |---|---|---|
 | `help` | short bash-style list of supported commands [illus.] | — |
 | `clear`, `pwd`, `cd [dir\|~\|..\|-]`, `ls [-l\|-a\|-la\|-h] [path]`, `cat`, `less`/`more` (=cat), `head`/`tail [-n N] [-f]`, `echo`, `whoami` (`engineer`), `hostname` (`ws-17`), `hostname -I` (`10.42.50.17`), `date` (`Mon Oct  5 09:41:07 EDT 2026`), `history`, `which`, `uname -a`, `exit` | standard GNU output over the workstation file system (`~/IdeaProjects/<repo>/…` clones, `~/Pictures`, `~/Downloads`, `~/Desktop`) | M12, M16 |
-| `grep [-o\|-c\|-i\|-n\|-v\|-E\|-r] PATTERN [files]` (also on piped input), `wc -l`, `sort`, `uniq` | GNU semantics; `grep -c "TOTAL" window_dump.xml` → `0` on the Duo dump; `grep -o 'text="Register"[^>]*' window_dump.xml` → `text="Register" resource-id="…" class="android.widget.TextView" … bounds="[96,412][288,604]"` | M12 s5, M16 s4, INC64 |
+| `grep [-o\|-c\|-i\|-n\|-v\|-E\|-r] PATTERN [files]` (also on piped input), `wc -l`, `sort`, `uniq` | GNU semantics; `grep -c "TOTAL" window_dump.xml` → `0` on the Duet dump; `grep -o 'text="Register"[^>]*' window_dump.xml` → `text="Register" resource-id="…" class="android.widget.TextView" … bounds="[96,412][288,604]"` | M12 s5, M16 s4, INC64 |
 | `ping [-c N] host` | iputils format: `PING 10.42.10.11 (10.42.10.11) 56(84) bytes of data.` / `64 bytes from 10.42.10.11: icmp_seq=1 ttl=64 time=1.84 ms` … / `--- 10.42.10.11 ping statistics ---` / `3 packets transmitted, 3 received, 0% packet loss, time 2003ms` / `rtt min/avg/max/mdev = …`; unreachable → `From 10.42.50.17 icmp_seq=1 Destination Host Unreachable` and `3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 2034ms` (GP INC01 quotes the `0 received, 100% packet loss` part); without `-c` it streams until `Ctrl+C` | INC01–04 |
 | `curl [-i] [-s] [-v] [-X M] [-H h] [-d body] [-o /dev/null] [-w "%{http_code}"] URL` | every REST surface of Sim §3.23: Orca (`/api/xy_touch`, `/api/card/*`, `/api/robots…`, `/management/health`), Pi `:8000/health` (`HTTP/1.1 200 OK` + `{"status":"ok","robot":"wall-e"}`), `/status`, Callus `:9000/status`, Ollama `/api/tags` / `/api/generate`, Jenkins JSON. `-i` prints the status line + headers (`Content-Type: application/json`, `Content-Length`, `Date`). Errors: `curl: (7) Failed to connect to 10.42.1.12 port 11434: Connection refused` (GP INC10), `curl: (28) Connection timed out after 10001 milliseconds`, `curl: (6) Could not resolve host: <h>`. | M05 s11, M09 s3–4, M10 s11, INC02, INC05, INC06, INC10, INC18, INC53, INC60, INC64 |
 | `ssh [user@]host` | key auth (Sim §2.5.1) → Pi banner `Linux wall-e 6.6.31-v8+ #1 SMP PREEMPT Debian 1:6.6.31-1+rpt1 (2024-05-29) aarch64` + Debian notice + `Last login: Mon Oct  5 07:58:12 2026 from 10.42.50.17`; Academy shows `pi@10.42.10.11's password:` auto-filled first (Cur M05 s7); errors `ssh: connect to host 10.42.10.11 port 22: Connection timed out` (GP INC01), `… Connection refused`, `ssh: Could not resolve hostname x: Name or service not known`, wrong user `engineer@10.42.10.11: Permission denied (publickey).` | M05, M10 s10, INC01, INC02-C, INC08, INC10, INC19, INC28, INC54, INC56, INC60 |
@@ -1420,7 +1420,7 @@ Whenever a selection is committed or changed (mouse-up, field edit, arrow nudge)
   remove it`) or, with no hint, `r2d2_cfd.png (2.6 MB)`.
 * **Pointer dialog** (`Windows › Dockable Dialogs › Pointer`): `Pixels X/Y`, `Units X/Y`, `Selection X/Y/W/H`. For
   images whose ref is an ADB **screencap** of a known device, an extra block [illus.] **`Device mm`**:
-  `X 34.0  Y 74.0 mm (FLEX_3 @ 9.474 px/mm)` computed with the Device Type's px/mm (Sim §2.2) — the INC20/21
+  `X 34.0  Y 74.0 mm (FLUX_3 @ 9.474 px/mm)` computed with the Device Type's px/mm (Sim §2.2) — the INC20/21
   "screencap + GIMP + the Device Type's px/mm" measurement path. A note under it: `GIMP's own "mm" unit uses the
   image print resolution (72 ppi), not the device's pixels per millimetre.` Webcam snapshots never show Device mm
   (perspective/scale differ — GP INC24's wrong move).
@@ -1429,7 +1429,7 @@ Whenever a selection is committed or changed (mouse-up, field edit, arrow nudge)
 
 Registered by `initComputer` (§1.6); lives with GIMP/Cameras. It must reproduce the frames the lessons measure:
 R2-D2's CFD `TOTAL $10.83` label at `412, 288, 236 × 44` in a 1280 × 720 webcam frame (World App. B solved
-projection; Sim §2.11), FLEX_3 `Payment Successful` at `208, 512, 304 × 40` in a 720 × 1280 screencap (Sim §2.10.2,
+projection; Sim §2.11), FLUX_3 `Payment Successful` at `208, 512, 304 × 40` in a 720 × 1280 screencap (Sim §2.10.2,
 GP INC24). When live 3D capture is used, a one-time self-check compares the rendered label rect with the sim frame
 model and logs a console warning if it is off by more than 4 px.
 
@@ -1510,7 +1510,7 @@ The team's repositories (Ref §1: Gort, uia-remote, pigeon; Sim §2.12 adds orch
   orchestrator — is pre-selected and labelled `(code owner)` [illus.]), `Assignees`, `Labels`; button `Create pull
   request ▾` (`Create draft pull request` disabled). Submit → `sim.git.createPullRequest(repo, title, body, head,
   'player')` → navigate to `/pull/<n>`; emit `github.pr.created` (Cur M09 s12 title `Add 5-option receipt
-  coordinates for FLEX_4`, branch `fix/flex4-receipt-qr`).
+  coordinates for FLUX_4`, branch `fix/flux4-receipt-qr`).
 * **PR view** (`/pull/<n>`, tabs `Conversation`, `Commits`, `Checks`, `Files changed +N −M`): title + `#418`, state badge
   (`Open` green / `Merged` purple / `Closed` red), `jared wants to merge 1 commit into main from fix/…`.
   *Conversation*: description card, timeline events in order (commits pushed, `requested a review from jared`,
@@ -1646,7 +1646,7 @@ other than C-3PO show a `NO SIGNAL`-free placeholder: their device screen only, 
   `camera.snapshot.saved { path, ref, url, robotName }`.
 * **Recorder** (`startCameraRecorder()` in `apps/camera`, started by `initComputer`, runs while the desktop is closed):
   on `jenkins.buildStarted` with a `robotId` and on `test.localRunStarted` with a `robotName`, if that robot has a
-  Camera Stream URL, start a recording `{ id, buildId | runId, label ('Java/uia-remote-regression-flex #4127'),
+  Camera Stream URL, start a recording `{ id, buildId | runId, label ('Java/uia-remote-regression-flux #4127'),
   robotName, url, startedMs, endedMs, result, frames[], events[] }`. Frames: 2 fps at 480 × 270 JPEG (quality 0.6)
   via `captureView` (synthetic frames when no feed), max 150 frames (75 s; older frames thinned to 1 fps). Events
   from the bus: `orca.xyTouch` (screen, button, x/y mm, mode, ok, `hitButton`), `rig.solenoidTap`, `device.touched`,
@@ -1654,7 +1654,7 @@ other than C-3PO show a `NO SIGNAL`-free placeholder: their device screen only, 
   `jenkins.buildFinished` / `test.localRunFinished` (+2 s tail). Keep the last 8 recordings (memory cap ≈ 20 MB).
   The recorder never renders when the quality preset is `low` and no Lab Cameras window is open — it then records
   events plus one synthetic frame per event.
-* **Recordings view** (`/recordings`, `/recording/:id`): list newest first `#4127 · Java/uia-remote-regression-flex ·
+* **Recordings view** (`/recordings`, `/recording/:id`): list newest first `#4127 · Java/uia-remote-regression-flux ·
   WALL-E · FAILURE · 09:41` (result chip). Player: frame area + transport (`⏮ ⏯ ⏭`, scrubber with **event markers**:
   taps green when `hitButton === button`, red when `hitButton` is `null` or another button, blue for screen changes;
   speed `0.5× 1× 2×`; `Space` play/pause, `←/→` step). Clicking a tap marker opens **Tap analysis** [illus.]: the
@@ -1792,9 +1792,9 @@ the lockout overlay handles it). Emit `<host>.command.sent { robot, command, ok,
 ### 10.4 Robot and Robot Control tabs (World §5.3)
 
 * **Robot:** key/value list at x 80/420 (labels 22 px `#9fb3d6`, values 24 px white, pitch 48): `Name` (`wall-e`),
-  `Human Readable Name`, `Orca status` (chip, Orca colours), `Device` (`FLEX_3 · SIM-F3-000011`), `Device IP`
+  `Human Readable Name`, `Orca status` (chip, Orca colours), `Device` (`FLUX_3 · SIM-F3-000011`), `Device IP`
   (`10.42.30.11:5444`), `Robot Pi` (`10.42.10.11`), `Camera` (stream URL, ellipsised), `Last health check`
-  (`09:35:00 · 200 OK`), `Magnetic lock` (`ENGAGED` / `RELEASED`). Mini-map box (760, 200, 440, 300): the covered
+  (`09:35:00 · 200 OK`), `Magnetic lock` (`ENGAGED` / `RELEASED`). Micro-map box (760, 200, 440, 300): the covered
   display's outline to scale, crosshair + 12 px dot at `(gantry.xMm, gantry.yMm)` (green; yellow when the lock is
   released), text `X 12.0 mm   Y 58.5 mm` (baseline 540) and `Home = limit switches (0,0)` (baseline 572). The dot
   animates with the gantry (read `gantry.xMm/yMm` each frame via a store subscription throttled to 20 Hz).
@@ -1809,7 +1809,7 @@ the lockout overlay handles it). Emit `<host>.command.sent { robot, command, ok,
 
 When `rig.dashboardLocked` (Sim §3.7.6): overlay (0, 112, 1280, 688) `rgba(8,12,22,.80)`, padlock glyph 96 px white at
 (640, 330), line 1 **`TEST IN PROGRESS — CONTROLS LOCKED`** bold 34 px white (baseline 450), line 2 the holder:
-`Java/uia-remote-regression-flex #4120` (from `robot.checkout` → build job/number) or `Local run · TaxTest (ws-17)`
+`Java/uia-remote-regression-flux #4120` (from `robot.checkout` → build job/number) or `Local run · TaxTest (ws-17)`
 [illus.] for local runs (`rig.lockedBy`), 24 px `#b9c6dc` (baseline 492), line 3 `Checked out via Orca · unlocks when
 the build finishes` 20 px `#8ea0bf` (baseline 528). Any click on the panel: overlay shakes ±6 px 200 ms + quiet
 `ui-fail`; **no command is sent**; emit `<host>.lockout.shown { robot, holder }` on the first display per lock period
@@ -1879,7 +1879,7 @@ it whenever the open channel or its last message changes and shows the returned 
 Orca hasn't re-pinged yet; it'll clear at the next health check`). Clicking a chip posts `option.text` with
 `sim.chat.post(channel, 'player', text, option.ticketId)` and emits `chat.reply.chosen { channel, ticketId, replyId,
 messageId }` — this is how GP ticket replies (`R_WAIT_PING`, `R_OFFLINE`, `R_FIXED`, `R_LOCKOUT`, `R_WAIT`,
-`R_FALSE_POSITIVE`, `R_DUO_BLIND`, INC58/INC62 `R1`–`R4`) and "ask before touching a Reserved rig" (INC48: `Still
+`R_FALSE_POSITIVE`, `R_DUET_BLIND`, INC58/INC62 `R1`–`R4`) and "ask before touching a Reserved rig" (INC48: `Still
 using EVE?`) are given. Without a provider, no chips.
 
 ### 11.5 Keyboard
@@ -1948,16 +1948,16 @@ match (Appendix A). Where Cur's condition is a UI observation, the app action is
 | M06 s9 | `orca` `{route:'/robot/2/view'}` | `orca.robot.notesViewed {name:'eve'}` **and** `orca.robot.checkoutAttempted {name:'eve', ok:false}` |
 | M06 s11 | `orca` | *Sim:* baymax `OFFLINE` and a health run whose lines contain `baymax  SKIPPED (Offline)`; plus `orca.healthLog.viewed` after that run |
 | M06 s12 | `orca`, `jenkins` | *Sim:* WALL-E `RESERVED` → `robot.checkoutWaiting` for the build → WALL-E `AVAILABLE` → `robot.checkedOut {name:'wall-e'}` |
-| M06 s13 | `jenkins` `{route:'/job/Java/job/uia-remote-regression-flex/build'}` | *Sim:* named build on rosie finished and `rosie.status == 'UNAVAILABLE'` without a player status change |
+| M06 s13 | `jenkins` `{route:'/job/Java/job/uia-remote-regression-flux/build'}` | *Sim:* named build on rosie finished and `rosie.status == 'UNAVAILABLE'` without a player status change |
 | M07 s2 | `orca` `{route:'/robot/5/edit'}` | `orca.robot.editOpened {name:'johnny-5'}` |
-| M07 s3, s6, s8, s9 | `orca` | *Sim:* HRN `JOHNNY-5` & Name unchanged; new FLEX_2 device linked & old row intact (`orca.device.created`); `tapUrl`; MFD/CFD set |
+| M07 s3, s6, s8, s9 | `orca` | *Sim:* HRN `JOHNNY-5` & Name unchanged; new FLUX_2 device linked & old row intact (`orca.device.created`); `tapUrl`; MFD/CFD set |
 | M07 s11 | `camera` `{robot:'bumblebee'}`, `orca` | `camera.stream.opened {robotName:'bumblebee'}` (or Rack A recording) then *Sim:* `offsetYMm == 0` and an `orca.xyTouch` with `hitButton === button` after `orca.screenLocation.testTap` |
 | M08 s3 | `orca` `{route:'/robot-capability?tab=documents&robot=wall-e'}` | `orca.capabilities.viewed` for `wall-e` **and** `rosie` |
 | M08 s5 | `intellij` `{repo:'gort', file:'go-sdk/tests/sale_receipt.json'}` | *Sim:* the clone's file parses and `capabilities.printer === true` (`intellij.file.saved`); the job sees it only after commit + push (gort `main` is protected → branch + PR, or Jared merges) |
-| M08 s6 | `jenkins` `{route:'/job/Java/job/uia-remote-regression-flex/configure'}` | `jenkins.script.lineClicked` whose `text` contains `def capabilities = [deviceType: params.DEVICE_TYPE, physicalTouch: true]` |
+| M08 s6 | `jenkins` `{route:'/job/Java/job/uia-remote-regression-flux/configure'}` | `jenkins.script.lineClicked` whose `text` contains `def capabilities = [deviceType: params.DEVICE_TYPE, physicalTouch: true]` |
 | M08 s7 | `orca` `{route:'/merchant-config'}` | `orca.merchant.editOpened {name:'GO-SDK-US-01'}` |
 | M08 s9, s11 | `orca` → `jenkins` | *Sim:* merchant `apiKey`, build env, Laz build `SUCCESS` |
-| M09 s2 | `orca` `{route:'/screen?deviceType.equals=FLEX_3'}` | `orca.screenLocations.viewed {deviceType:'FLEX_3', screen:'TENDER_CASH_DISCOUNT'}` |
+| M09 s2 | `orca` `{route:'/screen?deviceType.equals=FLUX_3'}` | `orca.screenLocations.viewed {deviceType:'FLUX_3', screen:'TENDER_CASH_DISCOUNT'}` |
 | M09 s3–s4 | `terminal` | *Sim:* `orca.xyTouch {robotName:'wall-e', mode:'probe'}` then `{robotName:'tars', mode:'adb'}` |
 | M09 s6 | `jenkins` | *Sim:* build of `Java/contact-canada-pin-sale` with `ROBOT_NAME=seti` (`jenkins.build.triggered` shows the chosen value) |
 | M09 s9 | `camera` `{recordingBuildId:<eve build>}` | `camera.recording.finished {robotName:'eve'}` |
@@ -1971,7 +1971,7 @@ match (Appendix A). Where Cur's condition is a UI observation, the app action is
 | M11 s6, s9 | `jenkins` | *Sim:* `robot.checkedOut {name:'wall-e'}`; build checks out `rosie` |
 | M11 s7 | `orca` `{route:'/robot'}` | `route` on Orca robot list/detail while `wall-e.checkout != null`, and again after release |
 | M11 s8 | `jenkins` | `jenkins.console.lineClicked` with `text` containing `PORT_NUMBER=5444` |
-| M12 s2–s8 | `terminal` | *Sim:* `adb.connected {target:'10.42.30.32:5444'}`, `adb.command` dump/pull, `device.touched {deviceId:'dev-tars-flex4', source:'adb', hitButton:'Register'}`, the refused 5555 connect |
+| M12 s2–s8 | `terminal` | *Sim:* `adb.connected {target:'10.42.30.32:5444'}`, `adb.command` dump/pull, `device.touched {deviceId:'dev-tars-flux4', source:'adb', hitButton:'Register'}`, the refused 5555 connect |
 | M13 s2 | `github` `{route:'/labsim-lab/uia-remote'}` | `github.cloneUrl.copied {repo:'uia-remote'}` |
 | M13 s3 | `intellij` | *Sim:* `git.cloned {repo:'uia-remote'}` (`intellij.project.cloned`) |
 | M13 s4 | `intellij` `{repo:'uia-remote'}` | `intellij.tree.nodeClicked {path:'app/src/main', kind:'dir'}` |
@@ -1990,7 +1990,7 @@ match (Appendix A). Where Cur's condition is a UI observation, the app action is
 | M16 s5 | `camera` `{robot:'r2-d2'}` | `camera.snapshot.saved` with `path` ending `r2d2_cfd.png` (sim `camera.snapshot`) |
 | M16 s6 | `gimp` `{path:'~/Pictures/r2d2_cfd.png'}` | `gimp.selection.changed` within ±3 px of `412, 288, 236, 44` |
 | M16 s7 / s8 | `orca` `{route:'/screen-compare-image'}` | *Sim:* `CFD_TOTAL` row; `orca.screenCompare.tested {match:true}` / `orca.screenCompare.layoutV2Toggled {on:true}` then `tested {match:false}` |
-| M16 s10, s12 | `intellij` | *Sim:* file contents (pigeon block values = the GIMP selection; `TaxTestDuo` uses `displayId`), config IPs equal, `TaxTestDuo` pass |
+| M16 s10, s12 | `intellij` | *Sim:* file contents (pigeon block values = the GIMP selection; `TaxTestDuet` uses `displayId`), config IPs equal, `TaxTestDuet` pass |
 | M17 s5 | `ollama` `{prompt:<Cur M17 prompt>, attach:'~/Downloads/walle_receipt_0912.jpg'}` | `ollama.response.received` for a request with image `img:receipt:wall-e:0912`, then `ollama.response.flagged {flag:'tip-math-error'}` |
 | M17 s8 | `github` `{route:'/labsim-lab/uia-remote/pull/212/files'}` | `github.pr.reviewSubmitted {repo:'uia-remote', number:212, verdict:'REQUEST_CHANGES'}` with a comment `reason:'missing-isScreenPresent'` (*Sim:* `pr.verdict` + `comments`) |
 | M18 s8 / s10 | `orca` / `jenkins` | `orca.robot.notesViewed {name:'bumblebee'}` before the escalation (HUD); *Sim:* build green |
@@ -2003,7 +2003,7 @@ signals missions may use for process bonuses, hints and Teach Cards.
 | Incidents | Surfaces (symptom → fix) | App signals |
 |---|---|---|
 | INC01–04, INC06, INC19 | Orca filter `Connection Failed` → Notes → (escalation in HUD); Terminal `ping`/`ssh`/`curl`; Lab Cameras `Stream unavailable — …`; desktop dashboard unreachable vs green tablet (INC04) | `orca.robots.filtered`, `orca.robot.notesViewed`, `camera.stream.opened {ok:false}` |
-| INC05, INC06, INC12, INC48, INC57-A, INC58, INC62, INC64 | LabChat replies `R_WAIT_PING`, `R_OFFLINE`, `R_FIXED`, `R_LOCKOUT`, `R_WAIT`, `R_FALSE_POSITIVE`, `R1`…`R4`, `R_DUO_BLIND`; INC48 "ask before touching" message to Riley | `chat.reply.chosen`, `chat.message.sent {channel:'dm:riley'}` (PB06) |
+| INC05, INC06, INC12, INC48, INC57-A, INC58, INC62, INC64 | LabChat replies `R_WAIT_PING`, `R_OFFLINE`, `R_FIXED`, `R_LOCKOUT`, `R_WAIT`, `R_FALSE_POSITIVE`, `R1`…`R4`, `R_DUET_BLIND`; INC48 "ask before touching" message to Riley | `chat.reply.chosen`, `chat.message.sent {channel:'dm:riley'}` (PB06) |
 | INC07, INC31, INC40–42, INC44, INC59, INC63 | Orca status menu / form, Notes history (`STATUS Offline → Available (alex)`), Device create + relink | `orca.robot.statusChangeRequested`, `orca.robot.saved`, `orca.device.created` |
 | INC08, INC09, INC36, INC37, INC38 | Lab Cameras (shared Rack B stream, wrong rig), Orca URL Mappings, Screen Compare **Test**, GIMP re-measure, IntelliJ migration + PR | `camera.stream.opened`, `orca.screenCompare.tested`, `gimp.selection.changed`, `github.pr.created` |
 | INC10, INC60 | Ollama WebUI `Model server unreachable`; Orca JHipster 500 page; Terminal `systemctl` on VMs | `browser.page.unreachable`, `terminal.command.submitted` |
@@ -2077,7 +2077,7 @@ parameters are listed in the descriptions. Use `buildRoute` / `matchRoute` (apps
 | `merchantView` | `/merchant-config/:id/view` | Merchant Config detail (credentials hidden) |
 | `merchantEdit` | `/merchant-config/:id/edit` | Merchant Config Edit — the only view with App ID / App Secret / API Key / Ubi Route |
 | `screens` | `/screen` | Screen list; query deviceType.equals, name.contains, display.equals |
-| `screenNew` | `/screen/new` | Create a Screen (e.g. RECEIPT_OPTIONS_5 for FLEX_4) |
+| `screenNew` | `/screen/new` | Create a Screen (e.g. RECEIPT_OPTIONS_5 for FLUX_4) |
 | `screenView` | `/screen/:id/view` | Screen detail with its Screen Locations and Test tap |
 | `screenEdit` | `/screen/:id/edit` | Screen edit |
 | `screenLocations` | `/screen-location` | Screen Location list; query deviceType.equals, screenId.equals, button.contains |

@@ -3,7 +3,7 @@
  * MW-1, 24 V bus bars, the 12 V and three 5 V buck regulators, inline rack fuses, DC tap leads,
  * STRIP-W, line-end tags, safety sign, every wall outlet W1–W14 (§1.5 "Other wall outlets"), the
  * wiring looms (+ glow overlays for the M03 power trace), and the bench with the multimeter, the
- * spare fuse tray, the Flex 4 brick, the spare Collis probe and the desk fan.
+ * spare fuse tray, the Flux 4 brick, the spare Collis probe and the desk fan.
  * Interactions and sim bindings live in `powerBind.ts`.
  */
 import { Group, Mesh, MeshStandardMaterial, Color, type Material } from 'three';
@@ -350,12 +350,12 @@ function buildBench(ctx: LabCtx, proxies: Map<string, Mesh>): Map<string, Group>
     ctx.statics.flushInto(mb, g);
     ctx.ia.proxy(g, 0.16, 0.06, 0.2, xf(0.03, 0.03, 0), 'proxy');
   }
-  // Flex 4 power brick (white, cord + 2-prong plug)
+  // Flux 4 power brick (white, cord + 2-prong plug)
   {
-    const g = group('power.bench.flex4-psu');
-    const pb = new StaticBatch('flex4-psu');
+    const g = group('power.bench.flux4-psu');
+    const pb = new StaticBatch('flux4-psu');
     pb.add(rboxGeo(0.11, 0.032, 0.06, 0.008, 2), mats.labwhite, xf(0, 0.016, 0));
-    addTape(ctx, pb, 'FLEX 4 · 18V ⎓', 4, xf(0, 0.0322, 0, -Math.PI / 2, 0, 0));
+    addTape(ctx, pb, 'FLUX 4 · 18V ⎓', 4, xf(0, 0.0322, 0, -Math.PI / 2, 0, 0));
     pb.add(tubeGeo(Array.from({ length: 22 }, (_, i) => [0.1 + Math.cos(i * 0.7) * 0.04, 0.004 + i * 0.0004, Math.sin(i * 0.7) * 0.035] as V3), 0.0022, 5, 100), mats.cableWhite, null, 'none');
     pb.add(rboxGeo(0.025, 0.02, 0.035, 0.004, 1), mats.labwhite, xf(0.17, 0.01, 0.02));
     for (const s of [-1, 1]) pb.box(0.0015, 0.008, 0.016, mats.chrome, 0.17 + s * 0.006, 0.01, 0.045, 0, 'none');

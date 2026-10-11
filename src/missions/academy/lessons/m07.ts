@@ -1,8 +1,8 @@
 /**
  * M07 — Orca Entities: Robot, Device, Device Type, URLs, Tethering & Offsets (Cur §2 M07).
  * Mentor {{tate}}, cameo {{jared}}.
- * Setup (`academy:M07`, Sim §4.4.2): JOHNNY-5's HRN is the typo `JONNY-5`; {{jared}} swapped its Flex 1
- * for the spare Flex 2 (`SIM-F2-000015`, no Orca row yet); its Tap URL is blank; OPTIMUS's MFD/CFD are
+ * Setup (`academy:M07`, Sim §4.4.2): JOHNNY-5's HRN is the typo `JONNY-5`; {{jared}} swapped its Flux 1
+ * for the spare Flux 2 (`SIM-F2-000015`, no Orca row yet); its Tap URL is blank; OPTIMUS's MFD/CFD are
  * empty (pipelines treat it as standalone); BUMBLEBEE has legacy `Offset Y = 1.5` mm (low taps).
  */
 import { c, on, p } from '../../types';
@@ -10,17 +10,17 @@ import type { LessonDef } from '../../types';
 import { deviceByName, deviceRow, robotByName, say } from './helpers';
 
 const NEW_SERIAL = 'SIM-F2-000015';
-const OLD_DEVICE = 'johnny-5-flex1';
+const OLD_DEVICE = 'johnny-5-flux1';
 
-const newFlex2Linked = c.custom('m07-flex2-linked', 'JOHNNY-5 → new FLEX_2 device', (s) => {
+const newFlux2Linked = c.custom('m07-flux2-linked', 'JOHNNY-5 → new FLUX_2 device', (s) => {
   const r = robotByName(s.lab, 'johnny-5');
   const dev = deviceRow(s.lab, r?.deviceId);
-  return !!dev && dev.deviceType === 'FLEX_2' && dev.serial === NEW_SERIAL && dev.ip === '10.42.30.15';
+  return !!dev && dev.deviceType === 'FLUX_2' && dev.serial === NEW_SERIAL && dev.ip === '10.42.30.15';
 });
 
-const oldDeviceIntact = c.custom('m07-flex1-intact', 'Old FLEX_1 device row kept for rollback', (s) => {
+const oldDeviceIntact = c.custom('m07-flux1-intact', 'Old FLUX_1 device row kept for rollback', (s) => {
   const d = deviceByName(s.lab, OLD_DEVICE);
-  return !!d && d.deviceType === 'FLEX_1' && d.serial === 'SIM-F1-000015' && d.ip === '10.42.30.15';
+  return !!d && d.deviceType === 'FLUX_1' && d.serial === 'SIM-F1-000015' && d.ip === '10.42.30.15';
 });
 
 const tetheredOptimus = c.custom('m07-optimus-tethered', 'OPTIMUS MFD = optimus-mfd, CFD = optimus-cfd', (s) => {
@@ -31,11 +31,11 @@ const tetheredOptimus = c.custom('m07-optimus-tethered', 'OPTIMUS MFD = optimus-
 /**
  * A BUMBLEBEE xy_touch / Test tap that landed exactly on the stored Screen Location (no legacy offset
  * applied). Orca's response never says whether a button was hit (Apps §2.9), so the check compares the
- * fired coordinate with the MINI_3 row; the camera shows the probe on the button centre.
+ * fired coordinate with the MICRO_3 row; the camera shows the probe on the button centre.
  */
 const trueTap = c.happened(
   on('orca.xyTouch', { robotName: 'bumblebee', ok: true }, (pl, s) => {
-    const screen = Object.values(s.lab.orca?.screens ?? {}).find((x) => x.deviceType === 'MINI_3' && x.name === pl.screen);
+    const screen = Object.values(s.lab.orca?.screens ?? {}).find((x) => x.deviceType === 'MICRO_3' && x.name === pl.screen);
     const loc = screen && Object.values(s.lab.orca?.screenLocations ?? {}).find((l) => l.screenId === screen.id && l.button === pl.button);
     return !!loc && Math.abs(loc.xMm - pl.xMm) < 0.05 && Math.abs(loc.yMm - pl.yMm) < 0.05;
   }),
@@ -49,7 +49,7 @@ export const M07: LessonDef = {
   realLabChecklist: [
     'Fix display typos in the Human Readable Name (it is pushed to the status tablet); never edit Name, the system identifier pipelines use.',
     'Hardware upgrade? Create a new Device row and relink Robot Device. Leave the old row untouched so rollback is one dropdown.',
-    'Device Type is an enum, so Jenkins env vars like DEVICE_TYPE must be ALL CAPS (FLEX_2, not flex_2).',
+    'Device Type is an enum, so Jenkins env vars like DEVICE_TYPE must be ALL CAPS (FLUX_2, not flux_2).',
     "Check a rig's URL Mappings (ADB Service, Camera Stream, Dip, Tap, Swipe) and its MFD/CFD: if MFD is populated, pipelines treat the rig as tethered.",
     'A non-zero Offset is a red flag: the lab is calibrated to a true (0,0), so Offsets are legacy.',
   ],
@@ -102,24 +102,24 @@ export const M07: LessonDef = {
       id: 'M07.05',
       kind: 'dialogue',
       speaker: 'jared',
-      text: "I swapped JOHNNY-5's Flex 1 for a Flex 2 this morning. Don't edit the old device record. Make a new one.",
+      text: "I swapped JOHNNY-5's Flux 1 for a Flux 2 this morning. Don't edit the old device record. Make a new one.",
       factIds: ['F119', 'F120'],
     },
     {
       id: 'M07.06',
       kind: 'computer-task',
-      hud: 'Create a Device for the new Flex 2 and link it to JOHNNY-5',
+      hud: 'Create a Device for the new Flux 2 and link it to JOHNNY-5',
       app: 'orca',
       route: '/device/new',
-      success: c.all(newFlex2Linked, oldDeviceIntact),
+      success: c.all(newFlux2Linked, oldDeviceIntact),
       objectives: [
         {
           id: 'M07.06.create',
-          text: 'Devices → Create: FLEX_2 · SIM-F2-000015 · 10.42.30.15',
-          done: c.custom('m07-flex2-row', 'FLEX_2 row exists', (s) => Object.values(s.lab.orca?.devices ?? {}).some((d) => d.serial === NEW_SERIAL && d.deviceType === 'FLEX_2')),
+          text: 'Devices → Create: FLUX_2 · SIM-F2-000015 · 10.42.30.15',
+          done: c.custom('m07-flux2-row', 'FLUX_2 row exists', (s) => Object.values(s.lab.orca?.devices ?? {}).some((d) => d.serial === NEW_SERIAL && d.deviceType === 'FLUX_2')),
         },
-        { id: 'M07.06.link', text: 'Robot johnny-5 → Robot Device = the new device', done: newFlex2Linked },
-        { id: 'M07.06.keep', text: 'Leave the old FLEX_1 device unchanged', done: oldDeviceIntact },
+        { id: 'M07.06.link', text: 'Robot johnny-5 → Robot Device = the new device', done: newFlux2Linked },
+        { id: 'M07.06.keep', text: 'Leave the old FLUX_1 device unchanged', done: oldDeviceIntact },
       ],
       wrongActions: [
         {
@@ -134,7 +134,7 @@ export const M07: LessonDef = {
           id: 'delete-old-device',
           on: on('orca.entitySaved', { entity: 'device', action: 'delete' }),
           when: c.not(oldDeviceIntact),
-          say: 'Keep the old device row. It is your rollback if the Flex 2 misbehaves.',
+          say: 'Keep the old device row. It is your rollback if the Flux 2 misbehaves.',
           speaker: 'jared',
           gw: 'GW09',
         },
@@ -146,7 +146,7 @@ export const M07: LessonDef = {
       id: 'M07.07',
       kind: 'dialogue',
       speaker: 'tate',
-      text: "That's why Robot and Device are separate. If the Flex 2 misbehaves, rolling back is one dropdown. Device Type is an enum: dimensions, layout metrics, internal strings. And because it's an enum, Jenkins env vars like DEVICE_TYPE must be ALL CAPS: FLEX_2, not flex_2.",
+      text: "That's why Robot and Device are separate. If the Flux 2 misbehaves, rolling back is one dropdown. Device Type is an enum: dimensions, layout metrics, internal strings. And because it's an enum, Jenkins env vars like DEVICE_TYPE must be ALL CAPS: FLUX_2, not flux_2.",
       factIds: ['F120', 'F121', 'F122'],
     },
     {
@@ -172,7 +172,7 @@ export const M07: LessonDef = {
       success: tetheredOptimus,
       hints: [
         { afterS: 60, idle: true, effect: 'text', text: "Open OPTIMUS's record and look at the USB Tethered Device Configuration." },
-        { afterS: 120, idle: true, effect: 'text', text: 'MFD = optimus-mfd (MINI_3, 10.42.30.23), CFD = optimus-cfd (MINI_3, 10.42.30.24).' },
+        { afterS: 120, idle: true, effect: 'text', text: 'MFD = optimus-mfd (MICRO_3, 10.42.30.23), CFD = optimus-cfd (MICRO_3, 10.42.30.24).' },
         { afterS: 180, idle: true, effect: 'show-me-button' },
       ],
       showMe: [{ app: 'orca', target: 'orca.robot.field:mfdDeviceId', action: 'select', text: 'optimus-mfd' }],
@@ -182,7 +182,7 @@ export const M07: LessonDef = {
       id: 'M07.10',
       kind: 'dialogue',
       speaker: 'tate',
-      text: "If MFD is populated, the pipeline treats the rig as tethered. That's how we model nested setups, like a Station 2 tethered to a Mini 2 on MEGATRON, or nested Mini 3s on OPTIMUS.",
+      text: "If MFD is populated, the pipeline treats the rig as tethered. That's how we model nested setups, like a Stand 2 tethered to a Micro 2 on MEGATRON, or nested Micro 3s on OPTIMUS.",
       factIds: ['F128', 'F127'],
     },
     {
@@ -212,7 +212,7 @@ export const M07: LessonDef = {
       ],
       hints: [
         { afterS: 60, idle: true, effect: 'text', text: "Edit BUMBLEBEE's robot record: Offset Y should be 0.0, not a fudge." },
-        { afterS: 120, idle: true, effect: 'text', text: 'Then Entities › Screen, filter MINI_3, open a screen and use ◎ Test tap with robot bumblebee.' },
+        { afterS: 120, idle: true, effect: 'text', text: 'Then Entities › Screen, filter MICRO_3, open a screen and use ◎ Test tap with robot bumblebee.' },
         { afterS: 180, idle: true, effect: 'show-me-button' },
       ],
       showMe: [{ app: 'orca', target: 'orca.robot.field:offsetYMm', action: 'type', text: '0.0' }],

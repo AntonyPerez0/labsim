@@ -61,7 +61,7 @@ If a coworker's device starts acting up while you run tests:
     summary: "The ADB workflow for talking to a LabSim without touching it — connect on 5444, dump the XML UI hierarchy, find an element's bounds, compute the centre and dispatch a programmatic tap.",
     factIds: ["F024", "F025", "F026", "F151", "F005"],
     tags: ["adb.port", "adb.usage", "tools.terminal"],
-    related: ["adb-port-5444", "station-duo-dual-screen", "terminal-cheatsheet"],
+    related: ["adb-port-5444", "stand-duet-dual-screen", "terminal-cheatsheet"],
     keywords: ["adb", "uiautomator dump", "window_dump.xml", "bounds", "input tap", "XML hierarchy", "element", "pull", "devices", "shell"],
     practice: ["DR03", "DR19", "INC64"],
     body: `## What ADB is for
@@ -87,7 +87,7 @@ adb -s 10.42.30.32:5444 shell input tap 192 508             # 5. tap the centre
 
 ## Limits
 
-- ADB only sees what the device exposes. On a **Station Duo** only the primary MFD is exposed {F151}; the CFD's elements are not in the dump ([[station-duo-dual-screen]]).
+- ADB only sees what the device exposes. On a **Stand Duet** only the primary MFD is exposed {F151}; the CFD's elements are not in the dump ([[stand-duet-dual-screen]]).
 - ADB taps are electronic — they cannot enter a PIN on Secure Touch screens, which is why Canadian PIN flows need physical bots ([[adb-vs-physical-bots]]).
 `,
   },
@@ -97,8 +97,8 @@ adb -s 10.42.30.32:5444 shell input tap 192 508             # 5. tap the centre
     category: "Tools",
     summary: "How to measure an exact bounding box in a device screenshot with GIMP's Rectangle Select — the input for Pigeon screen comparisons and legacy Screen Compare Images.",
     factIds: ["F030", "F212", "F153", "F155"],
-    tags: ["duo.ocr", "pigeon.gimp"],
-    related: ["pigeon-bottlenecks", "orca-screen-compare", "station-duo-dual-screen"],
+    tags: ["duet.ocr", "pigeon.gimp"],
+    related: ["pigeon-bottlenecks", "orca-screen-compare", "stand-duet-dual-screen"],
     keywords: ["GIMP", "Rectangle Select", "bounding box", "Tool Options", "Position", "Size", "screenshot", "coordinates", "pixels"],
     practice: ["INC24", "DR05"],
     body: `## What GIMP is for
@@ -140,7 +140,7 @@ Never paste GIMP pixel values into Screen Locations, or millimetres into a scree
 - Re-measure after any UI change — a 10-pixel shift breaks the check {F155}.
 - Copy the expected text exactly, including capitalisation and the currency sign.
 - Take the snapshot from the same camera the check uses; a different camera means different pixels.
-- For new checks on a Station Duo, prefer a UI Automator 2.3 assertion over a new OCR box ([[station-duo-dual-screen]]).
+- For new checks on a Stand Duet, prefer a UI Automator 2.3 assertion over a new OCR box ([[stand-duet-dual-screen]]).
 `,
   },
   {

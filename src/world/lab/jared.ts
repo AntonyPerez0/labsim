@@ -62,7 +62,7 @@ export function buildJaredCorner(ctx: LabCtx): void {
     b.add(ctx.screens.quad(0.05, 0.024, solderSlot), solderSlot.page.material, xf(-0.03, 0.062, 0.0675), 'none');
     for (const dx of [0.03, 0.055]) b.add(rboxGeo(0.016, 0.01, 0.004, 0.002, 1), mats.darkGreyPlastic, xf(dx, 0.062, 0.068), 'none');
     b.add(cylGeo(0.008, 0.008, 0.006, 12), mats.blackPlastic, xf(0.05, 0.03, 0.068, Math.PI / 2, 0, 0), 'none');
-    addTape(ctx, b, 'SOLDER STATION', 3.5, xf(0, 0.088, 0.066));
+    addTape(ctx, b, 'SOLDER STAND', 3.5, xf(0, 0.088, 0.066));
     // iron cord + coil stand + brass sponge (to the right)
     b.within(xf(0.17, 0, 0.02, 0, -0.4, 0), () => {
       b.add(rboxGeo(0.09, 0.015, 0.11, 0.008, 1), mats.satinBlack, xf(0, 0.0075, 0));

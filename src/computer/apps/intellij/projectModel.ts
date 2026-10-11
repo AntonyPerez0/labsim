@@ -55,7 +55,7 @@ export function buildTree(paths: string[]): TreeNode[] {
       let d = dir.dirs.get(name)!;
       const role = rootRole(path);
       if (inSource) {
-        // Compact middle packages: a package with exactly one sub-package and no files merges with it.
+        // Compass middle packages: a package with exactly one sub-package and no files merges with it.
         while (d.files.length === 0 && d.dirs.size === 1) {
           const [only, sub] = [...d.dirs.entries()][0];
           label += `.${only}`;

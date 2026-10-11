@@ -10,7 +10,7 @@ import { device, fresh, lab, run, runUntil, sim } from './testkit';
 
 vi.setConfig({ testTimeout: 60_000 });
 
-const R2 = 'dev-r2-d2-duo';
+const R2 = 'dev-r2-d2-duet';
 const stage = (dev: string, s: string) => expect(sim.faults.applySetup({ op: 'device.stage', params: { device: dev, stage: s } })).toEqual({ ok: true, value: undefined });
 const press = (dev: string, disp: 'primary' | 'secondary', id: string) => {
   const b = sim.device.layout(dev, disp).find((x) => x.id === id && x.kind === 'button');
@@ -34,17 +34,17 @@ describe('transactions on a device (Sim §3.9)', () => {
   beforeEach(() => fresh());
 
   it('a cash-discount merchant adds the 4 % non-cash adjustment when paying by card (1126)', () => {
-    sim.faults.applySetup({ op: 'device.provision', params: { device: 'dev-wall-e-flex3', merchant: 'AUTO-US-NOPIN-02' } });
-    stage('dev-wall-e-flex3', 'review-order');
-    press('dev-wall-e-flex3', 'primary', 'Pay');
-    press('dev-wall-e-flex3', 'primary', 'Charge');
-    expect(device('dev-wall-e-flex3').display.screen).toBe('cash-discount-tender');
-    press('dev-wall-e-flex3', 'primary', 'Card');
-    expect(device('dev-wall-e-flex3').order).toMatchObject({ subtotalCents: 1000, taxCents: 83, cardAdjustCents: 43, totalCents: 1126, status: 'awaiting-card' });
+    sim.faults.applySetup({ op: 'device.provision', params: { device: 'dev-wall-e-flux3', merchant: 'AUTO-US-NOPIN-02' } });
+    stage('dev-wall-e-flux3', 'review-order');
+    press('dev-wall-e-flux3', 'primary', 'Pay');
+    press('dev-wall-e-flux3', 'primary', 'Charge');
+    expect(device('dev-wall-e-flux3').display.screen).toBe('cash-discount-tender');
+    press('dev-wall-e-flux3', 'primary', 'Card');
+    expect(device('dev-wall-e-flux3').order).toMatchObject({ subtotalCents: 1000, taxCents: 83, cardAdjustCents: 43, totalCents: 1126, status: 'awaiting-card' });
   });
 
   it('a swipe ≥ $25 needs a signature; Done without strokes toasts "Please sign"', () => {
-    const d = 'dev-wall-e-flex3';
+    const d = 'dev-wall-e-flux3';
     stage(d, 'register-order');
     for (let i = 0; i < 2; i++) press(d, 'primary', 'Tax Item 5');
     press(d, 'primary', 'Review Order');
@@ -68,16 +68,16 @@ describe('transactions on a device (Sim §3.9)', () => {
 
   it('corrupt Track Data is rejected by the reader: SWIPE_ERROR + "Card read error, try again"', () => {
     sim.faults.inject({ faultId: 'card.trackDataCorrupt' });
-    stage('dev-wall-e-flex3', 'payment-prompt');
+    stage('dev-wall-e-flux3', 'payment-prompt');
     const r = sim.orca.card('wall-e', 'SWIPE', 'VISA_STD_SWIPE', 'player');
     expect(r).toMatchObject({ ok: true });
     run(500);
-    expect(device('dev-wall-e-flex3').logcat.at(-1)).toBe('E CardReader: SWIPE_ERROR: invalid track data');
-    expect(device('dev-wall-e-flex3').display.toast?.text).toBe('Card read error, try again');
+    expect(device('dev-wall-e-flux3').logcat.at(-1)).toBe('E CardReader: SWIPE_ERROR: invalid track data');
+    expect(device('dev-wall-e-flux3').display.toast?.text).toBe('Card read error, try again');
   });
 
   it('Interac dip on a Westers bed asks for the PIN; ADB input is rejected by Secure Touch', () => {
-    const d = 'dev-seti-compact';
+    const d = 'dev-seti-compass';
     stage(d, 'payment-prompt');
     const r = sim.orca.card('seti', 'DIP', 'INTERAC_CA_DIP', 'player');
     expect(r.ok && r.value?.lines).toEqual(['[callus] map cards/emv/interac_ca_dip.json → C:\\gort\\cards\\emv\\interac_ca_dip.json · load virtual card OK · probe seti: DIP', '[pi] cardprog: program INTERAC_CA_DIP → OK']);
@@ -92,7 +92,7 @@ describe('transactions on a device (Sim §3.9)', () => {
   });
 });
 
-describe('Station Duo and the dual-screen ADB problem (Sim §3.11)', () => {
+describe('Stand Duet and the dual-screen ADB problem (Sim §3.11)', () => {
   beforeEach(() => fresh());
 
   it('UIA 2.2 sees only the MFD; 2.3 displayId 1 reaches the CFD; input tap lands on the MFD', () => {
@@ -128,7 +128,7 @@ describe('Station Duo and the dual-screen ADB problem (Sim §3.11)', () => {
     const t = transact((root, ctx) => adbShell(root.lab, ctx, '10.42.60.4:5555', ['shell', 'input', 'tap', '192', '508'], 'terminal'));
     expect(t.ok).toBe(true);
     expect(lab().workstation.coworkerDevicesDisturbed).toBe(1);
-    expect(device('dev-riley-desk-flex').display.screen).toBe('register');
+    expect(device('dev-riley-desk-flux').display.screen).toBe('register');
   });
 });
 
@@ -182,7 +182,7 @@ describe('OCR Screen Compare (Sim §3.12.2 worked results)', () => {
   });
   it('a camera URL pointing at WALL-E (INC09) reads WALL-E’s screen', () => {
     sim.faults.inject({ faultId: 'orca.urlWrong', params: { robot: 'r2-d2', field: 'camera', value: 'http://10.42.10.11:8081/stream.mjpg' } });
-    stage('dev-wall-e-flex3', 'payment-prompt');
+    stage('dev-wall-e-flux3', 'payment-prompt');
     sim.orca.saveScreenCompareImage({ id: 1, bbox: { x: 397 + 3.5 * 6, y: 112 + 3.5 * 52, w: Math.round(3.5 * 64), h: Math.round(3.5 * 8) } }, 'player');
     expect(cmp()).toBe('Tap, insert or swipe|false');
   });
@@ -192,7 +192,7 @@ describe('Laz zero-touch OOBE and Ubi (Sim §3.17)', () => {
   beforeEach(() => fresh());
 
   it('swaps the merchant in ≈ 53 s with the exact console lines and restores ADB over TCP', () => {
-    const r = sim.laz.start('dev-data-mini3', 2, 'player');
+    const r = sim.laz.start('dev-data-micro3', 2, 'player');
     expect(r.ok).toBe(true);
     const id = r.ok ? r.value.runId : '';
     const t = runUntil(() => ['done', 'failed'].includes(lab().laz.runs[id]!.step), 70_000);
@@ -213,35 +213,35 @@ describe('Laz zero-touch OOBE and Ubi (Sim §3.17)', () => {
       'laz: adb tcpip 5444 via adb-shelf-pi → OK',
       'laz: verify OK (SIM-M3-000031 on AUTO-US-NOPIN-02)',
     ]);
-    expect(device('dev-data-mini3')).toMatchObject({ merchantConfigId: 2, provisioned: true, adbTcpPort: 5444 });
+    expect(device('dev-data-micro3')).toMatchObject({ merchantConfigId: 2, provisioned: true, adbTcpPort: 5444 });
     expect(lab().orca.robots[11]!.merchantConfigId).toBe(1); // Orca says what it SHOULD hold
   });
 
   it('laz.skipAdbRestore: the next run leaves ADB over TCP off until `adb tcpip 5444` (INC28)', () => {
     const f = sim.faults.inject({ faultId: 'laz.skipAdbRestore' });
     const fid = f.ok ? f.value.instanceId : '';
-    const r = sim.laz.start('dev-data-mini3', 2, 'player');
+    const r = sim.laz.start('dev-data-micro3', 2, 'player');
     const id = r.ok ? r.value.runId : '';
     runUntil(() => lab().laz.runs[id]!.step === 'done', 70_000);
     expect(lab().laz.runs[id]!.log).not.toContain('laz: adb tcpip 5444 via adb-shelf-pi → OK');
-    expect(device('dev-data-mini3').adbTcpPort).toBeNull();
+    expect(device('dev-data-micro3').adbTcpPort).toBeNull();
     expect(sim.faults.isResolved(fid)).toBe(false);
     const out = transact((root, ctx) => adbShell(root.lab, ctx, 'SIM-M3-000031', ['tcpip', '5444'], 'terminal'));
     expect(out.lines).toEqual(['restarting in TCP mode port: 5444']);
     run(1_100);
-    expect(device('dev-data-mini3').adbTcpPort).toBe(5444);
+    expect(device('dev-data-micro3').adbTcpPort).toBe(5444);
     expect(sim.faults.isResolved(fid)).toBe(true);
   });
 
   it('a wrong Ubi route fails before de-provisioning (INC50)', () => {
     sim.faults.inject({ faultId: 'merchant.ubiRouteWrong' });
-    const r = sim.laz.start('dev-gerty-compact', 7, 'player');
+    const r = sim.laz.start('dev-gerty-compass', 7, 'player');
     expect(r.ok).toBe(true);
-    const r2 = sim.laz.start('dev-seti-compact', 7, 'player');
+    const r2 = sim.laz.start('dev-seti-compass', 7, 'player');
     const id = r2.ok ? r2.value.runId : '';
     run(2_100);
     expect(lab().laz.runs[id]!).toMatchObject({ step: 'failed' });
     expect(lab().laz.runs[id]!.log).toEqual(['ubi: routing merchant switch → WESTERS-CA-02', 'ubi: ERROR route us-east cannot resolve merchant WESTERS-CA-02']);
-    expect(device('dev-seti-compact').provisioned).toBe(true);
+    expect(device('dev-seti-compass').provisioned).toBe(true);
   });
 });

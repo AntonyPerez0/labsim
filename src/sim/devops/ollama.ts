@@ -130,7 +130,7 @@ export function seedOllama(lab: LabState): void {
     models: ['llava:latest'],
     requests: [],
     receiptScenarios: {
-      'img:receipt:wall-e:0912': { imageRef: 'img:receipt:wall-e:0912', deviceId: 'dev-wall-e-flex3', subtotalCents: 4200, taxCents: 0, tipPct: 18, printedTipCents: 765, misread: null },
+      'img:receipt:wall-e:0912': { imageRef: 'img:receipt:wall-e:0912', deviceId: 'dev-wall-e-flux3', subtotalCents: 4200, taxCents: 0, tipPct: 18, printedTipCents: 765, misread: null },
     },
   };
   lab.workstation.files['~/Downloads/walle_receipt_0912.jpg'] ??= 'img:receipt:wall-e:0912';

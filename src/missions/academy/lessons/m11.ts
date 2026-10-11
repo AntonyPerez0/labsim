@@ -1,7 +1,7 @@
 /**
  * M11 — Jenkins: The Executor (Cur §2 M11). Mentor {{tate}}.
- * Setup (`academy:M11`, Sim §4.4.2): job `Java/uia-remote-regression-flex` has the saved parameter
- * `DEVICE_TYPE=flex_3` (lower case) → checkout fails with `No enum constant …DeviceType.flex_3`.
+ * Setup (`academy:M11`, Sim §4.4.2): job `Java/uia-remote-regression-flux` has the saved parameter
+ * `DEVICE_TYPE=flux_3` (lower case) → checkout fails with `No enum constant …DeviceType.flux_3`.
  */
 import { c, on, p } from '../../types';
 import type { LessonDef } from '../../types';
@@ -29,7 +29,7 @@ export const M11: LessonDef = {
   realLabChecklist: [
     'Jenkins is the Executor: it triggers the pipeline, checks a robot out of Orca and injects the runtime environment variables. In CI nobody hand-edits config.',
     'Legacy jobs are split by platform: Java jobs and iOS jobs. iOS Go SDK testing is active, so do not delete anything there.',
-    'Enum parameters such as DEVICE_TYPE must match Orca exactly, in ALL CAPS (FLEX_3). A lower-case value fails the checkout.',
+    'Enum parameters such as DEVICE_TYPE must match Orca exactly, in ALL CAPS (FLUX_3). A lower-case value fails the checkout.',
     "Read the console's environment block (RUN_TYPE, DEVICE_TYPE, ROBOT_NAME, PORT_NUMBER=5444, THEME=avocado, KERNEL_TYPE=CPA) when a run misbehaves.",
     'Run on an Unavailable rig by passing its exact unique Name in ROBOT_NAME.',
   ],
@@ -65,15 +65,15 @@ export const M11: LessonDef = {
     {
       id: 'M11.04',
       kind: 'computer-task',
-      hud: 'Build Java/uia-remote-regression-flex with its saved parameters',
+      hud: 'Build Java/uia-remote-regression-flux with its saved parameters',
       app: 'jenkins',
-      route: jobRoute(JOB.regressionFlex, 'build'),
-      success: c.all(c.happened(finished(JOB.regressionFlex, 'FAILURE', 'ENUM_CASE')), consoleOpened(JOB.regressionFlex, 'FAILURE')),
+      route: jobRoute(JOB.regressionFlux, 'build'),
+      success: c.all(c.happened(finished(JOB.regressionFlux, 'FAILURE', 'ENUM_CASE')), consoleOpened(JOB.regressionFlux, 'FAILURE')),
       objectives: [
-        { id: 'M11.04.build', text: 'Build with the saved parameters', done: c.happened(queued(JOB.regressionFlex)) },
-        { id: 'M11.04.console', text: 'Read the failed console', done: consoleOpened(JOB.regressionFlex, 'FAILURE') },
+        { id: 'M11.04.build', text: 'Build with the saved parameters', done: c.happened(queued(JOB.regressionFlux)) },
+        { id: 'M11.04.console', text: 'Read the failed console', done: consoleOpened(JOB.regressionFlux, 'FAILURE') },
       ],
-      showMe: [{ app: 'jenkins', route: jobRoute(JOB.regressionFlex, 'build'), target: 'jenkins.buildButton', action: 'click' }],
+      showMe: [{ app: 'jenkins', route: jobRoute(JOB.regressionFlux, 'build'), target: 'jenkins.buildButton', action: 'click' }],
       factIds: ['F121', 'F122'],
     },
     {
@@ -88,16 +88,16 @@ export const M11: LessonDef = {
       kind: 'computer-task',
       hud: 'Fix the parameter and rebuild',
       app: 'jenkins',
-      route: jobRoute(JOB.regressionFlex, 'build'),
-      success: c.sequence(queued(JOB.regressionFlex, { DEVICE_TYPE: 'FLEX_3' }), on('robot.checkedOut', { name: 'wall-e' })),
+      route: jobRoute(JOB.regressionFlux, 'build'),
+      success: c.sequence(queued(JOB.regressionFlux, { DEVICE_TYPE: 'FLUX_3' }), on('robot.checkedOut', { name: 'wall-e' })),
       wrongActions: [
         {
           id: 'still-lower',
-          on: on('jenkins.buildQueued', { jobId: JOB.regressionFlex }, (pl) => (pl.params.DEVICE_TYPE ?? '') !== (pl.params.DEVICE_TYPE ?? '').toUpperCase()),
-          say: 'Still lower case. Enum values are ALL CAPS: FLEX_3.',
+          on: on('jenkins.buildQueued', { jobId: JOB.regressionFlux }, (pl) => (pl.params.DEVICE_TYPE ?? '') !== (pl.params.DEVICE_TYPE ?? '').toUpperCase()),
+          say: 'Still lower case. Enum values are ALL CAPS: FLUX_3.',
         },
       ],
-      showMe: [{ app: 'jenkins', route: jobRoute(JOB.regressionFlex, 'build'), target: 'jenkins.param:DEVICE_TYPE', action: 'type', text: 'FLEX_3' }],
+      showMe: [{ app: 'jenkins', route: jobRoute(JOB.regressionFlux, 'build'), target: 'jenkins.param:DEVICE_TYPE', action: 'type', text: 'FLUX_3' }],
       factIds: ['F122', 'F095'],
     },
     {
@@ -134,9 +134,9 @@ export const M11: LessonDef = {
     {
       id: 'M11.09',
       kind: 'computer-task',
-      hud: 'Run Java/uia-remote-regression-flex on ROSIE (Unavailable)',
+      hud: 'Run Java/uia-remote-regression-flux on ROSIE (Unavailable)',
       app: 'jenkins',
-      route: jobRoute(JOB.regressionFlex, 'build'),
+      route: jobRoute(JOB.regressionFlux, 'build'),
       success: c.happened(on('robot.checkedOut', { name: 'rosie', byName: true })),
       wrongActions: [
         {
@@ -147,16 +147,16 @@ export const M11: LessonDef = {
         },
         {
           id: 'case',
-          on: on('jenkins.buildQueued', { jobId: JOB.regressionFlex }, (pl) => /^rosie$/i.test(pl.params.ROBOT_NAME ?? '') && pl.params.ROBOT_NAME !== 'rosie'),
+          on: on('jenkins.buildQueued', { jobId: JOB.regressionFlux }, (pl) => /^rosie$/i.test(pl.params.ROBOT_NAME ?? '') && pl.params.ROBOT_NAME !== 'rosie'),
           say: 'Exact unique Name, exactly as Orca has it: rosie.',
         },
       ],
       hints: [
         { afterS: 60, idle: true, effect: 'text', text: 'General jobs never pick an Unavailable robot. Name it.' },
-        { afterS: 120, idle: true, effect: 'text', text: 'ROBOT_NAME=rosie and DEVICE_TYPE=FLEX_POCKET (ROSIE is a Flex Pocket).' },
+        { afterS: 120, idle: true, effect: 'text', text: 'ROBOT_NAME=rosie and DEVICE_TYPE=FLUX_POCKET (ROSIE is a Flux Pocket).' },
         { afterS: 180, idle: true, effect: 'show-me-button' },
       ],
-      showMe: [{ app: 'jenkins', route: jobRoute(JOB.regressionFlex, 'build'), target: 'jenkins.param:ROBOT_NAME', action: 'type', text: 'rosie' }],
+      showMe: [{ app: 'jenkins', route: jobRoute(JOB.regressionFlux, 'build'), target: 'jenkins.param:ROBOT_NAME', action: 'type', text: 'rosie' }],
       factIds: ['F102', 'F104'],
     },
     { id: 'M11.10', kind: 'quiz-checkpoint', checkpointId: 'CP-M11.1', title: 'Jenkins', questionIds: ['Q214', 'Q215', 'Q216', 'Q217', 'Q220'] },

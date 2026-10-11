@@ -36,7 +36,7 @@ export function View(props: DrillComponentProps) {
       <Prompt eyebrow={<>Triage · {level === 1 ? 'definition' : level === 2 ? 'scenario' : 'trap'}</>}>
         <Rich text={it.data.scenario} />
       </Prompt>
-      {it.data.render ? <MiniRender r={it.data.render} /> : null}
+      {it.data.render ? <MicroRender r={it.data.render} /> : null}
       <div className="dr01-keys">
         {STATUSES.map((s, i) => {
           const st = q.picked ? (s === it.data.answer ? (q.picked.key === s ? 'right' : 'missed') : q.picked.key === s ? 'wrong' : null) : null;
@@ -65,7 +65,7 @@ export function View(props: DrillComponentProps) {
   );
 }
 
-function MiniRender({ r }: { r: TriageRender }) {
+function MicroRender({ r }: { r: TriageRender }) {
   if (r.kind === 'tablet') {
     return (
       <div className="dr01-tablet">

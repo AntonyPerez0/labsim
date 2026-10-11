@@ -150,7 +150,7 @@ describe('IntelliJ IDEA', () => {
     const good = getState().lab.repos['uia-remote'].local!.files['config.properties']
       .replace('standalone', 'tethered')
       .replace('customerFacingDeviceIp=', 'customerFacingDeviceIp=10.42.30.22')
-      .replace('deviceType=Mini', 'deviceType=Station')
+      .replace('deviceType=Micro', 'deviceType=Stand')
       .replace('classic', 'avocado')
       .replace('SPA', 'CPA')
       .replace('5555', '5444');

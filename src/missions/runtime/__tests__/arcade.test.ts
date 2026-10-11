@@ -112,7 +112,7 @@ describe('global wrong actions', () => {
     completeModules('M01', 'M02', 'M03', 'M04');
     missions.startShift({ configId: 'shift-5', customSeed: 'gw', seedMode: 'custom' });
     const before = state().session.shift!.score;
-    fire('power.plugged', { loadId: 'dev-wall-e-flex3', hookup: { kind: 'dc-rail', targetId: 'T-24V-1' } });
+    fire('power.plugged', { loadId: 'dev-wall-e-flux3', hookup: { kind: 'dc-rail', targetId: 'T-24V-1' } });
     const sh = state().session.shift!;
     const pen = sh.penalties.find((p) => p.gwId === 'GW01')!;
     expect(pen).toBeDefined();
@@ -121,7 +121,7 @@ describe('global wrong actions', () => {
     expect(sh.strikes).toBe(1);
     expect(sh.score).toBe(before - 500);
     const card = state().ui.teachCards.find((c) => c.id === pen.teachCardId)!;
-    expect(card.whatHappened).toBe('The Flex fried on the 24 V tap.');
+    expect(card.whatHappened).toBe('The Flux fried on the 24 V tap.');
     expect(card.practiceDrillId).toBe('DR04');
     expect(state().progress.tagMastery['power.18v']?.evidence).toBe(1);
     expect(state().progress.achievements.ACH08).toBeDefined();
@@ -144,7 +144,7 @@ describe('global wrong actions', () => {
 
   it('ignores runtime-driven events and gives Academy only the Teach Card (no points)', () => {
     missions.startAcademy('M01');
-    fire('power.plugged', { loadId: 'dev-wall-e-flex3', hookup: { kind: 'dc-rail', targetId: 'T-24V-1' } });
+    fire('power.plugged', { loadId: 'dev-wall-e-flux3', hookup: { kind: 'dc-rail', targetId: 'T-24V-1' } });
     expect(state().ui.teachCards.some((c) => c.trigger.ref === 'GW01')).toBe(true);
     expect(state().session.shift).toBeNull();
     expect(state().progress.penalties.GW01).toBe(1);
@@ -153,9 +153,9 @@ describe('global wrong actions', () => {
   it('ends the shift on three strikes with grade D', () => {
     completeModules('M01', 'M02', 'M03', 'M04');
     missions.startShift({ configId: 'shift-5', customSeed: 'strikes', seedMode: 'custom' });
-    fire('power.plugged', { loadId: 'dev-wall-e-flex3', hookup: { kind: 'dc-rail', targetId: 'T-24V-1' } });
+    fire('power.plugged', { loadId: 'dev-wall-e-flux3', hookup: { kind: 'dc-rail', targetId: 'T-24V-1' } });
     advance(6);
-    fire('power.plugged', { loadId: 'dev-eve-flex4', hookup: { kind: 'dc-rail', targetId: 'T-24V-1' } });
+    fire('power.plugged', { loadId: 'dev-eve-flux4', hookup: { kind: 'dc-rail', targetId: 'T-24V-1' } });
     fire('host.securityTamper', { hostId: 'nuc-03', action: 'uninstall', actor: 'player' });
     const s = state();
     expect(s.session.shift!.phase).toBe('ended');

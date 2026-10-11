@@ -79,7 +79,7 @@ function callusUpToDate(lab: LabState, hostId: string): boolean {
 
 export const DEVICE_FAULTS: CoreFaultDef[] = [
   {
-    info: info('device.unpowered', 'Device brick unplugged', 'devices', [p('device', 'device', 'Runtime device id (dev-…)', { required: true, target: true, example: 'dev-eve-flex4' }), p('battery', 'number', 'Battery % left on handhelds', { default: 0 })], {
+    info: info('device.unpowered', 'Device brick unplugged', 'devices', [p('device', 'device', 'Runtime device id (dev-…)', { required: true, target: true, example: 'dev-eve-flux4' }), p('battery', 'number', 'Battery % left on handhelds', { default: 0 })], {
       tags: ['power.18v', 'power.rails', 'hw.devices'],
       clears: "power == 'on'",
       symptoms: ['device dark', 'Orca stays Available (/health does not cover the device)', "builds adb: failed to connect to '10.42.30.12:5444': No route to host"],
@@ -107,7 +107,7 @@ export const DEVICE_FAULTS: CoreFaultDef[] = [
     },
   },
   {
-    info: info('device.dead', 'Device hardware failure', 'devices', [p('device', 'device', 'Runtime device id', { required: true, target: true, example: 'dev-k-9-duo2' })], {
+    info: info('device.dead', 'Device hardware failure', 'devices', [p('device', 'device', 'Runtime device id', { required: true, target: true, example: 'dev-k-9-duet2' })], {
       tags: ['hw.devices'],
       clears: 'API only, or when no rig holds the device (swapped out / RMA)',
       symptoms: ['adb … No route to host', 'the rig stays Available (its Pi is fine)'],
@@ -128,7 +128,7 @@ export const DEVICE_FAULTS: CoreFaultDef[] = [
     isResolved: (lab, f) => !Object.values(lab.rigs).some((r) => r.deviceIds.includes(f.target)),
   },
   {
-    info: info('device.adbTcpReset', 'ADB-over-TCP not re-enabled', 'devices', [p('device', 'device', 'Runtime device id', { required: true, target: true, example: 'dev-data-mini3' })], {
+    info: info('device.adbTcpReset', 'ADB-over-TCP not re-enabled', 'devices', [p('device', 'device', 'Runtime device id', { required: true, target: true, example: 'dev-data-micro3' })], {
       tags: ['adb.port', 'adb.usage', 'laz.oobe', 'hw.pi'],
       clears: 'adbTcpPort == 5444',
       symptoms: ["adb connect 10.42.30.31:5444 → failed to connect to '10.42.30.31:5444': Connection refused", 'Orca Available; USB ADB from the Pi still lists the serial'],
@@ -148,7 +148,7 @@ export const DEVICE_FAULTS: CoreFaultDef[] = [
     isResolved: (lab, f) => lab.devices[f.target]?.adbTcpPort === 5444,
   },
   {
-    info: info('device.printerNoPaper', 'Printer out of paper', 'devices', [p('device', 'device', 'Runtime id of a device with a printer', { required: true, target: true, example: 'dev-wall-e-flex3' })], {
+    info: info('device.printerNoPaper', 'Printer out of paper', 'devices', [p('device', 'device', 'Runtime id of a device with a printer', { required: true, target: true, example: 'dev-wall-e-flux3' })], {
       tags: ['hw.devices'],
       clears: 'printer.paper (device.loadPaper)',
       symptoms: ['Print → toast Printer out of paper, no payload', 'select print timeout'],
@@ -167,7 +167,7 @@ export const DEVICE_FAULTS: CoreFaultDef[] = [
     isResolved: (lab, f) => !!lab.devices[f.target]?.printer.paper,
   },
   {
-    info: info('laz.skipAdbRestore', 'Laz forgets to restore ADB-over-TCP', 'devices', [p('device', 'device', 'Runtime device id', { target: true, default: 'dev-data-mini3' })], {
+    info: info('laz.skipAdbRestore', 'Laz forgets to restore ADB-over-TCP', 'devices', [p('device', 'device', 'Runtime device id', { target: true, default: 'dev-data-micro3' })], {
       tags: ['laz.oobe', 'adb.port', 'adb.usage'],
       clears: 'adbTcpPort == 5444 and a Laz run on the device has finished since injection',
       symptoms: ['the next Laz run skips restore-adb silently', 'afterwards adbTcpPort = null: as device.adbTcpReset', 'the build console still ends laz: merchant active'],
@@ -193,8 +193,8 @@ export const DEVICE_FAULTS: CoreFaultDef[] = [
       '"Scan for receipt" firmware reaches devices',
       'devices',
       [
-        p('devices', 'list', 'Runtime device ids (or use deviceTypes)', { target: true, example: 'dev-eve-flex4' }),
-        p('deviceTypes', 'list', 'Device Types whose lab devices get the firmware', { example: 'FLEX_4', values: [...DEVICE_TYPE_CODES] }),
+        p('devices', 'list', 'Runtime device ids (or use deviceTypes)', { target: true, example: 'dev-eve-flux4' }),
+        p('deviceTypes', 'list', 'Device Types whose lab devices get the firmware', { example: 'FLUX_4', values: [...DEVICE_TYPE_CODES] }),
         p('on', 'boolean', 'Firmware with (true) or without (false) the QR feature', { default: true }),
       ],
       {

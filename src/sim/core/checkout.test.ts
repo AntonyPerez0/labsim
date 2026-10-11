@@ -16,10 +16,10 @@ describe('capability documents (Sim §2.7.1)', () => {
   beforeEach(() => fresh());
 
   it('renders the canonical key order (WALL-E, ROSIE)', () => {
-    expect(JSON.stringify(sim.orca.capabilityDocument(robot('wall-e').id))).toBe('{"deviceType":"FLEX_3","printer":true,"physicalTouch":true,"dip":true,"tap":true,"swipe":true,"pinEntry":true,"tethered":false,"duo":false,"adbOnly":false,"testingProfile":"FLEX_GEN3"}');
-    expect(JSON.stringify(sim.orca.capabilityDocument(robot('rosie').id))).toMatch(/^\{"deviceType":"FLEX_POCKET","printer":false,/);
+    expect(JSON.stringify(sim.orca.capabilityDocument(robot('wall-e').id))).toBe('{"deviceType":"FLUX_3","printer":true,"physicalTouch":true,"dip":true,"tap":true,"swipe":true,"pinEntry":true,"tethered":false,"duet":false,"adbOnly":false,"testingProfile":"FLUX_GEN3"}');
+    expect(JSON.stringify(sim.orca.capabilityDocument(robot('rosie').id))).toMatch(/^\{"deviceType":"FLUX_POCKET","printer":false,/);
     expect(sim.orca.capabilityDocument(robot('data').id)).toMatchObject({ adbOnly: true, physicalTouch: false, goSdk: true });
-    expect(sim.orca.capabilityDocument(robot('megatron').id)).toMatchObject({ tethered: true, duo: false, deviceType: 'STATION_2' });
+    expect(sim.orca.capabilityDocument(robot('megatron').id)).toMatchObject({ tethered: true, duet: false, deviceType: 'STAND_2' });
   });
 });
 
@@ -27,15 +27,15 @@ describe('checkout (Sim §3.4.2)', () => {
   beforeEach(() => fresh());
 
   it('validates DeviceType case exactly (ENUM_CASE)', () => {
-    for (const raw of ['flex_3', 'Flex_3', 'FLEX3', 'FLEX-3', 'FLEX_GEN3', 'mini_3']) {
+    for (const raw of ['flux_3', 'Flux_3', 'FLUX3', 'FLUX-3', 'FLUX_GEN3', 'micro_3']) {
       const out = co({ deviceType: raw, capabilities: { deviceType: raw, physicalTouch: true } });
       expect(out).toEqual({ kind: 'fail', code: 'ENUM_CASE', lines: [`[orca] checkout request deviceType=${raw}`, `java.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.${raw}`] });
     }
   });
 
   it('picks the least-recently-used Available matching robot and locks its dashboard', () => {
-    const out = co({ deviceType: 'FLEX_3', capabilities: { deviceType: 'FLEX_3', physicalTouch: true } });
-    expect(out).toEqual({ kind: 'ok', robotId: 1, robotName: 'wall-e', byName: false, lines: ['[orca] checkout request deviceType=FLEX_3', '[orca] capabilities: deviceType=FLEX_3, physicalTouch=true (non-dynamic)', '[orca] checkout → wall-e (FLEX_3) OK'] });
+    const out = co({ deviceType: 'FLUX_3', capabilities: { deviceType: 'FLUX_3', physicalTouch: true } });
+    expect(out).toEqual({ kind: 'ok', robotId: 1, robotName: 'wall-e', byName: false, lines: ['[orca] checkout request deviceType=FLUX_3', '[orca] capabilities: deviceType=FLUX_3, physicalTouch=true (non-dynamic)', '[orca] checkout → wall-e (FLUX_3) OK'] });
     expect(robot('wall-e').checkout).toMatchObject({ buildId: 'Java/job#1', byName: false, statusAtCheckout: 'AVAILABLE', kind: 'jenkins' });
     expect(robot('wall-e').status).toBe('AVAILABLE');
     sim.tick(50);
@@ -44,10 +44,10 @@ describe('checkout (Sim §3.4.2)', () => {
   });
 
   it('skips Unavailable rigs for general jobs and names them in ONLY_UNAVAILABLE', () => {
-    const out = co({ capabilities: { deviceType: 'FLEX_POCKET', physicalTouch: true } });
+    const out = co({ capabilities: { deviceType: 'FLUX_POCKET', physicalTouch: true } });
     expect(out.kind).toBe('fail');
     expect(out).toMatchObject({ code: 'ONLY_UNAVAILABLE' });
-    expect((out as { lines: string[] }).lines.at(-1)).toBe('No Available robot matches FLEX_POCKET (rosie is Unavailable)');
+    expect((out as { lines: string[] }).lines.at(-1)).toBe('No Available robot matches FLUX_POCKET (rosie is Unavailable)');
   });
 
   it('a named job may use an Unavailable rig and Orca resets it to Unavailable after the run (auto-reset)', () => {
@@ -67,7 +67,7 @@ describe('checkout (Sim §3.4.2)', () => {
   it('a general job that took an Available rig releases it as Available (nothing resets it, INC40)', () => {
     const rosie = robot('rosie');
     sim.orca.setRobotStatus(rosie.id, 'AVAILABLE', 'alex');
-    const out = co({ capabilities: { deviceType: 'FLEX_POCKET', physicalTouch: true } });
+    const out = co({ capabilities: { deviceType: 'FLUX_POCKET', physicalTouch: true } });
     expect(out).toMatchObject({ kind: 'ok', robotName: 'rosie', byName: false });
     expect(rel(rosie.id).lines).toEqual(['[orca] released rosie → Available']);
   });
@@ -81,20 +81,20 @@ describe('checkout (Sim §3.4.2)', () => {
 
   it('waits forever with skip lines when every match is busy or blocked (INC48)', () => {
     sim.faults.inject({ faultId: 'orca.staleReservation', params: { robot: 'eve' } });
-    const out = co({ deviceType: 'FLEX_4', capabilities: { deviceType: 'FLEX_4', physicalTouch: true } });
+    const out = co({ deviceType: 'FLUX_4', capabilities: { deviceType: 'FLUX_4', physicalTouch: true } });
     expect(out.kind).toBe('wait');
-    expect(out.lines).toEqual(['[orca] checkout request deviceType=FLEX_4', '[orca] capabilities: deviceType=FLEX_4, physicalTouch=true (non-dynamic)', '[orca] candidate eve: Reserved — skipped', '[orca] no Available FLEX_4 robot — build waiting in queue']);
+    expect(out.lines).toEqual(['[orca] checkout request deviceType=FLUX_4', '[orca] capabilities: deviceType=FLUX_4, physicalTouch=true (non-dynamic)', '[orca] candidate eve: Reserved — skipped', '[orca] no Available FLUX_4 robot — build waiting in queue']);
     expect(robot('eve').notes[0]!.text).toBe('2026-10-04 17:42:00 STATUS Available → Reserved (riley)');
   });
 
   it('reports capability conflicts, unknown keys and NO_MATCH exactly', () => {
-    expect(co({ capabilities: { deviceType: 'MINI_3' }, dynamicCapabilitiesJson: '{"deviceType":"COMPACT"}' })).toMatchObject({ code: 'CAPABILITY_CONFLICT', lines: ['[orca] 409 Conflict: capability conflict (pipeline deviceType=MINI_3, test deviceType=COMPACT)'] });
+    expect(co({ capabilities: { deviceType: 'MICRO_3' }, dynamicCapabilitiesJson: '{"deviceType":"COMPASS"}' })).toMatchObject({ code: 'CAPABILITY_CONFLICT', lines: ['[orca] 409 Conflict: capability conflict (pipeline deviceType=MICRO_3, test deviceType=COMPASS)'] });
     expect(co({ capabilities: { warpDrive: true } })).toMatchObject({ code: 'UNKNOWN_CAPABILITY', lines: ["[orca] 400 Bad Request: unknown capability 'warpDrive'"] });
     expect((co({ capabilities: { goSdk: true, phone: true } }) as { lines: string[] }).lines.at(-1)).toBe('[orca] No robot matches goSdk=true, phone=true');
   });
 
   it('environment isolates pools: STG only matches OPTIMUS for the tethered Tax job', () => {
-    expect(co({ capabilities: { tethered: true, duo: false }, environment: 'STG' })).toMatchObject({ kind: 'ok', robotName: 'optimus' });
+    expect(co({ capabilities: { tethered: true, duet: false }, environment: 'STG' })).toMatchObject({ kind: 'ok', robotName: 'optimus' });
   });
 });
 

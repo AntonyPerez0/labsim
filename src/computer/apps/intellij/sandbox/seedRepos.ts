@@ -76,7 +76,7 @@ runType=tethered
 merchantFacingDeviceIp=10.42.30.21
 customerFacingDeviceIp=10.42.30.22
 serial=SIM-S2-000021
-deviceType=Station
+deviceType=Stand
 theme=avocado
 kernelType=CPA
 portNumber=5444
@@ -219,9 +219,9 @@ public class HomeScreen extends BaseTest {
 
     public void open(String appName) {
         waitForScreen();
-        if (deviceType == DeviceType.FLEX) {
-            scrollHorizontallyTo(appName);    // Flex
-        } else {                              // Mini, Station
+        if (deviceType == DeviceType.FLUX) {
+            scrollHorizontallyTo(appName);    // Flux
+        } else {                              // Micro, Stand
             scrollVerticallyTo(appName);
         }
         device.findObject(By.text(appName)).click();
@@ -319,10 +319,10 @@ const TESTS: Record<string, [string, string]> = {
  */`,
     '        mfd.run(registerHome::addTaxItem5);     // MFD_O1\n        mfd.run(registerHome::reviewOrder);\n        cfd.run(cfdTotals::assertTotals);       // CFD_O1\n        mfd.run(registerHome::payAndCharge);    // MFD_O2\n        cfd.run(cfdPayment::finalisePayment);   // Step 4',
   ],
-  TaxTestDuo: ['/** TaxTestDuo — Station Duo: both displays on one IP. */', '        mfd.run(registerHome::addTaxItem5);\n        mfd.run(registerHome::reviewOrder);\n        assertTrue(orca.screenCompare("CFD_TOTAL"));'],
+  TaxTestDuet: ['/** TaxTestDuet — Stand Duet: both displays on one IP. */', '        mfd.run(registerHome::addTaxItem5);\n        mfd.run(registerHome::reviewOrder);\n        assertTrue(orca.screenCompare("CFD_TOTAL"));'],
   RefundTest: ['/** RefundTest — refund the last payment. */', '        mfd.run(registerHome::addTaxItem5);'],
-  DuoCfdSuite: ['/** DuoCfdSuite — CFD assertions on a Station Duo. */', '        assertTrue(orca.screenCompare("CFD_TOTAL"));'],
-  DuoCheckoutTest: ['/** DuoCheckoutTest — full checkout on a Station Duo. */', '        mfd.run(registerHome::payAndCharge);\n        assertTrue(orca.screenCompare("CFD_THANK_YOU"));'],
+  DuetCfdSuite: ['/** DuetCfdSuite — CFD assertions on a Stand Duet. */', '        assertTrue(orca.screenCompare("CFD_TOTAL"));'],
+  DuetCheckoutTest: ['/** DuetCheckoutTest — full checkout on a Stand Duet. */', '        mfd.run(registerHome::payAndCharge);\n        assertTrue(orca.screenCompare("CFD_THANK_YOU"));'],
   PrinterlessSmokeTest: ['/** PrinterlessSmokeTest — smoke test for printerless devices. */', '        homeScreen.open("Register");'],
   PaycoreMatrixTest: ['/** PaycoreMatrixTest — card matrix sweep. */', '        mfd.run(registerHome::addTaxItem5);'],
   ContactCanadaPinSaleTest: ['/** ContactCanadaPinSaleTest — Interac PIN sale (Contact Canada). */', '        mfd.run(registerHome::addTaxItem5);\n        mfd.run(registerHome::payAndCharge);'],
@@ -333,7 +333,7 @@ export const BROKEN_CONFIG = `runType=standalone
 merchantFacingDeviceIp=10.42.30.21
 customerFacingDeviceIp=
 serial=SIM-S2-000021
-deviceType=Mini
+deviceType=Micro
 theme=classic
 kernelType=SPA
 portNumber=5555
@@ -414,7 +414,7 @@ export const GORT_FILES: Record<string, string> = {
   'cards/emv/discover_matrix_dip.json': `{\n  "profile": "DISCOVER_MATRIX_DIP",\n  "entry": "DIP",\n  "brand": "DISCOVER"\n}\n`,
   'cards/nfc/visa_std_tap.json': `{\n  "profile": "VISA_STD_TAP",\n  "entry": "TAP",\n  "brand": "VISA"\n}\n`,
   'cards/nfc/interac_ca_tap.json': `{\n  "profile": "INTERAC_CA_TAP",\n  "entry": "TAP",\n  "brand": "INTERAC"\n}\n`,
-  'config/screen-locations/MINI_3/RECEIPT_OPTIONS_4.json': `{\n  "deviceType": "MINI_3",\n  "screen": "RECEIPT_OPTIONS_4",\n  "unit": "mm",\n  "buttons": {\n    "Print": { "x": 38.5, "y": 61.0 },\n    "Email": { "x": 38.5, "y": 75.0 },\n    "Text": { "x": 38.5, "y": 89.0 },\n    "No Receipt": { "x": 38.5, "y": 103.0 }\n  }\n}\n`,
+  'config/screen-locations/MICRO_3/RECEIPT_OPTIONS_4.json': `{\n  "deviceType": "MICRO_3",\n  "screen": "RECEIPT_OPTIONS_4",\n  "unit": "mm",\n  "buttons": {\n    "Print": { "x": 38.5, "y": 61.0 },\n    "Email": { "x": 38.5, "y": 75.0 },\n    "Text": { "x": 38.5, "y": 89.0 },\n    "No Receipt": { "x": 38.5, "y": 103.0 }\n  }\n}\n`,
   'go-sdk/tests/sale_receipt.json': `{
   "name": "Go SDK sale with printed receipt",
   "sdk": "go",
@@ -427,7 +427,7 @@ export const GORT_FILES: Record<string, string> = {
   ]
 }
 `,
-  'suites/contact-canada/pin_sale.json': `{ "name": "Contact Canada Interac PIN sale",\n  "capabilities": { "deviceType": "COMPACT", "physicalTouch": true },\n  "card": "INTERAC_CA_DIP", "expectPin": true, "receipt": "RECEIPT_OPTIONS_4" }\n`,
+  'suites/contact-canada/pin_sale.json': `{ "name": "Contact Canada Interac PIN sale",\n  "capabilities": { "deviceType": "COMPASS", "physicalTouch": true },\n  "card": "INTERAC_CA_DIP", "expectPin": true, "receipt": "RECEIPT_OPTIONS_4" }\n`,
 };
 
 export const ORCA_FILES: Record<string, string> = {
@@ -436,10 +436,10 @@ export const ORCA_FILES: Record<string, string> = {
 
 /** The DeviceType enumeration. ALL CAPS — Jenkins env vars must match exactly. */
 public enum DeviceType {
-    STATION_2018, STATION_2, STATION_DUO, STATION_DUO_2, STATION_DUO_3,
-    MINI_2, MINI_3, MINI_4,
-    FLEX_1, FLEX_2, FLEX_3, FLEX_4, FLEX_POCKET,
-    COMPACT
+    STAND_2018, STAND_2, STAND_DUET, STAND_DUET_2, STAND_DUET_3,
+    MICRO_2, MICRO_3, MICRO_4,
+    FLUX_1, FLUX_2, FLUX_3, FLUX_4, FLUX_POCKET,
+    COMPASS
 }
 `,
   'src/main/resources/config/application-prod.yml': `# Orca production profile\nspring:\n  datasource:\n    url: jdbc:mysql://localhost:3306/orca\n    username: orca\n  jpa:\n    open-in-view: false\nserver:\n  port: 8080\n`,
@@ -450,8 +450,8 @@ export const SEED_HISTORY: Record<string, { sha: string; message: string; author
   'uia-remote': [
     { sha: 'b07c1e5', message: 'Initial tethered runner', author: 'morgan', day: -30, hhmm: '10:12' },
     { sha: '2f9a7b3', message: 'Add RegisterHomeScreen.waitForScreen', author: 'morgan', day: -12, hhmm: '14:40' },
-    { sha: '61cc0de', message: 'HomeScreen.open(): vertical on Flex, horizontal on Mini/Station', author: 'morgan', day: -6, hhmm: '11:05' },
-    { sha: '7a20f5b', message: 'Migrate CFD_TOTAL to UIA 2.3 in TaxTestDuo (#398)', author: 'morgan', day: -2, hhmm: '16:22' },
+    { sha: '61cc0de', message: 'HomeScreen.open(): vertical on Flux, horizontal on Micro/Stand', author: 'morgan', day: -6, hhmm: '11:05' },
+    { sha: '7a20f5b', message: 'Migrate CFD_TOTAL to UIA 2.3 in TaxTestDuet (#398)', author: 'morgan', day: -2, hhmm: '16:22' },
   ],
   pigeon: [
     { sha: '8d2e6b9', message: 'known_good_actions template', author: 'morgan', day: -20, hhmm: '09:30' },
@@ -461,7 +461,7 @@ export const SEED_HISTORY: Record<string, { sha: string; message: string; author
   gort: [
     { sha: 'a11f2c3', message: 'go-sdk: sale_receipt capabilities', author: 'david', day: -14, hhmm: '10:00' },
     { sha: '5be7c90', message: 'Reorganise card definitions under cards/emv/ and cards/nfc/', author: 'jared', day: -7, hhmm: '15:45' },
-    { sha: '9f02a1b', message: 'Update MINI_3 receipt coordinates (#418)', author: 'jared', day: -3, hhmm: '11:20' },
+    { sha: '9f02a1b', message: 'Update MICRO_3 receipt coordinates (#418)', author: 'jared', day: -3, hhmm: '11:20' },
     { sha: 'c41d9e2', message: 'Add INTERAC_CA_TAP card definition', author: 'riley', day: -1, hhmm: '15:12' },
   ],
   orchestrator: [

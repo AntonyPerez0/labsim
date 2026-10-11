@@ -38,7 +38,7 @@ export const LOCATIONS: readonly LocationDef[] = [
   loc('loc.print-corner', '3D print corner', [-5.75, 0, -3.75], 1.3, 'Prusa, Bambu Lab, CAD laptop'),
   loc('loc.jared-bench', `${personName(HARDWARE_LEAD)}'s bench`, [2.7, 0, -3.75], 1.3, 'Soldering, scope, bolt bins, red/blue bins, drawers'),
   loc('loc.husky', 'Husky chest', [4.8, 0, -4.0], 0.7, 'Spare devices (drawers 2, 3)'),
-  loc('loc.storage', 'Storage cabinet', [6.42, 0, -4.0], 0.7, 'Locked spares, legacy Flex 1'),
+  loc('loc.storage', 'Storage cabinet', [6.42, 0, -4.0], 0.7, 'Locked spares, legacy Flux 1'),
   loc('loc.whiteboard', 'Whiteboard', [-6.1, 0, -1.8], 1.4, 'Architecture diagram + roadmap board'),
   loc('loc.build-table', 'Build table', [-4.4, 0, 1.55], 1.2, 'Half-built rig, 10 ft extrusion'),
   loc('loc.device-library', 'Device library', [6.1, 0, 0.3], 1.3, 'One of every device + family trays'),

@@ -57,17 +57,17 @@ export function tapeQuad(d: DevCtx, rect: AtlasRect, wMm: number, hMm: number, p
   d.detail.add(planeUvG(wMm, hMm, [rect.u0, rect.v0, rect.u1, rect.v1]), d.kit.tape.material, d.frame.clone().multiply(placeMatrix(place)));
 }
 
-/** LabSim logo decal: wordmark (leaf + `lab`) or leaf only, in a colour. */
-export function logoRect(kit: RigKit, variant: 'wordmark' | 'leaf', color: string): AtlasRect {
+/** LabSim logo decal: wordmark (three-bar mark + `labsim`) or the mark only, in a colour. */
+export function logoRect(kit: RigKit, variant: 'wordmark' | 'mark', color: string): AtlasRect {
   const key = `logo:${variant}:${color}`;
-  if (variant === 'leaf') return atlasRect(kit.decal, key, 96, 96, (c, x, y, w, h) => drawMark(c, x + w / 2, y + h / 2, w * 0.86, color));
+  if (variant === 'mark') return atlasRect(kit.decal, key, 96, 96, (c, x, y, w, h) => drawMark(c, x + w / 2, y + h / 2, w * 0.86, color));
   return atlasRect(kit.decal, key, 320, 96, (c, x, y, w, h) => {
     drawMark(c, x + h * 0.45, y + h / 2, h * 0.7, color);
     drawWordmark(c, x + h * 0.9, y + h * 0.72, h * 0.62, color, 600);
   });
 }
 
-/** Label-maker tape (e.g. `FLEX 3`) — width from the text length. Returns rect and mm size. */
+/** Label-maker tape (e.g. `FLUX 3`) — width from the text length. Returns rect and mm size. */
 export function tapeLabel(kit: RigKit, text: string, capMm: number, style: Parameters<typeof paintTape>[1] = {}): { rect: AtlasRect; w: number; h: number } {
   const h = capMm * 1.9;
   const w = Math.max(h * 1.4, text.split('\n').reduce((m, l) => Math.max(m, l.length), 0) * capMm * 0.68 + 6);

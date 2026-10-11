@@ -31,7 +31,7 @@
  * );
  * @example M06 step 12 — "Build observed waiting while WALL-E was Reserved, then checked out WALL-E":
  * c.sequence(
- *   on('orca.checkoutRejected', { jobId: 'Java/uia-remote-regression-flex' }),
+ *   on('orca.checkoutRejected', { jobId: 'Java/uia-remote-regression-flux' }),
  *   on('robot.checkedOut', { name: 'wall-e' }),
  * )
  */
@@ -101,7 +101,7 @@ export type HwDeviceField = 'power' | 'state' | 'adbTcpPort' | 'activeMerchant' 
 
 /**
  * Probe data. The resolver (runtime) reads it; authors build it with `p.*`.
- * Keys follow GP §3.3; ids are system names (`wall-e`), Orca device-row names (`johnny-5-flex2`),
+ * Keys follow GP §3.3; ids are system names (`wall-e`), Orca device-row names (`johnny-5-flux2`),
  * host ids (`pi-wall-e` or `pi-10.42.10.11`, `minix-01`, `orca-vm`), fuse ids (`F-RACKB-5V`), job paths.
  */
 export type ProbeSpec =
@@ -196,7 +196,7 @@ export const p = {
     checkedOutBy: probe<string | null>({ p: 'orca.robot', robot, field: 'checkedOutBy' }),
     url: (kind: RobotUrlKind) => probe<string | null>({ p: 'orca.robot.url', robot, kind }),
   }),
-  /** `orca.device(D).*` — D = Orca device-row name (`johnny-5-flex2`). */
+  /** `orca.device(D).*` — D = Orca device-row name (`johnny-5-flux2`). */
   device: (device: string) => ({
     exists: probe<boolean>({ p: 'orca.device', device, field: 'exists' }),
     type: probe<DeviceTypeCode | null>({ p: 'orca.device', device, field: 'type' }),
@@ -539,7 +539,7 @@ export const c = {
     cmp(probe, 'matches', regex, flags === undefined ? undefined : { flags }),
   truthy: (probe: Probe) => cmp(probe, 'truthy'),
   falsy: (probe: Probe) => cmp(probe, 'falsy'),
-  /** a == b (e.g. MFD IP == CFD IP for a Station Duo). */
+  /** a == b (e.g. MFD IP == CFD IP for a Stand Duet). */
   same: <T extends ProbeValue>(a: Probe<T>, b: Probe<T>) => cmp(a, 'eq', { probe: b }),
   /** Reference another probe as the right-hand side. */
   ref: <T extends ProbeValue>(probe: Probe<T>): ProbeRef<T> => ({ probe }),

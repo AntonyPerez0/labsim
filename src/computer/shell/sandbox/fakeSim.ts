@@ -144,7 +144,7 @@ function capabilityDocument(lab: LabState, robotId: number): Record<string, stri
     swipe: has('swipe'),
     pinEntry: r.rigKind === 'touch' || r.rigKind === 'standalone',
     tethered: r.mfdDeviceId != null,
-    duo: !!t?.dualScreenSingleAdb,
+    duet: !!t?.dualScreenSingleAdb,
     adbOnly: r.rigKind === 'adb',
     testingProfile: t?.profile ?? '',
   };

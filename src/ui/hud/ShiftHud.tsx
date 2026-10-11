@@ -119,13 +119,13 @@ export function ShiftBar() {
 }
 
 const PIPE_LABEL: Record<string, string> = {
-  PL1: 'regression-flex',
+  PL1: 'regression-flux',
   PL2: 'tethered-tax',
   PL3: 'sale-swipe',
-  PL4: 'regression-mini',
+  PL4: 'regression-micro',
   PL5: 'canada-pin',
   PL6: 'go-sdk-smoke',
-  PL7: 'duo-cfd',
+  PL7: 'duet-cfd',
   PL8: 'paycore-matrix',
 };
 

@@ -45,7 +45,7 @@ describe('board data (reference-checked)', () => {
 
   it('roadmap answers follow the reference', () => {
     const ans = Object.fromEntries(ROADMAP_SORT.items.map((i) => [i.id, i.answer]));
-    expect(ans).toEqual({ 'orca-vm': 'today', 'orca-gcp': 'planned', 'pi-control': 'today', 'nuc-control': 'retired', 'ollama-poc': 'progress', 'pin-bypass': 'progress', 'duo-ocr': 'retired', github: 'today' });
+    expect(ans).toEqual({ 'orca-vm': 'today', 'orca-gcp': 'planned', 'pi-control': 'today', 'nuc-control': 'retired', 'ollama-poc': 'progress', 'pin-bypass': 'progress', 'duet-ocr': 'retired', github: 'today' });
   });
 
   it('the ADB arrow names port 5444 and the ping is every 5 minutes', () => {

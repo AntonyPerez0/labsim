@@ -35,9 +35,9 @@ describe('entity builders (Sim §2.3–§2.4 defaults)', () => {
     expect(rig).toMatchObject({ banner: 'green', bannerText: 'Status: OK', probeDisplay: 'primary', motionHost: 'PI', assembly: 'complete' });
     expect(rig.gantry).toMatchObject({ homed: true, minXMm: -10, speedMmS: 120, homingSpeedMmS: 60 });
     expect(createRigState('data', 11, 'adb').probeDisplay).toBeNull();
-    expect(createTerminalDevice('dev-johnny-5-flex1', 'FLEX_1').firmwareInfo).toEqual({ version: '2.19.4', receiptQr: false });
-    expect(createTerminalDevice('dev-rosie-pocket', 'FLEX_POCKET').printer.present).toBe(false);
-    expect(createTerminalDevice('dev-r2-d2-duo', 'STATION_DUO').secondaryDisplay?.screen).toBe('customer-idle');
+    expect(createTerminalDevice('dev-johnny-5-flux1', 'FLUX_1').firmwareInfo).toEqual({ version: '2.19.4', receiptQr: false });
+    expect(createTerminalDevice('dev-rosie-pocket', 'FLUX_POCKET').printer.present).toBe(false);
+    expect(createTerminalDevice('dev-r2-d2-duet', 'STAND_DUET').secondaryDisplay?.screen).toBe('customer-idle');
   });
 });
 

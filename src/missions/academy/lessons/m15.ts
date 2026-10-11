@@ -1,8 +1,8 @@
 /**
  * M15 — Pigeon (LSTR) & Legacy JSON (Cur §2 M15). Mentor {{morgan}}, cameo {{jared}}.
- * Setup (`academy:M15`, Sim §4.4.2): gort PR #418 "Update MINI_3 receipt coordinates" is open
+ * Setup (`academy:M15`, Sim §4.4.2): gort PR #418 "Update MICRO_3 receipt coordinates" is open
  * (un-merged), `pigeon/tests/sale/swipe_sale_print.json` is the expanded fixture with a missing comma
- * after line 22, and `Java/pigeon-android-sale-swipe` runs on BUMBLEBEE (MINI_3, outdated coordinates).
+ * after line 22, and `Java/pigeon-android-sale-swipe` runs on BUMBLEBEE (MICRO_3, outdated coordinates).
  * Step 5 fails `LSTR ParseError: Unexpected string in JSON at line 23 column 7`; step 8 fails
  * `step 7/9 "select print" … TIMEOUT after 60 s`; step 11 merge → Orca sync → PASS.
  */
@@ -168,7 +168,7 @@ export const M15: LessonDef = {
       route: '/recordings',
       success: c.appAction('camera', 'camera.recording.finished', (d) => d.robotName === 'bumblebee'),
       showMe: [{ app: 'camera', route: '/recordings', target: 'camera.recording:', action: 'click' }],
-      onComplete: [say('jared', 'About 3 mm above Print. Those are the old MINI_3 coordinates from before the QR shift. My PR fixes them.')],
+      onComplete: [say('jared', 'About 3 mm above Print. Those are the old MICRO_3 coordinates from before the QR shift. My PR fixes them.')],
       factIds: ['F211', 'F213'],
     },
     {

@@ -30,7 +30,7 @@
 
 People are referenced through `src/content/team.ts`: mentors `npc.jared`, `npc.tate`, `npc.david`,
 `npc.morgan` (canon), and the Arcade coworkers `npc.coworker` (display name **Riley**, IPX QA, owner
-of the desk Flex at `10.42.60.4` — the curriculum's unnamed coworker), `npc.sam` (**Sam**, PayCore
+of the desk Flux at `10.42.60.4` — the curriculum's unnamed coworker), `npc.sam` (**Sam**, PayCore
 engineer) and `npc.alex` (**Alex**, new hire). Text interpolates names; never gendered pronouns.
 
 ---
@@ -66,10 +66,10 @@ clean diagnoses under a ticking queue) and *transfer* (I could walk into the rea
 | Unavailable semantics | General pipelines cannot check it out; a job passing the exact unique robot **Name** can; when that job finishes Orca resets it to `Unavailable`. |
 | ADB port | **5444** for lab devices; 5555 is the ADB default and the cause of the coworker-device collision. |
 | Power chain | 120 V AC wall → Mean Well → 24 V DC rail → step-downs: 12 V DC (NUCs) and 5 V DC 10 A (Pis), inline fuses. LabSim devices (irregular 18 V) and Collis probes **only** on commercial AC power strips. |
-| DeviceType enum | `STATION_2018, STATION_2, STATION_DUO, STATION_DUO_2, STATION_DUO_3, MINI_2, MINI_3, MINI_4, FLEX_1, FLEX_2, FLEX_3, FLEX_4, FLEX_POCKET, COMPACT` — ALL CAPS, case-sensitive in Jenkins env vars. FLEX_3/FLEX_4/FLEX_POCKET share the `FLEX_GEN3` testing profile; Pocket has `hasPrinter=false`. |
-| config.properties | `theme=avocado`, `kernelType=CPA`, `portNumber=5444`, `runType=tethered` for tethered; Station Duo ⇒ MFD IP == CFD IP; `deviceType` is the family (`Mini`, `Flex`, `Station`). |
+| DeviceType enum | `STAND_2018, STAND_2, STAND_DUET, STAND_DUET_2, STAND_DUET_3, MICRO_2, MICRO_3, MICRO_4, FLUX_1, FLUX_2, FLUX_3, FLUX_4, FLUX_POCKET, COMPASS` — ALL CAPS, case-sensitive in Jenkins env vars. FLUX_3/FLUX_4/FLUX_POCKET share the `FLUX_GEN3` testing profile; Pocket has `hasPrinter=false`. |
+| config.properties | `theme=avocado`, `kernelType=CPA`, `portNumber=5444`, `runType=tethered` for tethered; Stand Duet ⇒ MFD IP == CFD IP; `deviceType` is the family (`Micro`, `Flux`, `Stand`). |
 | Tablet | Header with Human Readable Name, `Status: OK`, `Brainbox v6`; tabs `Robot`, `Robot Control`, `Motion Control`; groups Steppers (Enable/Disable), Park (Park All/XY/X/Y), Dip (In/Out), Tap (In/Out), Phone (Forward/Back/Push Power Button), Solenoid (Down/Up/Lower/Raise). Manual arm move ⇒ magnetic lock breaks, banner **yellow**; only **Park All** homes to the limit switches at (0,0) and turns it green (Park XY/X/Y leave it yellow, Cur S13). |
-| uia-remote | `app/src/main` (QA never modifies), `test` (unit tests + multi-device runner), `androidTest` packages `databases`, `pageobjects`, `testactions`; screen classes extend `BaseTest`, Zone 1 locators / Zone 2 helpers, mandatory `waitForScreen()` and `isScreenPresent()`; `open(appName)` vertical on Flex, horizontal on Mini/Station; Tax test MFD_O1 → CFD_O1 → MFD_O2 → Step 4 on CFD, start and teardown at HomeScreen. |
+| uia-remote | `app/src/main` (QA never modifies), `test` (unit tests + multi-device runner), `androidTest` packages `databases`, `pageobjects`, `testactions`; screen classes extend `BaseTest`, Zone 1 locators / Zone 2 helpers, mandatory `waitForScreen()` and `isScreenPresent()`; `open(appName)` vertical on Flux, horizontal on Micro/Stand; Tax test MFD_O1 → CFD_O1 → MFD_O2 → Step 4 on CFD, start and teardown at HomeScreen. |
 | Command syntax | `adb`, `ssh`, `git`, `curl`, `systemctl`, `schtasks` behave like the real tools for the subset simulated (apps doc). |
 
 **Compressed for play (disclosed on the Field Manual page "How the sim differs"):**
@@ -157,7 +157,7 @@ module +100). This doc adds:
 | M13 uia-remote & POM | INC32, INC33, INC34 | DR08 POM Builder (incl. "POM Doctor"), DR15 "Where Does It Go?" | — |
 | M14 config.properties & Tax test | INC27, INC29, INC30, INC35, INC47 | DR02, DR09 (all sets) | **Daily Challenge** |
 | M15 Pigeon & Legacy JSON | INC22, INC25 | DR06 JSON Medic ("Comma Hunt"), DR18 "Log Detective" | — |
-| M16 Station Duo, OCR, GIMP & UIA 2.3 | INC24, INC36, INC37, INC38, INC64 | DR05 | — |
+| M16 Stand Duet, OCR, GIMP & UIA 2.3 | INC24, INC36, INC37, INC38, INC64 | DR05 | — |
 | M17 AI, Infrastructure & Roadmap | INC10, INC57, INC61 | — | — |
 | M18 Teams, History & Capstone | — (every incident is unlocked by now) | — | **Full Shift (20-min)**, Certification exams (Cur M18 unlock) |
 
@@ -226,18 +226,18 @@ HUD bottom-left strip; full detail in the Jenkins app. Jobs live in the curricul
 
 | ID | Jenkins job | Checkout requirement | Default eligible rigs | Activation order |
 |---|---|---|---|---|
-| PL1 | `Java/uia-remote-regression-flex` | `DEVICE_TYPE` alternates `FLEX_3` / `FLEX_4` each run; pipeline script `def capabilities = [deviceType: params.DEVICE_TYPE, physicalTouch: true]` | WALL-E, EVE | 1 |
+| PL1 | `Java/uia-remote-regression-flux` | `DEVICE_TYPE` alternates `FLUX_3` / `FLUX_4` each run; pipeline script `def capabilities = [deviceType: params.DEVICE_TYPE, physicalTouch: true]` | WALL-E, EVE | 1 |
 | PL2 | `Java/uia-remote-tethered-tax` | tethered (MFD populated) | MEGATRON, OPTIMUS | 2 |
 | PL3 | `Java/pigeon-android-sale-swipe` | physical touch + printer | WALL-E, EVE, BUMBLEBEE, JOHNNY-5, BAYMAX | 3 |
-| PL4 | `Java/uia-remote-regression-mini` | `DEVICE_TYPE=MINI_3`, physical touch | BUMBLEBEE | 4 |
-| PL5 | `Java/contact-canada-pin-sale` | `COMPACT`, physical touch, `CARD_PROFILE=INTERAC_CA_DIP` | SETI | 5 |
+| PL4 | `Java/uia-remote-regression-micro` | `DEVICE_TYPE=MICRO_3`, physical touch | BUMBLEBEE | 4 |
+| PL5 | `Java/contact-canada-pin-sale` | `COMPASS`, physical touch, `CARD_PROFILE=INTERAC_CA_DIP` | SETI | 5 |
 | PL6 | `Java/go-sdk-sale-smoke` | merchant `GO-SDK-US-01` (App ID / App Secret / API Key); dynamic JSON from `gort/go-sdk/tests/sale_receipt.json` incl. `"printer": true` | DATA, TARS | 6 |
-| PL7 | `Java/uia-remote-duo-cfd` [illus.] | `STATION_DUO` | R2-D2 | 7 |
+| PL7 | `Java/uia-remote-duet-cfd` [illus.] | `STAND_DUET` | R2-D2 | 7 |
 | PL8 | `Java/paycore-standalone-matrix` [illus.] (Sam's NPC job, every 180 s) | named `ROBOT_NAME=rosie` | ROSIE (Unavailable) | always on; counts in uptime only while ROSIE is broken |
 
 Rules:
 * Every active pipeline attempts a checkout every **30 real s**; a run lasts **60 real s**.
-* Checkout only on rigs that are `Available`, match the requirement and are not running; `Unavailable` only when named; `Reserved`/`Offline`/`Connection Failed` never. Console lines follow Cur §0.6/M06: `[orca] candidate wall-e: Reserved — skipped`, `[orca] no Available FLEX_3 robot — build waiting in queue`, `[orca] checkout → wall-e (FLEX_3) OK`; Orca's robot row shows `Available · in use by Jenkins #4127`.
+* Checkout only on rigs that are `Available`, match the requirement and are not running; `Unavailable` only when named; `Reserved`/`Offline`/`Connection Failed` never. Console lines follow Cur §0.6/M06: `[orca] candidate wall-e: Reserved — skipped`, `[orca] no Available FLUX_3 robot — build waiting in queue`, `[orca] checkout → wall-e (FLUX_3) OK`; Orca's robot row shows `Available · in use by Jenkins #4127`.
 * Run outcome: **green** if no active fault affects that pipeline on that rig (+20 pts); **red** otherwise (−20 pts) — the console shows that incident's Jenkins symptoms and, if no ticket exists for the rig, a Jenkins Bot ticket spawns at once (most incidents "arrive" this way).
 * Blocked attempt (no eligible rig): −10 pts.
 * **Pipeline uptime %** = attempts that got a rig ÷ total attempts. End bonus: ≥ 95 % → +500; ≥ 85 % → +250.
@@ -391,16 +391,16 @@ unplugged Pi on a rig being built stays Offline. (Ref §3)"*
 types `key=value` lines (Standard: key autocompletes after 3 chars). Graded keys = the curriculum
 validator's 11 keys: `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial`,
 `deviceType`, `theme`, `kernelType`, `portNumber`, `unlockPasscode`, `backendEnv`, `robotName`
-(Cur M14). +40 per correct key; all 11 correct +100. Required traps: Duo card (both IPs identical,
-R2-D2 `10.42.30.14`, `deviceType=Station`); tethered card (`runType=tethered`); a Flex card
-(`deviceType=Flex`); an "old wiki" card with `theme=classic`, `kernelType=SPA`, `portNumber=5555`.
+(Cur M14). +40 per correct key; all 11 correct +100. Required traps: Duet card (both IPs identical,
+R2-D2 `10.42.30.14`, `deviceType=Stand`); tethered card (`runType=tethered`); a Flux card
+(`deviceType=Flux`); an "old wiki" card with `theme=classic`, `kernelType=SPA`, `portNumber=5555`.
 Target for MEGATRON (identical to Cur M14's validator target):
 ```properties
 runType=tethered
 merchantFacingDeviceIp=10.42.30.21
 customerFacingDeviceIp=10.42.30.22
 serial=SIM-S2-000021
-deviceType=Station
+deviceType=Stand
 theme=avocado
 kernelType=CPA
 portNumber=5444
@@ -416,8 +416,8 @@ robotName=megatron
 `10.42.30.*:5444`, `portNumber=5444`. Last 15 s bonus: type the fix, e.g. `adb disconnect 10.42.60.4:5555`.
 
 **DR04 Power Path.** Sources {wall 120 V AC, AC power strip, Mean Well (24 V DC out), 12 V step-down,
-5 V 10 A step-down, inline fuse holders}; loads {Raspberry Pi, Intel NUC, Flex 4 PSU brick,
-Mini 3 PSU, Collis probe PSU, Mean Well input, step-down inputs, motor controller PCB (24 V)
+5 V 10 A step-down, inline fuse holders}; loads {Raspberry Pi, Intel NUC, Flux 4 PSU brick,
+Micro 3 PSU, Collis probe PSU, Mean Well input, step-down inputs, motor controller PCB (24 V)
 [illus.]}. Correct graph: wall → Mean Well; wall → AC strip; Mean Well 24 V → step-down inputs (and
 motor PCB [illus.]); 12 V → fuse → NUC; 5 V 10 A → fuse → Pis; LabSim PSUs → AC strip; Collis PSU →
 AC strip. A LabSim or Collis lead on any DC terminal = instant spark/fry animation, −300, Teach Card.
@@ -440,7 +440,7 @@ linter). Hint (−50): "Paste a known-good block" from `tests/_templates/known_g
 **DR07 Receipt Map.** Receipt-options render for a random Device Type. Step 1: map `RECEIPT_OPTIONS_4`
 or `RECEIPT_OPTIONS_5` (5th option "Scan for receipt" appears when the QR feature is on; buttons sit
 3.0 mm lower, Cur S10). Step 2: tap the asked button. Tapping where it sits on the *other* map = wrong
-+ Teach Card with both overlays. FLEX_4 values from Cur §0.6 are the reference set.
++ Teach Card with both overlays. FLUX_4 values from Cur §0.6 are the reference set.
 
 **DR08 POM Builder / POM Doctor.** Build skeleton:
 ```java
@@ -455,7 +455,7 @@ public class RegisterHomeScreen extends BaseTest {
 }
 ```
 Card pool: locators (`private final BySelector reviewOrderBtn = By.text("Review Order");`),
-`waitForScreen()`, `isScreenPresent()`, `open(String appName)` (Flex vertical / Mini–Station
+`waitForScreen()`, `isScreenPresent()`, `open(String appName)` (Flux vertical / Micro–Stand
 horizontal), distractors (`portNumber = 5555`, a `@Test` method → `testactions`, a DB query →
 `databases`, a method in `app/src/main`). Pass = both mandatory methods, locators in Zone 1, helpers in
 Zone 2, package `pageobjects`, extends `BaseTest`, no distractors. Doctor mode shows a broken class
@@ -473,9 +473,9 @@ Zone 2, package `pageobjects`, extends `BaseTest`, no distractors. Doctor mode s
 to unlocked modules, weighted to weakest tags. Every 5th question is a hotspot on a render (MAIN
 toggle, Park All button, Pi ACT LED…). Wrong → the item's curriculum explanation as the Teach Card.
 
-**DR11 Caps Lock.** Accept (`→`) / reject (`←`). Valid: exact enum strings. Invalid: `flex_3`,
-`Flex_3`, `mini_3`, `FLEX3`, `FLEX-3`, `Mini 3`, `STATION_DUO2`, `FLEX_GEN3` (a testing profile, not
-a DeviceType), `POCKET`. Bonus: valid `deviceType` in config.properties? (`Mini`, `Flex`, `Station`.)
+**DR11 Caps Lock.** Accept (`→`) / reject (`←`). Valid: exact enum strings. Invalid: `flux_3`,
+`Flux_3`, `micro_3`, `FLUX3`, `FLUX-3`, `Micro 3`, `STAND_DUET2`, `FLUX_GEN3` (a testing profile, not
+a DeviceType), `POCKET`. Bonus: valid `deviceType` in config.properties? (`Micro`, `Flux`, `Stand`.)
 
 **DR12 Entity Atlas.** Raw Track Data → Card Profile (swipe) · Gort path of a dip card → Card Profile
 (dip/tap) · button mm X/Y → Screen Locations · CFD box + expected text → Screen Compare Image · API
@@ -512,7 +512,7 @@ MySQL schemas) · Orca's planned future → Docker + GCP · Sedi QA's legacy fra
 Team built → POS SDKs, USB Pay Display, Secure Network Pay Display · uia-remote creator → the
 presenter (Morgan) · IPX → Integrated Payment Experience · PayCore adopted uia-remote for → LabSim
 Dining · Pigeon's name → "pidgin" pun, evolved from Lester · why UIA 2.3 → native dual-screen element
-tracking · Mini 3 → hot-swap equivalent for the printerless Duo 2 · Compact → Canadian market (Westers)
+tracking · Micro 3 → hot-swap equivalent for the printerless Duet 2 · Compass → Canadian market (Westers)
 · Gen 2 PIN bypass partner → Core OS Team · Ubi → routing platform for merchant switching · Claude →
 evaluated for repo optimisation and test generation · Ollama → local LLM runner on the GPU blade
 (vision PoC) · Gort → monorepo incl. Dip/Tap card definitions (named after the robot from *The Day the
@@ -560,34 +560,34 @@ same sim mechanics and strings so skills transfer 1:1.
 
 This is the curriculum's lesson roster (Cur §0.4) with the Academy-seeded faults cleared: JOHNNY-5's
 Human Readable Name is `JOHNNY-5` and its Tap URL is filled; OPTIMUS has its MFD/CFD set; BUMBLEBEE's
-Offset Y is 0.0; BAYMAX is Available; JOHNNY-5 still carries its **Flex 1** (the Flex 2 upgrade is
+Offset Y is 0.0; BAYMAX is Available; JOHNNY-5 still carries its **Flux 1** (the Flux 2 upgrade is
 INC42); every modelled Device Type has both `RECEIPT_OPTIONS_4` and `RECEIPT_OPTIONS_5`. If the
 world/sim docs change devices or IPs, they win (Cur §0.4) and incidents follow by **role tag**. All
 IPs, serials, device-row names and merchants are illustrative (†/[illus.]).
 
 | Rig (HRN) | Name | Role tags | Location | Device(s) → Orca Device row | Device IP `:5444` | Pi (`:8000`) | Camera Stream URL | Callus box | Merchant | Factory status |
 |---|---|---|---|---|---|---|---|---|---|---|
-| WALL-E | `wall-e` | touch, collis, flexgen3, printer | `loc.rack-a` | Flex 3 → `wall-e-flex3` `FLEX_3` | 10.42.30.11 | 10.42.10.11 | `http://10.42.10.11:8081/stream.mjpg` | MINIX-01 | AUTO-US-NOPIN-01 | Available |
-| EVE | `eve` | touch, collis, flexgen3, printer | `loc.rack-a` | Flex 4 → `eve-flex4` `FLEX_4` | 10.42.30.12 | 10.42.10.12 | `http://10.42.10.12:8081/stream.mjpg` | MINIX-01 | AUTO-US-NOPIN-01 | Available |
-| BUMBLEBEE | `bumblebee` | touch, collis, mini, printer | `loc.rack-a` | Mini 3 → `bumblebee-mini3` `MINI_3` | 10.42.30.13 | 10.42.10.13 | `http://10.42.10.13:8081/stream.mjpg` | MINIX-01 | AUTO-US-NOPIN-01 | Available |
-| R2-D2 | `r2-d2` | touch, collis, duo, ocr | `loc.rack-a` | Station Duo → `r2-d2-duo` `STATION_DUO` | 10.42.30.14 (MFD = CFD) | 10.42.10.14 | `http://10.42.10.14:8081/stream.mjpg` (aimed at the CFD) | MINIX-01 | AUTO-US-NOPIN-01 | Available |
-| JOHNNY-5 | `johnny-5` | touch, collis, flex-legacy, printer | `loc.rack-b` | Flex 1 → `johnny-5-flex1` `FLEX_1` (spare Flex 2 `SIM-F2-000015` in the Husky chest, drawer 2) | 10.42.30.15 | 10.42.10.15 | shared Rack B `http://10.42.10.40:8081/stream.mjpg` | MINIX-02 | AUTO-US-NOPIN-01 | Available |
-| BAYMAX | `baymax` | touch, collis, printer, rebuild | `loc.rack-b` | Station 2018 → `baymax-st2018` `STATION_2018` | 10.42.30.16 | 10.42.10.16 | shared Rack B | MINIX-02 | AUTO-US-NOPIN-01 | Available |
-| SETI | `seti` | touch, collis, canada, physical-pin | `loc.rack-b` | Compact → `seti-compact` `COMPACT` | 10.42.30.17 | 10.42.10.17 | shared Rack B | MINIX-02 | WESTERS-CA-01 (PIN required) | Available |
-| ROSIE | `rosie` | touch, collis, paycore, printerless | `loc.rack-b` | Flex Pocket → `rosie-pocket` `FLEX_POCKET` | 10.42.30.18 | 10.42.10.18 | shared Rack B | MINIX-02 | PAYCORE-STANDALONE-01 | **Unavailable** |
-| MEGATRON | `megatron` | tethered, dev1 | `loc.rack-tethered` | MFD Station 2 `megatron-mfd` `STATION_2` + CFD Mini 2 `megatron-cfd` `MINI_2` | 10.42.30.21 / .22 | 10.42.10.20 (shelf Pi, shared) | `http://10.42.10.20:8081/stream.mjpg` | MINIX-02 | AUTO-US-NOPIN-01 | Available |
-| OPTIMUS | `optimus` | tethered, stg | `loc.rack-tethered` | MFD Mini 3 `optimus-mfd` + CFD Mini 3 `optimus-cfd` `MINI_3` | 10.42.30.23 / .24 | 10.42.10.20 | same as MEGATRON | MINIX-02 | AUTO-US-NOPIN-01 | Available |
-| DATA | `data` | adb-only, mini, printer | `loc.adb-shelf` | Mini 3 → `data-mini3` `MINI_3` | 10.42.30.31 | 10.42.10.30 (shared) | — | — | AUTO-US-NOPIN-01 | Available |
-| TARS | `tars` | adb-only, flexgen3, printer | `loc.adb-shelf` | Flex 4 → `tars-flex4` `FLEX_4` | 10.42.30.32 | 10.42.10.30 | — | — | AUTO-US-NOPIN-01 | Available |
-| VISION *(Orca only)* | `vision` | adb-only, flexgen3, printerless | off-screen Rack C | Flex Pocket → `vision-pocket` `FLEX_POCKET` | 10.42.30.50 | 10.42.10.50 | `http://10.42.10.50:8081/stream.mjpg` | — | AUTO-US-NOPIN-01 | Available |
-| K-9 *(Orca only)* | `k-9` | adb-only, printerless | off-screen Rack C | Station Duo 2 → `k-9-duo2` `STATION_DUO_2` | 10.42.30.51 | 10.42.10.51 | — | — | AUTO-US-NOPIN-01 | Available |
+| WALL-E | `wall-e` | touch, collis, flexgen3, printer | `loc.rack-a` | Flux 3 → `wall-e-flux3` `FLUX_3` | 10.42.30.11 | 10.42.10.11 | `http://10.42.10.11:8081/stream.mjpg` | MINIX-01 | AUTO-US-NOPIN-01 | Available |
+| EVE | `eve` | touch, collis, flexgen3, printer | `loc.rack-a` | Flux 4 → `eve-flux4` `FLUX_4` | 10.42.30.12 | 10.42.10.12 | `http://10.42.10.12:8081/stream.mjpg` | MINIX-01 | AUTO-US-NOPIN-01 | Available |
+| BUMBLEBEE | `bumblebee` | touch, collis, micro, printer | `loc.rack-a` | Micro 3 → `bumblebee-micro3` `MICRO_3` | 10.42.30.13 | 10.42.10.13 | `http://10.42.10.13:8081/stream.mjpg` | MINIX-01 | AUTO-US-NOPIN-01 | Available |
+| R2-D2 | `r2-d2` | touch, collis, duet, ocr | `loc.rack-a` | Stand Duet → `r2-d2-duet` `STAND_DUET` | 10.42.30.14 (MFD = CFD) | 10.42.10.14 | `http://10.42.10.14:8081/stream.mjpg` (aimed at the CFD) | MINIX-01 | AUTO-US-NOPIN-01 | Available |
+| JOHNNY-5 | `johnny-5` | touch, collis, flux-legacy, printer | `loc.rack-b` | Flux 1 → `johnny-5-flux1` `FLUX_1` (spare Flux 2 `SIM-F2-000015` in the Husky chest, drawer 2) | 10.42.30.15 | 10.42.10.15 | shared Rack B `http://10.42.10.40:8081/stream.mjpg` | MINIX-02 | AUTO-US-NOPIN-01 | Available |
+| BAYMAX | `baymax` | touch, collis, printer, rebuild | `loc.rack-b` | Stand 2018 → `baymax-st2018` `STAND_2018` | 10.42.30.16 | 10.42.10.16 | shared Rack B | MINIX-02 | AUTO-US-NOPIN-01 | Available |
+| SETI | `seti` | touch, collis, canada, physical-pin | `loc.rack-b` | Compass → `seti-compass` `COMPASS` | 10.42.30.17 | 10.42.10.17 | shared Rack B | MINIX-02 | WESTERS-CA-01 (PIN required) | Available |
+| ROSIE | `rosie` | touch, collis, paycore, printerless | `loc.rack-b` | Flux Pocket → `rosie-pocket` `FLUX_POCKET` | 10.42.30.18 | 10.42.10.18 | shared Rack B | MINIX-02 | PAYCORE-STANDALONE-01 | **Unavailable** |
+| MEGATRON | `megatron` | tethered, dev1 | `loc.rack-tethered` | MFD Stand 2 `megatron-mfd` `STAND_2` + CFD Micro 2 `megatron-cfd` `MICRO_2` | 10.42.30.21 / .22 | 10.42.10.20 (shelf Pi, shared) | `http://10.42.10.20:8081/stream.mjpg` | MINIX-02 | AUTO-US-NOPIN-01 | Available |
+| OPTIMUS | `optimus` | tethered, stg | `loc.rack-tethered` | MFD Micro 3 `optimus-mfd` + CFD Micro 3 `optimus-cfd` `MICRO_3` | 10.42.30.23 / .24 | 10.42.10.20 | same as MEGATRON | MINIX-02 | AUTO-US-NOPIN-01 | Available |
+| DATA | `data` | adb-only, micro, printer | `loc.adb-shelf` | Micro 3 → `data-micro3` `MICRO_3` | 10.42.30.31 | 10.42.10.30 (shared) | — | — | AUTO-US-NOPIN-01 | Available |
+| TARS | `tars` | adb-only, flexgen3, printer | `loc.adb-shelf` | Flux 4 → `tars-flux4` `FLUX_4` | 10.42.30.32 | 10.42.10.30 | — | — | AUTO-US-NOPIN-01 | Available |
+| VISION *(Orca only)* | `vision` | adb-only, flexgen3, printerless | off-screen Rack C | Flux Pocket → `vision-pocket` `FLUX_POCKET` | 10.42.30.50 | 10.42.10.50 | `http://10.42.10.50:8081/stream.mjpg` | — | AUTO-US-NOPIN-01 | Available |
+| K-9 *(Orca only)* | `k-9` | adb-only, printerless | off-screen Rack C | Stand Duet 2 → `k-9-duet2` `STAND_DUET_2` | 10.42.30.51 | 10.42.10.51 | — | — | AUTO-US-NOPIN-01 | Available |
 
 **Windows boxes** (Cur §0.4; SSH user `automation`): `MINIX-01` 10.42.20.1 (Callus `:9000`, Collis
 probes for Rack A: WALL-E, EVE, BUMBLEBEE, R2-D2) · `MINIX-02` 10.42.20.2 (Callus for Rack B and the
 tethered rack) · `NUC-03` 10.42.20.3 (Intel NUC, 12 V; retired from hardware control; sticky note
 "DISK 100% — corporate AGENT. NO HARDWARE CONTROL ON THIS BOX. –J"). Rack B camera host Pi
 `10.42.10.40` (camera only, service `camera-stream` [illus.]). Collis probes are named
-`collis-<rig>` [illus.]. Coworker desk Flex (Riley) `10.42.60.4`, ADB 5555. Other hosts per canon:
+`collis-<rig>` [illus.]. Coworker desk Flux (Riley) `10.42.60.4`, ADB 5555. Other hosts per canon:
 Orca `orca.lab.local` → 10.42.1.10:8080 (MySQL `orca`, 3306), Jenkins 10.42.1.11:8080, Ollama
 10.42.1.12:11434 (`llava`), all VMs on the GPU blade 10.42.1.5; workstation 10.42.50.17.
 
@@ -644,7 +644,7 @@ front blue power LED + small screen showing "Callus service · listening on :900
 **Jenkins console** (prefixes follow Cur §0.6/M06/M08/M11): `[orca]`, `[runner]`, `LSTR`, `[callus]`,
 `[ocr]`, `[vision]`, `ubi:`, `laz:`, `[device]`, env block `RUN_TYPE=… DEVICE_TYPE=… ROBOT_NAME=…
 PORT_NUMBER=5444 THEME=avocado KERNEL_TYPE=CPA APP_ID=… APP_SECRET=**** API_KEY=****`; checkout
-`[orca] checkout → wall-e (FLEX_3) OK`; named checkout `Checked out robot rosie (named)`; release
+`[orca] checkout → wall-e (FLUX_3) OK`; named checkout `Checked out robot rosie (named)`; release
 `[orca] released wall-e → Available` / `[orca] released rosie → Unavailable` [illus.]; last line
 `Finished: SUCCESS` / `Finished: FAILURE`.
 
@@ -703,7 +703,7 @@ the player can work other tickets meanwhile).
 | GW05 | Set a `paycore` rig to `Available` | −400 | if an overwrite follows | 40 % per checkout cycle that a general pipeline takes it and Laz swaps its merchant → INC40 | `orca.status.unavailable` |
 | GW06 | Push/drag a gantry carriage by hand | −100 | no | Lock released, banner yellow | `hw.motion` |
 | GW07 | Toggle MAIN/MOTOR or press any motion button on a rig with an active test | −250 | no | Running build fails; coworker bark | `hw.lockout` |
-| GW08 | Use port 5555 (config, `adb connect`, `adb tcpip 5555`, Orca URL) | −300 | if it reaches 10.42.60.x | Riley's desk Flex gets driven (INC27) | `adb.port` |
+| GW08 | Use port 5555 (config, `adb connect`, `adb tcpip 5555`, Orca URL) | −300 | if it reaches 10.42.60.x | Riley's desk Flux gets driven (INC27) | `adb.port` |
 | GW09 | Delete a Device row that is a robot's legacy/rollback device | −300 | no | Rollback impossible (INC43 much longer) | `orca.device` |
 | GW10 | Change an existing Device row's `type`/serial in place for a hardware swap | −300 | no | Legacy config lost | `orca.device` |
 | GW11 | Uninstall/disable the corporate security agent or delete its logs | −800 | yes | "Security policy violation" email in LabChat | `hw.nuc` |
@@ -752,7 +752,7 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 
 * **Ticket:** "WALL-E failed checkout — Connection Failed" (Jenkins Bot). Misleading: "WALL-E's tablet froze, can someone restart the tablet?" (Riley).
 * **Initial state:** `hw.pi(10.42.10.11).os = HUNG`; the last health check failed → `CONNECTION_FAILED` (pre-failure `AVAILABLE`).
-* **Symptoms:** `[Orca]` red `Connection Failed` chip; checkout attempt toast "Robot is blocked from checkouts (Connection Failed)" (Cur M06); `[Notes]` `2026-10-05 08:15:00 GET http://10.42.10.11:8000/health → connect timed out after 10000 ms`; `[Jenkins]` PL1 `[orca] no Available FLEX_3 robot — build waiting in queue`; `[Tablet]` grey `Status: CONTROLLER UNREACHABLE`; `[LED]` Pi PWR red solid, **ACT solid on (no flicker)**, Ethernet LEDs lit; `[Camera]` `Stream unavailable — http://10.42.10.11:8081/stream.mjpg`; `[Terminal]` `ping -c 3 10.42.10.11` → `3 packets transmitted, 0 received, 100% packet loss`; `ssh pi@10.42.10.11` → `ssh: connect to host 10.42.10.11 port 22: Connection timed out`.
+* **Symptoms:** `[Orca]` red `Connection Failed` chip; checkout attempt toast "Robot is blocked from checkouts (Connection Failed)" (Cur M06); `[Notes]` `2026-10-05 08:15:00 GET http://10.42.10.11:8000/health → connect timed out after 10000 ms`; `[Jenkins]` PL1 `[orca] no Available FLUX_3 robot — build waiting in queue`; `[Tablet]` grey `Status: CONTROLLER UNREACHABLE`; `[LED]` Pi PWR red solid, **ACT solid on (no flicker)**, Ethernet LEDs lit; `[Camera]` `Stream unavailable — http://10.42.10.11:8081/stream.mjpg`; `[Terminal]` `ping -c 3 10.42.10.11` → `3 packets transmitted, 0 received, 100% packet loss`; `ssh pi@10.42.10.11` → `ssh: connect to host 10.42.10.11 port 22: Connection timed out`.
 * **Diagnosis path:** 1) Orca robot list → filter Status = Connection Failed (Tate's filter UI) → WALL-E → Notes (endpoint + error). 2) Terminal ping/ssh — no answer. 3) WALL-E's shelf: hold `RMB` on the Pi — PWR on, ACT frozen ⇒ powered but hung. 4) Call or escalate.
 * **Fix (by the book):** Escalate: endpoint `http://10.42.10.11:8000/health`, cause A. Jared power-cycles the Pi.
 * **Fix (hands-on):** unplug WALL-E's Pi lead (`E`), wait ≥ 5 s, re-plug — or MAIN off/on (also restarts tablet and webcam; only with no active test). Boot 40 real s (ACT flickers, tablet turns green). Wait for the next health check.
@@ -881,9 +881,9 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 |---|---|---|---|---|---|---|---|
 | 2 | 300 | 3:00 | P1 | dedicated-camera rigs (default R2-D2) | no | M07 | `orca.urls` `orca.screencompare` `vision.camera` |
 
-* **Ticket:** "Duo CFD suite red: OCR reads nonsense" (Jenkins Bot).
+* **Ticket:** "Duet CFD suite red: OCR reads nonsense" (Jenkins Bot).
 * **Initial state:** `orca.robot(r2-d2).urls.camera = "http://10.42.10.11:8081/stream.mjpg"` (WALL-E's) after a bulk edit.
-* **Symptoms:** `[Jenkins]` PL7: `[ocr] capture webcam → crop 236x44@412,288 → tesseract → "Tap, insert or swipe" → match=false`; `[Camera]` R2-D2's stream shows a Flex 3 under a solenoid (WALL-E's shelf); `[Notes]` `CONFIG urls.camera changed (alex)` [illus.].
+* **Symptoms:** `[Jenkins]` PL7: `[ocr] capture webcam → crop 236x44@412,288 → tesseract → "Tap, insert or swipe" → match=false`; `[Camera]` R2-D2's stream shows a Flux 3 under a solenoid (WALL-E's shelf); `[Notes]` `CONFIG urls.camera changed (alex)` [illus.].
 * **Diagnosis path:** OCR text belongs to another device → open R2-D2's stream → wrong rig → URL Mappings → Call.
 * **Fix:** Camera Stream URL → `http://10.42.10.14:8081/stream.mjpg`.
 * **Success:** `orca.robot(r2-d2).urls.camera == "http://10.42.10.14:8081/stream.mjpg" && next PL7 == SUCCESS`.
@@ -927,7 +927,7 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 | 2 | 250 | 3:00 | P2 | any touch rig running a job (default WALL-E) | no | M04 | `hw.lockout` `hw.tablet` `hw.motion` |
 
 * **Ticket:** "WALL-E's tablet won't respond, buttons greyed out — broken?" (Riley).
-* **Initial state:** `Java/uia-remote-regression-flex #4127` running on WALL-E (≥ 30 s left). Variant B: banner also yellow and Riley wants it parked.
+* **Initial state:** `Java/uia-remote-regression-flux #4127` running on WALL-E (≥ 30 s left). Variant B: banner also yellow and Riley wants it parked.
 * **Symptoms:** `[Tablet]` overlay `TEST IN PROGRESS — CONTROLS LOCKED`; `[Orca]` `Available · in use by Jenkins #4127`; `[Camera]` solenoid tapping normally.
 * **Diagnosis path:** read the overlay / Orca row → recognise the lockout → Call.
 * **Fix:** reply **`R_LOCKOUT`**. Variant B: wait for #4127 to finish, then Park All.
@@ -961,8 +961,8 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 * **Diagnosis path:** uniform error across screens ⇒ robot-level → log shows offsets → robot record → Call.
 * **Fix:** Offset Y = 0.0 → **Test tap** hits centre (Cur §7); optional Park All.
 * **Success:** `orca.robot(bumblebee).offsets.x == 0 && offsets.y == 0 && next build on bumblebee == SUCCESS`.
-* **Diagnosis Call:** **A. Leftover legacy Offsets** · B. Screen Locations wrong for MINI_3 · C. Limit switch broken · D. Receipt QR shift.
-* **Wrong-but-tempting:** edit each Screen Location (−100 per row; breaks every MINI_3 rig — DATA, OPTIMUS — red builds there); Y = −1.5 to cancel (GW18).
+* **Diagnosis Call:** **A. Leftover legacy Offsets** · B. Screen Locations wrong for MICRO_3 · C. Limit switch broken · D. Receipt QR shift.
+* **Wrong-but-tempting:** edit each Screen Location (−100 per row; breaks every MICRO_3 rig — DATA, OPTIMUS — red builds there); Y = −1.5 to cancel (GW18).
 * **Teaches:** Ref §3 Offsets — legacy mm adjustments for imprecise limit switches; Jared calibrated to true (0,0); mostly deprecated.
 
 #### INC15 — Arm moves, nothing gets tapped (solenoid)
@@ -998,12 +998,12 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 |---|---|---|---|---|---|---|---|
 | 2 | 300 | 3:00 | P1 | any rig whose device sits on a full strip (default EVE on STRIP-A) | no | M03 | `power.18v` `power.rails` |
 
-* **Ticket:** "EVE's Flex 4 is back from repair with a new power brick. STRIP-A is full — OK to use the spare 24 V rail tap?" (Alex).
-* **Initial state:** `hw.device(eve-flex4).psuOn = false`; the new Flex 4 brick (`prop.flex4-psu-brick`) lies on EVE's shelf; STRIP-A outlets 1–5 hold WALL-E/BUMBLEBEE/R2-D2 PSUs, MINIX-01, `collis-eve`; outlet 6 holds a **desk fan**; a free 24 V rail tap and the 12 V NUC line are within reach.
-* **Symptoms:** `[Orca]` EVE Available (Pi fine) but `[Jenkins]` PL1 on eve red: `adb: failed to connect to '10.42.30.12:5444': No route to host`; `[World]` EVE's Flex 4 dark; strip full.
+* **Ticket:** "EVE's Flux 4 is back from repair with a new power brick. STRIP-A is full — OK to use the spare 24 V rail tap?" (Alex).
+* **Initial state:** `hw.device(eve-flux4).psuOn = false`; the new Flux 4 brick (`prop.flux4-psu-brick`) lies on EVE's shelf; STRIP-A outlets 1–5 hold WALL-E/BUMBLEBEE/R2-D2 PSUs, MINIX-01, `collis-eve`; outlet 6 holds a **desk fan**; a free 24 V rail tap and the 12 V NUC line are within reach.
+* **Symptoms:** `[Orca]` EVE Available (Pi fine) but `[Jenkins]` PL1 on eve red: `adb: failed to connect to '10.42.30.12:5444': No route to host`; `[World]` EVE's Flux 4 dark; strip full.
 * **Diagnosis path:** device dark ⇒ needs power → recall the 18 V exception → find a non-lab load on the strip → Call.
-* **Fix:** unplug the desk fan from STRIP-A outlet 6, plug the Flex 4 brick in; device boots (30 s).
-* **Success:** `hw.outlet("STRIP-A",6).load == "psu-eve-flex4" && hw.device(eve-flex4).state == OK && next build on eve == SUCCESS`.
+* **Fix:** unplug the desk fan from STRIP-A outlet 6, plug the Flux 4 brick in; device boots (30 s).
+* **Success:** `hw.outlet("STRIP-A",6).load == "psu-eve-flux4" && hw.device(eve-flux4).state == OK && next build on eve == SUCCESS`.
 * **Diagnosis Call:** **A. Device unpowered; LabSim devices go on the AC strip, never the DC rail** · B. Pi crashed · C. Port 5555 · D. ADB TCP reset.
 * **Wrong-but-tempting:** 24 V tap, 12 V NUC line or 5 V Pi line (GW01 — spark, Jared: "That's how we fry a terminal. Commercial AC strip. Always." (Cur M03), strike, follow-up ticket); unplug MINIX-01 or `collis-eve` to make room (−200, spawns INC02/INC18); daisy-chain a second strip (−50 "not lab practice" [illus.]).
 * **Teaches:** Ref §6 18 V exception: LabSim devices draw an irregular 18 V; they and Collis probes bypass the DC rails and use commercial AC strips.
@@ -1041,16 +1041,16 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 #### INC20 — Receipt QR regression (lab-wide coordinate PR)
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
 |---|---|---|---|---|---|---|---|
-| 4 | 600 | 7:00 | P1 | receipt rigs on 3 Device Types (FLEX_3, MINI_3, STATION_2018) | no | M09 | `receipt.qr` `receipt.maps` `orca.screens` `jenkins.logs` `tools.github` `people.roles` |
+| 4 | 600 | 7:00 | P1 | receipt rigs on 3 Device Types (FLUX_3, MICRO_3, STAND_2018) | no | M09 | `receipt.qr` `receipt.maps` `orca.screens` `jenkins.logs` `tools.github` `people.roles` |
 
 * **Ticket:** "pigeon-android-sale-swipe red on WALL-E, BUMBLEBEE and BAYMAX at 'select print' after this morning's firmware" (Jenkins Bot). Misleading: "Printers all jammed?"
-* **Initial state:** the firmware's final build places the "scan for receipt" QR block so every receipt button sits **3.0 mm lower** (Cur S10) and shows the 5th option. `RECEIPT_OPTIONS_5` rows for FLEX_3, MINI_3 and STATION_2018 were measured on a pre-release build and are 3.0 mm too high; `RECEIPT_OPTIONS_4` is still correct for merchants without QR.
+* **Initial state:** the firmware's final build places the "scan for receipt" QR block so every receipt button sits **3.0 mm lower** (Cur S10) and shows the 5th option. `RECEIPT_OPTIONS_5` rows for FLUX_3, MICRO_3 and STAND_2018 were measured on a pre-release build and are 3.0 mm too high; `RECEIPT_OPTIONS_4` is still correct for merchants without QR.
 * **Symptoms:** `[Jenkins]` on each rig: `LSTR step 7/9 "select print" … waiting for printer payload … TIMEOUT after 60 s` → `FAILED at "select print"` (Cur M15); `[Camera]` plunger lands ~3 mm above "Print" on the QR block's edge; `[World]` printers have paper; `[LabChat]` Jared: "Firmware drop today. Last time the QR button broke every ruler-measured coordinate for 48 hours. Let's beat that."
 * **Diagnosis path:** same step fails on several rigs after an update ⇒ layout, not hardware → camera ⇒ tap above the button → measure each type's new positions (steel ruler snaps to the screen's top-left, Cur M09, or `adb exec-out screencap -p > r5.png` + GIMP + the Device Type's px/mm) → Call.
-* **Fix:** GitHub → `gort` → branch `fix/receipt-qr-5opt` → edit `config/screen-locations/<DEVICE_TYPE>/RECEIPT_OPTIONS_5.json` [illus. path] for the three types → open PR → Jared reviews (20 s, Cur M09) and merges if every value is within ±0.5 mm (otherwise he comments, e.g. "Print on MINI_3 is still 3 mm high") → Orca syncs (SR16). Editing the Orca rows directly also satisfies the condition (without PB03). Example (FLEX_3; values from Cur §0.6):
+* **Fix:** GitHub → `gort` → branch `fix/receipt-qr-5opt` → edit `config/screen-locations/<DEVICE_TYPE>/RECEIPT_OPTIONS_5.json` [illus. path] for the three types → open PR → Jared reviews (20 s, Cur M09) and merges if every value is within ±0.5 mm (otherwise he comments, e.g. "Print on MICRO_3 is still 3 mm high") → Orca syncs (SR16). Editing the Orca rows directly also satisfies the condition (without PB03). Example (FLUX_3; values from Cur §0.6):
   ```json
   {
-    "deviceType": "FLEX_3",
+    "deviceType": "FLUX_3",
     "screen": "RECEIPT_OPTIONS_5",
     "unit": "mm",
     "buttons": {
@@ -1062,7 +1062,7 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
     }
   }
   ```
-* **Success:** `∀t∈{FLEX_3,MINI_3,STATION_2018}, ∀b: |orca.screenLocation(t,"RECEIPT_OPTIONS_5",b) − truth(t,b)| ≤ 0.5 && RECEIPT_OPTIONS_4 rows unchanged && PL3 SUCCESS on two different rigs`.
+* **Success:** `∀t∈{FLUX_3,MICRO_3,STAND_2018}, ∀b: |orca.screenLocation(t,"RECEIPT_OPTIONS_5",b) − truth(t,b)| ≤ 0.5 && RECEIPT_OPTIONS_4 rows unchanged && PL3 SUCCESS on two different rigs`.
 * **Diagnosis Call:** **A. The QR layout shifted the buttons; the 5-option coordinates are stale** · B. Printers out of paper · C. Callus offline · D. Offsets on each rig.
 * **Wrong-but-tempting:** reload paper; per-rig Offsets (GW18; Cur §6 wrong move); edit `RECEIPT_OPTIONS_4` (breaks QR-less merchants, −150); fix one type only (others stay red).
 * **Teaches:** Ref §5 receipt QR regression (buttons shifted a few mm; 48 hours until Jared merged a coordinate PR; conditional 5th option; separate 4/5 maps); misleading "select print"; Ref §3 Screen Locations in mm.
@@ -1070,45 +1070,45 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 #### INC21 — Missing 5-option receipt map
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
 |---|---|---|---|---|---|---|---|
-| 3 | 450 | 4:30 | P1 | a Device Type without `RECEIPT_OPTIONS_5` (default STATION_2018 / BAYMAX) | no | M09 | `receipt.maps` `orca.screens` `orca.devicetype` |
+| 3 | 450 | 4:30 | P1 | a Device Type without `RECEIPT_OPTIONS_5` (default STAND_2018 / BAYMAX) | no | M09 | `receipt.maps` `orca.screens` `orca.devicetype` |
 
 * **Ticket:** "BAYMAX email-receipt step fails since QR receipts were switched on" (Jenkins Bot).
-* **Initial state:** STATION_2018 has `RECEIPT_OPTIONS_4` but **no** `RECEIPT_OPTIONS_5`.
-* **Symptoms:** `[Jenkins]` `LSTR xy_touch baymax RECEIPT_OPTIONS_5/Email` → `[orca] 404 Not Found: no Screen Location for (STATION_2018, RECEIPT_OPTIONS_5, "Email")` [illus.] → `FAILED at "select email"`; `[Camera]` BAYMAX shows 5 options incl. "Scan for receipt"; arm idle; `[Orca]` Screens → STATION_2018 lists only `RECEIPT_OPTIONS_4`.
-* **Fix:** measure the five buttons on BAYMAX (ruler, or screencap + GIMP + px/mm) → Screens → New `RECEIPT_OPTIONS_5` (STATION_2018) with 5 locations; keep `_4`; **Test tap** each (Cur §7); optionally land it as a Gort PR (PB03).
-* **Success:** `∀b∈{Print,Email,Text,No Receipt,Scan for receipt}: |orca.screenLocation("STATION_2018","RECEIPT_OPTIONS_5",b) − truth| ≤ 0.5 && RECEIPT_OPTIONS_4 unchanged && next PL3 on baymax == SUCCESS`.
-* **Diagnosis Call:** **A. STATION_2018 has no 5-option map** · B. Merchant misconfigured · C. Pigeon JSON names the wrong screen · D. Arm not homed.
-* **Wrong-but-tempting:** switch the test to `RECEIPT_OPTIONS_4` (−150; taps "Text" where "Email" now sits); switch QR receipts off on the merchant (−100, "you'd stop testing the feature"); copy FLEX_3's values (different layout → still red).
+* **Initial state:** STAND_2018 has `RECEIPT_OPTIONS_4` but **no** `RECEIPT_OPTIONS_5`.
+* **Symptoms:** `[Jenkins]` `LSTR xy_touch baymax RECEIPT_OPTIONS_5/Email` → `[orca] 404 Not Found: no Screen Location for (STAND_2018, RECEIPT_OPTIONS_5, "Email")` [illus.] → `FAILED at "select email"`; `[Camera]` BAYMAX shows 5 options incl. "Scan for receipt"; arm idle; `[Orca]` Screens → STAND_2018 lists only `RECEIPT_OPTIONS_4`.
+* **Fix:** measure the five buttons on BAYMAX (ruler, or screencap + GIMP + px/mm) → Screens → New `RECEIPT_OPTIONS_5` (STAND_2018) with 5 locations; keep `_4`; **Test tap** each (Cur §7); optionally land it as a Gort PR (PB03).
+* **Success:** `∀b∈{Print,Email,Text,No Receipt,Scan for receipt}: |orca.screenLocation("STAND_2018","RECEIPT_OPTIONS_5",b) − truth| ≤ 0.5 && RECEIPT_OPTIONS_4 unchanged && next PL3 on baymax == SUCCESS`.
+* **Diagnosis Call:** **A. STAND_2018 has no 5-option map** · B. Merchant misconfigured · C. Pigeon JSON names the wrong screen · D. Arm not homed.
+* **Wrong-but-tempting:** switch the test to `RECEIPT_OPTIONS_4` (−150; taps "Text" where "Email" now sits); switch QR receipts off on the merchant (−100, "you'd stop testing the feature"); copy FLUX_3's values (different layout → still red).
 * **Teaches:** Ref §5 — Orca keeps **separate** 4-option and 5-option maps for **every** device profile; Ref §3 Device Type holds dimensions/layout.
 
 #### INC22 — The misleading "select print" log
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
 |---|---|---|---|---|---|---|---|
-| 3 | 450 | 4:30 | P1 | printer rigs (default JOHNNY-5, FLEX_1) | no | M15 | `jenkins.logs` `pigeon.lstr` `orca.screens` |
+| 3 | 450 | 4:30 | P1 | printer rigs (default JOHNNY-5, FLUX_1) | no | M15 | `jenkins.logs` `pigeon.lstr` `orca.screens` |
 
 * **Ticket:** "JOHNNY-5: Pigeon fails at 'select print'" (Jenkins Bot). Misleading: "JOHNNY-5's printer is out of paper?" (Alex).
-* **Initial state:** `orca.screenLocation("FLEX_1","RECEIPT_OPTIONS_4","Print").y = 62.5` (bulk-import typo; truth 66.5 [illus.]).
+* **Initial state:** `orca.screenLocation("FLUX_1","RECEIPT_OPTIONS_4","Print").y = 62.5` (bulk-import typo; truth 66.5 [illus.]).
 * **Symptoms:** `[Jenkins]` `LSTR step 7/9 "select print" … waiting for printer payload … TIMEOUT after 60 s` → `FAILED at "select print"`; `[Camera]` (recorded playback for the build, Cur §7) plunger hits the gap above "Print"; `[World]` printer has paper and a settings test-print works; `[Orca]` the Print row shows "modified by bulk-import, yesterday".
 * **Diagnosis path:** "select print" is only the last step attempted before the payload timeout → printer works → camera shows a miss → Orca row → Call.
 * **Fix:** measure; set Y to 66.5 (±0.5); Test tap.
-* **Success:** `|orca.screenLocation("FLEX_1","RECEIPT_OPTIONS_4","Print").y − 66.5| ≤ 0.5 && next PL3 on johnny-5 == SUCCESS`.
+* **Success:** `|orca.screenLocation("FLUX_1","RECEIPT_OPTIONS_4","Print").y − 66.5| ≤ 0.5 && next PL3 on johnny-5 == SUCCESS`.
 * **Diagnosis Call:** **A. Stale/incorrect coordinates made the arm miss Print, so no payload arrived** · B. Printer out of paper · C. The "select print" JSON is invalid · D. Timeout too short.
 * **Wrong-but-tempting:** replace paper; raise the timeout in the JSON (−100, still fails); Offsets (GW18).
 * **Teaches:** Ref §5 Misleading Failure Logs (Cur M15 step 9 wording).
 
-#### INC23 — Printer test matched to a Flex Pocket
+#### INC23 — Printer test matched to a Flux Pocket
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
 |---|---|---|---|---|---|---|---|
-| 3 | 400 | 3:30 | P1 | PL6 (gets VISION, Flex Pocket) | no | M08 | `orca.capabilities` `hw.devices` `go.sdk` |
+| 3 | 400 | 3:30 | P1 | PL6 (gets VISION, Flux Pocket) | no | M08 | `orca.capabilities` `hw.devices` `go.sdk` |
 
 * **Ticket:** "go-sdk-sale-smoke red: printer not available" (Jenkins Bot).
-* **Initial state:** `gort/go-sdk/tests/sale_receipt.json` lost `"printer": true` from its `"capabilities"` in yesterday's commit; Orca's dynamic lookup now matches VISION (`FLEX_POCKET`, same `FLEX_GEN3` profile, `hasPrinter=false`).
-* **Symptoms:** `[Jenkins]` `[orca] checkout → vision (FLEX_POCKET) OK` … `[go-sdk] PrintReceipt → PRINTER_NOT_AVAILABLE` [illus.] → `Finished: FAILURE`; `[Orca]` Robot Capabilities for vision: `{"deviceType":"FLEX_POCKET","printer":false,…}`; **Match preview** (Cur §7) for the test lists `vision`, `tars`, `data`; `[GitHub]` the commit diff shows the removed line.
+* **Initial state:** `gort/go-sdk/tests/sale_receipt.json` lost `"printer": true` from its `"capabilities"` in yesterday's commit; Orca's dynamic lookup now matches VISION (`FLUX_POCKET`, same `FLUX_GEN3` profile, `hasPrinter=false`).
+* **Symptoms:** `[Jenkins]` `[orca] checkout → vision (FLUX_POCKET) OK` … `[go-sdk] PrintReceipt → PRINTER_NOT_AVAILABLE` [illus.] → `Finished: FAILURE`; `[Orca]` Robot Capabilities for vision: `{"deviceType":"FLUX_POCKET","printer":false,…}`; **Match preview** (Cur §7) for the test lists `vision`, `tars`, `data`; `[GitHub]` the commit diff shows the removed line.
 * **Fix:** IntelliJ or GitHub: add `"printer": true` back to the test's `"capabilities"` object → Match preview drops `vision` → rebuild.
 * **Success:** `git(gort).main.file("go-sdk/tests/sale_receipt.json").capabilities.printer == true && next PL6 robot ∈ {data, tars} && SUCCESS`.
 * **Diagnosis Call:** **A. The test's dynamic capabilities no longer require a printer, so it matched the Pocket** · B. TARS's printer broke · C. Receipt coordinates stale · D. DEVICE_TYPE case.
 * **Wrong-but-tempting:** set VISION Offline or Unavailable (−100; Cur §6 wrong move — hides a valid printerless rig); hardcode `ROBOT_NAME=tars` (−50, bypasses capability matching).
-* **Teaches:** canon/Ref §1 — Flex 3, 4 and Pocket share one testing profile, Pocket has no printer; Ref §3 dynamic JSON lookups live in the test definition and are parsed at runtime (SDK frameworks, David). The JSON key is `printer` (Cur M08); Orca matches it against the profile's `hasPrinter` (canon).
+* **Teaches:** canon/Ref §1 — Flux 3, 4 and Pocket share one testing profile, Pocket has no printer; Ref §3 dynamic JSON lookups live in the test definition and are parsed at runtime (SDK frameworks, David). The JSON key is `printer` (Cur M08); Orca matches it against the profile's `hasPrinter` (canon).
 
 #### INC24 — Extract coordinates with GIMP for a Pigeon screen compare
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
@@ -1165,20 +1165,20 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 * **Wrong-but-tempting:** recreate it (−50 duplicate); delete the iOS copy first (−100, history lost).
 * **Teaches:** Ref §1 Jenkins separates legacy Java jobs from iOS jobs; Ref §5 the iOS runner is rarely touched while iOS Go testing is active.
 
-#### INC27 — Port 5555: "Something is tapping my desk Flex!"
+#### INC27 — Port 5555: "Something is tapping my desk Flux!"
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
 |---|---|---|---|---|---|---|---|
-| 2 | 350 | 3:00 | P1 | workstation + Riley's desk Flex (default target BUMBLEBEE) | no | M14 | `adb.port` `uia.config` `adb.usage` |
+| 2 | 350 | 3:00 | P1 | workstation + Riley's desk Flux (default target BUMBLEBEE) | no | M14 | `adb.port` `uia.config` `adb.usage` |
 
-* **Ticket:** "SOMETHING IS TAPPING MY DESK FLEX BY ITSELF" (Riley).
+* **Ticket:** "SOMETHING IS TAPPING MY DESK FLUX BY ITSELF" (Riley).
 * **Initial state:** your local `config.properties` has `portNumber=5555` (copied from Alex); a local run is in progress; the workstation's ADB server already knows `10.42.60.4:5555`.
-* **Symptoms:** `[IDE]` runner log (Cur S19): `connect 10.42.30.13:5555 … refused` · `falling back to first known device: 10.42.60.4:5555` · `[runner] open Register`; `[World]` Riley's desk Flex shows Register with "Tax Item 5" in the cart; `[Terminal]` `adb devices` → `10.42.60.4:5555	device`.
+* **Symptoms:** `[IDE]` runner log (Cur S19): `connect 10.42.30.13:5555 … refused` · `falling back to first known device: 10.42.60.4:5555` · `[runner] open Register`; `[World]` Riley's desk Flux shows Register with "Tax Item 5" in the cart; `[Terminal]` `adb devices` → `10.42.60.4:5555	device`.
 * **Diagnosis path:** `adb devices` → coworker IP on 5555 → config → `portNumber=5555` → Call.
 * **Fix:** **Stop** the run → `adb disconnect 10.42.60.4:5555` → `portNumber=5444` → `adb connect 10.42.30.13:5444` → re-run; apologise in LabChat (optional, Riley: "Ha. Welcome to the club.").
 * **Success:** `prop(config,"portNumber") == "5444" && ¬∃c∈adb.connections: c.endsWith(":5555") && coworker(riley).deviceIdle`.
-* **Incident penalty:** −20 per 10 s Riley's Flex is driven after the ticket arrives (cap −200); reaching it at all = strike (§2.3.9).
-* **Diagnosis Call:** **A. portNumber 5555 — the runner fell back to a coworker's device** · B. Riley's Flex has malware · C. Orca routed to the wrong rig · D. Wrong deviceType.
-* **Wrong-but-tempting:** unplug Riley's Flex (GW23, Cur §6 wrong move); `adb kill-server` only (recurs next run; resolve fails); 5556 (−100, "the lab standard is 5444").
+* **Incident penalty:** −20 per 10 s Riley's Flux is driven after the ticket arrives (cap −200); reaching it at all = strike (§2.3.9).
+* **Diagnosis Call:** **A. portNumber 5555 — the runner fell back to a coworker's device** · B. Riley's Flux has malware · C. Orca routed to the wrong rig · D. Wrong deviceType.
+* **Wrong-but-tempting:** unplug Riley's Flux (GW23, Cur §6 wrong move); `adb kill-server` only (recurs next run; resolve fails); 5556 (−100, "the lab standard is 5444").
 * **Teaches:** Ref §4 portNumber locked to 5444; 5555 (ADB default) let scripts control coworkers' desk devices.
 
 #### INC28 — ADB refused after a Laz OOBE
@@ -1191,7 +1191,7 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 * **Symptoms:** `[Jenkins]` `[runner] adb connect 10.42.30.31:5444` → `failed to connect to '10.42.30.31:5444': Connection refused`; previous build: `laz: merchant active`; `[Orca]` DATA Available (shelf Pi healthy); `[World]` DATA on the new merchant's home screen.
 * **Diagnosis path:** refused (not timeout) ⇒ device up, nothing listening → recent OOBE → Call.
 * **Fix:** `ssh pi@10.42.10.30` → `adb devices` → `SIM-M3-000031	device` and `SIM-F4-000032	device` (USB) → `adb -s SIM-M3-000031 tcpip 5444` → `restarting in TCP mode port: 5444` → workstation `adb connect 10.42.30.31:5444` → `connected to 10.42.30.31:5444` → rebuild.
-* **Success:** `hw.device(data-mini3).adbTcpPort == 5444 && next build on data == SUCCESS`.
+* **Success:** `hw.device(data-micro3).adbTcpPort == 5444 && next build on data == SUCCESS`.
 * **Diagnosis Call:** **A. The OOBE wipe reset ADB-over-TCP — re-enable it on 5444** · B. Shelf Pi crashed · C. Port collision · D. Ethernet unplugged.
 * **Wrong-but-tempting:** `adb tcpip 5555` (GW08); change Orca's ADB Service URL port (−100).
 * **Teaches:** Ref §1 ADB on 5444; the Pi handles ADB routing; Laz wipes and re-provisions.
@@ -1209,19 +1209,19 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 * **Wrong-but-tempting:** fix only theme (resolve fails); `kernelType=SPA` "because the device is old" (GW15).
 * **Teaches:** Ref §4 theme locked to `avocado`; kernelType locked to `CPA` (Core Payments Application) replacing SPA (Secure Processor Application).
 
-#### INC30 — Station Duo local run: MFD and CFD IPs
+#### INC30 — Stand Duet local run: MFD and CFD IPs
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
 |---|---|---|---|---|---|---|---|
-| 2 | 300 | 3:00 | P2 | `duo` (R2-D2, already Reserved by you) | no | M14 | `uia.config` `orca.tethered` `uia.multidevice` |
+| 2 | 300 | 3:00 | P2 | `duet` (R2-D2, already Reserved by you) | no | M14 | `uia.config` `orca.tethered` `uia.multidevice` |
 
-* **Ticket:** "Run TaxTestDuo locally on R2-D2 — it can't find the customer display" (Morgan).
-* **Initial state:** config `merchantFacingDeviceIp=10.42.30.14`, `customerFacingDeviceIp=10.42.30.19` (a guess), `runType=tethered`, `deviceType=Station`.
+* **Ticket:** "Run TaxTestDuet locally on R2-D2 — it can't find the customer display" (Morgan).
+* **Initial state:** config `merchantFacingDeviceIp=10.42.30.14`, `customerFacingDeviceIp=10.42.30.19` (a guess), `runType=tethered`, `deviceType=Stand`.
 * **Symptoms:** `[IDE]` `[runner] MFD handle 10.42.30.14:5444 connected` · `[runner] CFD handle 10.42.30.19:5444 → No route to host`; `[World]` R2-D2 is one terminal with two screens.
 * **Fix:** `customerFacingDeviceIp=10.42.30.14`; re-run.
-* **Success:** `prop(config,"merchantFacingDeviceIp") == prop(config,"customerFacingDeviceIp") == "10.42.30.14" && runType == "tethered" && ide.localRun("TaxTestDuo").result == PASS`.
-* **Diagnosis Call:** **A. On a Station Duo both IPs are the same** · B. CFD unplugged · C. Port wrong · D. Runner bug.
+* **Success:** `prop(config,"merchantFacingDeviceIp") == prop(config,"customerFacingDeviceIp") == "10.42.30.14" && runType == "tethered" && ide.localRun("TaxTestDuet").result == PASS`.
+* **Diagnosis Call:** **A. On a Stand Duet both IPs are the same** · B. CFD unplugged · C. Port wrong · D. Runner bug.
 * **Wrong-but-tempting:** CFD IP = the Pi `10.42.10.14` (Cur §6 wrong move; refused, −100); `runType=standalone` (CFD steps skipped → assertions fail); JOHNNY-5's `10.42.30.15` (−200, "you just drove another rig").
-* **Teaches:** Ref §4 — on a Station Duo, MFD and CFD IPs are identical; runType `tethered`.
+* **Teaches:** Ref §4 — on a Stand Duet, MFD and CFD IPs are identical; runType `tethered`.
 
 #### INC31 — Running locally? Reserve first
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
@@ -1273,15 +1273,15 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 #### INC33 — `open("Register")` scrolls the wrong way
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
 |---|---|---|---|---|---|---|---|
-| 2 | 300 | 3:00 | P2 | Flex rigs, local run (default TARS, Reserved) | no | M13 | `uia.scroll` `uia.config` `orca.devicetype` |
+| 2 | 300 | 3:00 | P2 | Flux rigs, local run (default TARS, Reserved) | no | M13 | `uia.scroll` `uia.config` `orca.devicetype` |
 
 * **Ticket:** "My local HomeScreenTest on TARS can't find the Register app" (Alex).
-* **Symptoms:** `[IDE]` `[HomeScreen] open("Register"): scrolling horizontally (Mini/Station)…` ×5 → `AssertionError: App 'Register' not found on HomeScreen`; `[World]` TARS's launcher scrolls vertically; config `deviceType=Mini`.
-* **Fix:** `deviceType=Flex`; re-run.
-* **Success:** `prop(config,"deviceType") == "Flex" && ide.localRun("HomeScreenTest").result == PASS`.
+* **Symptoms:** `[IDE]` `[HomeScreen] open("Register"): scrolling horizontally (Micro/Stand)…` ×5 → `AssertionError: App 'Register' not found on HomeScreen`; `[World]` TARS's launcher scrolls vertically; config `deviceType=Micro`.
+* **Fix:** `deviceType=Flux`; re-run.
+* **Success:** `prop(config,"deviceType") == "Flux" && ide.localRun("HomeScreenTest").result == PASS`.
 * **Diagnosis Call:** **A. deviceType wrong, so open() scrolled horizontally** · B. App missing · C. waitForScreen missing · D. DEVICE_TYPE case.
-* **Wrong-but-tempting:** make `open()` always vertical (−150, breaks Mini/Station); `deviceType=FLEX_4` (config takes the family; run fails "unknown deviceType").
-* **Teaches:** Ref §4 Zone 2 abstraction — `open(appName)` vertical on Flex, horizontal on Mini/Station; config deviceType drives layout/scroll logic.
+* **Wrong-but-tempting:** make `open()` always vertical (−150, breaks Micro/Stand); `deviceType=FLUX_4` (config takes the family; run fails "unknown deviceType").
+* **Teaches:** Ref §4 Zone 2 abstraction — `open(appName)` vertical on Flux, horizontal on Micro/Stand; config deviceType drives layout/scroll logic.
 
 #### INC34 — PR review: the new hire's page object
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
@@ -1309,12 +1309,12 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 * **Wrong-but-tempting:** press Home only (fixed until the next run; resolve fails); add `goHome()` at the start of RefundTest only (−50).
 * **Teaches:** Ref §4 Tax test — every test starts from HomeScreen and runs a teardown back to HomeScreen.
 
-#### INC36 — Duo CFD OCR broken by a 10-pixel shift
+#### INC36 — Duet CFD OCR broken by a 10-pixel shift
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
 |---|---|---|---|---|---|---|---|
-| 3 | 400 | 4:00 | P1 | `duo` (R2-D2) | no | M16 | `orca.screencompare` `vision.tesseract` `pigeon.gimp` |
+| 3 | 400 | 4:00 | P1 | `duet` (R2-D2) | no | M16 | `orca.screencompare` `vision.tesseract` `pigeon.gimp` |
 
-* **Ticket:** "Duo CFD suite red after the app update" (Jenkins Bot).
+* **Ticket:** "Duet CFD suite red after the app update" (Jenkins Bot).
 * **Initial state:** the CFD total label moved **10 px down**; Screen Compare `CFD_TOTAL` = `x 412, y 288, w 236, h 44, expected "TOTAL $10.83"` (Cur §0.6).
 * **Symptoms:** `[Jenkins]` PL7: `[ocr] capture webcam → crop 236x44@412,288 → tesseract → "TOTAI $10.B3" → match=false`; `[Orca]` Screen Compare **Test** panel shows the crop clipping the bottom of the glyphs.
 * **Fix:** re-measure (camera **Snapshot** → GIMP) and set `y = 298` (±3); **Test** → `match=true`.
@@ -1323,12 +1323,12 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 * **Wrong-but-tempting:** widen the box to the whole screen (−100; OCR returns all the text → still false); expected = "TOTAI $10.B3" (−150); disable the check (−150, Cur §6 wrong move).
 * **Teaches:** Ref §3 Screen Compare Image — OCR workaround, brittle (a 10-pixel shift breaks it); being phased out for UIA 2.3 (20-min shifts offer INC38 as follow-up planned work).
 
-#### INC37 — Duo CFD OCR broken by capitalisation or a typo
+#### INC37 — Duet CFD OCR broken by capitalisation or a typo
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
 |---|---|---|---|---|---|---|---|
-| 2 | 300 | 3:00 | P1 | `duo` | no | M16 | `orca.screencompare` `vision.tesseract` |
+| 2 | 300 | 3:00 | P1 | `duet` | no | M16 | `orca.screencompare` `vision.tesseract` |
 
-* **Ticket:** "Duo CFD suite red: OCR mismatch" (Jenkins Bot).
+* **Ticket:** "Duet CFD suite red: OCR mismatch" (Jenkins Bot).
 * **Variants:** A (capitalisation): the CFD now reads `Total $10.83` (Cur M16 "layout v2" copy) → `[ocr] … tesseract → "Total $10.83" → match=false` (expected `TOTAL $10.83`); `[LabChat]` Morgan confirms the copy change is intended. B (typo): someone saved expected `TOTAL $10.38` → OCR reads `TOTAL $10.83` → false; row history shows the edit.
 * **Fix:** set expected to exactly what the CFD shows (A `Total $10.83`; B `TOTAL $10.83`).
 * **Success:** `orca.screenCompare("CFD_TOTAL").expected == truthText && next PL7 == SUCCESS`.
@@ -1336,15 +1336,15 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 * **Wrong-but-tempting:** move the box (no effect); lower-case both (the compare is exact [illus.]).
 * **Teaches:** Ref §3 — a capitalisation change or a typo breaks the suite.
 
-#### INC38 — Migrate the last Duo OCR check to UI Automator 2.3
+#### INC38 — Migrate the last Duet OCR check to UI Automator 2.3
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
 |---|---|---|---|---|---|---|---|
-| 5 | 900 | 10:00 | P2 | `duo` (R2-D2) | no | M16 | `uia.v23` `orca.screencompare` `uia.pom` `uia.sync` `uia.packages` `uia.config` `orca.status.reserved` `tools.github` |
+| 5 | 900 | 10:00 | P2 | `duet` (R2-D2) | no | M16 | `uia.v23` `orca.screencompare` `uia.pom` `uia.sync` `uia.packages` `uia.config` `orca.status.reserved` `tools.github` |
 
-* **Ticket:** "Kill the CFD_THANK_YOU OCR check — move it to UIA 2.3 like we did for CFD_TOTAL" (Morgan). Appears as Full-Shift planned work (§2.3.11) and in Free Play. (Cur M16 already migrated `CFD_TOTAL` in `TaxTestDuo`; this is the remaining check, `CFD_THANK_YOU` [illus.], in `DuoCheckoutTest`.)
+* **Ticket:** "Kill the CFD_THANK_YOU OCR check — move it to UIA 2.3 like we did for CFD_TOTAL" (Morgan). Appears as Full-Shift planned work (§2.3.11) and in Free Play. (Cur M16 already migrated `CFD_TOTAL` in `TaxTestDuet`; this is the remaining check, `CFD_THANK_YOU` [illus.], in `DuetCheckoutTest`.)
 * **Ordered steps (all checked):**
   1. Orca → R2-D2 → `Reserved`.
-  2. IntelliJ → uia-remote → branch `feat/duo-cfd-thank-you-uia23`.
+  2. IntelliJ → uia-remote → branch `feat/duet-cfd-thank-you-uia23`.
   3. Create `app/src/androidTest/java/com/lab/uia/pageobjects/CfdThankYouScreen.java`:
      ```java
      public class CfdThankYouScreen extends BaseTest {
@@ -1361,35 +1361,35 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
      }
      ```
      (Selector style follows Cur M16's `By.displayId(cfdDisplayId)`; exact API is illustrative — the fact taught is that UI Automator 2.3, which uia-remote uses, natively locates elements on both screens.)
-  4. In `testactions/DuoCheckoutTest.java` replace `assertTrue(orca.screenCompare("CFD_THANK_YOU"));` with `cfdThankYou.waitForScreen(); assertTrue(cfdThankYou.isScreenPresent());`.
-  5. `config.properties`: `runType=tethered`, both IPs `10.42.30.14`, `deviceType=Station`, `portNumber=5444`.
-  6. Run `DuoCheckoutTest` locally → PASS.
+  4. In `testactions/DuetCheckoutTest.java` replace `assertTrue(orca.screenCompare("CFD_THANK_YOU"));` with `cfdThankYou.waitForScreen(); assertTrue(cfdThankYou.isScreenPresent());`.
+  5. `config.properties`: `runType=tethered`, both IPs `10.42.30.14`, `deviceType=Stand`, `portNumber=5444`.
+  6. Run `DuetCheckoutTest` locally → PASS.
   7. Push, open PR → Morgan merges in 20 s if checks pass.
   8. Orca → Screen Compare Images → `CFD_THANK_YOU` → mark **Deprecated** (do not delete).
   9. Orca → R2-D2 → `Available`.
-* **Success:** `CfdThankYouScreen` in `pageobjects` with both mandatory methods on main; `DuoCheckoutTest` no longer calls `screenCompare("CFD_THANK_YOU")`; local PASS while R2-D2 `RESERVED`; `orca.screenCompare("CFD_THANK_YOU").deprecated == true`; R2-D2 `AVAILABLE`; next PL7 SUCCESS.
+* **Success:** `CfdThankYouScreen` in `pageobjects` with both mandatory methods on main; `DuetCheckoutTest` no longer calls `screenCompare("CFD_THANK_YOU")`; local PASS while R2-D2 `RESERVED`; `orca.screenCompare("CFD_THANK_YOU").deprecated == true`; R2-D2 `AVAILABLE`; next PL7 SUCCESS.
 * **Diagnosis Call:** none (project; §2.3.6).
 * **Wrong-but-tempting:** delete the Screen Compare row before the merge (−100; another suite still references it); page object in `testactions` (−50); skip Reserved (collision −200); CFD IP ≠ MFD IP (run fails).
 * **Teaches:** Ref §3 OCR deprecation; Ref §1 UI Automator v2.3 dual-screen tracking; Ref §4 structure, mandatory methods, config.
 
-#### INC39 — Jenkins env var case (`flex_3`)
+#### INC39 — Jenkins env var case (`flux_3`)
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
 |---|---|---|---|---|---|---|---|
 | 1 | 200 | 2:00 | P1 | any pipeline (default PL1) | no | M11 | `jenkins.envvars` `orca.devicetype` |
 
-* **Ticket:** "uia-remote-regression-flex fails at checkout" (Jenkins Bot). Misleading: "No Flex rigs are available?"
-* **Initial state:** saved parameter `DEVICE_TYPE=flex_3` (variants: `Flex_3`, `flex_4`, `FLEX3`; on PL4 `mini_3`, the Cur M18 capstone seed).
+* **Ticket:** "uia-remote-regression-flux fails at checkout" (Jenkins Bot). Misleading: "No Flux rigs are available?"
+* **Initial state:** saved parameter `DEVICE_TYPE=flux_3` (variants: `Flux_3`, `flux_4`, `FLUX3`; on PL4 `micro_3`, the Cur M18 capstone seed).
 * **Symptoms:** `[Jenkins]`
   ```
-  [orca] checkout request deviceType=flex_3
-  java.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.flex_3
+  [orca] checkout request deviceType=flux_3
+  java.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.flux_3
   FAILURE
   ```
   `[Orca]` WALL-E and EVE are Available (capacity is fine).
-* **Fix:** job ▸ Configure (or Build with Parameters) → `DEVICE_TYPE=FLEX_3` → console `[orca] checkout → wall-e (FLEX_3) OK`.
-* **Success:** `jenkins.job("Java/uia-remote-regression-flex").lastBuild.params.DEVICE_TYPE == "FLEX_3" && lastBuild.result == SUCCESS`.
-* **Diagnosis Call:** **A. The env var value isn't the exact ALL-CAPS enum** · B. No Flex rigs available · C. Orca down · D. Wrong folder.
-* **Wrong-but-tempting:** "fix" the enum in Orca (−150, Cur §6 wrong move); `FLEX_GEN3` (a testing profile, not a DeviceType → same exception); set WALL-E Available again (already is).
+* **Fix:** job ▸ Configure (or Build with Parameters) → `DEVICE_TYPE=FLUX_3` → console `[orca] checkout → wall-e (FLUX_3) OK`.
+* **Success:** `jenkins.job("Java/uia-remote-regression-flux").lastBuild.params.DEVICE_TYPE == "FLUX_3" && lastBuild.result == SUCCESS`.
+* **Diagnosis Call:** **A. The env var value isn't the exact ALL-CAPS enum** · B. No Flux rigs available · C. Orca down · D. Wrong folder.
+* **Wrong-but-tempting:** "fix" the enum in Orca (−150, Cur §6 wrong move); `FLUX_GEN3` (a testing profile, not a DeviceType → same exception); set WALL-E Available again (already is).
 * **Teaches:** Ref §3 the Device Type enum is why Jenkins env vars must be ALL CAPS; Ref §1 Jenkins injects runtime env vars; JHipster enums.
 
 #### INC40 — PayCore rig overwritten (must stay Unavailable)
@@ -1398,8 +1398,8 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 | 3 | 450 | 5:00 | P1 | `paycore` (ROSIE) | no | M06 | `orca.status.unavailable` `laz.oobe` `orca.merchant` `cards.philosophy` `orca.status` `uia.history` |
 
 * **Ticket:** "PayCore matrix failing on ROSIE — wrong merchant!" (Sam).
-* **Initial state:** Alex set ROSIE `AVAILABLE` "to help capacity"; Riley then ran `Java/uia-remote-regression-flex` with `DEVICE_TYPE=FLEX_POCKET`, which took ROSIE and swapped its merchant.
-* **Symptoms:** `[Jenkins]` PL8: `[paycore] merchant mismatch: expected PAYCORE-STANDALONE-01, got AUTO-US-NOPIN-01` [illus.]; Riley's build: `[orca] checkout → rosie (FLEX_POCKET) OK` · `ubi: routing merchant switch → AUTO-US-NOPIN-01` · `laz: merchant active`; `[Notes]` `STATUS Unavailable → Available (alex)`; `[Camera]` (Rack B) ROSIE shows the generic Register app.
+* **Initial state:** Alex set ROSIE `AVAILABLE` "to help capacity"; Riley then ran `Java/uia-remote-regression-flux` with `DEVICE_TYPE=FLUX_POCKET`, which took ROSIE and swapped its merchant.
+* **Symptoms:** `[Jenkins]` PL8: `[paycore] merchant mismatch: expected PAYCORE-STANDALONE-01, got AUTO-US-NOPIN-01` [illus.]; Riley's build: `[orca] checkout → rosie (FLUX_POCKET) OK` · `ubi: routing merchant switch → AUTO-US-NOPIN-01` · `laz: merchant active`; `[Notes]` `STATUS Unavailable → Available (alex)`; `[Camera]` (Rack B) ROSIE shows the generic Register app.
 * **Diagnosis path:** Notes history → a general job used the PayCore rig → Call.
 * **Fix:** 1) ROSIE → `Unavailable`. 2) `Java/laz-oobe-merchant-swap` with `ROBOT_NAME=rosie`, `MERCHANT=PAYCORE-STANDALONE-01` (a named job may use an Unavailable rig) → `laz: merchant active`. 3) Wait for PL8 green; ROSIE returns to Unavailable on release.
 * **Success:** `orca.robot(rosie).status == UNAVAILABLE && hw.device(rosie-pocket).activeMerchant == "PAYCORE-STANDALONE-01" && next PL8 == SUCCESS`.
@@ -1414,58 +1414,58 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 
 * **Ticket:** "I need a Visa/Discover/AmEx matrix run on ROSIE now — Jenkins says no robot" (Sam).
 * **Initial state:** Sam's build of `Java/paycore-standalone-matrix` used `ROBOT_NAME=` (blank). Variant B: `ROBOT_NAME=ROSIE` (the Human Readable Name).
-* **Symptoms:** `[Jenkins]` A: `No Available robot matches FLEX_POCKET (rosie is Unavailable)` (Cur M06); B: `[orca] 404 Not Found: no robot named 'ROSIE'` [illus.].
+* **Symptoms:** `[Jenkins]` A: `No Available robot matches FLUX_POCKET (rosie is Unavailable)` (Cur M06); B: `[orca] 404 Not Found: no robot named 'ROSIE'` [illus.].
 * **Fix:** Build with Parameters `ROBOT_NAME=rosie` (system Name) → `Checked out robot rosie (named)`; do not touch ROSIE's status; after the build `[orca] released rosie → Unavailable`.
 * **Success:** `lastBuild.params.ROBOT_NAME == "rosie" && result == SUCCESS && ∀t: orca.robot(rosie).status ≠ AVAILABLE && final status == UNAVAILABLE`.
 * **Diagnosis Call:** **A. Unavailable rigs need the robot's exact unique Name in the job** · B. ROSIE broken · C. Must set it Available first · D. Wrong device type.
 * **Wrong-but-tempting:** set ROSIE Available (GW05; Cur §6 wrong move); use `ROSIE` (404, −50).
 * **Teaches:** Ref §3 Unavailable — blocked unless the exact unique name is passed; Orca resets it to Unavailable after the named job; Name vs Human Readable Name; Ref §6 PayCore runs exhaustive card matrices.
 
-#### INC42 — Hardware upgrade: Flex 1 → Flex 2 (new Device entity)
+#### INC42 — Hardware upgrade: Flux 1 → Flux 2 (new Device entity)
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
 |---|---|---|---|---|---|---|---|
-| 4 | 600 | 7:00 | P2 | `flex-legacy` (JOHNNY-5) | no | M07 | `orca.device` `orca.devicetype` `power.18v` `hw.devices` `orca.status.offline` |
+| 4 | 600 | 7:00 | P2 | `flux-legacy` (JOHNNY-5) | no | M07 | `orca.device` `orca.devicetype` `power.18v` `hw.devices` `orca.status.offline` |
 
-* **Ticket:** "Upgrade JOHNNY-5 from Flex 1 to Flex 2 (Husky chest, drawer 2)" (Jared).
+* **Ticket:** "Upgrade JOHNNY-5 from Flux 1 to Flux 2 (Husky chest, drawer 2)" (Jared).
 * **Ordered steps:**
   1. Orca → JOHNNY-5 → `Offline` (PB01).
-  2. MOTOR off; screwdriver: remove the two 2.5 mm cradle-clamp bolts; unplug the Flex 1's PSU (STRIP-B) and hub cable; set the Flex 1 on the storage shelf (keep it for rollback).
-  3. Seat the Flex 2, clamp, connect the hub, plug its PSU into **STRIP-B**; boot (30 s).
+  2. MOTOR off; screwdriver: remove the two 2.5 mm cradle-clamp bolts; unplug the Flux 1's PSU (STRIP-B) and hub cable; set the Flux 1 on the storage shelf (keep it for rollback).
+  3. Seat the Flux 2, clamp, connect the hub, plug its PSU into **STRIP-B**; boot (30 s).
   4. Read serial `SIM-F2-000015` from the device label / Settings → About; IP stays `10.42.30.15` (Cur M07).
-  5. Orca → Devices → **Create**: type `FLEX_2`, serial `SIM-F2-000015`, IP `10.42.30.15` (row `johnny-5-flex2`). Do **not** edit or delete `johnny-5-flex1`.
-  6. JOHNNY-5 → **Robot Device** → `johnny-5-flex2` → Save.
+  5. Orca → Devices → **Create**: type `FLUX_2`, serial `SIM-F2-000015`, IP `10.42.30.15` (row `johnny-5-flux2`). Do **not** edit or delete `johnny-5-flux1`.
+  6. JOHNNY-5 → **Robot Device** → `johnny-5-flux2` → Save.
   7. `adb connect 10.42.30.15:5444`; `adb -s 10.42.30.15:5444 shell getprop ro.product.model`.
   8. MOTOR on → Park All → `Available` → confirmation build (PB02).
-* **Success:** `orca.robot(johnny-5).deviceId == "johnny-5-flex2" && orca.device("johnny-5-flex2").type == FLEX_2 && orca.device("johnny-5-flex1").exists && .type == FLEX_1 && status == AVAILABLE && confirmation build SUCCESS`.
+* **Success:** `orca.robot(johnny-5).deviceId == "johnny-5-flux2" && orca.device("johnny-5-flux2").type == FLUX_2 && orca.device("johnny-5-flux1").exists && .type == FLUX_1 && status == AVAILABLE && confirmation build SUCCESS`.
 * **Diagnosis Call:** none (change; §2.3.6). PB05 +50 for the kept legacy row.
-* **Wrong-but-tempting:** edit `johnny-5-flex1` in place (GW10; Cur §6 wrong move); delete it (GW09); Flex 2 PSU on DC (GW01); skip step 6 (tests drive a Flex 2 with Flex 1 layout → red builds).
-* **Teaches:** Ref §3 Robot Device decoupling — a Flex 1 → Flex 2 upgrade keeps the legacy configuration for quick rollback (Cur M07 does the Orca half; here the player does the hardware half too).
+* **Wrong-but-tempting:** edit `johnny-5-flux1` in place (GW10; Cur §6 wrong move); delete it (GW09); Flux 2 PSU on DC (GW01); skip step 6 (tests drive a Flux 2 with Flux 1 layout → red builds).
+* **Teaches:** Ref §3 Robot Device decoupling — a Flux 1 → Flux 2 upgrade keeps the legacy configuration for quick rollback (Cur M07 does the Orca half; here the player does the hardware half too).
 
-#### INC43 — Roll back to Flex 1
+#### INC43 — Roll back to Flux 1
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
 |---|---|---|---|---|---|---|---|
 | 2 | 300 | 2:30 | P1 | JOHNNY-5 after INC42 (or seeded) | no | M07 | `orca.device` |
 
-* **Ticket:** "The Flex 2 build has a regression — roll JOHNNY-5 back to the Flex 1 now" (Jared).
-* **Fix:** swap the Flex 1 back (INC42 steps 2–3) and set Robot Device = `johnny-5-flex1` ("rolling back is one dropdown", Cur M07).
-* **Success:** `orca.robot(johnny-5).deviceId == "johnny-5-flex1" && status == AVAILABLE && next build SUCCESS`.
+* **Ticket:** "The Flux 2 build has a regression — roll JOHNNY-5 back to the Flux 1 now" (Jared).
+* **Fix:** swap the Flux 1 back (INC42 steps 2–3) and set Robot Device = `johnny-5-flux1` ("rolling back is one dropdown", Cur M07).
+* **Success:** `orca.robot(johnny-5).deviceId == "johnny-5-flux1" && status == AVAILABLE && next build SUCCESS`.
 * **Diagnosis Call:** none (change; §2.3.6).
-* **Wrong-but-tempting:** create a new FLEX_1 row (−50, "the legacy row exists for exactly this"); after an earlier GW09 the row must be recreated (par effectively +3:00).
+* **Wrong-but-tempting:** create a new FLUX_1 row (−50, "the legacy row exists for exactly this"); after an earlier GW09 the row must be recreated (par effectively +3:00).
 * **Teaches:** Ref §3 — decoupling enables quick rollbacks.
 
-#### INC44 — Hot-swap equivalent: Mini 3 for a dead printerless Duo 2
+#### INC44 — Hot-swap equivalent: Micro 3 for a dead printerless Duet 2
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
 |---|---|---|---|---|---|---|---|
-| 2 | 300 | 3:00 | P2 | K-9 (off-screen `STATION_DUO_2`) → DATA/BUMBLEBEE | no | M11 | `hw.devices` `orca.devicetype` `jenkins.envvars` `orca.status.offline` |
+| 2 | 300 | 3:00 | P2 | K-9 (off-screen `STAND_DUET_2`) → DATA/BUMBLEBEE | no | M11 | `hw.devices` `orca.devicetype` `jenkins.envvars` `orca.status.offline` |
 
-* **Ticket:** "K-9's Duo 2 died (RMA). Keep printerless-smoke running today." (Jared).
-* **Initial state:** `hw.device(k-9-duo2).state = DEAD`; job `Java/uia-remote-printerless-smoke` [illus.] has `DEVICE_TYPE=STATION_DUO_2`; K-9 is still Available.
-* **Symptoms:** `[Jenkins]` red on k-9: `adb: failed to connect to '10.42.30.51:5444': No route to host`; `[Orca]` K-9 Available (its Pi is fine); `[LabChat]` Jared: "Mini 3 is our hot-swap for the printerless Duo 2."
-* **Fix:** K-9 → `Offline` (PB01, pending RMA) → rebuild with `DEVICE_TYPE=MINI_3` → `[orca] checkout → data (MINI_3) OK` (or BUMBLEBEE).
+* **Ticket:** "K-9's Duet 2 died (RMA). Keep printerless-smoke running today." (Jared).
+* **Initial state:** `hw.device(k-9-duet2).state = DEAD`; job `Java/uia-remote-printerless-smoke` [illus.] has `DEVICE_TYPE=STAND_DUET_2`; K-9 is still Available.
+* **Symptoms:** `[Jenkins]` red on k-9: `adb: failed to connect to '10.42.30.51:5444': No route to host`; `[Orca]` K-9 Available (its Pi is fine); `[LabChat]` Jared: "Micro 3 is our hot-swap for the printerless Duet 2."
+* **Fix:** K-9 → `Offline` (PB01, pending RMA) → rebuild with `DEVICE_TYPE=MICRO_3` → `[orca] checkout → data (MICRO_3) OK` (or BUMBLEBEE).
 * **Success:** `orca.robot(k-9).status == OFFLINE && jenkins.job("Java/uia-remote-printerless-smoke").lastBuild.robot ∈ {data, bumblebee} && result == SUCCESS`.
-* **Diagnosis Call:** **A. Duo 2 dead; run on its hot-swap equivalent, a Mini 3** · B. K-9's Pi crashed · C. Port · D. Merchant.
-* **Wrong-but-tempting:** `FLEX_POCKET` (printerless but not the equivalent → layout failures, −50); `MINI_2` (−50); change K-9's Device row to MINI_3 (GW10); `mini_3` (INC39 exception).
-* **Teaches:** Ref §1 — Mini 3 is the hot-swap equivalent for the printerless Duo 2; enum values ALL CAPS; Offline for rigs out of service.
+* **Diagnosis Call:** **A. Duet 2 dead; run on its hot-swap equivalent, a Micro 3** · B. K-9's Pi crashed · C. Port · D. Merchant.
+* **Wrong-but-tempting:** `FLUX_POCKET` (printerless but not the equivalent → layout failures, −50); `MICRO_2` (−50); change K-9's Device row to MICRO_3 (GW10); `micro_3` (INC39 exception).
+* **Teaches:** Ref §1 — Micro 3 is the hot-swap equivalent for the printerless Duet 2; enum values ALL CAPS; Offline for rigs out of service.
 
 #### INC45 — Tethered rig treated as standalone (MFD empty)
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
@@ -1475,11 +1475,11 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 * **Ticket:** "tethered-tax on OPTIMUS: 'TaxTest requires a tethered rig'" (Jenkins Bot).
 * **Initial state:** `orca.robot(optimus).mfdDeviceId = null`, `cfdDeviceId = null` (cleared during an edit; same seed as Cur M07).
 * **Symptoms:** `[Jenkins]` env `RUN_TYPE=standalone` · `[runner] MFD relation empty → standalone` · `AssertionError: TaxTest requires a tethered rig (MFD/CFD)`; `[Orca]` USB Tethered Device Configuration shows MFD and CFD blank.
-* **Fix:** MFD = `optimus-mfd` (MINI_3, 10.42.30.23), CFD = `optimus-cfd` (MINI_3, 10.42.30.24) → banner "Tethered: MFD populated" (Cur M07).
+* **Fix:** MFD = `optimus-mfd` (MICRO_3, 10.42.30.23), CFD = `optimus-cfd` (MICRO_3, 10.42.30.24) → banner "Tethered: MFD populated" (Cur M07).
 * **Success:** `orca.robot(optimus).mfdDeviceId == "optimus-mfd" && cfdDeviceId == "optimus-cfd" && next PL2 on optimus == SUCCESS`.
 * **Diagnosis Call:** **A. MFD relation missing, so the pipeline treated the rig as standalone** · B. CFD unplugged · C. Port · D. Runner bug.
 * **Wrong-but-tempting:** look for a runType field in Orca (none exists; Cur §6 wrong move) or force `RUN_TYPE=tethered` as a job param (−100, still fails); swap MFD and CFD (red).
-* **Teaches:** Ref §3 — if MFD is populated, the pipeline treats the rig as tethered (Station 2 + Mini 2 on MEGATRON, nested Mini 3s on OPTIMUS).
+* **Teaches:** Ref §3 — if MFD is populated, the pipeline treats the rig as tethered (Stand 2 + Micro 2 on MEGATRON, nested Micro 3s on OPTIMUS).
 
 #### INC46 — Standalone rig treated as tethered (MFD populated)
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
@@ -1489,8 +1489,8 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 * **Ticket:** "TARS hangs at start: 'waiting for CFD'" (Jenkins Bot).
 * **Initial state:** TARS's record was cloned from OPTIMUS's: `mfdDeviceId = optimus-mfd`, `cfdDeviceId = optimus-cfd`.
 * **Symptoms:** `[Jenkins]` `[runner] Tethered rig detected (MFD populated) → MFD 10.42.30.23:5444, CFD 10.42.30.24:5444` — OPTIMUS's devices; `[Camera]` OPTIMUS's screens move during TARS's job (cross-talk).
-* **Fix:** clear MFD and CFD on TARS; Robot Device stays `tars-flex4`.
-* **Success:** `orca.robot(tars).mfdDeviceId == null && cfdDeviceId == null && deviceId == "tars-flex4" && next build on tars == SUCCESS`.
+* **Fix:** clear MFD and CFD on TARS; Robot Device stays `tars-flux4`.
+* **Success:** `orca.robot(tars).mfdDeviceId == null && cfdDeviceId == null && deviceId == "tars-flux4" && next build on tars == SUCCESS`.
 * **Diagnosis Call:** **A. MFD populated on a standalone rig** · B. Shelf Pi crashed · C. Port 5555 · D. Shared camera.
 * **Wrong-but-tempting:** set OPTIMUS Unavailable to stop the cross-talk (−100; treats the symptom).
 * **Teaches:** Ref §3 — MFD populated ⇒ tethered.
@@ -1514,9 +1514,9 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 |---|---|---|---|---|---|---|---|
 | 2 | 250 | 2:30 | P1 | any (default EVE) | no | M06 | `orca.status.reserved` `jenkins.checkout` `orca.status` |
 
-* **Ticket:** "uia-remote-regression-flex (FLEX_4) waiting forever" (Jenkins Bot).
+* **Ticket:** "uia-remote-regression-flux (FLUX_4) waiting forever" (Jenkins Bot).
 * **Initial state:** EVE `RESERVED` by riley since yesterday 17:42.
-* **Symptoms:** `[Jenkins]` `[orca] candidate eve: Reserved — skipped` · `[orca] no Available FLEX_4 robot — build waiting in queue`; `[Orca]` EVE Reserved (riley, `2026-10-04 17:42`).
+* **Symptoms:** `[Jenkins]` `[orca] candidate eve: Reserved — skipped` · `[orca] no Available FLUX_4 robot — build waiting in queue`; `[Orca]` EVE Reserved (riley, `2026-10-04 17:42`).
 * **Fix:** LabChat Riley "Still using EVE?" → A: "Oh no, forgot — release it." → set `Available`. B: "Still running, 2 more minutes." → leave it; reply `R_WAIT`; resolve when Riley releases.
 * **Success:** A: `asked in LabChat before the change && orca.robot(eve).status == AVAILABLE`; B: `ticket.reply == R_WAIT && status unchanged until Riley releases`.
 * **Diagnosis Call:** **A. Leftover reservation from a finished local run** · B. EVE broken · C. Job misconfigured · D. Orca down.
@@ -1529,13 +1529,13 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 | 3 | 400 | 4:00 | P1 | `canada` (SETI) | no | M08 | `orca.capabilities` `hw.devices` `jenkins.envvars` |
 
 * **Ticket:** "contact-canada-pin-sale checkout error" (Jenkins Bot).
-* **Initial state:** pipeline script hardcodes `def capabilities = [deviceType: 'MINI_3', physicalTouch: true]` (copy-paste) while the test definition `gort/suites/contact-canada/pin_sale.json` [illus.] declares `"capabilities": {"deviceType": "COMPACT", "physicalTouch": true}`.
-* **Symptoms:** `[Jenkins]` `[orca] 409 Conflict: capability conflict (pipeline deviceType=MINI_3, test deviceType=COMPACT)` [illus.].
-* **Fix:** Pipeline script → `deviceType: 'COMPACT'`; rebuild.
-* **Success:** `jenkins.job(PL5).script contains "deviceType: 'COMPACT'" && next PL5 robot == seti && SUCCESS`.
+* **Initial state:** pipeline script hardcodes `def capabilities = [deviceType: 'MICRO_3', physicalTouch: true]` (copy-paste) while the test definition `gort/suites/contact-canada/pin_sale.json` [illus.] declares `"capabilities": {"deviceType": "COMPASS", "physicalTouch": true}`.
+* **Symptoms:** `[Jenkins]` `[orca] 409 Conflict: capability conflict (pipeline deviceType=MICRO_3, test deviceType=COMPASS)` [illus.].
+* **Fix:** Pipeline script → `deviceType: 'COMPASS'`; rebuild.
+* **Success:** `jenkins.job(PL5).script contains "deviceType: 'COMPASS'" && next PL5 robot == seti && SUCCESS`.
 * **Diagnosis Call:** **A. The hardcoded pipeline capability contradicts the test's dynamic JSON** · B. SETI offline · C. Interac card missing · D. Case error.
 * **Wrong-but-tempting:** delete the test's dynamic capabilities (−100; Contact Canada scripts use both styles).
-* **Teaches:** Ref §3 Robot Capabilities — dynamic JSON (SDK frameworks, David) vs non-dynamic (pipeline script); both used interchangeably for Contact Canada on Westers beds; COMPACT is the Canadian terminal.
+* **Teaches:** Ref §3 Robot Capabilities — dynamic JSON (SDK frameworks, David) vs non-dynamic (pipeline script); both used interchangeably for Contact Canada on Westers beds; COMPASS is the Canadian terminal.
 
 #### INC50 — Merchant switch via Laz OOBE / Ubi
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
@@ -1546,7 +1546,7 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 * **Initial state:** Merchant Config `WESTERS-CA-02` has `Ubi Route = us-east` (should be `ca-central`) [illus. field], visible only in the **Edit** dialog.
 * **Symptoms:** `[Jenkins]` `Java/laz-oobe-merchant-swap` (`ROBOT_NAME=seti`, `MERCHANT=WESTERS-CA-02`): `ubi: routing merchant switch → WESTERS-CA-02` · `ubi: ERROR route us-east cannot resolve merchant WESTERS-CA-02` [illus.] · `FAILURE` (Laz never de-provisions); `[Orca]` the Merchant Config table shows Name, Region, PIN Bypass… only.
 * **Fix:** Merchant Config → `WESTERS-CA-02` → **Edit** → `Ubi Route = ca-central` → Save → rebuild the swap → `laz: de-provision` · `laz: wipe caches` · `laz: setup wizard 1/6…6/6` · `laz: merchant active` → resume the suite.
-* **Success:** `orca.merchant("WESTERS-CA-02").ubiRoute == "ca-central" && hw.device(seti-compact).activeMerchant == "WESTERS-CA-02" && next PL5 == SUCCESS`.
+* **Success:** `orca.merchant("WESTERS-CA-02").ubiRoute == "ca-central" && hw.device(seti-compass).activeMerchant == "WESTERS-CA-02" && next PL5 == SUCCESS`.
 * **Diagnosis Call:** **A. Merchant routing config wrong (hidden field — click Edit)** · B. Device can't be wiped · C. Callus offline · D. SETI Reserved.
 * **Wrong-but-tempting:** walk SETI through the setup wizard by hand (−100; breaks zero-touch, fails again next switch); create a duplicate merchant row (−50).
 * **Teaches:** Ref §1 Laz zero-touch OOBE (de-provision, wipe caches, setup wizard, swap merchants mid-suite) and Ubi routing; Ref §3 Merchant Config — click Edit to see every field.
@@ -1572,11 +1572,11 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 
 * **Ticket:** "contact-canada-pin-sale times out at PIN entry" (Jenkins Bot).
 * **Initial state:** someone saved `ROBOT_NAME=tars` on the job "for a quick test".
-* **Symptoms:** `[Jenkins]` `Checked out robot tars (named)` · `PIN entry requires physical touch` (Cur M09) · `FAILURE`; `[Orca]` TARS/DATA are ADB bots; SETI is the Compact touch robot on `WESTERS-CA-01` (PIN required).
+* **Symptoms:** `[Jenkins]` `Checked out robot tars (named)` · `PIN entry requires physical touch` (Cur M09) · `FAILURE`; `[Orca]` TARS/DATA are ADB bots; SETI is the Compass touch robot on `WESTERS-CA-01` (PIN required).
 * **Fix:** Build with Parameters `ROBOT_NAME=seti` (or blank — SETI is the only match) and `CARD_PROFILE=INTERAC_CA_DIP` → SETI's solenoid taps the four PIN digits.
 * **Success:** `next PL5 robot == seti && params.CARD_PROFILE == "INTERAC_CA_DIP" && result == SUCCESS`.
-* **Diagnosis Call:** **A. ADB bots can't enter a PIN; the Canadian flow needs a physical bot** · B. INTERAC_CA_DIP broken · C. COMPACT unsupported · D. Port.
-* **Wrong-but-tempting:** switch to a PIN-bypass merchant (−200; ADB bots only get PIN-bypass merchants, but Canada mandates physical PIN — you'd stop testing it; Cur §6 wrong move); "use the Gen 2 software PIN bypass" (−100; still being built with the Core OS Team); `ROBOT_NAME=wall-e` (`capability mismatch: deviceType COMPACT required`, −50).
+* **Diagnosis Call:** **A. ADB bots can't enter a PIN; the Canadian flow needs a physical bot** · B. INTERAC_CA_DIP broken · C. COMPASS unsupported · D. Port.
+* **Wrong-but-tempting:** switch to a PIN-bypass merchant (−200; ADB bots only get PIN-bypass merchants, but Canada mandates physical PIN — you'd stop testing it; Cur §6 wrong move); "use the Gen 2 software PIN bypass" (−100; still being built with the Core OS Team); `ROBOT_NAME=wall-e` (`capability mismatch: deviceType COMPASS required`, −50).
 * **Teaches:** Ref §6 ADB vs physical bots, Canadian physical PIN, Gen 2 Software PIN Bypass (future; physical kept for dipping); card philosophy (Visa + Canadian Interac).
 
 #### INC53 — Dip/Tap card profile: wrong Gort path
@@ -1667,9 +1667,9 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 | 3 | 400 | 6:00 | P2 | touch rigs (default EVE) | no | M04 | `hw.print3d` `hw.rigbom` `orca.status.offline` `hw.motion` |
 
 * **Ticket:** "EVE's taps drift on the right side of the screen" (Morgan).
-* **Initial state:** EVE's black PLA cradle cracked; the Flex 4 sits 2° tilted.
+* **Initial state:** EVE's black PLA cradle cracked; the Flux 4 sits 2° tilted.
 * **Symptoms:** `[Camera]` taps on the right half land progressively low (unlike INC14's uniform error); `[World]` crack visible on inspection; the device rocks when touched (`E`).
-* **Fix:** EVE `Offline` (PB01) → `loc.print-corner`: choose **Prusa** or **Bambu Lab** → load `cradle_flex_gen3.3mf` [illus.] → Print (90 real s; work other tickets meanwhile) → MOTOR off → lift the device → screwdriver: 4 × 2.5 mm bolts → swap cradle → re-seat → MOTOR on → Park All → `Available` → build.
+* **Fix:** EVE `Offline` (PB01) → `loc.print-corner`: choose **Prusa** or **Bambu Lab** → load `cradle_flux_gen3.3mf` [illus.] → Print (90 real s; work other tickets meanwhile) → MOTOR off → lift the device → screwdriver: 4 × 2.5 mm bolts → swap cradle → re-seat → MOTOR on → Park All → `Available` → build.
 * **Success:** `hw.rig(eve).cradle == NEW && homed && orca.robot(eve).status == AVAILABLE && next build on eve == SUCCESS`.
 * **Diagnosis Call:** **A. Cracked cradle tilts the device** · B. Offsets · C. Screen Locations · D. Solenoid loose.
 * **Wrong-but-tempting:** tape the crack (−50; drift persists); Offsets (GW18); 5 mm bolts (don't fit, −25).
@@ -1695,7 +1695,7 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 | 1 | 150 | 2:00 | P3 | — | no | M17 | `tools.claude` `vision.ollama` `vision.tesseract` |
 
 * **Ticket:** "Leadership wants one line per AI/vision tool for the AI-initiative slide" (Tate).
-* **Task:** match tool → role: **Ollama** → local LLM runner on the 4-GPU blade, PoC vision checks of receipt layouts and tip math · **Claude** → evaluated in corporate AI initiatives for repository optimisation and automated test generation · **Tesseract** → OCR on cropped webcam screenshots for ADB-blind displays (Duo CFD). Then choose the status line **"Ollama checks are proof-of-concept, not release gates."**
+* **Task:** match tool → role: **Ollama** → local LLM runner on the 4-GPU blade, PoC vision checks of receipt layouts and tip math · **Claude** → evaluated in corporate AI initiatives for repository optimisation and automated test generation · **Tesseract** → OCR on cropped webcam screenshots for ADB-blind displays (Duet CFD). Then choose the status line **"Ollama checks are proof-of-concept, not release gates."**
 * **Success:** three correct matches + the status line. Each wrong match −30.
 * **Diagnosis Call:** none (judgement; §2.3.6).
 * **Teaches:** Ref §1 Developer Utilities, Computer Vision & AI.
@@ -1725,17 +1725,17 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 * **Wrong-but-tempting:** edit Name (GW22).
 * **Teaches:** Ref §3 Name & Human Readable Name — the system identifier vs the display string pushed to the status tablet.
 
-#### INC64 — "Write me an ADB tap for the Duo's customer screen" (ADB-blind display)
+#### INC64 — "Write me an ADB tap for the Duet's customer screen" (ADB-blind display)
 | Diff | Base | Par | Sev | Rigs | Escalatable | Unlocked by | Tags |
 |---|---|---|---|---|---|---|---|
-| 2 | 300 | 3:00 | P3 | `duo` (R2-D2) | no | M16 | `bots.types` `uia.v23` `orca.xytouch` `adb.usage` |
+| 2 | 300 | 3:00 | P3 | `duet` (R2-D2) | no | M16 | `bots.types` `uia.v23` `orca.xytouch` `adb.usage` |
 
 * **Ticket:** "Need an `adb shell input tap` for 'Done' on R2-D2's CFD receipt screen" (Riley).
-* **Initial state:** R2-D2's CFD shows a receipt prompt with "Done"; screen `CFD_RECEIPT_DONE` [illus.] exists in Orca for STATION_DUO.
+* **Initial state:** R2-D2's CFD shows a receipt prompt with "Done"; screen `CFD_RECEIPT_DONE` [illus.] exists in Orca for STAND_DUET.
 * **Symptoms:** `[Terminal]` `adb -s 10.42.30.14:5444 shell uiautomator dump` → the dump only contains MFD elements (`grep -c "Done" window_dump.xml` → `0`, Cur M16).
-* **Fix:** tap it physically through Orca: `curl -X POST http://orca.lab.local:8080/api/xy_touch -H "Content-Type: application/json" -d '{"robot":"r2-d2","screen":"CFD_RECEIPT_DONE","button":"Done"}'` → `"mode":"PHYSICAL_TAP"`; reply `R_DUO_BLIND` ("ADB can't see the Duo CFD; use the touch robot via xy_touch, or a UIA 2.3 dual-screen locator in tests").
-* **Success:** `R2-D2 CFD advanced past the prompt via PHYSICAL_TAP && ticket.reply == R_DUO_BLIND`.
-* **Diagnosis Call:** **A. The Duo CFD is blind to ADB; use a physical tap or UIA 2.3** · B. Wrong port · C. Device asleep · D. Wrong IP.
+* **Fix:** tap it physically through Orca: `curl -X POST http://orca.lab.local:8080/api/xy_touch -H "Content-Type: application/json" -d '{"robot":"r2-d2","screen":"CFD_RECEIPT_DONE","button":"Done"}'` → `"mode":"PHYSICAL_TAP"`; reply `R_DUET_BLIND` ("ADB can't see the Duet CFD; use the touch robot via xy_touch, or a UIA 2.3 dual-screen locator in tests").
+* **Success:** `R2-D2 CFD advanced past the prompt via PHYSICAL_TAP && ticket.reply == R_DUET_BLIND`.
+* **Diagnosis Call:** **A. The Duet CFD is blind to ADB; use a physical tap or UIA 2.3** · B. Wrong port · C. Device asleep · D. Wrong IP.
 * **Wrong-but-tempting:** `adb … input tap <x> <y>` with CFD coordinates (−100: it taps the MFD instead — Cur §6 wrong move "ADB-only approach").
 * **Teaches:** Ref §3 the dual-screen problem (only the MFD is exposed to ADB); Ref §6 physical bots for ADB-blind displays; UIA 2.3.
 
@@ -1761,13 +1761,13 @@ variant) · **Initial state** · **Symptoms** (prefixed by where: `[Orca]` `[Not
 | Banner yellow after a manual arm move (Park All) | INC11 (also INC13, INC15, INC16, INC59 end with Park All) |
 | Receipt QR regression, 4 vs 5 maps, misleading "select print" | INC20, INC21, INC22 (and INC23) |
 | Port 5555 collision with a coworker device | INC27 (also INC28, INC34) |
-| Duo CFD OCR break (10 px / capitalisation / typo) & UIA 2.3 migration | INC36, INC37, INC38 (and INC64) |
+| Duet CFD OCR break (10 px / capitalisation / typo) & UIA 2.3 migration | INC36, INC37, INC38 (and INC64) |
 | Jenkins env var case | INC39 (and INC44) |
 | PayCore rig must be Unavailable; named job resets to Unavailable | INC40, INC41 |
 | Engineer local run needs Reserved | INC31 (also INC06, INC48) |
 | Offline rig being built | INC07 (and INC05-B, INC44, INC59) |
-| Flex 1 → Flex 2 via a new Device entity, keep legacy | INC42, INC43 |
-| Tethered config (MFD populated ⇒ tethered; Duo same IP) | INC45, INC46, INC30, INC47 |
+| Flux 1 → Flux 2 via a new Device entity, keep legacy | INC42, INC43 |
+| Tethered config (MFD populated ⇒ tethered; Duet same IP) | INC45, INC46, INC30, INC47 |
 | Merchant switch via Laz OOBE / Ubi | INC50 (and INC40, INC28) |
 | Go SDK App ID / App Secret / API Key (click Edit) | INC51 |
 | Pigeon JSON missing comma | INC25 |
@@ -1812,9 +1812,9 @@ above).
 | `INC-ENV-CASE` | INC39 |
 | `INC-PORT-COLLISION` | INC27 |
 | `INC-CONFIG-LOCKS` | INC29 |
-| `INC-DUO-SAME-IP` | INC30 |
+| `INC-DUET-SAME-IP` | INC30 |
 | `INC-OCR-BRITTLE` | INC36, INC37, INC38 |
-| `INC-DUO-BLIND` | INC64 |
+| `INC-DUET-BLIND` | INC64 |
 | "Park It!" · "ADB Speedrun" · "Where Does It Go?" · "POM Doctor" · "Comma Hunt" · "Log Detective" | DR16 · DR19 · DR15 · DR08 (Doctor mode) · DR06 · DR18 |
 
 Difficulty distribution: D1 × 12 · D2 × 23 · D3 × 24 · D4 × 4 · D5 × 2 (65 incidents; 35 at D1–D2 keep Intern-capped shifts varied).
@@ -1954,7 +1954,7 @@ in"). Where a fine tag has the same string as a module tag it *is* that tag ("se
 | Tag | Covers | Ref | Taught in | Parent (Cur §8) |
 |---|---|---|---|---|
 | `people.roles` | Jared, Tate, David, Morgan responsibilities; escalation path | canon, §3 | M01 | `lab.orientation` |
-| `hw.devices` | Device families; Mini 3 ≡ printerless Duo 2; Flex 3/4/Pocket share a profile; Pocket no printer; Compact = Canada; upcoming Duo 3 / Mini 4 | §1 | M02 | `devices` |
+| `hw.devices` | Device families; Micro 3 ≡ printerless Duet 2; Flux 3/4/Pocket share a profile; Pocket no printer; Compass = Canada; upcoming Duet 3 / Micro 4 | §1 | M02 | `devices` |
 | `power.rails` | 120 V AC → Mean Well → 24 V → 12 V NUC / 5 V 10 A Pi | §6 | M03 | self |
 | `power.fuses` | Inline fuses on step-down lines; safe replacement | §6 | M03 | `power.rails` |
 | `power.18v` | LabSim devices (18 V) and Collis probes on AC strips only | §6 | M03 | `power.rails` |
@@ -2013,7 +2013,7 @@ in"). Where a fine tag has the same string as a module tag it *is* that tag ("se
 | `uia.multidevice` | Runner in `test`; sequential methods across device handles | §4 | M13 | `uia.pom` |
 | `uia.pom` | One class per screen extending BaseTest; Zone 1 / Zone 2 | §4 | M13 | self |
 | `uia.sync` | `waitForScreen()`, `isScreenPresent()` | §4 | M13 | `uia.pom` |
-| `uia.scroll` | `open(appName)`: vertical Flex, horizontal Mini/Station | §4 | M13 | `uia.pom` |
+| `uia.scroll` | `open(appName)`: vertical Flux, horizontal Micro/Stand | §4 | M13 | `uia.pom` |
 | `uia.taxtest` | Tax test MFD_O1, CFD_O1, MFD_O2, Step 4; HomeScreen start; teardown | §4 | M14 | `uia.config` |
 | `uia.config` | config.properties keys and locked values | §4 | M14 | self |
 | `pigeon.lstr` | LSTR runners REST/Android/Windows/iOS; Lester heritage; pun; iOS rarely touched | §1, §5 | M15 | `pigeon` |
@@ -2021,11 +2021,11 @@ in"). Where a fine tag has the same string as a module tag it *is* that tag ("se
 | `pigeon.abstraction` | High-level actions ("card swipe") abstracted per platform | §5 | M15 | `pigeon` |
 | `pigeon.nolint` | No JSON linter; copy-paste survival | §5 | M15 | `pigeon` |
 | `jenkins.logs` | Reading consoles; misleading "select print" | §5 | M15 | `pigeon` |
-| `orca.screencompare` | Screen Compare Image; OCR workaround; brittleness; deprecation | §3 | M16 | `duo.ocr` |
-| `pigeon.gimp` | GIMP bounding-box coordinate extraction | §1, §5 | M16 | `duo.ocr` |
-| `uia.v23` | UI Automator 2.3 dual-screen support | §1, §3 | M16 | `duo.ocr` |
-| `vision.camera` | Webcam streams (dedicated / shared) and snapshots | §2, §3 | M16 | `duo.ocr` |
-| `vision.tesseract` | Tesseract OCR on cropped webcam screenshots | §1, §3 | M16 | `duo.ocr` |
+| `orca.screencompare` | Screen Compare Image; OCR workaround; brittleness; deprecation | §3 | M16 | `duet.ocr` |
+| `pigeon.gimp` | GIMP bounding-box coordinate extraction | §1, §5 | M16 | `duet.ocr` |
+| `uia.v23` | UI Automator 2.3 dual-screen support | §1, §3 | M16 | `duet.ocr` |
+| `vision.camera` | Webcam streams (dedicated / shared) and snapshots | §2, §3 | M16 | `duet.ocr` |
+| `vision.tesseract` | Tesseract OCR on cropped webcam screenshots | §1, §3 | M16 | `duet.ocr` |
 | `arch.infra` | 4× NVIDIA blade (2 exposed, 2 under) replacing a tower; VMs; Docker & GCP planned | §1 | M17 | `infra.ai` |
 | `vision.ollama` | Ollama on the blade; vision LLM PoC for receipts and tip math | §1 | M17 | `infra.ai` |
 | `tools.claude` | Claude evaluated for repo optimisation and test generation | §1 | M17 | `infra.ai` |
@@ -2151,13 +2151,13 @@ Touch robots trigger on **idle · pass · yellow · recovered · park**; tethere
 | EVE | Precise, protective · clean sine blips · +3 st | "Scanning. Scanning. All directives nominal." | "Directive complete. Receipt printed. Filed." | "Unauthorized arm movement detected." | "Systems restored. Please keep hands off the Pi lead." | "Homed. Target lock re-established." |
 | BUMBLEBEE | Talks in radio clips · static bursts · 0 st | "[radio] ...standing by, standing by... [/radio]" | "[radio] ...and the crowd goes wild! [/radio]" | "[radio] ...hey, hands off the merchandise! [/radio]" | "[radio] ...we're back on the air, folks! [/radio]" | "[radio] ...returning to base... [/radio]" |
 | R2-D2 | Beeps + translation · random chirps · +5 st | "*bweep-boo* (Translation: The CFD is quiet. Suspiciously quiet.)" | "*whistle-trill* (Translation: Both screens agree. Rare.)" | "*indignant blat* (Translation: Who touched me?)" | "*rising whistle* (Translation: Back online. Don't ask.)" | "*happy chirp* (Translation: Zero, zero. Perfect.)" |
-| JOHNNY-5 | Curious, excitable · fast blips · +2 st | "Need input! Also, a Flex 2 would be nice." | "Test passed! More input! More tests!" | "Hey! Arms are for tapping, not pushing!" | "Malfunction fixed! Still running! Very running!" | "Homing... homing... home!" |
+| JOHNNY-5 | Curious, excitable · fast blips · +2 st | "Need input! Also, a Flux 2 would be nice." | "Test passed! More input! More tests!" | "Hey! Arms are for tapping, not pushing!" | "Malfunction fixed! Still running! Very running!" | "Homing... homing... home!" |
 | BAYMAX | Gentle carer · soft two-tone · −4 st | "Hello. I am monitoring the lab's well-being." | "Your transaction is healthy. You have been a good engineer." | "I detect discomfort in my gantry. Park All is recommended." | "I am restored. How would you rate your outage experience?" | "Resting at zero-zero. Please wash your hands before touching my rails." |
 | SETI | Listener for signals · slow sweeping tones · −1 st | "Listening for a four-digit signal from the north." | "Signal received: Interac approved." | "Anomalous movement in sector X-Y." | "Contact with Orca re-established. We are not alone." | "Arm aligned to the origin of everything." |
 | ROSIE | Sassy PayCore housekeeper · clipped blips · +1 st | "Unavailable, hon. Say my name or move along." | "Visa, Discover, AmEx. All spotless." | "Did you just push me? I keep a tidy rig!" | "Back online, and still Unavailable, thank you." | "Tidied up at zero-zero." |
 | MEGATRON | Theatrical tyrant · low growl blips | "The MFD commands. The CFD obeys." | "Another tax total crushed beneath my assertions!" | "Treachery! The CFD has betrayed me!" | "MEGATRON RISES. Again." | "A local run? You dare reserve MEGATRON? ...Very well." |
 | OPTIMUS | Noble leader · warm mid blips | "Tethered, we stand." | "MFD and CFD, united. Transaction complete." | "One display cannot succeed alone." | "Staging is secure once more." | "I will hold this rig for you, engineer." |
-| DATA | Literal android · even-pitched beeps | "I am an ADB bot. I cannot press a PIN pad. I have accepted this." | "Passed in 61.3 seconds. 1.3 seconds above my personal mean." | "Intriguing. The device did not answer on port 5444." | "Restored. As a Mini 3, I remain a perfectly adequate Duo 2." | "Reserved. I will await your local run with patience." |
+| DATA | Literal android · even-pitched beeps | "I am an ADB bot. I cannot press a PIN pad. I have accepted this." | "Passed in 61.3 seconds. 1.3 seconds above my personal mean." | "Intriguing. The device did not answer on port 5444." | "Restored. As a Micro 3, I remain a perfectly adequate Duet 2." | "Reserved. I will await your local run with patience." |
 | TARS | Dry humour · square-wave blips | "Humour setting: 75 percent. Honesty setting: 90 percent." | "Green build. I'd call that a smooth landing." | "Honesty setting says this failure was probably not my fault." | "Back online. Lowering humour to 60 percent out of respect." | "Reserved. I'll keep the Jenkins jobs away." |
 
 That is 60 quips (ACH30).
@@ -2181,7 +2181,7 @@ speaker's blip voice; keys `BARK_<SPEAKER>_<NN>`. Lines marked (Cur) are verbati
 | BARK_TATE_03 | GW05 | "ROSIE is PayCore's. Unavailable means only jobs that name it get it." |
 | BARK_TATE_04 | GW20 | "That reservation wasn't yours. Ask first." |
 | BARK_TATE_05 | GW22 | "Name is the system identifier. Pipelines use it. Leave it." (Cur) |
-| BARK_DAVID_01 | INC39 spawn | "Enums are ALL CAPS. FLEX_3, not flex_3." |
+| BARK_DAVID_01 | INC39 spawn | "Enums are ALL CAPS. FLUX_3, not flux_3." |
 | BARK_DAVID_02 | INC49 resolved | "Dynamic JSON in the test, hardcoded in the pipeline. Canada uses both — keep them agreeing." |
 | BARK_DAVID_03 | INC51 resolved | "Go SDK needs all three: App ID, App Secret, API Key." |
 | BARK_MORGAN_01 | First local run in Arcade | "Reserve the rig before you hit Run. Jenkins doesn't know you're there otherwise." |
@@ -2205,7 +2205,7 @@ card collapses to a chip after 5 s; the full card is in the summary.
 
 | Trigger | What happened | Why | Do instead | Practice |
 |---|---|---|---|---|
-| GW01 | "The Flex fried on the 24 V tap." | "LabSim devices draw an irregular 18 V; they bypass the DC rails and use commercial AC strips. (Ref §6)" | "Free an outlet on the AC strip; use the device's own PSU." | DR04 |
+| GW01 | "The Flux fried on the 24 V tap." | "LabSim devices draw an irregular 18 V; they bypass the DC rails and use commercial AC strips. (Ref §6)" | "Free an outlet on the AC strip; use the device's own PSU." | DR04 |
 | GW02 | "The Collis probe fried on DC power." | "Collis probes are high-cost and, like LabSim devices, go only on AC strips. (Ref §1, §6)" | "Plug the probe PSU into the strip; re-seat its rear ribbon." | DR04 |
 | GW03 | "You pulled a fuse on a live branch." | "De-energise before servicing a fused line. [illus. practice]" | "Regulator input off (or MAIN off), then swap the fuse." | DR13 |
 | GW04 | "Wrong fuse rating." | "Use the rating on the holder label (10 A on the 5 V 10 A line). [illus. rating]" | "Take a red 10 A blade fuse." | DR13 |
@@ -2246,7 +2246,7 @@ These are completely dark — follow the power.").
 | Time | Cur M01 step | Wrapper additions (this doc) |
 |---|---|---|
 | 0:00–0:40 | 1 Morgan's welcome | Prompts once each: mouse-look, `E`/`Space` to continue. Badge door opens with `E`. |
-| 0:40–1:40 | 2 Walk to Rack A; 3 "Meet WALL-E" | `WASD`/`Shift` prompts. **Wow moment:** WALL-E is running `Java/uia-remote-regression-flex #4120` — solenoid tapping a Flex 3 on the blue payment screen, the dip arm sliding the white card ribbon in (the reference video). WALL-E's first quip. |
+| 0:40–1:40 | 2 Walk to Rack A; 3 "Meet WALL-E" | `WASD`/`Shift` prompts. **Wow moment:** WALL-E is running `Java/uia-remote-regression-flux #4120` — solenoid tapping a Flux 3 on the blue payment screen, the dip arm sliding the white card ribbon in (the reference video). WALL-E's first quip. |
 | 1:40–2:40 | 4–5 Inspect the tablet | Hold `RMB` prompt; callouts become Field Manual entries ("New entry" sparkle). |
 | 2:40–3:40 | 6–7 Try Park All → `TEST IN PROGRESS — CONTROLS LOCKED` | First Teach-Card-style callout (lockout), no penalty. |
 | 3:40–5:00 | 8–10 POWER panel, rack unit 33, SETI panel | Crouch `C` prompt for the lower panel view; flashlight `F` prompt on the rail labels. |
@@ -2313,9 +2313,9 @@ normal buttons. Nothing about the desktop flow changes.
 | Spare Raspberry Pi ×2 ("~$50", pre-imaged) | Red parts bin | Swap a dead Pi (rarely the right fix) |
 | USB-C Pi leads, micro-USB tablet cable, hub USB cables | Blue parts bin | Re-seat / replace |
 | Spare solenoid, ribbon cables, card-insert ribbon | Multi-drawer organiser | Repairs, Build mode |
-| Spare Flex 2 (`SIM-F2-000015`) | Husky chest drawer 2 | INC42 |
-| Legacy Flex 1 | Storage shelf (after INC42) | INC43 |
-| Flex 4 PSU brick (`prop.flex4-psu-brick`) | EVE's shelf / power-wall bench | INC17, Cur M03 |
+| Spare Flux 2 (`SIM-F2-000015`) | Husky chest drawer 2 | INC42 |
+| Legacy Flux 1 | Storage shelf (after INC42) | INC43 |
+| Flux 4 PSU brick (`prop.flux4-psu-brick`) | EVE's shelf / power-wall bench | INC17, Cur M03 |
 | Spare Collis probe (`prop.collis-probe-spare`) | Locked cabinet (120 s to sign out in Arcade) | After GW02 |
 | AC power strips `STRIP-A/B/T/W` | Racks / power wall | LabSim devices, Collis probes, Windows boxes |
 | Desk fan, soldering station | Benches | Non-lab loads that may occupy strip outlets |
@@ -2449,14 +2449,14 @@ The sim/apps docs own implementation; these behaviours must hold for the inciden
 | SR08 | While a rig is checked out, its tablet shows `TEST IN PROGRESS — CONTROLS LOCKED` and ignores input. |
 | SR09 | Power is a graph; a node is powered only if its upstream path is intact. A LabSim device or Collis probe on any DC node becomes `FRIED` in Arcade/Free Play (spark only, no damage, in Academy). |
 | SR10 | Fuses: wrong rating flagged; under-rated (< label) blows within 20 real s under load. |
-| SR11 | Workstation ADB: a runner configured with port 5555 is refused by lab devices and falls back to the first device the ADB server already knows — Riley's desk Flex `10.42.60.4:5555` (Cur S19). Port 5444 reaches only lab devices. |
+| SR11 | Workstation ADB: a runner configured with port 5555 is refused by lab devices and falls back to the first device the ADB server already knows — Riley's desk Flux `10.42.60.4:5555` (Cur S19). Port 5444 reaches only lab devices. |
 | SR12 | A Laz OOBE resets the device's ADB-over-TCP listener; re-enable with `adb tcpip 5444` over the Pi's USB [illus.]. |
 | SR13 | `xy_touch` lands at Screen Location + Offsets (+ cradle tilt for INC59); a tap succeeds if inside the button's bounds on the device's current screen. Screen Locations are keyed by Device Type. |
 | SR14 | OCR crops the camera frame at the Screen Compare box and compares Tesseract output with `expected` exactly (case-sensitive). |
 | SR15 | Shift pipeline runs last 60 real s; pass/fail follows the active faults affecting that job on that rig. |
 | SR16 | Jared/Morgan merge a correct PR 20 real s after it is opened (Cur M09); merging a `gort` PR under `config/screen-locations/` syncs Orca's Screen Locations within 10 real s [illus.]. |
 | SR17 | Time scale: Academy 1× (Force health check + fast-forward ×30 per Cur §2.0), Shift 5×, Free Play 1×–10× (+×30 hold), certification 1×. Physical durations are **real seconds** in every mode: Pi boot 40 s, Windows box boot 50 s, LabSim device boot 30 s, MySQL start 5 s + Orca reconnect 15 s, Ollama restart 10 s, `GortCardSync` run 20 s, 3D print 90 s, Jared's hands-on fix 60–90 s. |
-| SR18 | NPCs answer LabChat within 10–20 real s with scripted replies per incident; Riley's desk Flex visibly navigates when driven. |
+| SR18 | NPCs answer LabChat within 10–20 real s with scripted replies per incident; Riley's desk Flux visibly navigates when driven. |
 
 ## Appendix B — Coverage matrix (Taught → Practised → Tested)
 
@@ -2551,15 +2551,15 @@ Parameters follow Cur S07: `ROBOT_NAME`, `DEVICE_TYPE`, `MERCHANT`, `CARD_PROFIL
 
 | Job | Source | Used by |
 |---|---|---|
-| `Java/uia-remote-regression-flex` | Cur §0.6 | PL1, INC12, INC39, INC40, INC48 |
+| `Java/uia-remote-regression-flux` | Cur §0.6 | PL1, INC12, INC39, INC40, INC48 |
 | `Java/uia-remote-tethered-tax` | Cur §0.6 | PL2, INC31, INC32, INC35, INC45, INC47 |
 | `Java/pigeon-android-sale-swipe` | Cur §0.6 | PL3, INC07, INC18, INC20–INC22, INC55 |
-| `Java/uia-remote-regression-mini` | Cur §0.6 | PL4, INC39 (variant) |
+| `Java/uia-remote-regression-micro` | Cur §0.6 | PL4, INC39 (variant) |
 | `Java/contact-canada-pin-sale` | Cur §0.6 | PL5, INC08, INC16, INC49, INC52 |
 | `Java/go-sdk-sale-smoke` | Cur §0.6 | PL6, INC23, INC51 |
 | `Java/laz-oobe-merchant-swap` | Cur §0.6 | INC28, INC40, INC50 |
 | `iOS/pigeon-ios-go-sdk-smoke` | Cur §0.6 | INC26 (scenery) |
-| `Java/uia-remote-duo-cfd` | [illus.] | PL7, INC09, INC36–INC38 |
+| `Java/uia-remote-duet-cfd` | [illus.] | PL7, INC09, INC36–INC38 |
 | `Java/paycore-standalone-matrix` | [illus.] | PL8, INC40, INC41 |
 | `Java/uia-remote-printerless-smoke` | [illus.] | INC44 |
 | `Java/vision-poc-receipt-check` | [illus.] | INC10, INC57 |
@@ -2576,5 +2576,5 @@ Parameters follow Cur S07: `ROBOT_NAME`, `DEVICE_TYPE`, `MERCHANT`, `CARD_PROFIL
 | `R_LOCKOUT` | INC12 | "A test is running; the dashboard locks out during runs. It frees when the job finishes." |
 | `R_WAIT` | INC48-B | "EVE is reserved by an active local run; ETA 2 minutes." |
 | `R_FALSE_POSITIVE` | INC57-A | "Vision PoC misread the receipt; printed tip and total are correct (values attached)." |
-| `R_DUO_BLIND` | INC64 | "ADB can't see the Duo's CFD. Tap it physically through Orca's xy_touch on R2-D2, or use a UIA 2.3 dual-screen locator in the test." |
+| `R_DUET_BLIND` | INC64 | "ADB can't see the Duet's CFD. Tap it physically through Orca's xy_touch on R2-D2, or use a UIA 2.3 dual-screen locator in the test." |
 | `R1`–`R4` | INC58, INC62 | As listed in the incident |

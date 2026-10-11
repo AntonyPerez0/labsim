@@ -5,7 +5,7 @@
  * and has Zone 1 (locators) + Zone 2 (helpers) with the mandatory `waitForScreen()` / `isScreenPresent()`.
  */
 import type { RepoSeed } from './types';
-import { TESTACTIONS, TAX_TEST_DUO_PRE398, TAX_TEST_DUO } from './uiaRemoteTests';
+import { TESTACTIONS, TAX_TEST_DUET_PRE398, TAX_TEST_DUET } from './uiaRemoteTests';
 
 const P = 'app/src/androidTest/java/com/labsim/uia';
 export const UIA_PATHS = {
@@ -164,7 +164,7 @@ export const CONFIG_EXAMPLE = `runType=tethered
 merchantFacingDeviceIp=10.42.30.21
 customerFacingDeviceIp=10.42.30.22
 serial=SIM-S2-000021
-deviceType=Station
+deviceType=Stand
 theme=avocado
 kernelType=CPA
 portNumber=5444
@@ -176,7 +176,7 @@ robotName=CHANGE_ME
 const README = `# uia-remote
 
 Java + Android **UI Automator 2.3** framework that automates standalone *and tethered* LabSim devices
-(Station-to-Mini, Mini-to-Mini, Station Duo) across native apps (Register, Orders, Authorizations, Sale,
+(Stand-to-Micro, Micro-to-Micro, Stand Duet) across native apps (Register, Orders, Authorizations, Sale,
 Transactions, Setup). Used by IPX and PayCore (LabSim Dining). Author: @morgan.
 
 ## Layout (standard Android/Maven)
@@ -193,7 +193,7 @@ app/src/androidTest   instrumented tests that run on the device
 Every screen class extends \`BaseTest\` and has two zones:
 * **Zone 1 — Element Locators**: \`BySelector\` fields unique to that view.
 * **Zone 2 — Helper / Action Methods**: device quirks live here (\`HomeScreen.open(appName)\` scrolls vertically on a
-  Flex, horizontally on a Mini or Station).
+  Flux, horizontally on a Micro or Stand).
 
 Mandatory on every screen class: \`waitForScreen()\` (block until the screen has rendered —
 \`device.wait(Until.hasObject(<Zone 1 locator>), TIMEOUT_MS)\`) and \`isScreenPresent()\`.
@@ -204,7 +204,7 @@ test, and the runner hops between device handles: MFD runs method X, focus shift
 then back (see \`TaxTest\`: MFD_O1 → CFD_O1 → MFD_O2 → CFD finalise).
 
 ## Running locally
-1. \`cp config.properties.example config.properties\` and fill it in for your rig (Station Duo: both IPs equal).
+1. \`cp config.properties.example config.properties\` and fill it in for your rig (Stand Duet: both IPs equal).
    \`theme=avocado\`, \`kernelType=CPA\`, \`portNumber=5444\` are locked. **Never 5555** — that is the ADB default
    and it will find a coworker's desk device.
 2. Set the rig to **Reserved** in Orca before you press ▶ (Jenkins will otherwise take it mid-run).
@@ -254,7 +254,7 @@ import com.labsim.uia.pageobjects.CfdTotalsScreen;
 import com.labsim.uia.pageobjects.RegisterHomeScreen;
 
 /**
- * MultiDeviceRunner — drives a tethered setup (MFD + CFD, or a Station Duo) from one JVM.
+ * MultiDeviceRunner — drives a tethered setup (MFD + CFD, or a Stand Duet) from one JVM.
  */
 public final class MultiDeviceRunner {
 
@@ -414,8 +414,8 @@ public final class RunnerConfig {
             throw new IllegalStateException("Unsupported kernelType \\"" + kernel + "\\" — use \\"CPA\\"");
         }
         String family = props.getProperty("deviceType", "");
-        if (!family.matches("Mini|Flex|Station|Compact")) {
-            throw new IllegalArgumentException("unknown deviceType \\"" + family + "\\" (expected Mini, Flex or Station)");
+        if (!family.matches("Micro|Flux|Stand|Compass")) {
+            throw new IllegalArgumentException("unknown deviceType \\"" + family + "\\" (expected Micro, Flux or Stand)");
         }
         String runType = props.getProperty("runType", "");
         if (!"tethered".equals(runType) && !"standalone".equals(runType)) {
@@ -473,7 +473,7 @@ public abstract class BaseTest {
     protected static final int MAX_SCROLLS = 5;
 
     /** config.properties deviceType = the family, not the Orca enum. */
-    public enum DeviceType { MINI, FLEX, STATION, COMPACT }
+    public enum DeviceType { MICRO, FLUX, STAND, COMPASS }
 
     /** A device handle the runner can switch focus to (see test/…/runner/DeviceHandle). */
     public interface Handle {
@@ -484,7 +484,7 @@ public abstract class BaseTest {
     protected final DeviceType deviceType;
     protected final OrcaClient orca;
     protected final Bundle config;
-    /** Secondary display id of a Station Duo (1); 0 when the CFD is its own device. */
+    /** Secondary display id of a Stand Duet (1); 0 when the CFD is its own device. */
     protected final int cfdDisplayId;
     protected Handle mfd;
     protected Handle cfd;
@@ -492,7 +492,7 @@ public abstract class BaseTest {
     protected BaseTest() {
         config = InstrumentationRegistry.getArguments();
         device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        deviceType = DeviceType.valueOf(config.getString("deviceType", "Flex").toUpperCase());
+        deviceType = DeviceType.valueOf(config.getString("deviceType", "Flux").toUpperCase());
         orca = new OrcaClient(config.getString("orcaUrl", "http://orca.lab.local:8080"));
         String mfdIp = config.getString("merchantFacingDeviceIp", "");
         cfdDisplayId = mfdIp.equals(config.getString("customerFacingDeviceIp", "")) ? 1 : 0;
@@ -580,7 +580,7 @@ import okhttp3.Response;
 /**
  * Thin client for Orca's REST API: card loads (Orca → Callus → Collis/SmartStripe probe), xy_touch and the
  * legacy Screen Compare (webcam → crop → Tesseract → boolean). Screen Compare is being phased out:
- * UI Automator 2.3 can see the Station Duo's customer display natively.
+ * UI Automator 2.3 can see the Stand Duet's customer display natively.
  */
 public final class OrcaClient {
 
@@ -692,9 +692,9 @@ export const HOME_SCREEN = po(
 
     public void open(String appName) {
         waitForScreen();
-        if (deviceType == DeviceType.FLEX) {
-            scrollVerticallyTo(appName);      // Flex: vertical
-        } else {                              // Mini, Station
+        if (deviceType == DeviceType.FLUX) {
+            scrollVerticallyTo(appName);      // Flux: vertical
+        } else {                              // Micro, Stand
             scrollHorizontallyTo(appName);    // horizontal
         }
         device.findObject(By.text(appName)).click();
@@ -710,9 +710,9 @@ export const HOME_SCREEN = po(
 
 /** HomeScreen before 61cc0de: one scroll direction for every family. */
 export const HOME_SCREEN_V1 = HOME_SCREEN.replace(
-  `        if (deviceType == DeviceType.FLEX) {
-            scrollVerticallyTo(appName);      // Flex: vertical
-        } else {                              // Mini, Station
+  `        if (deviceType == DeviceType.FLUX) {
+            scrollVerticallyTo(appName);      // Flux: vertical
+        } else {                              // Micro, Stand
             scrollHorizontallyTo(appName);    // horizontal
         }
 `,
@@ -939,13 +939,13 @@ export const CFD_TOTALS_PRE398 = po(
 `,
 );
 
-/** CfdTotalsScreen after #398: displayId locators (UI Automator 2.3) — works on a Duo's secondary display too. */
+/** CfdTotalsScreen after #398: displayId locators (UI Automator 2.3) — works on a Duet's secondary display too. */
 export const CFD_TOTALS = po(
   'CfdTotalsScreen',
-  'CfdTotalsScreen: customer display totals. UIA 2.3 displayId locators: a separate CFD device (display 0) or a Station Duo\'s secondary display (cfdDisplayId = 1).',
+  'CfdTotalsScreen: customer display totals. UIA 2.3 displayId locators: a separate CFD device (display 0) or a Stand Duet\'s secondary display (cfdDisplayId = 1).',
   IMP,
   `
-    // ===== Zone 1: Element Locators (CFD = secondary display on a Duo) =====
+    // ===== Zone 1: Element Locators (CFD = secondary display on a Duet) =====
     private final BySelector subtotal = By.textStartsWith("Subtotal").displayId(cfdDisplayId);
     private final BySelector tax = By.textStartsWith("Tax").displayId(cfdDisplayId);
     private final BySelector total = By.textStartsWith("TOTAL").displayId(cfdDisplayId);
@@ -1079,12 +1079,12 @@ function initialFiles(): Record<string, string> {
   files[UIA_PATHS.po('RegisterHomeScreen')] = REGISTER_V1;
   files[UIA_PATHS.po('CfdTotalsScreen')] = CFD_TOTALS_PRE398;
   for (const [cls, text] of Object.entries(TESTACTIONS)) files[UIA_PATHS.test(cls)] = text;
-  files[UIA_PATHS.test('TaxTestDuo')] = TAX_TEST_DUO_PRE398;
+  files[UIA_PATHS.test('TaxTestDuet')] = TAX_TEST_DUET_PRE398;
   return files;
 }
 
 const PR398_CHANGES = {
-  [UIA_PATHS.test('TaxTestDuo')]: TAX_TEST_DUO,
+  [UIA_PATHS.test('TaxTestDuet')]: TAX_TEST_DUET,
   [UIA_PATHS.po('CfdTotalsScreen')]: CFD_TOTALS,
 };
 
@@ -1114,8 +1114,8 @@ export const UIA_REMOTE: RepoSeed = {
   commits: [
     { short: 'b07c1e5', message: 'Initial tethered runner', author: 'morgan', at: '2026-06-15 16:40', changes: initialFiles() },
     { short: '2f9a7b3', message: 'Add RegisterHomeScreen.waitForScreen', author: 'morgan', at: '2026-07-21 10:02', changes: { [UIA_PATHS.po('RegisterHomeScreen')]: REGISTER_HOME_SCREEN } },
-    { short: '61cc0de', message: 'HomeScreen.open(): vertical on Flex, horizontal on Mini/Station', author: 'morgan', at: '2026-08-19 13:27', changes: { [UIA_PATHS.po('HomeScreen')]: HOME_SCREEN } },
-    { short: '7a20f5b', message: 'Migrate CFD_TOTAL to UIA 2.3 in TaxTestDuo (#398)', author: 'morgan', at: '2026-09-30 11:15', changes: PR398_CHANGES },
+    { short: '61cc0de', message: 'HomeScreen.open(): vertical on Flux, horizontal on Micro/Stand', author: 'morgan', at: '2026-08-19 13:27', changes: { [UIA_PATHS.po('HomeScreen')]: HOME_SCREEN } },
+    { short: '7a20f5b', message: 'Migrate CFD_TOTAL to UIA 2.3 in TaxTestDuet (#398)', author: 'morgan', at: '2026-09-30 11:15', changes: PR398_CHANGES },
   ],
   prs: [
     {
@@ -1144,10 +1144,10 @@ export const UIA_REMOTE: RepoSeed = {
     },
     {
       number: 398,
-      title: 'Migrate CFD_TOTAL to UIA 2.3 in TaxTestDuo',
+      title: 'Migrate CFD_TOTAL to UIA 2.3 in TaxTestDuet',
       author: 'morgan',
-      body: 'UI Automator 2.3 locates elements on the Duo\'s secondary display natively (`displayId`). Replaces the brittle OCR Screen Compare `CFD_TOTAL` in TaxTestDuo with `cfdTotals.assertTotal("$10.83")`. `DuoCfdSuite` and `DuoCheckoutTest` still use OCR — follow-ups.',
-      sourceBranch: 'morgan/duo-cfd-total-uia23',
+      body: 'UI Automator 2.3 locates elements on the Duet\'s secondary display natively (`displayId`). Replaces the brittle OCR Screen Compare `CFD_TOTAL` in TaxTestDuet with `cfdTotals.assertTotal("$10.83")`. `DuetCfdSuite` and `DuetCheckoutTest` still use OCR — follow-ups.',
+      sourceBranch: 'morgan/duet-cfd-total-uia23',
       state: 'merged',
       createdAt: '2026-09-29 17:20',
       mergedAt: '2026-09-30 11:15',

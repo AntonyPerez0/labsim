@@ -14,7 +14,7 @@ export const ORCA2_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
     factIds: ["F131", "F132", "F133", "F134", "F135", "F011", "F059", "F060"],
     tags: ["orca.capabilities", "go.sdk"],
     related: ["orca-merchant-config", "device-families", "jenkins-executor", "card-testing-philosophy"],
-    keywords: ["capabilities", "dynamic JSON", "non-dynamic", "hardcoded", "pipeline script", "SDK", "Contact Canada", "Westers", "match", "printer", "Flex Pocket"],
+    keywords: ["capabilities", "dynamic JSON", "non-dynamic", "hardcoded", "pipeline script", "SDK", "Contact Canada", "Westers", "match", "printer", "Flux Pocket"],
     practice: ["INC23", "INC49"],
     body: `## What the entity does
 
@@ -32,12 +32,12 @@ Both lookup methods are used **interchangeably** for the **Contact Canada** auto
 
 ## Example: a receipt test that needs a printer
 
-Flex 3, Flex 4 and Flex Pocket share one testing profile {F059}, but the Pocket has no printer {F060}. A Go SDK receipt test whose capabilities don't ask for a printer may be matched to a Flex Pocket and fail.
+Flux 3, Flux 4 and Flux Pocket share one testing profile {F059}, but the Pocket has no printer {F060}. A Go SDK receipt test whose capabilities don't ask for a printer may be matched to a Flux Pocket and fail.
 
 \`\`\`json
 {
   "name": "Go SDK sale with printed receipt",
-  "capabilities": { "deviceType": "FLEX_3", "printer": true }
+  "capabilities": { "deviceType": "FLUX_3", "printer": true }
 }
 \`\`\`
 
@@ -49,7 +49,7 @@ def capabilities = [deviceType: params.DEVICE_TYPE, physicalTouch: true]   // no
 
 > **Illustrative (sim only):** The capability keys (\`deviceType\`, \`printer\`, \`physicalTouch\`, \`dip\`, \`tap\`), file names and the pipeline line are the sim's†.
 
-> **Warning:** Don't set the Flex Pocket Offline to keep a printer test off it — fix the capability request.
+> **Warning:** Don't set the Flux Pocket Offline to keep a printer test off it — fix the capability request.
 `,
   },
   {
@@ -132,17 +132,17 @@ Robots tap exactly where Orca says. If the device's layout moved (a firmware upd
   },
   {
     id: "orca-screen-compare",
-    title: "Screen Compare Images (the Station Duo OCR Workaround)",
+    title: "Screen Compare Images (the Stand Duet OCR Workaround)",
     category: "Orchestrator",
-    summary: "The legacy way to check text on the Station Duo's ADB-blind customer screen: a bounding box plus expected text, checked by webcam screenshot, crop and Tesseract OCR. Brittle, and being phased out.",
+    summary: "The legacy way to check text on the Stand Duet's ADB-blind customer screen: a bounding box plus expected text, checked by webcam screenshot, crop and Tesseract OCR. Brittle, and being phased out.",
     factIds: ["F150", "F151", "F152", "F153", "F154", "F155", "F156", "F029", "F088"],
-    tags: ["duo.ocr", "orca.screencompare", "vision.tesseract", "vision.camera", "uia.v23"],
-    related: ["station-duo-dual-screen", "gimp-coordinates", "pigeon-bottlenecks"],
+    tags: ["duet.ocr", "orca.screencompare", "vision.tesseract", "vision.camera", "uia.v23"],
+    related: ["stand-duet-dual-screen", "gimp-coordinates", "pigeon-bottlenecks"],
     keywords: ["Screen Compare Image", "OCR", "Tesseract", "bounding box", "expected text", "webcam", "crop", "boolean", "brittle", "10 pixels", "capitalisation", "typo", "CFD_TOTAL"],
     practice: ["INC36", "INC37", "INC38", "DR05"],
     body: `## Why it exists
 
-On the **Station Duo** one terminal drives two displays, but only the primary **MFD** is exposed to ADB {F151}. Legacy UI Automator was completely blind to the secondary **CFD** {F152}. The **Screen Compare Image** entity is the workaround {F150}.
+On the **Stand Duet** one terminal drives two displays, but only the primary **MFD** is exposed to ADB {F151}. Legacy UI Automator was completely blind to the secondary **CFD** {F152}. The **Screen Compare Image** entity is the workaround {F150}.
 
 ## What a row stores
 
@@ -169,7 +169,7 @@ It breaks on **a 10-pixel button shift, a capitalisation change or a typo** {F15
 
 ## Why it is going away
 
-Screen Compare / OCR is being **phased out** because **UI Automator 2.3 natively supports dual-screen element tracking** {F156}. New checks should be UIA 2.3 assertions in uia-remote ([[station-duo-dual-screen]]).
+Screen Compare / OCR is being **phased out** because **UI Automator 2.3 natively supports dual-screen element tracking** {F156}. New checks should be UIA 2.3 assertions in uia-remote ([[stand-duet-dual-screen]]).
 `,
   },
 ]);

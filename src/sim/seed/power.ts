@@ -19,9 +19,9 @@ export function mainAccessoryA(rigId: string): number {
 export const HOST_EXTRA_A: Record<string, number> = { 'pi-cam-rackb': 0.25, 'pi-tethered': 0.45, 'pi-adb-shelf': 0 };
 
 const STRIP_LAYOUT: Record<string, { label: string; outlet: string; loads: (string | null)[] }> = {
-  'STRIP-A': { label: 'Rack A AC strip', outlet: 'WALL-2', loads: ['psu-wall-e-flex3', 'psu-bumblebee-mini3', 'psu-r2-d2-duo', 'brick-minix-01', 'psu-collis-eve', 'psu-eve-flex4'] },
-  'STRIP-B': { label: 'Rack B AC strip', outlet: 'WALL-3', loads: ['psu-johnny-5-flex1', 'psu-baymax-st2018', 'psu-seti-compact', 'psu-rosie-pocket', 'brick-minix-02', 'psu-collis-rosie'] },
-  'STRIP-T': { label: 'Tethered rack + ADB shelf AC strip', outlet: 'WALL-4', loads: ['psu-megatron-mfd', 'psu-megatron-cfd', 'psu-optimus-mfd', 'psu-optimus-cfd', 'psu-data-mini3', 'psu-tars-flex4'] },
+  'STRIP-A': { label: 'Rack A AC strip', outlet: 'WALL-2', loads: ['psu-wall-e-flux3', 'psu-bumblebee-micro3', 'psu-r2-d2-duet', 'brick-minix-01', 'psu-collis-eve', 'psu-eve-flux4'] },
+  'STRIP-B': { label: 'Rack B AC strip', outlet: 'WALL-3', loads: ['psu-johnny-5-flux1', 'psu-baymax-st2018', 'psu-seti-compass', 'psu-rosie-pocket', 'brick-minix-02', 'psu-collis-rosie'] },
+  'STRIP-T': { label: 'Tethered rack + ADB shelf AC strip', outlet: 'WALL-4', loads: ['psu-megatron-mfd', 'psu-megatron-cfd', 'psu-optimus-mfd', 'psu-optimus-cfd', 'psu-data-micro3', 'psu-tars-flux4'] },
   'STRIP-C': { label: 'Callus shelf AC strip', outlet: 'WALL-5', loads: ['psu-collis-wall-e', 'psu-collis-bumblebee', 'psu-collis-r2-d2', 'psu-collis-johnny-5', 'psu-collis-baymax', 'psu-collis-seti'] },
   'STRIP-W': { label: 'Power-wall bench AC strip', outlet: 'WALL-6', loads: ['soldering-station', 'desk-lamp', null, null, null, null] },
 };

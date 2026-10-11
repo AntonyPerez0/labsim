@@ -29,12 +29,12 @@ describe('INC01–INC04 Connection Failed causes', () => {
     // Orca UI check out is blocked (Sim §3.2.2).
     const co = sim.orca.checkout({ buildId: 'manual-1', jobId: 'manual', robotName: 'wall-e', environment: 'DEV1', kind: 'manual' });
     expect(co.ok).toBe(false);
-    // PL1 FLEX_3 waits in queue.
-    const r = sim.jenkins.build('Java/uia-remote-regression-flex', { DEVICE_TYPE: 'FLEX_3' }, 'player');
+    // PL1 FLUX_3 waits in queue.
+    const r = sim.jenkins.build('Java/uia-remote-regression-flux', { DEVICE_TYPE: 'FLUX_3' }, 'player');
     run(15_000);
     const b = lab().jenkins.builds[r.ok ? r.value.buildId : '']!;
     expect(b.console).toContain('[orca] candidate wall-e: Connection Failed — skipped');
-    expect(b.console).toContain('[orca] no Available FLEX_3 robot — build waiting in queue');
+    expect(b.console).toContain('[orca] no Available FLUX_3 robot — build waiting in queue');
     sim.jenkins.abort(b.id, 'player');
     run(3_000);
     // Hands-on fix: MAIN off/on (power cycle), 40 s boot, next check.
@@ -327,13 +327,13 @@ describe('INC08–INC10 cameras and Ollama', () => {
     start();
     scenario({ faultId: 'orca.urlWrong', params: { robot: 'r2-d2', field: 'camera', value: 'http://10.42.10.11:8081/stream.mjpg' } });
     expect(notes('r2-d2')[0]).toMatch(/CONFIG urls\.camera changed \(alex\)$/);
-    sim.faults.applySetup({ op: 'device.stage', params: { device: 'dev-wall-e-flex3', stage: 'payment-prompt' } });
-    const b = build('Java/uia-remote-duo-cfd');
+    sim.faults.applySetup({ op: 'device.stage', params: { device: 'dev-wall-e-flux3', stage: 'payment-prompt' } });
+    const b = build('Java/uia-remote-duet-cfd');
     expect(b.result).toBe('FAILURE');
     expect(b.console).toContain('[ocr] capture webcam → crop 236x44@412,288 → tesseract → "Tap, insert or swipe" → match=false');
     const r = robot('r2-d2');
     expect(sim.orca.saveRobot({ id: r.id, cameraStreamUrl: 'http://10.42.10.14:8081/stream.mjpg' }, 'player').ok).toBe(true);
-    expect(build('Java/uia-remote-duo-cfd').result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-duet-cfd').result).toBe('SUCCESS');
   });
 
   it('INC10 Ollama stopped: refused on 11434; restart, tags list llava, vision job green', () => {
@@ -359,7 +359,7 @@ describe('INC11–INC12 motion and lockout', () => {
     const ids = scenario({ faultId: 'rig.lockReleased', params: { rig: 'wall-e' } });
     run(500);
     expect(lab().rigs['wall-e']!.tablet.statusText).toBe('Status: LOCK RELEASED — PARK REQUIRED');
-    const b = build('Java/uia-remote-regression-flex', { ROBOT_NAME: 'wall-e', DEVICE_TYPE: 'FLEX_3' });
+    const b = build('Java/uia-remote-regression-flux', { ROBOT_NAME: 'wall-e', DEVICE_TYPE: 'FLUX_3' });
     expect(b.result).toBe('FAILURE');
     expect(b.console).toContain('[orca] xy_touch wall-e HOME/Register → 409 Conflict: LOCK_RELEASED (park required)');
     sim.rig.command('wall-e', 'park.xy', 'player');
@@ -369,7 +369,7 @@ describe('INC11–INC12 motion and lockout', () => {
     run(3_000);
     expect(lab().rigs['wall-e']!).toMatchObject({ banner: 'green', gantry: { homed: true }, magneticLock: { engaged: true } });
     expect(resolved(ids)).toBe(true);
-    expect(build('Java/uia-remote-regression-flex', { ROBOT_NAME: 'wall-e', DEVICE_TYPE: 'FLEX_3' }).result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-regression-flux', { ROBOT_NAME: 'wall-e', DEVICE_TYPE: 'FLUX_3' }).result).toBe('SUCCESS');
   });
 
   it('INC12 lockout: overlay while #4127 runs, motion commands ignored, Orca says in use; unlocks after the build', () => {

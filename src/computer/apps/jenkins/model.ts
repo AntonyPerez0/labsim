@@ -85,7 +85,7 @@ export function parseRoute(route: string): JkPage {
   return { kind: 'notFound' };
 }
 
-/** `/job/Java/job/uia-remote-regression-flex/` */
+/** `/job/Java/job/uia-remote-regression-flux/` */
 export function jobUrl(jobId: string, suffix = ''): string {
   const i = jobId.indexOf('/');
   const folder = jobId.slice(0, i);
@@ -97,7 +97,7 @@ export function buildUrl(b: { jobId: string; number: number }, suffix = ''): str
   return jobUrl(b.jobId, `${b.number}/${suffix}`);
 }
 
-/** `Java » uia-remote-regression-flex` */
+/** `Java » uia-remote-regression-flux` */
 export function jobDisplayName(jobId: string): string {
   return jobId.replace('/', ' » ');
 }
@@ -333,7 +333,7 @@ export const FOLDER_DESCRIPTIONS: Record<string, string> = {
 
 /** Parameter descriptions when the sim's are empty (Apps §3.4). */
 export const PARAM_DESCRIPTIONS: Record<string, string> = {
-  DEVICE_TYPE: 'Orca DeviceType enum value, ALL CAPS (e.g. FLEX_3). Blank = any.',
+  DEVICE_TYPE: 'Orca DeviceType enum value, ALL CAPS (e.g. FLUX_3). Blank = any.',
   ROBOT_NAME: 'Exact Orca robot Name (lowercase). Blank = any matching Available robot.',
   MERCHANT: 'Merchant Config name',
   CARD_PROFILE: 'Card profile name(s), comma separated',

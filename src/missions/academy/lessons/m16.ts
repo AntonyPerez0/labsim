@@ -1,6 +1,6 @@
 /**
- * M16 — Seeing the Second Screen: Station Duo, OCR, GIMP & UIA 2.3 (Cur §2 M16). Mentor {{morgan}}.
- * Setup (`academy:M16`, Sim §4.4.2): R2-D2 (STATION_DUO, `10.42.30.14`) mid-sale — MFD on Review Order,
+ * M16 — Seeing the Second Screen: Stand Duet, OCR, GIMP & UIA 2.3 (Cur §2 M16). Mentor {{morgan}}.
+ * Setup (`academy:M16`, Sim §4.4.2): R2-D2 (STAND_DUET, `10.42.30.14`) mid-sale — MFD on Review Order,
  * CFD showing `TOTAL $10.83`; R2-D2's webcam is aimed at the CFD; the `CFD_TOTAL` Screen Compare row is
  * deleted; uia-remote is cloned with MEGATRON's valid config; Pigeon's `swipe_sale_print.json` has an
  * empty `screenCompare` block. Step 8: the player's "CFD layout v2" toggle = `flag.set cfdLayoutV2Toggle`.
@@ -12,7 +12,7 @@ import { inject, localFile, localFilesNamed, ran, say } from './helpers';
 /** Cur §0.6 `CFD_TOTAL` (R2-D2): x 412, y 288, w 236, h 44 px, expected `TOTAL $10.83`. */
 const BOX = { x: 412, y: 288, w: 236, h: 44 } as const;
 const EXPECTED = 'TOTAL $10.83';
-const DUO = '10.42.30.14:5444';
+const DUET = '10.42.30.14:5444';
 const PIGEON_FILE = 'tests/sale/swipe_sale_print.json';
 const near = (a: unknown, b: number, tol = 3) => typeof a === 'number' && Math.abs(a - b) <= tol;
 
@@ -40,7 +40,7 @@ const pigeonBlockOk: Condition = c.custom('m16-pigeon-compare', 'Pigeon screenCo
 const duoIps: Condition = c.all(c.eq(p.prop('config', 'merchantFacingDeviceIp'), '10.42.30.14'), c.eq(p.prop('config', 'customerFacingDeviceIp'), '10.42.30.14'));
 
 /**
- * CfdTotalsScreen's locators are scoped to the customer display (UIA 2.3 `displayId`): on a Station Duo
+ * CfdTotalsScreen's locators are scoped to the customer display (UIA 2.3 `displayId`): on a Stand Duet
  * the CFD is display 1 of the same terminal, and the runner only finds TOTAL there with displayId locators
  * (Sim §3.11; the M16 preset un-merges #398, which made that change).
  */
@@ -55,14 +55,14 @@ export const M16: LessonDef = {
   setup: { preset: 'academy:M16', spawn: 'loc.workstation', apps: { unlock: ['terminal', 'camera', 'gimp', 'orca', 'vscode', 'intellij', 'github', 'chat'] } },
   deck: 'deck.M16',
   realLabChecklist: [
-    'On a Station Duo one terminal drives two displays, but only the primary MFD is exposed to ADB: legacy UI Automator is blind to the CFD.',
+    'On a Stand Duet one terminal drives two displays, but only the primary MFD is exposed to ADB: legacy UI Automator is blind to the CFD.',
     'The legacy workaround is a Screen Compare Image: a bounding box measured in GIMP plus the expected text; the Pi crops a webcam screenshot, runs Tesseract OCR and returns true or false.',
     'OCR checks are brittle: a 10-pixel shift, a capital letter or a typo breaks them. They are being phased out.',
     'New CFD checks use UI Automator 2.3, which tracks elements on both screens natively.',
-    'Configure a Station Duo with the same IP for merchantFacingDeviceIp and customerFacingDeviceIp.',
+    'Configure a Stand Duet with the same IP for merchantFacingDeviceIp and customerFacingDeviceIp.',
   ],
   steps: [
-    { id: 'M16.01', kind: 'walk-to', hud: 'Go to R2-D2 (Station Duo)', location: 'loc.rack-a' },
+    { id: 'M16.01', kind: 'walk-to', hud: 'Go to R2-D2 (Stand Duet)', location: 'loc.rack-a' },
     {
       id: 'M16.02',
       kind: 'inspect',
@@ -77,14 +77,14 @@ export const M16: LessonDef = {
       hud: 'Now the customer screen',
       prop: 'prop.r2d2.cfd',
       callouts: ["Secondary CFD — ADB can't"],
-      manualEntryIds: ['station-duo-dual-screen'],
+      manualEntryIds: ['stand-duet-dual-screen'],
       factIds: ['F151', 'F152', 'F221'],
     },
     {
       id: 'M16.03',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: 'Station Duo: one terminal, two displays, but only the primary MFD is exposed to ADB. Legacy UI Automator was completely blind to the customer screen.',
+      text: 'Stand Duet: one terminal, two displays, but only the primary MFD is exposed to ADB. Legacy UI Automator was completely blind to the customer screen.',
       factIds: ['F151', 'F152'],
     },
     {
@@ -94,7 +94,7 @@ export const M16: LessonDef = {
       app: 'terminal',
       success: ran(/^grep -c "?TOTAL"? window_dump\.xml$/),
       objectives: [
-        { id: 'M16.04.connect', text: 'adb connect 10.42.30.14:5444 · adb devices (one entry)', done: c.contains(p.adbConnections, DUO) },
+        { id: 'M16.04.connect', text: 'adb connect 10.42.30.14:5444 · adb devices (one entry)', done: c.contains(p.adbConnections, DUET) },
         { id: 'M16.04.dump', text: 'uiautomator dump, then pull window_dump.xml', done: ran(/^adb -s 10\.42\.30\.14:5444 pull \/sdcard\/window_dump\.xml( \S+)?$/) },
         { id: 'M16.04.grep', text: 'grep -c "TOTAL" window_dump.xml → 0', done: ran(/^grep -c "?TOTAL"? window_dump\.xml$/) },
       ],
@@ -187,19 +187,19 @@ export const M16: LessonDef = {
     {
       id: 'M16.12',
       kind: 'computer-task',
-      hud: 'Replace the OCR check in TaxTestDuo with a UIA 2.3 assertion',
+      hud: 'Replace the OCR check in TaxTestDuet with a UIA 2.3 assertion',
       app: 'intellij',
       route: '/project/uia-remote',
-      success: c.all(c.eq(p.codeFact('usesScreenCompare', 'local:TaxTestDuo'), false), cfdLocatorsOnCfd, duoIps, c.eq(p.localRun('TaxTestDuo').result, 'PASS')),
+      success: c.all(c.eq(p.codeFact('usesScreenCompare', 'local:TaxTestDuet'), false), cfdLocatorsOnCfd, duoIps, c.eq(p.localRun('TaxTestDuet').result, 'PASS')),
       objectives: [
-        { id: 'M16.12.code', text: 'TaxTestDuo: replace orca.screenCompare("CFD_TOTAL") with a UIA assertion, e.g. cfdTotals.assertTotals()', done: c.eq(p.codeFact('usesScreenCompare', 'local:TaxTestDuo'), false) },
+        { id: 'M16.12.code', text: 'TaxTestDuet: replace orca.screenCompare("CFD_TOTAL") with a UIA assertion, e.g. cfdTotals.assertTotals()', done: c.eq(p.codeFact('usesScreenCompare', 'local:TaxTestDuet'), false) },
         { id: 'M16.12.display', text: 'CfdTotalsScreen: scope the locators to the CFD with .displayId(cfdDisplayId)', done: cfdLocatorsOnCfd },
-        { id: 'M16.12.ips', text: 'config.properties: both IPs = 10.42.30.14 (Station Duo)', done: duoIps },
-        { id: 'M16.12.run', text: 'Run TaxTestDuo on R2-D2 with layout v2 still on: green', done: c.eq(p.localRun('TaxTestDuo').result, 'PASS') },
+        { id: 'M16.12.ips', text: 'config.properties: both IPs = 10.42.30.14 (Stand Duet)', done: duoIps },
+        { id: 'M16.12.run', text: 'Run TaxTestDuet on R2-D2 with layout v2 still on: green', done: c.eq(p.localRun('TaxTestDuet').result, 'PASS') },
       ],
       hints: [
         { afterS: 60, idle: true, effect: 'text', text: 'UIA 2.3 sees the second screen through displayId: in CfdTotalsScreen write By.textStartsWith("TOTAL").displayId(cfdDisplayId) (same for Subtotal and Tax). {{morgan}}\'s open PR #398 on GitHub shows the whole migration.' },
-        { afterS: 120, idle: true, effect: 'text', text: 'On a Station Duo merchantFacingDeviceIp and customerFacingDeviceIp are the same: 10.42.30.14. Point robotName at r2-d2.' },
+        { afterS: 120, idle: true, effect: 'text', text: 'On a Stand Duet merchantFacingDeviceIp and customerFacingDeviceIp are the same: 10.42.30.14. Point robotName at r2-d2.' },
         { afterS: 180, idle: true, effect: 'show-me-button' },
       ],
       showMe: [{ app: 'intellij', route: '/project/uia-remote/file/config.properties', target: 'intellij.configValidator', action: 'click' }],

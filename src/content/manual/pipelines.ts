@@ -34,7 +34,7 @@ Legacy jobs are organised **by platform**, separating **Java jobs** from **iOS j
 
 | View† | Example jobs† |
 |---|---|
-| \`Java\` | \`uia-remote-regression-flex\`, \`uia-remote-tethered-tax\`, \`go-sdk-sale-smoke\`, \`laz-oobe-merchant-swap\`, \`contact-canada-pin-sale\`, \`pigeon-android-sale-swipe\` |
+| \`Java\` | \`uia-remote-regression-flux\`, \`uia-remote-tethered-tax\`, \`go-sdk-sale-smoke\`, \`laz-oobe-merchant-swap\`, \`contact-canada-pin-sale\`, \`pigeon-android-sale-swipe\` |
 | \`iOS\` | \`pigeon-ios-go-sdk-smoke\` |
 
 A Java job filed under the iOS view is still a Java job — "the job that disappeared" is usually in the other view.
@@ -55,8 +55,8 @@ If no matching robot is Available (all Reserved, Offline, Connection Failed or U
 
 \`\`\`log
 [orca] candidate wall-e: Reserved — skipped†
-[orca] no Available FLEX_3 robot — build waiting in queue†
-[orca] checkout → wall-e (FLEX_3) OK†
+[orca] no Available FLUX_3 robot — build waiting in queue†
+[orca] checkout → wall-e (FLUX_3) OK†
 \`\`\`
 
 > **Illustrative (sim only):** View names, job names, parameter names and console lines are the sim's†.
@@ -70,7 +70,7 @@ If no matching robot is Available (all Reserved, Offline, Connection Failed or U
     factIds: ["F016", "F121", "F122", "F139", "F189", "F198", "F196", "F197"],
     tags: ["jenkins", "jenkins.envvars", "orca.devicetype", "go.sdk"],
     related: ["jenkins-executor", "orca-robot-device", "config-properties", "orca-merchant-config"],
-    keywords: ["environment variables", "env vars", "ALL CAPS", "DEVICE_TYPE", "enum", "flex_3", "FLEX_3", "IllegalArgumentException", "No enum constant", "PORT_NUMBER", "APP_ID", "API_KEY"],
+    keywords: ["environment variables", "env vars", "ALL CAPS", "DEVICE_TYPE", "enum", "flux_3", "FLUX_3", "IllegalArgumentException", "No enum constant", "PORT_NUMBER", "APP_ID", "API_KEY"],
     practice: ["INC39", "INC51", "DR11"],
     body: `## Injection
 
@@ -81,12 +81,12 @@ Jenkins injects **runtime environment variables** into each pipeline {F016}; dur
 Orca's **Device Type** is an enum of device dimensions, layout metrics and internal string definitions {F121}. Enum strings must match exactly, which is why **Jenkins pipeline environment variables must be in ALL CAPS** {F122}.
 
 \`\`\`log
-[orca] checkout request deviceType=flex_3
-java.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.flex_3†
+[orca] checkout request deviceType=flux_3
+java.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.flux_3†
 FAILURE
 \`\`\`
 
-Fix: \`DEVICE_TYPE=FLEX_3\`. Don't "fix" it by editing the enum in Orca.
+Fix: \`DEVICE_TYPE=FLUX_3\`. Don't "fix" it by editing the enum in Orca.
 
 ## What gets injected
 
@@ -104,7 +104,7 @@ Secrets are masked (\`****\`) in the console; you can still see whether they wer
 
 \`\`\`log
 RUN_TYPE=standalone†
-DEVICE_TYPE=FLEX_3
+DEVICE_TYPE=FLUX_3
 ROBOT_NAME=wall-e
 PORT_NUMBER=5444
 THEME=avocado

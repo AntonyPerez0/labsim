@@ -63,7 +63,7 @@ describe('repository seeds (Sim §2.12)', () => {
     const gort = lab().repos['gort'].files;
     expect(Object.keys(gort).filter((p) => p.startsWith('cards/emv/')).length).toBeGreaterThanOrEqual(4);
     expect(Object.keys(gort).filter((p) => p.startsWith('cards/nfc/')).length).toBeGreaterThanOrEqual(2);
-    expect(Object.keys(gort).some((p) => /^config\/screen-locations\/FLEX_3\/RECEIPT_OPTIONS_5\.json$/.test(p))).toBe(true);
+    expect(Object.keys(gort).some((p) => /^config\/screen-locations\/FLUX_3\/RECEIPT_OPTIONS_5\.json$/.test(p))).toBe(true);
     const pigeon = lab().repos['pigeon'].files;
     expect(pigeon['tests/_templates/known_good_actions.json']).toBeTypeOf('string');
     for (const p of ['runners/rest/rest_runner.py', 'runners/android/AndroidLstrRunner.java', 'runners/windows/WindowsLstrRunner.cs', 'runners/ios/IosLstrRunner.swift']) expect(pigeon[p], p).toBeTypeOf('string');
@@ -84,7 +84,7 @@ describe('repository seeds (Sim §2.12)', () => {
     const prs = lab().repos['gort'].pullRequests;
     const n = (k: number) => prs.find((p) => p.number === k)!;
     expect(n(418)).toMatchObject({ state: 'merged', author: 'jared' });
-    expect(n(418).files.some((f) => f.path.startsWith('config/screen-locations/MINI_3/'))).toBe(true);
+    expect(n(418).files.some((f) => f.path.startsWith('config/screen-locations/MICRO_3/'))).toBe(true);
     expect(n(417)).toMatchObject({ state: 'merged', author: 'jared' });
     expect(n(417).files.some((f) => /RECEIPT_OPTIONS_5\.json$/.test(f.path))).toBe(true);
     expect(n(415).state).toBe('closed');
@@ -96,7 +96,7 @@ describe('repository seeds (Sim §2.12)', () => {
 
 describe('code facts (Sim §3.19.6)', () => {
   it('stripJava keeps offsets so method bodies are exact', () => {
-    const src = 'class A {\n  // comment {\n  void open(String a) { /* x } */ if (deviceType == DeviceType.FLEX) { scrollVerticallyTo(a); } else { scrollHorizontallyTo(a); } }\n}';
+    const src = 'class A {\n  // comment {\n  void open(String a) { /* x } */ if (deviceType == DeviceType.FLUX) { scrollVerticallyTo(a); } else { scrollHorizontallyTo(a); } }\n}';
     expect(stripJava(src).length).toBe(src.length);
     expect(methodBody(src, 'open')!.body).toContain('scrollHorizontallyTo');
     expect(openDirection(src)).toBe('correct');
@@ -161,12 +161,12 @@ describe('INC25 end to end: missing comma → red build → PR → Morgan merges
 
 describe('Jenkins (Sim §3.18)', () => {
   it('injects environment keys in ALL CAPS with enum values straight from Orca', { timeout: 60_000 }, () => {
-    const b = runBuild('Java/uia-remote-regression-flex');
+    const b = runBuild('Java/uia-remote-regression-flux');
     const envLines = b.console.filter((l) => l.startsWith('[env] '));
     expect(envLines.length).toBeGreaterThan(3);
     for (const l of envLines) expect(l).toMatch(/^\[env\] [A-Z][A-Z0-9_]*=/);
-    expect(envLines).toContain('[env] DEVICE_TYPE=FLEX_3');
-    const build = Object.values(lab().jenkins.builds).find((x) => x.jobId === 'Java/uia-remote-regression-flex' && x.state === 'finished' && x.number >= 4120)!;
+    expect(envLines).toContain('[env] DEVICE_TYPE=FLUX_3');
+    const build = Object.values(lab().jenkins.builds).find((x) => x.jobId === 'Java/uia-remote-regression-flux' && x.state === 'finished' && x.number >= 4120)!;
     const { env } = computeEnv(lab(), build);
     for (const k of Object.keys(env)) expect(k).toMatch(/^[A-Z][A-Z0-9_]*$/);
   });
@@ -217,7 +217,7 @@ describe('determinism (Sim §6)', () => {
   it('the same build from the same seed produces the same console and state', { timeout: 60_000 }, () => {
     const once = (): string => {
       sim.reset({ preset: 'test', seed: 77 });
-      const b = runBuild('Java/uia-remote-regression-flex');
+      const b = runBuild('Java/uia-remote-regression-flux');
       return JSON.stringify({ b, jenkins: lab().jenkins.builds, rng: lab().rngStreams });
     };
     expect(once()).toBe(once());

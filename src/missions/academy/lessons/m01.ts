@@ -1,6 +1,6 @@
 /**
  * M01 — Welcome to the Lab: Orientation & Safety (Cur §2 M01). Mentor {{morgan}}.
- * Setup: preset `academy:M01` starts scripted build `Java/uia-remote-regression-flex #4120` on WALL-E
+ * Setup: preset `academy:M01` starts scripted build `Java/uia-remote-regression-flux #4120` on WALL-E
  * (`rig.testRunning`, tablet locked); the runner clears it after step 7 (Sim §4.4.2).
  */
 import { c, on, p } from '../../types';

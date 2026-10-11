@@ -24,7 +24,7 @@ function screwsAround(b: B, f: { x0: number; x1: number; z0: number; z1: number 
   for (const x of [f.x0 + 8, f.x1 - 8]) for (const z of [f.z0 + 8, f.z1 - 8]) b.screw([x, y, z], [0, 0, 0]);
 }
 
-/** Angled handheld cradle (Flex family, Compact). */
+/** Angled handheld cradle (Flux family, Compass). */
 function handheld(b: B, id: CradleId, f: Footprint): void {
   const m = b.m;
   const pla = m.blackPla;
@@ -66,7 +66,7 @@ function handheld(b: B, id: CradleId, f: Footprint): void {
   void id;
 }
 
-/** Flat tray / wedge dock for terminals (Station heads, Duo, Mini). */
+/** Flat tray / wedge dock for terminals (Stand heads, Duet, Micro). */
 function tray(b: B, f: Footprint, wall = 8, clampH = 12): void {
   const pla = b.m.blackPla;
   const x0 = f.x0 - wall;
@@ -92,7 +92,7 @@ function tray(b: B, f: Footprint, wall = 8, clampH = 12): void {
   }
 }
 
-/** Mini wedge dock: sloped bed under the Mini, open back for the printer door. */
+/** Micro wedge dock: sloped bed under the Micro, open back for the printer door. */
 function miniDock(b: B, f: Footprint): void {
   const pla = b.m.blackPla;
   const xc = (f.x0 + f.x1) / 2;
@@ -113,20 +113,20 @@ function miniDock(b: B, f: Footprint): void {
 
 export function buildCradle(b: B, id: CradleId, prints: Footprint[]): void {
   switch (id) {
-    case 'flex-cradle-gen3':
-    case 'flex-cradle-pocket':
-    case 'flex-cradle-gen1':
-    case 'flex-cradle-gen2':
-    case 'compact-cradle':
+    case 'flux-cradle-gen3':
+    case 'flux-cradle-pocket':
+    case 'flux-cradle-gen1':
+    case 'flux-cradle-gen2':
+    case 'compass-cradle':
       handheld(b, id, prints[0]!);
       break;
-    case 'mini-dock':
+    case 'micro-dock':
       miniDock(b, prints[0]!);
       break;
-    case 'station-tray':
+    case 'stand-tray':
       tray(b, prints[0]!, 10, 14);
       break;
-    case 'station-duo-tray':
+    case 'stand-duet-tray':
       for (const f of prints) tray(b, f, 8, 14);
       break;
   }

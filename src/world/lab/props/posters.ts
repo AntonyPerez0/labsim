@@ -354,9 +354,9 @@ const ROADMAP_CARDS = [
   'GPU blade (Orca, Jenkins, Ollama VMs)',
   'Legacy tower',
   'Ollama vision triage',
-  'Flex 4 / Pocket profile',
-  'Mini 4 rigs',
-  'Station Duo 3 rigs',
+  'Flux 4 / Pocket profile',
+  'Micro 4 rigs',
+  'Stand Duet 3 rigs',
   'NUC motion control',
   'uia-remote tethered',
 ];

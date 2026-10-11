@@ -1,5 +1,5 @@
 /**
- * GP §3.5 INC22–INC28: the misleading "select print" log, a printer test matched to a Flex Pocket,
+ * GP §3.5 INC22–INC28: the misleading "select print" log, a printer test matched to a Flux Pocket,
  * GIMP coordinates for a Pigeon screen compare, a missing JSON comma, the misfiled iOS job, the port
  * 5555 coworker collision and ADB-over-TCP lost after a Laz OOBE.
  */
@@ -25,7 +25,7 @@ import {
 } from './helpers';
 
 const COMPARE_FILE = 'tests/sale/payment_success_compare.json';
-/** APPROVED label rectangle on the FLEX_GEN3 screencap (Sim §2.10.2; supersedes GP's 388/512 example). */
+/** APPROVED label rectangle on the FLUX_GEN3 screencap (Sim §2.10.2; supersedes GP's 388/512 example). */
 const COMPARE_TRUTH = { x: 208, y: 512, w: 304, h: 40 } as const;
 const TIP_FILE = 'tests/sale/tip_sale_print.json';
 
@@ -36,7 +36,7 @@ export const INC22: IncidentDef = {
   base: 450,
   parS: 270,
   severity: 'P1',
-  rigs: { candidates: ['johnny-5'], default: 'johnny-5', scope: 'rig', describe: 'printer rigs (default JOHNNY-5, FLEX_1)' },
+  rigs: { candidates: ['johnny-5'], default: 'johnny-5', scope: 'rig', describe: 'printer rigs (default JOHNNY-5, FLUX_1)' },
   escalatable: false,
   unlockedBy: 'M15',
   tags: ['jenkins.logs', 'pigeon.lstr', 'orca.screens'],
@@ -81,12 +81,12 @@ export const INC22: IncidentDef = {
 
 export const INC23: IncidentDef = {
   id: 'INC23',
-  name: 'Printer test matched to a Flex Pocket',
+  name: 'Printer test matched to a Flux Pocket',
   difficulty: 3,
   base: 400,
   parS: 210,
   severity: 'P1',
-  rigs: { candidates: ['vision'], default: 'vision', scope: 'rig', describe: 'PL6 (gets VISION, Flex Pocket)' },
+  rigs: { candidates: ['vision'], default: 'vision', scope: 'rig', describe: 'PL6 (gets VISION, Flux Pocket)' },
   escalatable: false,
   unlockedBy: 'M08',
   tags: ['orca.capabilities', 'hw.devices', 'go.sdk'],
@@ -96,11 +96,11 @@ export const INC23: IncidentDef = {
   setup: () => ({ scenario: [F('gort.capabilityDropped', { key: 'printer' })] }),
   reveal: 'pipeline',
   symptoms: [
-    sym('Jenkins', '[orca] checkout → vision (FLEX_POCKET) OK … [go-sdk] PrintReceipt → PRINTER_NOT_AVAILABLE → Finished: FAILURE'),
-    sym('Orca', 'Robot Capabilities for vision: {"deviceType":"FLEX_POCKET","printer":false,…}; Match preview for the test lists vision, tars, data.'),
+    sym('Jenkins', '[orca] checkout → vision (FLUX_POCKET) OK … [go-sdk] PrintReceipt → PRINTER_NOT_AVAILABLE → Finished: FAILURE'),
+    sym('Orca', 'Robot Capabilities for vision: {"deviceType":"FLUX_POCKET","printer":false,…}; Match preview for the test lists vision, tars, data.'),
     sym('GitHub', 'The commit diff of go-sdk/tests/sale_receipt.json shows the removed "printer": true line.'),
   ],
-  diagnosisPath: ['The checkout picked a Flex Pocket — which has no printer.', 'Robot Capabilities / Match preview: why does the Pocket match?', 'The test\'s dynamic JSON lost its printer requirement (GitHub history).', 'Call it and restore the capability.'],
+  diagnosisPath: ['The checkout picked a Flux Pocket — which has no printer.', 'Robot Capabilities / Match preview: why does the Pocket match?', 'The test\'s dynamic JSON lost its printer requirement (GitHub history).', 'Call it and restore the capability.'],
   hints: [
     'Which robot did the build check out, and does that device have a printer?',
     'Orca → Robot Capabilities → Match preview with the test\'s capabilities; then GitHub → gort → go-sdk/tests/sale_receipt.json history.',
@@ -119,11 +119,11 @@ export const INC23: IncidentDef = {
     ['DEVICE_TYPE case', 'A case error fails checkout with No enum constant. This checkout succeeded.'],
   ),
   wrongButTempting: [
-    wm('vision-offline', 'Set VISION Offline', 100, statusTo('vision', 'OFFLINE'), teach('You hid a valid printerless rig.', 'Flex 3, 4 and Pocket share one testing profile; the Pocket simply has no printer. The test must ask for one. (Ref §1, §3)', 'Restore "printer": true in the test\'s capabilities.')),
+    wm('vision-offline', 'Set VISION Offline', 100, statusTo('vision', 'OFFLINE'), teach('You hid a valid printerless rig.', 'Flux 3, 4 and Pocket share one testing profile; the Pocket simply has no printer. The test must ask for one. (Ref §1, §3)', 'Restore "printer": true in the test\'s capabilities.')),
     wm('vision-unavailable', 'Set VISION Unavailable', 100, statusTo('vision', 'UNAVAILABLE'), teach('You hid a valid printerless rig.', 'Unavailable is for specialised rigs used by named jobs. (Ref §3)', 'Restore "printer": true in the test\'s capabilities.')),
     wm('pin-tars', 'Hardcode ROBOT_NAME=tars', 50, buildWith('Java/go-sdk-sale-smoke', (pp) => pp.ROBOT_NAME === 'tars'), teach('You bypassed capability matching.', 'Dynamic JSON lookups define capabilities inside the test and are parsed at runtime. (Ref §3)', 'Fix the capability in the test definition.')),
   ],
-  teaches: P('Ref §1: Flex 3, 4 and Pocket share one testing profile and the Pocket has no printer. Ref §3: dynamic JSON lookups live in the test definition and are parsed at runtime (SDK frameworks, {{david}}). The JSON key is "printer"; Orca matches it against the profile\'s hasPrinter.'),
+  teaches: P('Ref §1: Flux 3, 4 and Pocket share one testing profile and the Pocket has no printer. Ref §3: dynamic JSON lookups live in the test definition and are parsed at runtime (SDK frameworks, {{david}}). The JSON key is "printer"; Orca matches it against the profile\'s hasPrinter.'),
 };
 
 export const INC24: IncidentDef = {
@@ -267,24 +267,24 @@ export const INC26: IncidentDef = {
 
 export const INC27: IncidentDef = {
   id: 'INC27',
-  name: 'Port 5555: "Something is tapping my desk Flex!"',
+  name: 'Port 5555: "Something is tapping my desk Flux!"',
   difficulty: 2,
   base: 350,
   parS: 180,
   severity: 'P1',
-  rigs: { candidates: ['bumblebee'], default: 'bumblebee', scope: 'rig', describe: "workstation + {{riley}}'s desk Flex (default target BUMBLEBEE)" },
+  rigs: { candidates: ['bumblebee'], default: 'bumblebee', scope: 'rig', describe: "workstation + {{riley}}'s desk Flux (default target BUMBLEBEE)" },
   escalatable: false,
   unlockedBy: 'M14',
   tags: ['adb.port', 'uia.config', 'adb.usage'],
   factIds: ['F198', 'F199', 'F200', 'F026'],
-  ticket: { title: 'SOMETHING IS TAPPING MY DESK FLEX BY ITSELF', reporter: 'riley' },
+  ticket: { title: 'SOMETHING IS TAPPING MY DESK FLUX BY ITSELF', reporter: 'riley' },
   setup: () => ({
     scenario: [OP('repo.clone', { repo: 'uia-remote' }), OP('config.write', { fixture: 'target', robot: '$R' }), F('config.port5555'), OP('runner.startLocal', { test: 'SaleTest' })],
   }),
   reveal: 'immediate',
   symptoms: [
     sym('IDE', (b) => `connect ${deviceIp(b)}:5555 … refused · falling back to first known device: 10.42.60.4:5555 · [runner] open Register`),
-    sym('World', P("{{riley}}'s desk Flex shows Register with \"Tax Item 5\" in the cart.")),
+    sym('World', P("{{riley}}'s desk Flux shows Register with \"Tax Item 5\" in the cart.")),
     sym('Terminal', 'adb devices → 10.42.60.4:5555\tdevice'),
   ],
   diagnosisPath: ['adb devices: a coworker IP on 5555.', 'Check config.properties: portNumber=5555.', 'Call it, stop the run, fix the port.'],
@@ -302,15 +302,15 @@ export const INC27: IncidentDef = {
     ),
   diagnosisCall: dc(
     'portNumber 5555 — the runner fell back to a coworker\'s device',
-    [P("{{riley}}'s Flex has malware"), 'The taps match your test\'s steps exactly. What is your runner connected to?'],
+    [P("{{riley}}'s Flux has malware"), 'The taps match your test\'s steps exactly. What is your runner connected to?'],
     ['Orca routed to the wrong rig', 'Orca never chose this device — it is not a lab rig. Run adb devices.'],
     ['Wrong deviceType', 'deviceType changes scrolling, not which device you connect to. Check portNumber.'],
   ),
   wrongButTempting: [
-    gw('unplug-riley', 'GW23', P("Unplug {{riley}}'s Flex")),
+    gw('unplug-riley', 'GW23', P("Unplug {{riley}}'s Flux")),
     wm('kill-server', 'adb kill-server only', 0, undefined, teach('It recurs on the next run.', 'portNumber is locked to 5444; 5555 is the ADB default that let scripts drive coworkers\' desk devices. (Ref §4)', 'Set portNumber=5444.')),
     wm('port-5556', 'Use 5556 instead', 100, undefined, teach('The lab standard is 5444.', 'portNumber is locked to 5444. (Ref §4)', 'portNumber=5444.')),
-    wm('riley-driven', P("{{riley}}'s Flex keeps getting driven"), 20, on('adb.coworkerDriven', {}), teach('A coworker\'s device was driven by your run.', 'Using 5555 caused office collisions where scripts controlled coworkers\' desk devices. (Ref §4)', 'Stop the run first.')),
+    wm('riley-driven', P("{{riley}}'s Flux keeps getting driven"), 20, on('adb.coworkerDriven', {}), teach('A coworker\'s device was driven by your run.', 'Using 5555 caused office collisions where scripts controlled coworkers\' desk devices. (Ref §4)', 'Stop the run first.')),
   ],
   teaches: "Ref §4: portNumber is locked to 5444; 5555 (the ADB default) let automated scripts connect to and control coworkers' desk devices.",
 };

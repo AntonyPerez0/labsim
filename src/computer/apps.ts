@@ -485,7 +485,7 @@ export const APP_ROUTES = {
     merchantView: r('/merchant-config/:id/view', 'Merchant Config detail (credentials hidden)'),
     merchantEdit: r('/merchant-config/:id/edit', 'Merchant Config Edit — the only view with App ID / App Secret / API Key / Ubi Route'),
     screens: r('/screen', 'Screen list; query deviceType.equals, name.contains, display.equals'),
-    screenNew: r('/screen/new', 'Create a Screen (e.g. RECEIPT_OPTIONS_5 for FLEX_4)'),
+    screenNew: r('/screen/new', 'Create a Screen (e.g. RECEIPT_OPTIONS_5 for FLUX_4)'),
     screenView: r('/screen/:id/view', 'Screen detail with its Screen Locations and Test tap'),
     screenEdit: r('/screen/:id/edit', 'Screen edit'),
     screenLocations: r('/screen-location', 'Screen Location list; query deviceType.equals, screenId.equals, button.contains'),

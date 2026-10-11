@@ -24,14 +24,14 @@ export const ADB_RIG_IDS: readonly AdbRigId[] = ['data', 'tars'];
 export const PHYSICAL_RIG_IDS: readonly PhysicalRigId[] = [...TOUCH_RIG_IDS, ...TETHERED_RIG_IDS, ...ADB_RIG_IDS];
 
 export type CradleId =
-  | 'flex-cradle-gen3'
-  | 'flex-cradle-pocket'
-  | 'flex-cradle-gen1'
-  | 'flex-cradle-gen2'
-  | 'compact-cradle'
-  | 'mini-dock'
-  | 'station-tray'
-  | 'station-duo-tray';
+  | 'flux-cradle-gen3'
+  | 'flux-cradle-pocket'
+  | 'flux-cradle-gen1'
+  | 'flux-cradle-gen2'
+  | 'compass-cradle'
+  | 'micro-dock'
+  | 'stand-tray'
+  | 'stand-duet-tray';
 
 /** Which hardware a rig physically has (drives which parts are built and which ids exist). */
 export interface RigActuators {
@@ -97,7 +97,7 @@ interface RigBase {
   readonly roleTags: readonly string[];
 }
 
-/** One device configuration of a touch rig (JOHNNY-5 has two: Flex 1 and Flex 2). */
+/** One device configuration of a touch rig (JOHNNY-5 has two: Flux 1 and Flux 2). */
 export interface TouchDeviceConfig {
   readonly type: DeviceTypeCode;
   readonly cradle: CradleId;
@@ -105,7 +105,7 @@ export interface TouchDeviceConfig {
   readonly tape: string;
   /** Primary (MFD) screen W × H mm — gantry (0,0) is its top-left. */
   readonly primaryScreenMm: Vec2;
-  /** Station Duo CFD W × H mm. */
+  /** Stand Duet CFD W × H mm. */
   readonly secondaryScreenMm?: Vec2;
   /** (homeX, homeZ) bay-local mm. */
   readonly homeMm: Vec2;
@@ -159,7 +159,7 @@ export interface TetheredFaceDef {
   readonly faceM: Vec2;
   /** Three label-tape pieces on the top bezel: left, centre, right. */
   readonly tapes: readonly [string, string, string];
-  readonly logo: 'wordmark' | 'leaf';
+  readonly logo: 'wordmark' | 'mark';
   /** MFD top-edge swipe-direction sticker. */
   readonly swipeSticker?: { readonly glyph: string; readonly color: string };
   /** Screen at factory: MFDs lock screen, CFDs dark. */
@@ -193,8 +193,8 @@ export interface AdbRigDef extends RigBase {
   /** shelf.adb-local base position (m) and world position. */
   readonly local: Vec3;
   readonly world: Vec3;
-  /** Stand: Mini on its standard stand (screen 30° back) or Flex in an upright dock (70°). */
-  readonly stand: { readonly kind: 'mini-stand' | 'flex-dock'; readonly screenTiltFromVerticalDeg: number };
+  /** Stand: Micro on its standard stand (screen 30° back) or Flux in an upright dock (70°). */
+  readonly stand: { readonly kind: 'micro-stand' | 'flux-dock'; readonly screenTiltFromVerticalDeg: number };
   readonly tape: string;
 }
 
@@ -278,50 +278,50 @@ function touchRig(
 }
 
 export const TOUCH_RIGS: readonly TouchRigDef[] = [
-  touchRig('wall-e', 'WALL-E', 'A', 4, 'wall-e-flex3', [flex('FLEX_3', 'flex-cradle-gen3', 'FLEX 3', [-34.0, -343.0], 89, -335, -275)], {
+  touchRig('wall-e', 'WALL-E', 'A', 4, 'wall-e-flux3', [flex('FLUX_3', 'flux-cradle-gen3', 'FLUX 3', [-34.0, -343.0], 89, -335, -275)], {
     sidePanelText: 'SETI',
     roleTags: ['touch', 'collis', 'flexgen3', 'printer'],
   }),
-  touchRig('eve', 'EVE', 'A', 3, 'eve-flex4', [flex('FLEX_4', 'flex-cradle-gen3', 'FLEX 4', [-34.0, -346.0], 89, -338, -278)], {
+  touchRig('eve', 'EVE', 'A', 3, 'eve-flux4', [flex('FLUX_4', 'flux-cradle-gen3', 'FLUX 4', [-34.0, -346.0], 89, -338, -278)], {
     roleTags: ['touch', 'collis', 'flexgen3', 'printer', 'legacy-nuc-motion'],
   }),
-  touchRig('r2-d2', 'R2-D2', 'A', 2, 'r2-d2-duo', [
+  touchRig('r2-d2', 'R2-D2', 'A', 2, 'r2-d2-duet', [
     {
-      type: 'STATION_DUO', cradle: 'station-duo-tray', tape: 'STATION DUO',
+      type: 'STAND_DUET', cradle: 'stand-duet-tray', tape: 'STAND DUET',
       primaryScreenMm: [309.9, 174.3], secondaryScreenMm: [172.3, 107.7],
       homeMm: [-154.95, -535.0], maxMm: [309.9, 352],
       probeDisplay: 'secondary', probeOriginMm: [68.8, 239.0],
       slotMm: [0, 85, -160], powerKeyZMm: -517, sledRailXMm: 198,
       nfcMm: [86.2, 119.7], cameraTargetMm: [0, 100, -242],
     },
-  ], { roleTags: ['touch', 'collis', 'duo', 'ocr'] }),
-  touchRig('bumblebee', 'BUMBLEBEE', 'A', 1, 'bumblebee-mini3', [
+  ], { roleTags: ['touch', 'collis', 'duet', 'ocr'] }),
+  touchRig('bumblebee', 'BUMBLEBEE', 'A', 1, 'bumblebee-micro3', [
     {
-      type: 'MINI_3', cradle: 'mini-dock', tape: 'MINI 3',
+      type: 'MICRO_3', cradle: 'micro-dock', tape: 'MICRO 3',
       primaryScreenMm: [172.3, 107.7], homeMm: [-86.15, -296.0], maxMm: [184, 120],
       probeDisplay: 'primary', probeOriginMm: [0, 0],
       slotMm: [0, 82.5, -160], powerKeyZMm: -298, sledRailXMm: 127,
       nfcMm: [86.2, 119.7], cameraTargetMm: [0, 100, -242],
     },
-  ], { roleTags: ['touch', 'collis', 'mini', 'printer'] }),
-  touchRig('johnny-5', 'JOHNNY-5', 'B', 4, 'johnny-5-flex1', [
-    small5('FLEX_1', 'flex-cradle-gen1', 'FLEX 1', [-31.15, -335.0], 87, -335, 65, -280),
-    flex('FLEX_2', 'flex-cradle-gen2', 'FLEX 2', [-34.0, -348.0], 88, -338, -280),
-  ], { roleTags: ['touch', 'collis', 'flex-legacy', 'printer'] }),
-  touchRig('seti', 'SETI', 'B', 3, 'seti-compact', [small5('COMPACT', 'compact-cradle', 'COMPACT', [-31.15, -311.0], 85, -305, 68, -256)], {
+  ], { roleTags: ['touch', 'collis', 'micro', 'printer'] }),
+  touchRig('johnny-5', 'JOHNNY-5', 'B', 4, 'johnny-5-flux1', [
+    small5('FLUX_1', 'flux-cradle-gen1', 'FLUX 1', [-31.15, -335.0], 87, -335, 65, -280),
+    flex('FLUX_2', 'flux-cradle-gen2', 'FLUX 2', [-34.0, -348.0], 88, -338, -280),
+  ], { roleTags: ['touch', 'collis', 'flux-legacy', 'printer'] }),
+  touchRig('seti', 'SETI', 'B', 3, 'seti-compass', [small5('COMPASS', 'compass-cradle', 'COMPASS', [-31.15, -311.0], 85, -305, 68, -256)], {
     sidePanelText: 'SETI',
     roleTags: ['touch', 'collis', 'canada', 'physical-pin'],
   }),
   touchRig('baymax', 'BAYMAX', 'B', 2, 'baymax-st2018', [
     {
-      type: 'STATION_2018', cradle: 'station-tray', tape: 'STATION 2018',
+      type: 'STAND_2018', cradle: 'stand-tray', tape: 'STAND 2018',
       primaryScreenMm: [309.9, 174.3], homeMm: [-154.95, -370.0], maxMm: [309.9, 186],
       probeDisplay: 'primary', probeOriginMm: [0, 0],
       slotMm: [0, 85, -160], powerKeyZMm: -352, sledRailXMm: 198,
       nfcMm: [155.0, 192.3], cameraTargetMm: [0, 100, -283],
     },
   ], { roleTags: ['touch', 'collis', 'printer', 'build'] }),
-  touchRig('rosie', 'ROSIE', 'B', 1, 'rosie-pocket', [flex('FLEX_POCKET', 'flex-cradle-pocket', 'FLEX POCKET', [-34.0, -320.0], 90, -302, -252)], {
+  touchRig('rosie', 'ROSIE', 'B', 1, 'rosie-pocket', [flex('FLUX_POCKET', 'flux-cradle-pocket', 'FLUX POCKET', [-34.0, -320.0], 90, -302, -252)], {
     simKind: 'standalone',
     roleTags: ['touch', 'collis', 'paycore', 'flexgen3', 'printerless'],
   }),
@@ -337,10 +337,10 @@ export function rackTToWorld(local: Vec3): Vec3 {
 
 function face(
   rig: TetheredRigId, role: 'mfd' | 'cfd', deviceType: DeviceTypeCode, x: number, y: number, env: string,
-  logo: 'wordmark' | 'leaf', defaultLook: 'lock' | 'dark', swipeSticker?: { glyph: string; color: string },
+  logo: 'wordmark' | 'mark', defaultLook: 'lock' | 'dark', swipeSticker?: { glyph: string; color: string },
 ): TetheredFaceDef {
   const local: Vec3 = [x, y, 0];
-  const mini3 = deviceType === 'MINI_3';
+  const micro3 = deviceType === 'MICRO_3';
   const HRN = rig.toUpperCase();
   return {
     id: `rig.${rig}.${role}`,
@@ -348,7 +348,7 @@ function face(
     orcaDeviceName: `${rig}-${role}`,
     local,
     world: rackTToWorld(local),
-    faceM: mini3 ? [0.208, 0.158] : [0.21, 0.16],
+    faceM: micro3 ? [0.208, 0.158] : [0.21, 0.16],
     tapes: [HRN, role.toUpperCase(), env],
     logo, defaultLook,
     ...(swipeSticker ? { swipeSticker } : {}),
@@ -378,15 +378,15 @@ export const TETHERED_RIGS: readonly TetheredRigDef[] = [
   {
     id: 'megatron', hrn: 'MEGATRON', kind: 'tethered', env: 'DEV1', locationId: 'loc.rack-tethered', hostPropId: 'rack.t',
     actuators: TETHERED_ACTUATORS, sim: tetheredSim('megatron'), cameraId: 'cam.tethered', roleTags: ['tethered', 'dev1'],
-    mfd: face('megatron', 'mfd', 'STATION_2', -0.112, 1.34, 'DEV1', 'wordmark', 'lock', { glyph: '▶▬', color: '#111111' }),
-    cfd: face('megatron', 'cfd', 'MINI_2', -0.112, 1.12, 'DEV1', 'wordmark', 'dark'),
+    mfd: face('megatron', 'mfd', 'STAND_2', -0.112, 1.34, 'DEV1', 'wordmark', 'lock', { glyph: '▶▬', color: '#111111' }),
+    cfd: face('megatron', 'cfd', 'MICRO_2', -0.112, 1.12, 'DEV1', 'wordmark', 'dark'),
     smartstripe: { id: 'rig.megatron.smartstripe', dongleX: -0.235, clampX: -0.15, bladeText: 'SmartStripe Probe', simCollisId: 'smartstripe-megatron' },
   },
   {
     id: 'optimus', hrn: 'OPTIMUS', kind: 'tethered', env: 'STG', locationId: 'loc.rack-tethered', hostPropId: 'rack.t',
     actuators: TETHERED_ACTUATORS, sim: tetheredSim('optimus'), cameraId: 'cam.tethered', roleTags: ['tethered', 'stg'],
-    mfd: face('optimus', 'mfd', 'MINI_3', 0.112, 1.34, 'STG', 'leaf', 'lock', { glyph: '▬▶', color: '#2fbf5a' }),
-    cfd: face('optimus', 'cfd', 'MINI_3', 0.112, 1.12, 'STG', 'leaf', 'dark'),
+    mfd: face('optimus', 'mfd', 'MICRO_3', 0.112, 1.34, 'STG', 'mark', 'lock', { glyph: '▬▶', color: '#2fbf5a' }),
+    cfd: face('optimus', 'cfd', 'MICRO_3', 0.112, 1.12, 'STG', 'mark', 'dark'),
     smartstripe: { id: 'rig.optimus.smartstripe', dongleX: 0.015, clampX: 0.07, cardX: 0.17, bladeText: 'SmartStripe Probe', simCollisId: 'smartstripe-optimus' },
   },
 ];
@@ -410,15 +410,15 @@ function adbSim(id: AdbRigId, orcaDeviceName: string): RigSimIds {
 export const ADB_RIGS: readonly AdbRigDef[] = [
   {
     id: 'data', hrn: 'DATA', kind: 'adb', env: 'DEV1', locationId: 'loc.adb-shelf', hostPropId: 'shelf.adb',
-    actuators: ADB_ACTUATORS, sim: adbSim('data', 'data-mini3'), cameraId: 'cam.adb', roleTags: ['adb-only', 'printerless'],
-    deviceType: 'MINI_3', propId: 'rig.data.device', local: [-0.25, 1.0, 0.05], world: shelfAdbToWorld([-0.25, 1.0, 0.05]),
-    stand: { kind: 'mini-stand', screenTiltFromVerticalDeg: 30 }, tape: 'DATA',
+    actuators: ADB_ACTUATORS, sim: adbSim('data', 'data-micro3'), cameraId: 'cam.adb', roleTags: ['adb-only', 'printerless'],
+    deviceType: 'MICRO_3', propId: 'rig.data.device', local: [-0.25, 1.0, 0.05], world: shelfAdbToWorld([-0.25, 1.0, 0.05]),
+    stand: { kind: 'micro-stand', screenTiltFromVerticalDeg: 30 }, tape: 'DATA',
   },
   {
     id: 'tars', hrn: 'TARS', kind: 'adb', env: 'DEV1', locationId: 'loc.adb-shelf', hostPropId: 'shelf.adb',
-    actuators: ADB_ACTUATORS, sim: adbSim('tars', 'tars-flex4'), cameraId: 'cam.adb', roleTags: ['adb-only', 'flexgen3', 'printer'],
-    deviceType: 'FLEX_4', propId: 'rig.tars.device', local: [0.22, 1.0, 0.05], world: shelfAdbToWorld([0.22, 1.0, 0.05]),
-    stand: { kind: 'flex-dock', screenTiltFromVerticalDeg: 20 }, tape: 'TARS',
+    actuators: ADB_ACTUATORS, sim: adbSim('tars', 'tars-flux4'), cameraId: 'cam.adb', roleTags: ['adb-only', 'flexgen3', 'printer'],
+    deviceType: 'FLUX_4', propId: 'rig.tars.device', local: [0.22, 1.0, 0.05], world: shelfAdbToWorld([0.22, 1.0, 0.05]),
+    stand: { kind: 'flux-dock', screenTiltFromVerticalDeg: 20 }, tape: 'TARS',
   },
 ];
 

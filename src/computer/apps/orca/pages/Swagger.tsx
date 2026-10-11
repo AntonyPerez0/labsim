@@ -49,13 +49,13 @@ const TAGS: { tag: string; desc: string; ops: Op[] }[] = [
   {
     tag: 'robot-capability-resource',
     desc: 'Robot Capability Resource',
-    ops: [{ method: 'GET', path: '/api/robots/{name}/capabilities', summary: "The robot's capability document (canonical key order)", params: [NAME], ok: '{"deviceType":"FLEX_3","printer":true,"physicalTouch":true,…}' }, ...crud('robot-capabilities', 'robot capability')],
+    ops: [{ method: 'GET', path: '/api/robots/{name}/capabilities', summary: "The robot's capability document (canonical key order)", params: [NAME], ok: '{"deviceType":"FLUX_3","printer":true,"physicalTouch":true,…}' }, ...crud('robot-capabilities', 'robot capability')],
   },
   {
     tag: 'checkout-resource',
     desc: 'Checkout Resource',
     ops: [
-      { method: 'POST', path: '/api/robots/checkout', summary: 'Check out a robot for a build (LRU among matching Available robots)', body: '{"buildId":"Java/uia-remote-regression-flex#4127","jobId":"Java/uia-remote-regression-flex","deviceType":"FLEX_3","environment":"DEV1"}', ok: '{"robot":"wall-e","deviceType":"FLEX_3","runType":"standalone","env":{…}}', errors: [[409, 'Conflict — no matching robot'], [423, 'Locked — robot blocked from checkouts']] },
+      { method: 'POST', path: '/api/robots/checkout', summary: 'Check out a robot for a build (LRU among matching Available robots)', body: '{"buildId":"Java/uia-remote-regression-flux#4127","jobId":"Java/uia-remote-regression-flux","deviceType":"FLUX_3","environment":"DEV1"}', ok: '{"robot":"wall-e","deviceType":"FLUX_3","runType":"standalone","env":{…}}', errors: [[409, 'Conflict — no matching robot'], [423, 'Locked — robot blocked from checkouts']] },
       { method: 'POST', path: '/api/robots/{name}/release', summary: 'Release a checked-out robot', params: [NAME] },
     ],
   },
@@ -96,7 +96,7 @@ const TAGS: { tag: string; desc: string; ops: Op[] }[] = [
   { tag: 'health-check-resource', desc: 'Health Check Resource', ops: [{ method: 'POST', path: '/api/health-check/run', summary: 'Run the health check now (tutorial)', errors: [[403, 'Force health check is disabled in this environment']] }] },
   { tag: 'device-resource', desc: 'Device Resource', ops: crud('devices', 'device') },
   { tag: 'merchant-config-resource', desc: 'Merchant Config Resource', ops: crud('merchant-configs', 'merchant config') },
-  { tag: 'screen-resource', desc: 'Screen Resource', ops: crud('screens', 'screen', [{ name: 'deviceType.equals', in: 'query', type: 'string', description: 'Device Type', example: 'FLEX_3' }]) },
+  { tag: 'screen-resource', desc: 'Screen Resource', ops: crud('screens', 'screen', [{ name: 'deviceType.equals', in: 'query', type: 'string', description: 'Device Type', example: 'FLUX_3' }]) },
   { tag: 'screen-location-resource', desc: 'Screen Location Resource', ops: crud('screen-locations', 'screen location', [{ name: 'screenId.equals', in: 'query', type: 'integer', description: 'Screen id' }]) },
   { tag: 'card-profile-resource', desc: 'Card Profile Resource', ops: crud('card-profiles', 'card profile') },
   { tag: 'management', desc: 'Spring Boot Actuator', ops: [{ method: 'GET', path: '/management/health', summary: 'Actuator web endpoint "health"', ok: '{"status":"UP"}' }] },

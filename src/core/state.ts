@@ -217,13 +217,13 @@ export interface ToolModes {
 /** Large items carried in both hands (hotbar disabled; `Q` sets down, `E` installs). */
 export type CarriedItemId =
   | 'ruler'
-  | 'flex2-spare'
-  | 'flex1-legacy'
-  | 'mini3-spare'
+  | 'flux2-spare'
+  | 'flux1-legacy'
+  | 'micro3-spare'
   | 'pi-spare'
   | 'cradle-new'
   | 'cradle-cracked'
-  | 'flex4-psu-brick'
+  | 'flux4-psu-brick'
   | 'collis-probe-spare'
   | 'receipt'
   | 'device'

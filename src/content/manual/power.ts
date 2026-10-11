@@ -85,7 +85,7 @@ LabSim devices draw an irregular **18V**. LabSim terminals and the expensive Col
 
 | You are holding… | Plug it into… |
 |---|---|
-| A new Flex 4 power brick | The commercial AC strip |
+| A new Flux 4 power brick | The commercial AC strip |
 | A spare Collis probe's power supply | The commercial AC strip |
 | A Raspberry Pi lead | The 5V 10A line (rack distribution) |
 | A NUC's DC lead | The 12V line |

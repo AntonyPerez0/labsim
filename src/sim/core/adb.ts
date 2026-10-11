@@ -1,7 +1,7 @@
 /**
  * Workstation ADB server state and device-side ADB behaviour (Sim §3.15): `adb connect` (5444 vs the
  * 5555 default, coworker desk devices), `adb -s … shell|exec-out|pull|logcat|tcpip`, UI Automator
- * hierarchy dumps (Sim §3.11: 2.2 sees the MFD only; 2.3 `displayId` reaches a Duo CFD).
+ * hierarchy dumps (Sim §3.11: 2.2 sees the MFD only; 2.3 `displayId` reaches a Duet CFD).
  * The terminal parsing is sim-devops'; these functions own the state transitions (CoreServices).
  */
 import type { TerminalDevice, LabState } from '../types';
@@ -213,7 +213,7 @@ function packageOf(screen: string): string {
 
 /**
  * UI Automator hierarchy XML of a display (Sim §3.11, §3.15.1): one `<node>` per visible button/label,
- * device-px bounds. A Duo's secondary display is visible only with `flags.uiaVersion == '2.3'`
+ * device-px bounds. A Duet's secondary display is visible only with `flags.uiaVersion == '2.3'`
  * (displayId 1); Secure Touch PIN keys are never in the hierarchy.
  */
 export function uiDump(lab: LabState, deviceId: string, display: 'primary' | 'secondary'): string {

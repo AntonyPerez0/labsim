@@ -80,7 +80,7 @@ export function stageDevice(lab: LabState, ctx: Ctx, deviceId: string, stage: st
   autoAdvanceNow(lab, ctx, side.dev, side.disp); // approved → receipt-options
   settle(lab, ...all);
   if (stage === 'receipt-options') return OK;
-  if (stage === 'receipt-done' && side.disp !== 'secondary') return err(`${owner.id}: receipt-done exists only on a Duo CFD`);
+  if (stage === 'receipt-done' && side.disp !== 'secondary') return err(`${owner.id}: receipt-done exists only on a Duet CFD`);
   press(lab, ctx, side.dev, side.disp, 'No Receipt');
   settle(lab, ...all);
   if (stage === 'receipt-done') return OK;
@@ -195,7 +195,7 @@ export const CORE_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('orca.createDevice', 'orca.saveDevice (binds simDeviceId by serial, §1.15)', [R('name', 'string', 'Device row name', 'johnny-5-flex2'), R('deviceType', 'deviceType', 'Device Type', 'FLEX_2'), R('serial', 'string', 'Serial', 'SIM-F2-000015'), R('ip', 'string', 'IP', '10.42.30.15'), p('label', 'string', 'Label', { default: '' }), p('by', 'string', 'Who', { default: 'jared' })]),
+    info: sop('orca.createDevice', 'orca.saveDevice (binds simDeviceId by serial, §1.15)', [R('name', 'string', 'Device row name', 'johnny-5-flux2'), R('deviceType', 'deviceType', 'Device Type', 'FLUX_2'), R('serial', 'string', 'Serial', 'SIM-F2-000015'), R('ip', 'string', 'IP', '10.42.30.15'), p('label', 'string', 'Label', { default: '' }), p('by', 'string', 'Who', { default: 'jared' })]),
     validate(lab, ps) {
       const e = need('orca.createDevice', ps, 'name', 'deviceType', 'serial', 'ip');
       if (e) return e;
@@ -208,7 +208,7 @@ export const CORE_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('orca.linkDevice', 'orca.saveRobot with that relation (CONFIG note)', [R('robot', 'robot', 'Robot Name', 'johnny-5'), p('field', 'string', 'Relation', { default: 'deviceId', values: ['deviceId', 'mfdDeviceId', 'cfdDeviceId'] }), R('device', 'string', "Device row name or ''", 'johnny-5-flex2'), p('by', 'string', 'Who', { default: 'jared' })]),
+    info: sop('orca.linkDevice', 'orca.saveRobot with that relation (CONFIG note)', [R('robot', 'robot', 'Robot Name', 'johnny-5'), p('field', 'string', 'Relation', { default: 'deviceId', values: ['deviceId', 'mfdDeviceId', 'cfdDeviceId'] }), R('device', 'string', "Device row name or ''", 'johnny-5-flux2'), p('by', 'string', 'Who', { default: 'jared' })]),
     validate(lab, ps) {
       const e = need('orca.linkDevice', ps, 'robot');
       if (e) return e;
@@ -247,7 +247,7 @@ export const CORE_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('device.stage', 'Drive the device through §3.9 with the normal inputs to a stage; render/auto-advance timers complete instantly [sim]; approved is held', [R('device', 'device', 'Runtime device', 'dev-r2-d2-duo'), R('stage', 'string', `One of ${STAGES.join(', ')}`, 'review-order'), p('items', 'list', 'Items added', { default: ['Tax Item 5'] })]),
+    info: sop('device.stage', 'Drive the device through §3.9 with the normal inputs to a stage; render/auto-advance timers complete instantly [sim]; approved is held', [R('device', 'device', 'Runtime device', 'dev-r2-d2-duet'), R('stage', 'string', `One of ${STAGES.join(', ')}`, 'review-order'), p('items', 'list', 'Items added', { default: ['Tax Item 5'] })]),
     validate(lab, ps) {
       const e = need('device.stage', ps, 'device', 'stage');
       if (e) return e;
@@ -264,7 +264,7 @@ export const CORE_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('device.swap', 'device.swapHardware path: old device → storage (unplugged), new device seated, hub connected, PSU on the rig strip socket, boots 30 s; Orca untouched', [R('rig', 'rig', 'Rig', 'johnny-5'), R('deviceId', 'device', 'Stored device to install', 'dev-spare-flex2'), p('storeAt', 'string', 'Where the old device goes', { default: 'storage-shelf' })]),
+    info: sop('device.swap', 'device.swapHardware path: old device → storage (unplugged), new device seated, hub connected, PSU on the rig strip socket, boots 30 s; Orca untouched', [R('rig', 'rig', 'Rig', 'johnny-5'), R('deviceId', 'device', 'Stored device to install', 'dev-spare-flux2'), p('storeAt', 'string', 'Where the old device goes', { default: 'storage-shelf' })]),
     validate(lab, ps) {
       const e = need('device.swap', ps, 'rig', 'deviceId');
       if (e) return e;
@@ -280,7 +280,7 @@ export const CORE_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('device.provision', 'The end state of a completed Laz swap (§3.17.2) without running it; resetAdb leaves adbTcpPort = null', [R('device', 'device', 'Runtime device', 'dev-data-mini3'), R('merchant', 'merchant', 'Merchant Config name', 'AUTO-US-NOPIN-02'), p('resetAdb', 'boolean', 'Leave ADB over TCP off', { default: false })]),
+    info: sop('device.provision', 'The end state of a completed Laz swap (§3.17.2) without running it; resetAdb leaves adbTcpPort = null', [R('device', 'device', 'Runtime device', 'dev-data-micro3'), R('merchant', 'merchant', 'Merchant Config name', 'AUTO-US-NOPIN-02'), p('resetAdb', 'boolean', 'Leave ADB over TCP off', { default: false })]),
     validate(lab, ps) {
       const e = need('device.provision', ps, 'device', 'merchant');
       if (e) return e;
@@ -322,7 +322,7 @@ export const CORE_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('power.addLoad', 'Create an unplugged free-standing load (a spare brick / PSU on the bench)', [R('id', 'string', 'Load id', 'psu-flex4-new'), R('label', 'string', 'Label', 'New Flex 4 power brick'), R('expects', 'string', '5V | 12V | 24V | AC-BRICK-18V | AC', 'AC-BRICK-18V'), p('drawA', 'number', 'Nominal draw (A)', { default: 0.5 }), p('deviceId', 'device', 'Device it powers')]),
+    info: sop('power.addLoad', 'Create an unplugged free-standing load (a spare brick / PSU on the bench)', [R('id', 'string', 'Load id', 'psu-flux4-new'), R('label', 'string', 'Label', 'New Flux 4 power brick'), R('expects', 'string', '5V | 12V | 24V | AC-BRICK-18V | AC', 'AC-BRICK-18V'), p('drawA', 'number', 'Nominal draw (A)', { default: 0.5 }), p('deviceId', 'device', 'Device it powers')]),
     validate(lab, ps) {
       const e = need('power.addLoad', ps, 'id', 'label', 'expects');
       if (e) return e;

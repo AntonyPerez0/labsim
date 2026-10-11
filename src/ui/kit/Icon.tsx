@@ -391,7 +391,7 @@ export function Icon({ name, size = 18, stroke = 1.8, className, style, title }:
   );
 }
 
-/** The lab-style four-leaf mark used by the logo and loading screen. */
+/** The LabSim three-bar mark used by the logo and loading screen. */
 export function LabWordmark({ size = 28, className }: { size?: number; className?: string }) {
   return (
     <svg className={className} width={size} height={size} viewBox="0 0 32 32" aria-hidden>

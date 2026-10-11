@@ -1,6 +1,6 @@
 /**
  * M13 — uia-remote: Structure & the Page Object Model (Cur §2 M13). Mentor {{morgan}}.
- * Setup (`academy:M13`, Sim §4.4.2): `uia.scrollSwapped` (HomeScreen.open() Flex branch scrolls
+ * Setup (`academy:M13`, Sim §4.4.2): `uia.scrollSwapped` (HomeScreen.open() Flux branch scrolls
  * horizontally) and `uia.missingScreenMethods { class: 'ReceiptScreen' }`; the player clones uia-remote
  * in step 3 and gets both bugs. Code facts are evaluated on the working tree (`local:<Class>`, Sim §3.19.6).
  */
@@ -117,7 +117,7 @@ export const M13: LessonDef = {
     'Clone uia-remote from GitHub into IntelliJ IDEA (Get from Version Control) and learn its Maven-style app/src layout.',
     'Never modify app/src/main. Page objects go in androidTest/…/pageobjects, tests in …/testactions, DB code in …/databases, runners in test.',
     'Every screen class extends BaseTest, declares its locators in Zone 1 and its helpers in Zone 2, and implements waitForScreen() and isScreenPresent().',
-    'Device quirks live in Zone 2 helpers: open(appName) scrolls vertically on a Flex and horizontally on a Mini or Station.',
+    'Device quirks live in Zone 2 helpers: open(appName) scrolls vertically on a Flux and horizontally on a Micro or Stand.',
     'UI Automator talks to one device at a time: the runner in test hops between MFD and CFD handles method by method.',
   ],
   steps: [
@@ -125,7 +125,7 @@ export const M13: LessonDef = {
       id: 'M13.01',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: "uia-remote is mine. I built it because no framework could automate native tethered setups: Station-to-Mini, Mini-to-Mini, Station Duo. It's Java on Google's Android UI Automator, version 2.3, and it drives standalone and tethered devices across native LabSim apps.",
+      text: "uia-remote is mine. I built it because no framework could automate native tethered setups: Stand-to-Micro, Micro-to-Micro, Stand Duet. It's Java on Google's Android UI Automator, version 2.3, and it drives standalone and tethered devices across native LabSim apps.",
       factIds: ['F159', 'F039', 'F040', 'F005', 'F006', 'F001'],
     },
     {
@@ -217,23 +217,23 @@ export const M13: LessonDef = {
       id: 'M13.07',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: "Every screen, pop-up or window gets its own class extending BaseTest, which gives you global setup, teardown and instance variables. Zone 1 declares the elements. Zone 2 holds the helpers, and that's where device quirks hide. For example, open(appName) scrolls vertically on a Flex and horizontally on a Mini or a Station.",
+      text: "Every screen, pop-up or window gets its own class extending BaseTest, which gives you global setup, teardown and instance variables. Zone 1 declares the elements. Zone 2 holds the helpers, and that's where device quirks hide. For example, open(appName) scrolls vertically on a Flux and horizontally on a Micro or a Stand.",
       factIds: ['F172', 'F173', 'F174', 'F175', 'F176', 'F177'],
     },
     {
       id: 'M13.08',
       kind: 'computer-task',
-      hud: 'HomeScreenTest fails on WALL-E (Flex 3). Fix open()',
+      hud: 'HomeScreenTest fails on WALL-E (Flux 3). Fix open()',
       app: 'intellij',
       route: `/project/uia-remote/file/${PO}/HomeScreen.java`,
       success: c.all(c.eq(p.codeFact('openScroll', 'local:HomeScreen'), true), c.eq(p.localRun('HomeScreenTest').result, 'PASS')),
       objectives: [
-        { id: 'M13.08.fix', text: 'FLEX → scrollVerticallyTo, Mini/Station → scrollHorizontallyTo', done: c.eq(p.codeFact('openScroll', 'local:HomeScreen'), true) },
+        { id: 'M13.08.fix', text: 'FLUX → scrollVerticallyTo, Micro/Stand → scrollHorizontallyTo', done: c.eq(p.codeFact('openScroll', 'local:HomeScreen'), true) },
         { id: 'M13.08.run', text: 'Run HomeScreenTest on WALL-E: green', done: c.eq(p.localRun('HomeScreenTest').result, 'PASS') },
       ],
       hints: [
-        { afterS: 60, idle: true, effect: 'text', text: 'Read the run log: it scrolls horizontally on a Flex.' },
-        { afterS: 120, idle: true, effect: 'text', text: 'In open(): the FLEX branch must call scrollVerticallyTo(appName); the else branch scrollHorizontallyTo(appName).' },
+        { afterS: 60, idle: true, effect: 'text', text: 'Read the run log: it scrolls horizontally on a Flux.' },
+        { afterS: 120, idle: true, effect: 'text', text: 'In open(): the FLUX branch must call scrollVerticallyTo(appName); the else branch scrollHorizontallyTo(appName).' },
         { afterS: 180, idle: true, effect: 'show-me-button' },
       ],
       showMe: [{ app: 'intellij', route: `/project/uia-remote/file/${PO}/HomeScreen.java`, target: 'intellij.runButton', action: 'click' }],

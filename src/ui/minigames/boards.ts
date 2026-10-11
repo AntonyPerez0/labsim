@@ -101,7 +101,7 @@ export const ROADMAP_SORT: SortBoardDef = {
     { id: 'nuc-control', label: 'Hardware control on Windows Intel NUCs', answer: 'retired', why: 'corporate security monitoring filled the NUC disks, so hardware control was moved off the NUCs onto Pis.' },
     { id: 'ollama-poc', label: 'Ollama vision PoC on webcam streams', answer: 'progress', why: 'Ollama currently runs proof-of-concept Vision LLM checks of receipt layouts and tip math.' },
     { id: 'pin-bypass', label: 'Gen 2 Software PIN Bypass (with Core OS Team)', answer: 'progress', why: 'The team is partnering with the Core OS Team to build it. It is in progress, not shipped.' },
-    { id: 'duo-ocr', label: 'Station Duo Screen Compare / OCR', answer: 'retired', why: 'OCR is brittle and is being phased out, because UI Automator 2.3 tracks elements on both screens natively.' },
+    { id: 'duet-ocr', label: 'Stand Duet Screen Compare / OCR', answer: 'retired', why: 'OCR is brittle and is being phased out, because UI Automator 2.3 tracks elements on both screens natively.' },
     { id: 'github', label: 'Repos on GitHub (Gort, uia-remote, pigeon)', answer: 'today', why: 'GitHub hosts the team repositories today.' },
   ],
   factIds: ['F023', 'F022', 'F031', 'F032', 'F222', 'F156'],

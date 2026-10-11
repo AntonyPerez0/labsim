@@ -59,7 +59,7 @@ export function CommitsPage(props: { repo: GitRepo; refPath: string }) {
                     <a className="gh-commit-title" href={`#${commitRoute(repo.id, c.sha)}`} onClick={(e) => (e.preventDefault(), navigate(commitRoute(repo.id, c.sha)))}>
                       {firstLine(c.message)}
                     </a>
-                    <div className="gh-flex gh-muted" style={{ fontSize: 12, marginTop: 4, gap: 6 }}>
+                    <div className="gh-flux gh-muted" style={{ fontSize: 12, marginTop: 4, gap: 6 }}>
                       <Avatar who={c.author} size={16} playerInitials={playerInitials} />
                       <b style={{ color: 'var(--gh-fg)' }}>{login(c.author)}</b> committed <Rel ms={c.atMs} />
                     </div>
@@ -113,7 +113,7 @@ export function CommitPage(props: { repo: GitRepo; sha: string }) {
     <>
       <GhHeader repo={repo.id} tab="code" openPrs={openPrs} />
       <div className="gh-container">
-        <div className="gh-flex" style={{ marginBottom: 16 }}>
+        <div className="gh-flux" style={{ marginBottom: 16 }}>
           <h2 style={{ fontSize: 20, fontWeight: 600 }}>Commit {shortSha(c.sha)}</h2>
           <span className="gh-spacer" />
           <button type="button" className="gh-btn gh-btn-sm" onClick={() => navigate(treeRoute(repo.id, c.sha))}>
@@ -134,7 +134,7 @@ export function CommitPage(props: { repo: GitRepo; sha: string }) {
               msgLines[0]
             )}
             {msgLines.length > 1 ? <pre style={{ fontSize: 14, fontWeight: 400, margin: '8px 0 0', whiteSpace: 'pre-wrap', fontFamily: 'inherit' }}>{msgLines.slice(1).join('\n').trim()}</pre> : null}
-            <div className="gh-flex gh-muted" style={{ fontSize: 12, fontWeight: 400, marginTop: 8 }}>
+            <div className="gh-flux gh-muted" style={{ fontSize: 12, fontWeight: 400, marginTop: 8 }}>
               <Oct name="branch" /> {branchesWith.slice(0, 3).join(', ')}
             </div>
           </div>
@@ -163,7 +163,7 @@ export function CommitPage(props: { repo: GitRepo; sha: string }) {
             </span>
           </div>
         </div>
-        <div className="gh-flex" style={{ marginBottom: 16 }}>
+        <div className="gh-flux" style={{ marginBottom: 16 }}>
           <span>
             Showing <b>{changes.length} changed file{changes.length === 1 ? '' : 's'}</b> with <b>{totals.a} addition{totals.a === 1 ? '' : 's'}</b> and <b>{totals.d} deletion{totals.d === 1 ? '' : 's'}</b>.
           </span>
@@ -258,7 +258,7 @@ export function BranchesPage(props: { repo: GitRepo }) {
   const yours = rows.filter((r) => r.author === 'player');
   const row = (r: { b: string; head: string; ahead: number; behind: number; atMs: number; pr: (typeof rows)[number]['pr'] }, isDefault = false) => (
     <div className="gh-branch-row" key={r.b}>
-      <span className="gh-flex" style={{ gap: 6, minWidth: 0 }}>
+      <span className="gh-flux" style={{ gap: 6, minWidth: 0 }}>
         <a className="gh-branch-name" href="#" onClick={(e) => (e.preventDefault(), navigate(isDefault ? repoRoute(repo.id) : treeRoute(repo.id, r.b)))}>
           {r.b}
         </a>
@@ -290,7 +290,7 @@ export function BranchesPage(props: { repo: GitRepo }) {
       </span>
       <span>
         {r.pr ? (
-          <a href="#" className="gh-flex" style={{ gap: 4, fontSize: 12 }} onClick={(e) => (e.preventDefault(), navigate(pullRoute(repo.id, r.pr!.number)))}>
+          <a href="#" className="gh-flux" style={{ gap: 4, fontSize: 12 }} onClick={(e) => (e.preventDefault(), navigate(pullRoute(repo.id, r.pr!.number)))}>
             <Oct name={r.pr.state === 'merged' ? 'merge' : r.pr.state === 'closed' ? 'prClosed' : 'pr'} color={r.pr.state === 'merged' ? '#8250df' : r.pr.state === 'closed' ? '#d1242f' : '#1a7f37'} />#{r.pr.number}
           </a>
         ) : null}
@@ -306,7 +306,7 @@ export function BranchesPage(props: { repo: GitRepo }) {
     <>
       <GhHeader repo={repo.id} tab="code" openPrs={openPrs} />
       <div className="gh-container">
-        <div className="gh-flex" style={{ marginBottom: 16 }}>
+        <div className="gh-flux" style={{ marginBottom: 16 }}>
           <h2 style={{ fontSize: 24, fontWeight: 400 }}>Branches</h2>
           <span className="gh-spacer" />
           {!readOnly ? (

@@ -85,7 +85,7 @@ export const QUIZ_M11: QuizQuestion[] = resolvePeople([
     type: "tf",
     moduleId: "M11",
     difficulty: 1,
-    prompt: "DEVICE_TYPE=flex_3 works fine because Orca lower-cases the enum.",
+    prompt: "DEVICE_TYPE=flux_3 works fine because Orca lower-cases the enum.",
     options: ["True", "False"],
     answer: 1,
     explanation: "Env vars must be ALL CAPS to match the Device Type enum (F122).",
@@ -119,7 +119,7 @@ export const QUIZ_M11: QuizQuestion[] = resolvePeople([
     prompt: "A Jenkins job must run on ROSIE, which is Unavailable. What must the job parameters contain?",
     options: [
       "ROSIE's exact unique robot name (e.g. ROBOT_NAME=rosie)",
-      "DEVICE_TYPE=FLEX_POCKET only",
+      "DEVICE_TYPE=FLUX_POCKET only",
       "Nothing; Jenkins ignores Unavailable",
       "FORCE=true",
     ],

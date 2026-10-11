@@ -1,9 +1,9 @@
 /**
  * M14 — config.properties & the Tethered Tax Test (Cur §2 M14). Mentor {{morgan}}, cameo the office
- * coworker ({{riley}}, `npc.coworker`, desk Flex `10.42.60.4` on the default ADB port 5555).
+ * coworker ({{riley}}, `npc.coworker`, desk Flux `10.42.60.4` on the default ADB port 5555).
  * Setup (`academy:M14`, Sim §4.4.2): uia-remote cloned with the broken `config.properties` of Cur M14
- * (`m14-broken`); the coworker's desk Flex is already known to the workstation's ADB server; MEGATRON
- * (STATION_2 MFD `10.42.30.21` + MINI_2 CFD `10.42.30.22`, DEV1) is Available. How 5555 reaches the
+ * (`m14-broken`); the coworker's desk Flux is already known to the workstation's ADB server; MEGATRON
+ * (STAND_2 MFD `10.42.30.21` + MICRO_2 CFD `10.42.30.22`, DEV1) is Available. How 5555 reaches the
  * coworker's device is illustrative (Cur S19): the refused lab connect falls back to the first known device.
  */
 import { c, on, p } from '../../types';
@@ -16,7 +16,7 @@ export const M14_TARGET: Readonly<Record<string, string>> = {
   merchantFacingDeviceIp: '10.42.30.21',
   customerFacingDeviceIp: '10.42.30.22',
   serial: 'SIM-S2-000021',
-  deviceType: 'Station',
+  deviceType: 'Stand',
   theme: 'avocado',
   kernelType: 'CPA',
   portNumber: '5444',
@@ -35,13 +35,13 @@ const taxRunning = (pl: { testName: string }) => pl.testName === 'TaxTest';
 /**
  * The step-1 config (Cur S19 collision). The sim's runner validates theme/kernelType before it connects
  * and TaxTest needs a tethered config whose deviceType matches the device it lands on, so the curriculum's
- * start file (theme=classic, standalone, Mini) would die on the theme and never reach the coworker's desk
- * Flex. Step 1 therefore runs MEGATRON's config with the two values that cause the collision —
- * portNumber=5555 (the lab connect is refused → fallback to the desk Flex) and deviceType=Flex (Register
+ * start file (theme=classic, standalone, Micro) would die on the theme and never reach the coworker's desk
+ * Flux. Step 1 therefore runs MEGATRON's config with the two values that cause the collision —
+ * portNumber=5555 (the lab connect is refused → fallback to the desk Flux) and deviceType=Flux (Register
  * really opens there); the stale theme/kernelType of the start file arrive at M14.04, before the player
  * opens the file. Written with `sim.git.writeFile` (draft-safe at activity start, unlike scenario items).
  */
-const COLLISION_CONFIG = Object.entries({ ...M14_TARGET, portNumber: '5555', deviceType: 'Flex' })
+const COLLISION_CONFIG = Object.entries({ ...M14_TARGET, portNumber: '5555', deviceType: 'Flux' })
   .map(([k, v]) => `${k}=${v}`)
   .join('\n')
   .concat('\n');
@@ -68,7 +68,7 @@ export const M14: LessonDef = {
     'Running locally? You fill in config.properties yourself; in CI Jenkins injects the same values.',
     'portNumber is locked to 5444. The ADB default 5555 once let scripts connect to and drive coworkers\' desk devices.',
     'theme is always avocado and kernelType is always CPA (Core Payments Application, which replaced SPA).',
-    'Tethered rigs: runType=tethered, MFD and CFD IPs (the same IP on a Station Duo), the serial of the primary terminal, deviceType = Mini, Flex or Station.',
+    'Tethered rigs: runType=tethered, MFD and CFD IPs (the same IP on a Stand Duet), the serial of the primary terminal, deviceType = Micro, Flux or Stand.',
     'Reserve the rig in Orca before a local run and set it back to Available afterwards.',
     'The Tax test: MFD_O1 (Register, Tax Item 5, Review Order, Orca → Callus loads the swipe card) → CFD_O1 (assert subtotal, tax, total) → MFD_O2 (Pay, Charge) → CFD finalises payment; it starts and ends on HomeScreen.',
   ],
@@ -88,7 +88,7 @@ export const M14: LessonDef = {
       id: 'M14.02',
       kind: 'dialogue',
       speaker: 'riley',
-      text: 'Hey! Something just opened Register on my desk Flex and added a Tax Item 5! Is that one of yours?!',
+      text: 'Hey! Something just opened Register on my desk Flux and added a Tax Item 5! Is that one of yours?!',
       factIds: ['F200'],
     },
     { id: 'M14.03', kind: 'walk-to', hud: "Go and look at the coworker's device", location: 'loc.coworker-desks', radiusM: 2 },
@@ -105,7 +105,7 @@ export const M14: LessonDef = {
       kind: 'computer-task',
       hud: 'Stop the run in IntelliJ',
       app: 'intellij',
-      // `coworkerIdle` also counts the desk Flex that the workstation's ADB server merely *knows* (setup
+      // `coworkerIdle` also counts the desk Flux that the workstation's ADB server merely *knows* (setup
       // `ws.adbKnows`), which only `adb disconnect` clears; this step asks for the run to stop driving it.
       success: c.all(c.any(c.appAction('intellij', 'intellij.run.stopped'), c.neq(p.localRun('TaxTest').result, 'RUNNING')), noRunOnCoworker),
       wrongActions: [
@@ -137,7 +137,7 @@ export const M14: LessonDef = {
       objectives: [
         { id: 'M14.05.port', text: 'portNumber=5444', done: cfg('portNumber') },
         { id: 'M14.05.tether', text: 'runType=tethered, CFD IP 10.42.30.22', done: c.all(cfg('runType'), cfg('customerFacingDeviceIp')) },
-        { id: 'M14.05.type', text: 'deviceType = the MFD family (Station)', done: cfg('deviceType') },
+        { id: 'M14.05.type', text: 'deviceType = the MFD family (Stand)', done: cfg('deviceType') },
         { id: 'M14.05.locks', text: 'theme=avocado, kernelType=CPA', done: c.all(cfg('theme'), cfg('kernelType')) },
         { id: 'M14.05.valid', text: 'Validator: config.properties ✓ 11/11', done: configValid },
       ],
@@ -152,7 +152,7 @@ export const M14: LessonDef = {
       ],
       hints: [
         { afterS: 60, idle: true, effect: 'text', text: 'Open "Show details" on the validator bar: each red row says what it expects.' },
-        { afterS: 120, idle: true, effect: 'text', text: 'MEGATRON = Station 2 MFD 10.42.30.21 tethered to Mini 2 CFD 10.42.30.22: runType=tethered, deviceType=Station, portNumber=5444, theme=avocado, kernelType=CPA.' },
+        { afterS: 120, idle: true, effect: 'text', text: 'MEGATRON = Stand 2 MFD 10.42.30.21 tethered to Micro 2 CFD 10.42.30.22: runType=tethered, deviceType=Stand, portNumber=5444, theme=avocado, kernelType=CPA.' },
         { afterS: 180, idle: true, effect: 'show-me-button' },
       ],
       showMe: [{ app: 'intellij', route: '/project/uia-remote/file/config.properties', target: 'intellij.configValidator', action: 'click' }],
@@ -162,7 +162,7 @@ export const M14: LessonDef = {
       id: 'M14.06',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: 'theme is locked to avocado; the old theme toggles are deprecated. kernelType is CPA, Core Payments Application, which replaced SPA, the Secure Processor Application. deviceType is the family: Mini, Flex or Station, and it drives layout and scroll logic. Extras: unlock passcode, backend environment, and the robot\'s registration name. On a Station Duo, both IPs are the same address. And in CI you never touch this file. Jenkins injects all of it.',
+      text: 'theme is locked to avocado; the old theme toggles are deprecated. kernelType is CPA, Core Payments Application, which replaced SPA, the Secure Processor Application. deviceType is the family: Micro, Flux or Stand, and it drives layout and scroll logic. Extras: unlock passcode, backend environment, and the robot\'s registration name. On a Stand Duet, both IPs are the same address. And in CI you never touch this file. Jenkins injects all of it.',
       factIds: ['F196', 'F197', 'F195', 'F201', 'F193', 'F189'],
     },
     {

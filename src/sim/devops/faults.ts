@@ -101,7 +101,7 @@ const gortCapabilityDropped: FaultDef = {
   ], {
     tags: ['orca.capabilities', 'hw.devices', 'go.sdk'],
     clears: 'the file on main parses and capabilities[key] === true',
-    symptoms: ['[orca] checkout → vision (FLEX_POCKET) OK', '[go-sdk] PrintReceipt → PRINTER_NOT_AVAILABLE', 'Match preview lists vision'],
+    symptoms: ['[orca] checkout → vision (FLUX_POCKET) OK', '[go-sdk] PrintReceipt → PRINTER_NOT_AVAILABLE', 'Match preview lists vision'],
     usedBy: ['INC23', 'M08'],
   }),
   validate(lab, p) {
@@ -299,7 +299,7 @@ const uiaScrollSwapped: FaultDef = {
   ], {
     tags: ['uia.scroll', 'uia.pom'],
     clears: 'CF05 = correct',
-    symptoms: ['[HomeScreen] open("Register"): scrolling horizontally (Mini/Station)… ×5', "AssertionError: App 'Register' not found on HomeScreen"],
+    symptoms: ['[HomeScreen] open("Register"): scrolling horizontally (Micro/Stand)… ×5', "AssertionError: App 'Register' not found on HomeScreen"],
     usedBy: ['M13', 'P3-4'],
   }),
   validate(lab, p) {
@@ -397,7 +397,7 @@ const configPort5555: FaultDef = {
   info: info('config.port5555', 'ADB default port in config', 'workstation', [{ ...cfgPathParam, target: true }], {
     tags: ['adb.port', 'uia.config', 'adb.usage'],
     clears: "portNumber == '5444' and no workstation.adbConnections entry ends with ':5555'",
-    symptoms: ['connect 10.42.30.13:5555 … refused', 'falling back to first known device: 10.42.60.4:5555', "Riley's desk Flex opens Register and adds Tax Item 5"],
+    symptoms: ['connect 10.42.30.13:5555 … refused', 'falling back to first known device: 10.42.60.4:5555', "Riley's desk Flux opens Register and adds Tax Item 5"],
     usedBy: ['INC27', 'P3-1'],
   }),
   validate(lab, p) {
@@ -415,7 +415,7 @@ const configPort5555: FaultDef = {
       const r = core().adbConnect(lab, ctx, '10.42.60.4:5555');
       if (!r.ok || !lab.workstation.adbConnections.some((c) => c.target === '10.42.60.4:5555')) {
         lab.workstation.adbServerRunning = true;
-        lab.workstation.adbConnections.push({ target: '10.42.60.4:5555', hostId: null, deviceId: 'dev-riley-desk-flex', state: 'device', coworker: true });
+        lab.workstation.adbConnections.push({ target: '10.42.60.4:5555', hostId: null, deviceId: 'dev-riley-desk-flux', state: 'device', coworker: true });
       }
       record(['workstation', 'adbConnections'], before, JSON.parse(JSON.stringify(lab.workstation.adbConnections)));
     }
@@ -434,7 +434,7 @@ const configValue: FaultDef = {
   ], {
     tags: ['uia.config', 'orca.tethered', 'uia.scroll'],
     clears: "the key equals the validator target for the file's robotName",
-    symptoms: ['[runner] CFD handle 10.42.30.19:5444 → No route to host', "deviceType=Mini on TARS → App 'Register' not found"],
+    symptoms: ['[runner] CFD handle 10.42.30.19:5444 → No route to host', "deviceType=Micro on TARS → App 'Register' not found"],
     usedBy: ['INC30', 'INC33'],
   }),
   validate(lab, p) {
@@ -491,14 +491,14 @@ function setSaved(lab: LabState, ctx: TxContext, record: Rec, jobId: string, k: 
 
 const jenkinsEnvCase: FaultDef = {
   info: info('jenkins.envCase', 'Enum value not ALL CAPS', 'jenkins', [
-    jobParam('Java/uia-remote-regression-flex'),
+    jobParam('Java/uia-remote-regression-flux'),
     param('param', 'string', 'parameter', 'DEVICE_TYPE', { default: 'DEVICE_TYPE' }),
-    param('value', 'string', 'saved value', 'flex_3', { default: 'flex_3' }),
+    param('value', 'string', 'saved value', 'flux_3', { default: 'flux_3' }),
     param('by', 'string', 'who saved it', 'riley', { default: 'riley' }),
   ], {
     tags: ['jenkins.envvars', 'orca.devicetype'],
     clears: 'savedParams[param] is exactly one of the 14 DeviceType constants',
-    symptoms: ['[orca] checkout request deviceType=flex_3', 'java.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.flex_3'],
+    symptoms: ['[orca] checkout request deviceType=flux_3', 'java.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.flux_3'],
     usedBy: ['INC39', 'M11', 'M18'],
   }),
   validate(lab, p) {
@@ -562,12 +562,12 @@ const jenkinsCapsConflict: FaultDef = {
   info: info('jenkins.capsConflict', 'Pipeline capability contradicts the test', 'jenkins', [
     jobParam('Java/contact-canada-pin-sale'),
     param('key', 'string', 'capability key', 'deviceType', { default: 'deviceType' }),
-    param('value', 'string', 'new value', 'MINI_3', { default: 'MINI_3' }),
+    param('value', 'string', 'new value', 'MICRO_3', { default: 'MICRO_3' }),
     param('by', 'string', 'who edited the script', 'alex', { default: 'alex' }),
   ], {
     tags: ['orca.capabilities', 'hw.devices', 'jenkins.envvars'],
     clears: "the script map merged with the job's dynamic file has no conflicting key",
-    symptoms: ['[orca] 409 Conflict: capability conflict (pipeline deviceType=MINI_3, test deviceType=COMPACT)'],
+    symptoms: ['[orca] 409 Conflict: capability conflict (pipeline deviceType=MICRO_3, test deviceType=COMPASS)'],
     usedBy: ['INC49'],
   }),
   validate(lab, p) {
@@ -626,7 +626,7 @@ const jenkinsNamedRobot: FaultDef = {
 const rigTestRunning: FaultDef = {
   info: info('rig.testRunning', 'A test holds the rig', 'jenkins', [
     param('rig', 'rig', 'robot Name', 'wall-e', { required: true, target: true }),
-    param('job', 'job', 'Jenkins job', 'Java/uia-remote-regression-flex', { default: 'Java/uia-remote-regression-flex' }),
+    param('job', 'job', 'Jenkins job', 'Java/uia-remote-regression-flux', { default: 'Java/uia-remote-regression-flux' }),
     param('number', 'number', 'build number', '4127'),
     param('durationMs', 'number', 'loop duration (physical ms); empty = until cleared', '30000'),
     param('by', 'string', 'trigger', 'jenkins', { default: 'jenkins' }),
@@ -637,7 +637,7 @@ const rigTestRunning: FaultDef = {
     usedBy: ['M01', 'INC12', 'DR16'],
   }),
   validate(lab, p) {
-    const job = lab.jenkins.jobs[s(p, 'job', 'Java/uia-remote-regression-flex')];
+    const job = lab.jenkins.jobs[s(p, 'job', 'Java/uia-remote-regression-flux')];
     if (!job || !job.exists) return err(`fault rig.testRunning: invalid param job='${s(p, 'job')}' (no such job)`);
     const robot = Object.values(lab.orca.robots).find((r) => r.name === s(p, 'rig'));
     if (!robot) return err(`fault rig.testRunning: invalid param rig='${s(p, 'rig')}' (no such rig)`);
@@ -645,7 +645,7 @@ const rigTestRunning: FaultDef = {
     return ok({ target: robot.name });
   },
   apply(lab, ctx, p, record) {
-    const jobId = s(p, 'job', 'Java/uia-remote-regression-flex');
+    const jobId = s(p, 'job', 'Java/uia-remote-regression-flux');
     if (p['number'] !== undefined && p['number'] !== '' && p['number'] !== null) {
       record(['jenkins', 'nextBuildNumber', jobId], lab.jenkins.nextBuildNumber[jobId], Number(p['number']));
       lab.jenkins.nextBuildNumber[jobId] = Number(p['number']);
@@ -700,7 +700,7 @@ const repoCheck = (p: Record<string, unknown>): string | null => (isRepoId(str(p
 
 export const DEVOPS_SETUP_OP_DEFS: SetupOpDef[] = [
   {
-    info: sop('ollama.seedReceipt', 'Add a ReceiptScenario and a ~/Downloads/<name>.jpg pointing at it', [R('imageRef', 'string', 'image ref', 'img:receipt:wall-e:1015'), R('deviceId', 'device', 'device', 'dev-wall-e-flex3'), R('subtotalCents', 'number', 'subtotal', '4200'), param('taxCents', 'number', 'tax', '0', { default: 0 }), R('tipPct', 'number', 'tip %', '18'), R('printedTipCents', 'number', 'printed tip', '756'), param('misreadField', 'string', 'tip | total', 'tip'), param('misreadAs', 'string', 'what the model reads', '$7.65')]),
+    info: sop('ollama.seedReceipt', 'Add a ReceiptScenario and a ~/Downloads/<name>.jpg pointing at it', [R('imageRef', 'string', 'image ref', 'img:receipt:wall-e:1015'), R('deviceId', 'device', 'device', 'dev-wall-e-flux3'), R('subtotalCents', 'number', 'subtotal', '4200'), param('taxCents', 'number', 'tax', '0', { default: 0 }), R('tipPct', 'number', 'tip %', '18'), R('printedTipCents', 'number', 'printed tip', '756'), param('misreadField', 'string', 'tip | total', 'tip'), param('misreadAs', 'string', 'what the model reads', '$7.65')]),
     validate: (_lab, p) => {
       const e = need(p, 'imageRef', 'deviceId', 'subtotalCents', 'tipPct', 'printedTipCents');
       return e ? err(e) : ok(undefined);
@@ -740,7 +740,7 @@ export const DEVOPS_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('repo.deleteFile', 'Commit deleting path', [R('repo', 'string', 'repo id', 'gort'), R('path', 'repoPath', 'path', 'config/screen-locations/FLEX_4/RECEIPT_OPTIONS_5.json'), R('by', 'string', 'author', 'jared'), R('message', 'string', 'commit message', 'Remove unverified FLEX_4 5-option map')]),
+    info: sop('repo.deleteFile', 'Commit deleting path', [R('repo', 'string', 'repo id', 'gort'), R('path', 'repoPath', 'path', 'config/screen-locations/FLUX_4/RECEIPT_OPTIONS_5.json'), R('by', 'string', 'author', 'jared'), R('message', 'string', 'commit message', 'Remove unverified FLUX_4 5-option map')]),
     validate: (lab, p) => {
       const e = need(p, 'repo', 'path', 'by', 'message') ?? repoCheck(p);
       if (e) return err(e);
@@ -820,7 +820,7 @@ export const DEVOPS_SETUP_OP_DEFS: SetupOpDef[] = [
     },
   },
   {
-    info: sop('jenkins.seedBuild', 'A finished historical build (console from the engine formatter)', [R('job', 'job', 'job', 'Java/uia-remote-regression-flex'), param('params', 'list', 'parameters', '{}'), R('result', 'string', 'SUCCESS | FAILURE | UNSTABLE | ABORTED', 'FAILURE'), param('failureCode', 'string', 'failure code', 'ENUM_CASE'), param('robot', 'robot', 'robot', 'wall-e'), R('atMs', 'number', 'game ms', '-3600000'), R('by', 'string', 'trigger', 'riley')], true),
+    info: sop('jenkins.seedBuild', 'A finished historical build (console from the engine formatter)', [R('job', 'job', 'job', 'Java/uia-remote-regression-flux'), param('params', 'list', 'parameters', '{}'), R('result', 'string', 'SUCCESS | FAILURE | UNSTABLE | ABORTED', 'FAILURE'), param('failureCode', 'string', 'failure code', 'ENUM_CASE'), param('robot', 'robot', 'robot', 'wall-e'), R('atMs', 'number', 'game ms', '-3600000'), R('by', 'string', 'trigger', 'riley')], true),
     validate: (lab, p) => (lab.jenkins.jobs[str(p['job'])] ? ok(undefined) : err(`invalid param job='${str(p['job'])}' (no such job)`)),
     apply: (lab, _ctx, p) => {
       const job = lab.jenkins.jobs[str(p['job'])]!;

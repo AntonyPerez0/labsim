@@ -67,7 +67,7 @@ export function seedCapabilities(): Record<number, RobotCapability> {
     { id: 4, name: 'GO_SDK', key: 'goSdk', value: true, lookup: 'DYNAMIC_JSON', description: 'Terminal SDK runner target (David)', json: '{"goSdk": true}' },
     { id: 5, name: 'INTERAC', key: 'interac', value: true, lookup: 'BOTH', description: 'Canadian Interac flows (Westers beds)', json: '{"interac": true}' },
     { id: 6, name: 'PHONE', key: 'phone', value: true, lookup: 'DYNAMIC_JSON', description: 'Phone carriage with a mounted phone (mobile runners)', json: '{"phone": true}' },
-    { id: 7, name: 'OCR_CAMERA', key: 'ocrCamera', value: true, lookup: 'NON_DYNAMIC', description: 'Webcam aimed for Screen Compare (legacy Duo)', json: '{"ocrCamera": true}' },
+    { id: 7, name: 'OCR_CAMERA', key: 'ocrCamera', value: true, lookup: 'NON_DYNAMIC', description: 'Webcam aimed for Screen Compare (legacy Duet)', json: '{"ocrCamera": true}' },
     { id: 8, name: 'lab_dining', key: 'lab_dining', value: true, lookup: 'BOTH', description: 'LabSim Dining app provisioned (PayCore)', json: '{"lab_dining": true}' },
     { id: 9, name: 'CARD_MATRIX', key: 'cardMatrix', value: true, lookup: 'NON_DYNAMIC', description: 'PayCore back-to-back card matrix rig', json: '{"cardMatrix": true}' },
   ];
@@ -76,8 +76,8 @@ export function seedCapabilities(): Record<number, RobotCapability> {
 
 export function seedScreenCompareImages(): Record<number, ScreenCompareImage> {
   const rows: ScreenCompareImage[] = [
-    { id: 1, name: 'CFD_TOTAL', robotId: 4, screenName: 'CFD_CART', bbox: { x: 412, y: 288, w: 236, h: 44 }, expectedText: 'TOTAL $10.83', deprecated: false, usedBy: ['uia-remote:DuoCfdSuite'] },
-    { id: 2, name: 'CFD_THANK_YOU', robotId: 4, screenName: 'CFD_THANK_YOU', bbox: { x: 514, y: 336, w: 252, h: 48 }, expectedText: 'Thank you', deprecated: false, usedBy: ['uia-remote:DuoCheckoutTest'] },
+    { id: 1, name: 'CFD_TOTAL', robotId: 4, screenName: 'CFD_CART', bbox: { x: 412, y: 288, w: 236, h: 44 }, expectedText: 'TOTAL $10.83', deprecated: false, usedBy: ['uia-remote:DuetCfdSuite'] },
+    { id: 2, name: 'CFD_THANK_YOU', robotId: 4, screenName: 'CFD_THANK_YOU', bbox: { x: 514, y: 336, w: 252, h: 48 }, expectedText: 'Thank you', deprecated: false, usedBy: ['uia-remote:DuetCheckoutTest'] },
     { id: 3, name: 'CFD_TOTAL_C3PO', robotId: 18, screenName: 'CFD_CART', bbox: { x: 985, y: 472, w: 96, h: 18 }, expectedText: 'TOTAL $10.83', deprecated: true, usedBy: [] },
   ];
   return Object.fromEntries(rows.map((r) => [r.id, r]));

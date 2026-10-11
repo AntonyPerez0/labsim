@@ -344,7 +344,7 @@ export function swapHardware(lab: LabState, ctx: Ctx, rigId: string, newType: De
   const partner = old.tetheredTo ? lab.devices[old.tetheredTo] : undefined;
   incoming.rigId = rigId;
   incoming.ip = ip;
-  incoming.role = DEVICE_TYPES[newType].dualScreenSingleAdb && role !== 'cfd' ? 'duo' : role === 'duo' ? 'standalone' : role;
+  incoming.role = DEVICE_TYPES[newType].dualScreenSingleAdb && role !== 'cfd' ? 'duet' : role === 'duet' ? 'standalone' : role;
   incoming.tetheredTo = old.tetheredTo;
   incoming.link = old.link;
   incoming.payDisplayApp = old.payDisplayApp;

@@ -44,18 +44,18 @@ const centre = (type: DeviceTypeCode, screen: string, id: string, extra: Partial
 };
 
 describe('firmware layouts (World §4)', () => {
-  it('FLEX_GEN3 seed centres match §4.6 / curriculum S10', () => {
-    expect(centre('FLEX_3', 'receipt-options', 'Print')).toEqual([34, 71]);
-    expect(centre('FLEX_3', 'receipt-options', 'No Receipt')).toEqual([34, 107]);
-    expect(centre('FLEX_3', 'receipt-options', 'Print', { receiptOptions: 5 })).toEqual([34, 74]);
-    expect(centre('FLEX_3', 'receipt-options', 'Scan for receipt', { receiptOptions: 5 })).toEqual([34, 122]);
-    expect(centre('FLEX_3', 'cash-discount-tender', 'Cash')).toEqual([22, 58.5]);
-    expect(centre('FLEX_3', 'tender-select', 'Charge')).toEqual([34, 120]);
-    expect(centre('FLEX_3', 'pin-entry', '0')).toEqual([54, 94]);
+  it('FLUX_GEN3 seed centres match §4.6 / curriculum S10', () => {
+    expect(centre('FLUX_3', 'receipt-options', 'Print')).toEqual([34, 71]);
+    expect(centre('FLUX_3', 'receipt-options', 'No Receipt')).toEqual([34, 107]);
+    expect(centre('FLUX_3', 'receipt-options', 'Print', { receiptOptions: 5 })).toEqual([34, 74]);
+    expect(centre('FLUX_3', 'receipt-options', 'Scan for receipt', { receiptOptions: 5 })).toEqual([34, 122]);
+    expect(centre('FLUX_3', 'cash-discount-tender', 'Cash')).toEqual([22, 58.5]);
+    expect(centre('FLUX_3', 'tender-select', 'Charge')).toEqual([34, 120]);
+    expect(centre('FLUX_3', 'pin-entry', '0')).toEqual([54, 94]);
   });
 
   it('old 4-option taps miss the 5-option pills (the QR regression)', () => {
-    const five = localButtons(q('FLEX_3', 'receipt-options', { receiptOptions: 5 }));
+    const five = localButtons(q('FLUX_3', 'receipt-options', { receiptOptions: 5 }));
     for (const [x, y] of [
       [34, 71],
       [34, 83],
@@ -70,36 +70,36 @@ describe('firmware layouts (World §4)', () => {
       expect(a[0]).toBeCloseTo(b[0], 0);
       expect(Math.abs(a[1] - b[1])).toBeLessThanOrEqual(0.11);
     };
-    close(centre('FLEX_1', 'register', 'Tax Item 5'), [16.9, 22.4]);
-    close(centre('COMPACT', 'tender-select', 'Charge'), [31.2, 97.7]);
-    close(centre('FLEX_1', 'pin-entry', '1'), [12.8, 35.0]);
-    close(centre('FLEX_1', 'receipt-options', 'Print'), [31.2, 57.8]);
-    close(centre('FLEX_1', 'receipt-options', 'No Receipt'), [31.2, 87.1]);
-    close(centre('FLEX_1', 'receipt-options', 'Scan for receipt', { receiptOptions: 5 }), [31.2, 99.9]);
-    close(centre('STATION_2018', 'register', 'Tax Item 5'), [36.0, 45.3]);
-    close(centre('STATION_2018', 'register', 'Review Order'), [253.6, 150.5]);
-    close(centre('STATION_2018', 'receipt-options', 'Print'), [155.0, 63.9]);
-    close(centre('STATION_2018', 'receipt-options', 'No Receipt', { receiptOptions: 5 }), [155.0, 134.9]);
-    close(centre('STATION_2018', 'tip', '15%'), [46.8, 72.8]);
+    close(centre('FLUX_1', 'register', 'Tax Item 5'), [16.9, 22.4]);
+    close(centre('COMPASS', 'tender-select', 'Charge'), [31.2, 97.7]);
+    close(centre('FLUX_1', 'pin-entry', '1'), [12.8, 35.0]);
+    close(centre('FLUX_1', 'receipt-options', 'Print'), [31.2, 57.8]);
+    close(centre('FLUX_1', 'receipt-options', 'No Receipt'), [31.2, 87.1]);
+    close(centre('FLUX_1', 'receipt-options', 'Scan for receipt', { receiptOptions: 5 }), [31.2, 99.9]);
+    close(centre('STAND_2018', 'register', 'Tax Item 5'), [36.0, 45.3]);
+    close(centre('STAND_2018', 'register', 'Review Order'), [253.6, 150.5]);
+    close(centre('STAND_2018', 'receipt-options', 'Print'), [155.0, 63.9]);
+    close(centre('STAND_2018', 'receipt-options', 'No Receipt', { receiptOptions: 5 }), [155.0, 134.9]);
+    close(centre('STAND_2018', 'tip', '15%'), [46.8, 72.8]);
     // receipt pills keep their 5.0 mm height in derived classes
-    const pill = localButtons(q('STATION_2018', 'receipt-options')).find((b) => b.id === 'Print')!;
+    const pill = localButtons(q('STAND_2018', 'receipt-options')).find((b) => b.id === 'Print')!;
     expect(pill.h).toBe(5);
   });
 
   it('L8 launcher pages and P launcher scroll', () => {
-    const p0 = localButtons(q('MINI_3', 'home'));
+    const p0 = localButtons(q('MICRO_3', 'home'));
     expect(p0.find((b) => b.id === 'Setup')).toBeUndefined();
-    const p1 = localButtons(q('MINI_3', 'home', { scroll: 1 }));
+    const p1 = localButtons(q('MICRO_3', 'home', { scroll: 1 }));
     expect(p1.find((b) => b.id === 'Setup')).toBeDefined();
-    const flex = localButtons(q('FLEX_3', 'home'));
+    const flex = localButtons(q('FLUX_3', 'home'));
     expect(flex.find((b) => b.id === 'Setup')).toBeUndefined();
     expect(hitButton(flex, 13, 26)?.id).toBe('Register');
-    const scrolled = localButtons(q('FLEX_3', 'home', { scroll: 1 }));
+    const scrolled = localButtons(q('FLUX_3', 'home', { scroll: 1 }));
     expect(scrolled.find((b) => b.id === 'Setup')).toBeDefined();
   });
 
   it('effective layout = the sim firmware layout (drawn = hit), World §4 without a provider', () => {
-    const types: DeviceTypeCode[] = ['FLEX_3', 'FLEX_1', 'MINI_3', 'MINI_2', 'STATION_2018', 'COMPACT'];
+    const types: DeviceTypeCode[] = ['FLUX_3', 'FLUX_1', 'MICRO_3', 'MICRO_2', 'STAND_2018', 'COMPASS'];
     const screens = ['register', 'review-order', 'tender-select', 'pin-entry', 'tip', 'receipt-options', 'payment-prompt'];
     for (const type of types)
       for (const screen of screens) {
@@ -117,7 +117,7 @@ describe('firmware layouts (World §4)', () => {
       }
     registerFirmwareLayoutProvider(null);
     try {
-      expect(effectiveButtons(q('MINI_3', 'pin-entry')).map((b) => b.id)).toContain('OK');
+      expect(effectiveButtons(q('MICRO_3', 'pin-entry')).map((b) => b.id)).toContain('OK');
     } finally {
       registerFirmwareLayoutProvider((qq) => firmwareButtons(qq.type, qq.screen, qq.display, qq.params, qq.receiptOptions));
     }
@@ -129,7 +129,7 @@ function labWithDevice(type: DeviceTypeCode, screen: ScreenName, params: Record<
   const dev: TerminalDevice = createTerminalDevice('dev-test', type, {
     serial: 'SIM-0001', ip: '10.42.30.11', rigId: 'wall-e', merchantConfigId: null, theme: 'avocado',
     display: createDisplayState(screen, { params, rev: 1 }),
-    secondaryDisplay: type.startsWith('STATION_DUO') ? createDisplayState(screen, { params, rev: 1 }) : null,
+    secondaryDisplay: type.startsWith('STAND_DUET') ? createDisplayState(screen, { params, rev: 1 }) : null,
     order: createOrderState('ORD-1', { lines: [{ name: 'Tax Item 5', priceCents: 1000, qty: 1, taxable: true }], subtotalCents: 1000, taxCents: 83, totalCents: 1083 }),
     apps: ['Register', 'Dining'],
   });
@@ -145,7 +145,7 @@ const SCREENS: ScreenName[] = [
 
 describe('drawDeviceDisplay', () => {
   it('draws every screen on every layout class without throwing', () => {
-    for (const type of ['FLEX_3', 'FLEX_1', 'MINI_3', 'STATION_2018', 'STATION_DUO'] as DeviceTypeCode[]) {
+    for (const type of ['FLUX_3', 'FLUX_1', 'MICRO_3', 'STAND_2018', 'STAND_DUET'] as DeviceTypeCode[]) {
       for (const screen of SCREENS) {
         const { lab, dev } = labWithDevice(type, screen, { pad: screen === 'lock', qr: false, strokes: '[[10,40],[20,50],[30,45]]' });
         const ctx = fakeCtx();
@@ -165,7 +165,7 @@ describe('drawTablet', () => {
       tablet: { tab: 'motion-control', statusText: 'OK', brainbox: 'Brainbox v6', hrnShown: 'WALL-E', reachable: true },
       ...over,
     });
-  const robot = { id: 1, name: 'wall-e', humanReadableName: 'WALL-E', status: 'AVAILABLE', checkout: { buildId: 'Java/uia-remote-regression-flex#4120', jobId: 'Java/uia-remote-regression-flex', byName: false, startedMs: 0 } } as unknown as OrcaRobot;
+  const robot = { id: 1, name: 'wall-e', humanReadableName: 'WALL-E', status: 'AVAILABLE', checkout: { buildId: 'Java/uia-remote-regression-flux#4120', jobId: 'Java/uia-remote-regression-flux', byName: false, startedMs: 0 } } as unknown as OrcaRobot;
 
   it('draws all tabs, banners, boot phases and the lockout', () => {
     const lab = createInitialLabState();

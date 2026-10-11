@@ -76,7 +76,7 @@ function label(def: CameraDef): string {
 }
 
 /**
- * R2-D2's webcam frames the Duo's CFD for the CFD_TOTAL OCR/GIMP lessons with a "solved projection"
+ * R2-D2's webcam frames the Duet's CFD for the CFD_TOTAL OCR/GIMP lessons with a "solved projection"
  * (World App. B) that the 3D camera does not implement; its stream stays on the sim frame model so the
  * live view matches the snapshots measured in GIMP.
  */

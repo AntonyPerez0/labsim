@@ -574,7 +574,7 @@ export function codeFact(lab: LabState, fact: string, subject: string): boolean 
     }
     case 'CF05': {
       const body = methodBody(text, 'open') ?? '';
-      const flexBranch = /if\s*\([^)]*FLEX[^)]*\)\s*\{([^}]*)\}/i.exec(body);
+      const flexBranch = /if\s*\([^)]*FLUX[^)]*\)\s*\{([^}]*)\}/i.exec(body);
       return !!flexBranch && /scrollVerticallyTo/.test(flexBranch[1]!) && /scrollHorizontallyTo/.test(body.slice(flexBranch.index + flexBranch[0].length));
     }
     case 'CF06':

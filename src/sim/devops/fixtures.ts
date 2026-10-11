@@ -12,7 +12,7 @@ export const M14_BROKEN = `runType=standalone
 merchantFacingDeviceIp=10.42.30.21
 customerFacingDeviceIp=
 serial=SIM-S2-000021
-deviceType=Mini
+deviceType=Micro
 theme=classic
 kernelType=SPA
 portNumber=5555
@@ -108,7 +108,7 @@ export function resolveFixture(lab: LabState, id: string, opts: { robot?: string
     case id === 'm16-with-compare':
       return { [opts.path ?? 'tests/sale/swipe_sale_print.json']: M16_WITH_COMPARE };
     case id === 'gort-418': {
-      const f = receipt5Fix('MINI_3');
+      const f = receipt5Fix('MICRO_3');
       return f ? { [f.path]: f.text } : null;
     }
     case id.startsWith('receipt5-fix:'): {

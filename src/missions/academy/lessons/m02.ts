@@ -1,28 +1,28 @@
 /**
  * M02 — Know Your terminals: Device Families (Cur §2 M02). Mentor {{morgan}}, cameo {{jared}}.
  * Setup: the device library (`loc.device-library`) holds one of every LabSim plus the sealed
- * "STATION DUO 3 — UPCOMING" and "MINI 4 — UPCOMING" boxes (props only, Sim §4.4.2).
+ * "STAND DUET 3 — UPCOMING" and "MICRO 4 — UPCOMING" boxes (props only, Sim §4.4.2).
  */
 import { c, on } from '../../types';
 import type { Condition, LessonDef } from '../../types';
 import { minigameDone, worldAction } from './helpers';
 
 /** The 14 library items of the M02 sort (World `LIBRARY_ITEMS`) and their family tray. */
-export const M02_SORT: Readonly<Record<string, 'station' | 'mini' | 'flex' | 'compact'>> = {
-  'library.station-2018': 'station',
-  'library.station-2': 'station',
-  'library.station-duo-1': 'station',
-  'library.station-duo-2': 'station',
-  'library.box-duo-3': 'station',
-  'library.mini-2': 'mini',
-  'library.mini-3': 'mini',
-  'library.box-mini-4': 'mini',
-  'library.flex-1': 'flex',
-  'library.flex-2': 'flex',
-  'library.flex-3': 'flex',
-  'library.flex-4': 'flex',
-  'library.flex-pocket': 'flex',
-  'library.compact': 'compact',
+export const M02_SORT: Readonly<Record<string, 'stand' | 'micro' | 'flux' | 'compass'>> = {
+  'library.stand-2018': 'stand',
+  'library.stand-2': 'stand',
+  'library.stand-duet-1': 'stand',
+  'library.stand-duet-2': 'stand',
+  'library.box-duet-3': 'stand',
+  'library.micro-2': 'micro',
+  'library.micro-3': 'micro',
+  'library.box-micro-4': 'micro',
+  'library.flux-1': 'flux',
+  'library.flux-2': 'flux',
+  'library.flux-3': 'flux',
+  'library.flux-4': 'flux',
+  'library.flux-pocket': 'flux',
+  'library.compass': 'compass',
 };
 
 /** Every library item's latest tray placement is correct (world `library.placedOnTray`), or the sort minigame reports 14/14. */
@@ -41,11 +41,11 @@ export const M02: LessonDef = {
   setup: { preset: 'academy:M02', spawn: 'loc.coffee' },
   deck: 'deck.M02',
   realLabChecklist: [
-    'Name any LabSim on sight by family: Station (2018, 2, Duo 1/2, upcoming Duo 3), Mini (2, 3, upcoming 4), Flex (1–4, Pocket) or Compact.',
-    'Remember Flex 3, Flex 4 and Flex Pocket share one testing profile; the Pocket simply has no printer block.',
-    'When a printerless Station Duo 2 is down, a Mini 3 is the hot-swap stand-in.',
+    'Name any LabSim on sight by family: Stand (2018, 2, Duet 1/2, upcoming Duet 3), Micro (2, 3, upcoming 4), Flux (1–4, Pocket) or Compass.',
+    'Remember Flux 3, Flux 4 and Flux Pocket share one testing profile; the Pocket simply has no printer block.',
+    'When a printerless Stand Duet 2 is down, a Micro 3 is the hot-swap stand-in.',
     'Read tethered test-bed labels as rig · role (MFD = merchant, CFD = customer) · environment, e.g. MEGATRON MFD DEV1.',
-    'The LabSim Compact is the Canadian-market terminal used on the Westers test beds.',
+    'The LabSim Compass is the Canadian-market terminal used on the Westers test beds.',
   ],
   steps: [
     { id: 'M02.01', kind: 'walk-to', hud: 'Meet {{morgan}} at the device library', location: 'loc.device-library' },
@@ -53,15 +53,15 @@ export const M02: LessonDef = {
       id: 'M02.02',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: "Every LabSim we test belongs to a family: Station, Mini, Flex, or the Compact. Learn them like your teammates' names.",
+      text: "Every LabSim we test belongs to a family: Stand, Micro, Flux, or the Compass. Learn them like your teammates' names.",
       factIds: ['F055', 'F056', 'F058', 'F061'],
     },
     {
       id: 'M02.03',
       kind: 'inspect',
-      hud: 'Inspect the Station Duo 2',
-      prop: 'prop.device-library.station-duo-2',
-      callouts: ['Station Duo 2 — no printer'],
+      hud: 'Inspect the Stand Duet 2',
+      prop: 'prop.device-library.stand-duet-2',
+      callouts: ['Stand Duet 2 — no printer'],
       manualEntryIds: ['device-families'],
       factIds: ['F055', 'F057'],
     },
@@ -72,10 +72,10 @@ export const M02: LessonDef = {
       target: 'prop.family-trays',
       success: allSorted,
       objectives: [
-        { id: 'M02.04.station', text: 'STATION tray: 2018, 2, Duo 1, Duo 2, Duo 3 box', done: c.custom('m02-station', 'Station tray', (_s, ctx) => trayDone(ctx.events, 'station')) },
-        { id: 'M02.04.mini', text: 'MINI tray: Mini 2, Mini 3, Mini 4 box', done: c.custom('m02-mini', 'Mini tray', (_s, ctx) => trayDone(ctx.events, 'mini')) },
-        { id: 'M02.04.flex', text: 'FLEX tray: Flex 1, 2, 3, 4 and Pocket', done: c.custom('m02-flex', 'Flex tray', (_s, ctx) => trayDone(ctx.events, 'flex')) },
-        { id: 'M02.04.compact', text: 'COMPACT tray: Compact', done: c.custom('m02-compact', 'Compact tray', (_s, ctx) => trayDone(ctx.events, 'compact')) },
+        { id: 'M02.04.stand', text: 'STAND tray: 2018, 2, Duet 1, Duet 2, Duet 3 box', done: c.custom('m02-stand', 'Stand tray', (_s, ctx) => trayDone(ctx.events, 'stand')) },
+        { id: 'M02.04.micro', text: 'MICRO tray: Micro 2, Micro 3, Micro 4 box', done: c.custom('m02-micro', 'Micro tray', (_s, ctx) => trayDone(ctx.events, 'micro')) },
+        { id: 'M02.04.flux', text: 'FLUX tray: Flux 1, 2, 3, 4 and Pocket', done: c.custom('m02-flux', 'Flux tray', (_s, ctx) => trayDone(ctx.events, 'flux')) },
+        { id: 'M02.04.compass', text: 'COMPASS tray: Compass', done: c.custom('m02-compass', 'Compass tray', (_s, ctx) => trayDone(ctx.events, 'compass')) },
       ],
       wrongActions: [
         {
@@ -85,8 +85,8 @@ export const M02: LessonDef = {
         },
       ],
       hints: [
-        { afterS: 60, effect: 'text', text: 'Upcoming devices still have a family: the Duo 3 box is a Station, the Mini 4 box is a Mini.' },
-        { afterS: 120, effect: 'text', text: 'The Flex family is the biggest: Flex 1, 2, 3, 4 and the Flex Pocket.' },
+        { afterS: 60, effect: 'text', text: 'Upcoming devices still have a family: the Duet 3 box is a Stand, the Micro 4 box is a Micro.' },
+        { afterS: 120, effect: 'text', text: 'The Flux family is the biggest: Flux 1, 2, 3, 4 and the Flux Pocket.' },
       ],
       factIds: ['F055', 'F056', 'F058', 'F061', 'F062'],
     },
@@ -94,27 +94,27 @@ export const M02: LessonDef = {
       id: 'M02.05',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: "Here's a freebie that saves hours: Flex 3, Flex 4 and Flex Pocket share the exact same testing profile. The Pocket just leaves out the printer block.",
+      text: "Here's a freebie that saves hours: Flux 3, Flux 4 and Flux Pocket share the exact same testing profile. The Pocket just leaves out the printer block.",
       factIds: ['F059', 'F060'],
     },
     {
       id: 'M02.06',
       kind: 'interact',
-      hud: "Hold the Flex Pocket next to the Flex 4 and find what's missing",
-      target: 'prop.device-library.flex-pocket',
+      hud: "Hold the Flux Pocket next to the Flux 4 and find what's missing",
+      target: 'prop.device-library.flux-pocket',
       success: c.any(
-        worldAction('library.compare', (d) => d.item === 'library.flex-4' || d.item === 'library.flex-pocket'),
-        c.happened(on('player.interacted', {}, (pl) => pl.interactableId.startsWith('library.flex-4.printer'))),
-        c.happened(on('player.inspected', {}, (pl) => pl.interactableId.startsWith('library.flex-4.printer'))),
+        worldAction('library.compare', (d) => d.item === 'library.flux-4' || d.item === 'library.flux-pocket'),
+        c.happened(on('player.interacted', {}, (pl) => pl.interactableId.startsWith('library.flux-4.printer'))),
+        c.happened(on('player.inspected', {}, (pl) => pl.interactableId.startsWith('library.flux-4.printer'))),
       ),
-      onComplete: [{ do: 'callouts', prop: 'prop.device-library.flex-4', lines: ['Printer block — absent on Pocket'] }],
+      onComplete: [{ do: 'callouts', prop: 'prop.device-library.flux-4', lines: ['Printer block — absent on Pocket'] }],
       factIds: ['F060'],
     },
     {
       id: 'M02.07',
       kind: 'dialogue',
       speaker: 'jared',
-      text: "{{jared}} here. The Station Duo 2 has no printer either. When one is down, we hot-swap a Mini 3 in its place.",
+      text: "{{jared}} here. The Stand Duet 2 has no printer either. When one is down, we hot-swap a Micro 3 in its place.",
       factIds: ['F057'],
     },
     { id: 'M02.08', kind: 'walk-to', hud: 'Walk to the tethered rack (MEGATRON / OPTIMUS)', location: 'loc.rack-tethered' },
@@ -162,7 +162,7 @@ export const M02: LessonDef = {
       id: 'M02.12',
       kind: 'dialogue',
       speaker: 'morgan',
-      text: 'Last one: the LabSim Compact is our Canadian-market terminal. It runs on the Westers test beds, and SETI carries one in this room. Remember Canada: it matters later for PINs.',
+      text: 'Last one: the LabSim Compass is our Canadian-market terminal. It runs on the Westers test beds, and SETI carries one in this room. Remember Canada: it matters later for PINs.',
       factIds: ['F061'],
     },
     { id: 'M02.13', kind: 'quiz-checkpoint', checkpointId: 'CP-M02.1', title: 'Device Families', questionIds: ['Q012', 'Q013', 'Q014', 'Q015', 'Q017'] },

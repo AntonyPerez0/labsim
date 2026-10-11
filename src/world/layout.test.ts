@@ -70,11 +70,11 @@ const CURRICULUM_PROP_IDS = [
   'prop.walle.limit-switch-y', 'prop.walle.dip-arm', 'prop.walle.pi', 'prop.bolt-bins', 'prop.family-trays', 'prop.megatron.mfd',
   'prop.megatron.cfd', 'prop.optimus.mfd', 'prop.optimus.cfd', 'prop.smartstripe-probe', 'prop.hub-dock', 'prop.meanwell-psu',
   'prop.power-trace', 'prop.regulator-12v', 'prop.regulator-5v10a', 'prop.fuse-5v-b', 'prop.fuse-spares', 'prop.multimeter',
-  'prop.ac-strip', 'prop.flex4-psu-brick', 'prop.collis-probe-spare', 'prop.nuc-03', 'prop.minix-01', 'prop.collis-probe-a',
+  'prop.ac-strip', 'prop.flux4-psu-brick', 'prop.collis-probe-spare', 'prop.nuc-03', 'prop.minix-01', 'prop.collis-probe-a',
   'prop.eve.pi-power', 'prop.eve.device', 'prop.seti.device', 'prop.data.device', 'prop.tars.device', 'prop.ruler', 'prop.r2d2.mfd',
   'prop.r2d2.cfd', 'prop.coworker-device', 'prop.whiteboard', 'prop.roadmap-board', 'prop.gpu-blade', 'prop.legacy-tower',
   'prop.history.semi', 'prop.history.sedi', 'prop.history.ipx', 'prop.history.paycore', 'prop.history.match',
-  ...['station-2018', 'station-2', 'station-duo-1', 'station-duo-2', 'box-duo-3', 'mini-2', 'mini-3', 'box-mini-4', 'flex-1', 'flex-2', 'flex-3', 'flex-4', 'flex-pocket', 'compact'].map(
+  ...['stand-2018', 'stand-2', 'stand-duet-1', 'stand-duet-2', 'box-duet-3', 'micro-2', 'micro-3', 'box-micro-4', 'flux-1', 'flux-2', 'flux-3', 'flux-4', 'flux-pocket', 'compass'].map(
     (m) => `prop.device-library.${m}`,
   ),
 ];

@@ -15,11 +15,11 @@ import type { RigKit } from '../rigs/kit/context';
 import type { MeshBatch } from '../rigs/kit/batch';
 
 export type DeviceArrangement =
-  /** Touch-rig cradles/trays: face-up handled by the caller's frame (Duo: CFD in front of the MFD). */
+  /** Touch-rig cradles/trays: face-up handled by the caller's frame (Duet: CFD in front of the MFD). */
   | 'tray'
   /** Upright on its own stand/base (library, ADB shelf, desks). */
   | 'stand'
-  /** Display head only, no stand/base (tethered panel faces, Station 2018 in its tray). */
+  /** Display head only, no stand/base (tethered panel faces, Stand 2018 in its tray). */
   | 'head';
 
 export interface DeviceBuildOptions {
@@ -33,12 +33,12 @@ export interface DeviceBuildOptions {
   /** Parent for the screen meshes (must be at world identity). */
   screenParent: Object3D;
   arrangement: DeviceArrangement;
-  /** Label tape on the bottom bezel (e.g. `FLEX 3`); null = none. */
+  /** Label tape on the bottom bezel (e.g. `FLUX 3`); null = none. */
   tape?: string | null;
   /** Serial sticker text (`SIM-…`). */
   serial?: string | null;
   /** Bezel logo override (tethered faces). */
-  logo?: 'wordmark' | 'leaf' | 'none';
+  logo?: 'wordmark' | 'mark' | 'none';
   /** Wedge depth cap (mm) when docked face-up above a shelf. */
   maxBodyDepthMm?: number;
   /** Skip the chip-slot light pipe. */

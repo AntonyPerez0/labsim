@@ -1,6 +1,6 @@
 /**
  * GP §3.5 incidents INC47–INC65 (pay-display link, reservations, capabilities, Laz/Ubi, Go SDK, PIN,
- * card paths and Callus clones, Track Data, Wine, Ollama, cradle, MySQL, HRN, ADB-blind Duo CFD, Tap
+ * card paths and Callus clones, Track Data, Wine, Ollama, cradle, MySQL, HRN, ADB-blind Duet CFD, Tap
  * URL) run end to end through Sim Appendix A's scenarios, the public SimApi and committed state.
  * INC58, INC61 and INC62 are judgement tickets with no sim state (Appendix A).
  */
@@ -53,33 +53,33 @@ describe('INC47–INC52 tethering, reservations, capabilities, Laz/Ubi, Go SDK, 
     expect(robot('eve').status).toBe('RESERVED');
     expect(robot('eve').reservedBy).toBe('riley');
     expect(notes('eve')[0]).toBe('2026-10-04 17:42:00 STATUS Available → Reserved (riley)');
-    const r = sim.jenkins.build('Java/uia-remote-regression-flex', { DEVICE_TYPE: 'FLEX_4' }, 'player');
+    const r = sim.jenkins.build('Java/uia-remote-regression-flux', { DEVICE_TYPE: 'FLUX_4' }, 'player');
     if (!r.ok) throw new Error(r.error);
     run(8_000);
     const b = lab().jenkins.builds[r.value.buildId]!;
     expect(b.state).not.toBe('finished');
     expect(b.console).toContain('[orca] candidate eve: Reserved — skipped');
-    expect(b.console).toContain('[orca] no Available FLEX_4 robot — build waiting in queue');
+    expect(b.console).toContain('[orca] no Available FLUX_4 robot — build waiting in queue');
     expect(nextHealthCheck()).toContain('eve  RESERVED — not overridden');
     // Riley: "Oh no, forgot — release it."
     expect(sim.orca.setRobotStatus(robot('eve').id, 'AVAILABLE', 'player').ok).toBe(true);
     expect(resolved(ids)).toBe(true);
     runUntil(() => lab().jenkins.builds[r.value.buildId]!.state === 'finished', 300_000);
     const done = lab().jenkins.builds[r.value.buildId]!;
-    expect(done.console).toContain('[orca] checkout → eve (FLEX_4) OK');
+    expect(done.console).toContain('[orca] checkout → eve (FLUX_4) OK');
     expect(done.result).toBe('SUCCESS');
   });
 
-  it('INC49 Westers capability conflict: 409 names both values; pipeline deviceType COMPACT → SETI, PL5 green', () => {
+  it('INC49 Westers capability conflict: 409 names both values; pipeline deviceType COMPASS → SETI, PL5 green', () => {
     start();
-    const ids = scenario({ faultId: 'jenkins.capsConflict', params: { job: 'Java/contact-canada-pin-sale', value: 'MINI_3' } });
+    const ids = scenario({ faultId: 'jenkins.capsConflict', params: { job: 'Java/contact-canada-pin-sale', value: 'MICRO_3' } });
     const b = build('Java/contact-canada-pin-sale');
     expect(b.result).toBe('FAILURE');
     expect(b.failureCode).toBe('CAPABILITY_CONFLICT');
-    expect(b.console).toContain('[orca] 409 Conflict: capability conflict (pipeline deviceType=MINI_3, test deviceType=COMPACT)');
+    expect(b.console).toContain('[orca] 409 Conflict: capability conflict (pipeline deviceType=MICRO_3, test deviceType=COMPASS)');
     const job = sim.jenkins.job('Java/contact-canada-pin-sale')!;
-    expect(job.script).toContain("deviceType: 'MINI_3'");
-    expect(sim.jenkins.configureScript(job.id, job.script.replace("deviceType: 'MINI_3'", "deviceType: 'COMPACT'"), 'player').ok).toBe(true);
+    expect(job.script).toContain("deviceType: 'MICRO_3'");
+    expect(sim.jenkins.configureScript(job.id, job.script.replace("deviceType: 'MICRO_3'", "deviceType: 'COMPASS'"), 'player').ok).toBe(true);
     expect(resolved(ids)).toBe(true);
     const b2 = build('Java/contact-canada-pin-sale');
     expect(b2.result).toBe('SUCCESS');
@@ -89,19 +89,19 @@ describe('INC47–INC52 tethering, reservations, capabilities, Laz/Ubi, Go SDK, 
   it('INC50 wrong Ubi route on WESTERS-CA-02: Laz fails before de-provisioning; Edit → ca-central → swap completes', () => {
     start();
     const ids = scenario({ faultId: 'merchant.ubiRouteWrong', params: { merchant: 'WESTERS-CA-02', route: 'us-east' } });
-    const before = dev('dev-seti-compact').merchantConfigId;
+    const before = dev('dev-seti-compass').merchantConfigId;
     const b = build('Java/laz-oobe-merchant-swap', { ROBOT_NAME: 'seti', MERCHANT: 'WESTERS-CA-02' });
     expect(b.result).toBe('FAILURE');
     expect(b.console).toContain('ubi: routing merchant switch → WESTERS-CA-02');
     expect(b.console).toContain('ubi: ERROR route us-east cannot resolve merchant WESTERS-CA-02');
     expect(b.console).not.toContain('laz: de-provision');
-    expect(dev('dev-seti-compact').merchantConfigId).toBe(before);
+    expect(dev('dev-seti-compass').merchantConfigId).toBe(before);
     expect(sim.orca.saveMerchant({ id: merchant('WESTERS-CA-02').id, ubiRoute: 'ca-central' }, 'player').ok).toBe(true);
     expect(resolved(ids)).toBe(true);
     const b2 = build('Java/laz-oobe-merchant-swap', { ROBOT_NAME: 'seti', MERCHANT: 'WESTERS-CA-02' });
     expect(b2.result).toBe('SUCCESS');
     for (const l of ['laz: de-provision', 'laz: wipe caches', 'laz: setup wizard 1/6', 'laz: setup wizard 6/6', 'laz: merchant active']) expect(b2.console).toContain(l);
-    expect(dev('dev-seti-compact').merchantConfigId).toBe(merchant('WESTERS-CA-02').id);
+    expect(dev('dev-seti-compass').merchantConfigId).toBe(merchant('WESTERS-CA-02').id);
   });
 
   it('INC51 blank API Key: env line shows API_KEY= and the SDK panics; Edit → paste the key → PL6 green', () => {
@@ -130,7 +130,7 @@ describe('INC47–INC52 tethering, reservations, capabilities, Laz/Ubi, Go SDK, 
     // A touch rig of another type: capability mismatch.
     const w = build('Java/contact-canada-pin-sale', { ROBOT_NAME: 'wall-e' });
     expect(w.failureCode).toBe('CAPABILITY_MISMATCH');
-    expect(w.console).toContain('capability mismatch: deviceType COMPACT required');
+    expect(w.console).toContain('capability mismatch: deviceType COMPASS required');
     const job = sim.jenkins.job('Java/contact-canada-pin-sale')!;
     sim.jenkins.saveJob(job.id, { savedParams: { ...job.savedParams, ROBOT_NAME: 'seti' } }, 'player');
     expect(resolved(ids)).toBe(true);
@@ -144,8 +144,8 @@ describe('INC47–INC52 tethering, reservations, capabilities, Laz/Ubi, Go SDK, 
 describe('INC53–INC57 cards, Callus clones, Track Data, Wine, Ollama', () => {
   it('INC53 VISA_STD_DIP points at cards/visa/: FileNotFoundException; Path cards/emv/ + curl dip → load virtual card OK', () => {
     start();
-    const ids = scenario({ faultId: 'card.gortPathWrong', params: { profile: 'VISA_STD_DIP' } }, { op: 'jenkins.startBuild', params: { job: 'Java/uia-remote-regression-flex', params: { ROBOT_NAME: 'wall-e', CARD_PROFILE: 'VISA_STD_DIP' } } });
-    const b = build('Java/uia-remote-regression-flex', { ROBOT_NAME: 'wall-e', CARD_PROFILE: 'VISA_STD_DIP' });
+    const ids = scenario({ faultId: 'card.gortPathWrong', params: { profile: 'VISA_STD_DIP' } }, { op: 'jenkins.startBuild', params: { job: 'Java/uia-remote-regression-flux', params: { ROBOT_NAME: 'wall-e', CARD_PROFILE: 'VISA_STD_DIP' } } });
+    const b = build('Java/uia-remote-regression-flux', { ROBOT_NAME: 'wall-e', CARD_PROFILE: 'VISA_STD_DIP' });
     expect(b.result).toBe('FAILURE');
     expect(consoleOf(b)).toContain('[callus] map cards/visa/visa_std_dip.json → C:\\gort\\cards\\visa\\visa_std_dip.json · FileNotFoundException (The system cannot find the path specified)');
     // Interactive session (a one-shot `ssh … dir C:\gort\…` would lose the backslashes to bash).
@@ -162,9 +162,9 @@ describe('INC53–INC57 cards, Callus clones, Track Data, Wine, Ollama', () => {
     run(3_000);
     const log = (lab().callus.log['minix-01'] ?? []).join('\n');
     expect(log).toContain('map cards/emv/visa_std_dip.json → C:\\gort\\cards\\emv\\visa_std_dip.json · load virtual card OK · probe wall-e: DIP');
-    sim.device.pressKey('dev-wall-e-flex3', 'HOME', 'player');
+    sim.device.pressKey('dev-wall-e-flux3', 'HOME', 'player');
     run(2_000);
-    expect(build('Java/uia-remote-regression-flex', { ROBOT_NAME: 'wall-e', CARD_PROFILE: 'VISA_STD_DIP' }).result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-regression-flux', { ROBOT_NAME: 'wall-e', CARD_PROFILE: 'VISA_STD_DIP' }).result).toBe('SUCCESS');
   });
 
   it('INC54 MINIX-02 missed GortCardSync: new Interac tap file missing locally; schtasks /run → 20 s → dir lists it → green', () => {
@@ -198,7 +198,7 @@ describe('INC53–INC57 cards, Callus clones, Track Data, Wine, Ollama', () => {
     expect(lab().collis['collis-wall-e']!.state).toBe('OK');
     sim.orca.saveCardProfile({ id: card('VISA_STD_SWIPE').id, trackData: '%B4111111111111111^SIM/VISA^30121010000000000000?;4111111111111111=3012101000000000?' }, 'player');
     expect(resolved(ids)).toBe(true);
-    sim.device.pressKey('dev-wall-e-flex3', 'HOME', 'player');
+    sim.device.pressKey('dev-wall-e-flux3', 'HOME', 'player');
     run(2_000);
     expect(build('Java/pigeon-android-sale-swipe', { ROBOT_NAME: 'wall-e' }).result).toBe('SUCCESS');
   });
@@ -206,8 +206,8 @@ describe('INC53–INC57 cards, Callus clones, Track Data, Wine, Ollama', () => {
   it('INC56 broken Wine prefix on JOHNNY-5: 503 CARDPROG_UNAVAILABLE; golden prefix copied back + start → green', () => {
     start();
     const ids = scenario({ faultId: 'pi.wineBroken', params: { host: 'pi-johnny-5' } });
-    const params = { ROBOT_NAME: 'johnny-5', DEVICE_TYPE: 'FLEX_1', CARD_PROFILE: 'VISA_STD_DIP' };
-    const b = build('Java/uia-remote-regression-flex', params);
+    const params = { ROBOT_NAME: 'johnny-5', DEVICE_TYPE: 'FLUX_1', CARD_PROFILE: 'VISA_STD_DIP' };
+    const b = build('Java/uia-remote-regression-flux', params);
     expect(b.result).toBe('FAILURE');
     expect(b.console).toContain('[pi] cardprog: program VISA_STD_DIP → 503 CARDPROG_UNAVAILABLE');
     sh('ssh pi@10.42.10.15');
@@ -222,9 +222,9 @@ describe('INC53–INC57 cards, Callus clones, Track Data, Wine, Ollama', () => {
     expect(sh('ps aux | grep -i wine').join('\n')).toContain('wine C:\\CardProg\\CardProgrammer.exe');
     sh('exit');
     expect(resolved(ids)).toBe(true);
-    sim.device.pressKey('dev-johnny-5-flex1', 'HOME', 'player');
+    sim.device.pressKey('dev-johnny-5-flux1', 'HOME', 'player');
     run(2_000);
-    expect(build('Java/uia-remote-regression-flex', params).result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-regression-flux', params).result).toBe('SUCCESS');
   });
 
   it('INC57 Ollama tip maths: factory receipt is a real bug; a seeded misread is a false positive', () => {
@@ -240,7 +240,7 @@ describe('INC53–INC57 cards, Callus clones, Track Data, Wine, Ollama', () => {
     expect(real.response).toBe('FAIL — tip of 18% on $42.00 should be $7.56; the receipt shows $7.65.');
     expect(real.correct).toBe(true);
     // Variant A: correct receipt, the model misreads the tip.
-    scenario({ op: 'ollama.seedReceipt', params: { imageRef: 'img:receipt:wall-e:1015', deviceId: 'dev-wall-e-flex3', subtotalCents: 4200, tipPct: 18, printedTipCents: 756, misreadField: 'tip', misreadAs: '$7.65' } });
+    scenario({ op: 'ollama.seedReceipt', params: { imageRef: 'img:receipt:wall-e:1015', deviceId: 'dev-wall-e-flux3', subtotalCents: 4200, tipPct: 18, printedTipCents: 756, misreadField: 'tip', misreadAs: '$7.65' } });
     const fp = ask('img:receipt:wall-e:1015');
     expect(fp.response).toBe('FAIL — tip of 18% on $42.00 should be $7.56; the receipt shows $7.65.');
     expect(fp.correct).toBe(false);
@@ -253,7 +253,7 @@ describe('INC53–INC57 cards, Callus clones, Track Data, Wine, Ollama', () => {
     expect(pb.console).toContain('[vision] FAIL — tip of 18% on $42.00 should be $7.56; the receipt shows $7.65.');
     expect(pb.console.at(-1)).toBe('Finished: UNSTABLE');
     // The same maths by hand: 4200 × 18 % = 756 → total 4956.
-    scenario({ op: 'ollama.seedReceipt', params: { imageRef: 'img:receipt:wall-e:1016', deviceId: 'dev-wall-e-flex3', subtotalCents: 4200, tipPct: 18, printedTipCents: 756 } });
+    scenario({ op: 'ollama.seedReceipt', params: { imageRef: 'img:receipt:wall-e:1016', deviceId: 'dev-wall-e-flux3', subtotalCents: 4200, tipPct: 18, printedTipCents: 756 } });
     expect(ask('img:receipt:wall-e:1016').response).toBe('PASS — layout complete (merchant header, items, subtotal, tax, tip, total); tip of 18% on $42.00 is $7.56 and the total $49.56 is correct.');
   });
 });
@@ -262,15 +262,15 @@ describe('INC59–INC65 cradle, MySQL, HRN, ADB-blind CFD, Tap URL', () => {
   it('INC59 cracked cradle on EVE: right-side taps land low (Review Order misses); print + swap cradle + Park All → green', () => {
     start();
     const ids = scenario({ faultId: 'rig.cradleCracked', params: { rig: 'eve' } });
-    const b = build('Java/uia-remote-regression-flex', { ROBOT_NAME: 'eve', DEVICE_TYPE: 'FLEX_4' });
+    const b = build('Java/uia-remote-regression-flux', { ROBOT_NAME: 'eve', DEVICE_TYPE: 'FLUX_4' });
     expect(b.result).toBe('FAILURE');
     expect(b.console).toContain('[runner] waitForScreen timed out: ReviewOrderScreen');
     const eve = robot('eve');
     sim.orca.setRobotStatus(eve.id, 'OFFLINE', 'player');
-    expect(sim.printer3d.start('prusa', 'cradle_flex_gen3.3mf', 'player').ok).toBe(true);
+    expect(sim.printer3d.start('prusa', 'cradle_flux_gen3.3mf', 'player').ok).toBe(true);
     expect(sim.rig.replaceCradle('eve', 'player').ok).toBe(false); // nothing printed yet
     run(91_000);
-    expect(lab().printer3d.output).toContain('cradle_flex_gen3');
+    expect(lab().printer3d.output).toContain('cradle_flux_gen3');
     sim.rig.setSwitch('eve', 'motor', false, 'player');
     expect(sim.rig.replaceCradle('eve', 'player').ok).toBe(true);
     expect(resolved(ids)).toBe(true);
@@ -281,16 +281,16 @@ describe('INC59–INC65 cradle, MySQL, HRN, ADB-blind CFD, Tap URL', () => {
     runUntil(() => lab().rigs['eve']!.banner === 'green', 10_000);
     expect(lab().rigs['eve']!.cradle).toBe('NEW');
     sim.orca.setRobotStatus(eve.id, 'AVAILABLE', 'player');
-    sim.device.pressKey('dev-eve-flex4', 'HOME', 'player');
+    sim.device.pressKey('dev-eve-flux4', 'HOME', 'player');
     run(2_000);
-    expect(build('Java/uia-remote-regression-flex', { ROBOT_NAME: 'eve', DEVICE_TYPE: 'FLEX_4' }).result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-regression-flux', { ROBOT_NAME: 'eve', DEVICE_TYPE: 'FLUX_4' }).result).toBe('SUCCESS');
   });
 
   it('INC60 Orca MySQL down: checkouts 500, health 503, mysql inactive; systemctl start → reconnect 15 s → green', () => {
     start();
     const ids = scenario({ faultId: 'orca.mysqlDown', params: {} });
     run(1_000);
-    const b = build('Java/uia-remote-regression-flex');
+    const b = build('Java/uia-remote-regression-flux');
     expect(b.result).toBe('FAILURE');
     expect(b.failureCode).toBe('ORCA_DB_DOWN');
     expect(b.console.some((l) => /^\[orca\] checkout request .* → 500/.test(l))).toBe(true);
@@ -302,7 +302,7 @@ describe('INC59–INC65 cradle, MySQL, HRN, ADB-blind CFD, Tap URL', () => {
     run(40_000);
     expect(resolved(ids)).toBe(true);
     expect(sh('curl -s -o /dev/null -w "%{http_code}" http://orca.lab.local:8080/management/health')).toEqual(['200']);
-    expect(build('Java/uia-remote-regression-flex').result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-regression-flux').result).toBe('SUCCESS');
   });
 
   it('INC63 HRN typo: the tablet shows JONNY-5 within 2 s of the save; fixing the HRN (not the Name) restores it', () => {
@@ -317,25 +317,25 @@ describe('INC59–INC65 cradle, MySQL, HRN, ADB-blind CFD, Tap URL', () => {
     expect(lab().rigs['johnny-5']!.tablet.hrnShown).toBe('JOHNNY-5');
   });
 
-  it('INC64 Duo CFD is ADB-blind: the dump has no "Done", adb input tap hits the MFD; xy_touch PHYSICAL_TAP advances the CFD', () => {
+  it('INC64 Duet CFD is ADB-blind: the dump has no "Done", adb input tap hits the MFD; xy_touch PHYSICAL_TAP advances the CFD', () => {
     start();
-    scenario({ op: 'device.stage', params: { device: 'dev-r2-d2-duo', stage: 'receipt-done' } });
-    expect(lab().devices['dev-r2-d2-duo']!.secondaryDisplay!.screen).toBe('receipt-done');
+    scenario({ op: 'device.stage', params: { device: 'dev-r2-d2-duet', stage: 'receipt-done' } });
+    expect(lab().devices['dev-r2-d2-duet']!.secondaryDisplay!.screen).toBe('receipt-done');
     sh('adb connect 10.42.30.14:5444');
     sh('adb -s 10.42.30.14:5444 shell uiautomator dump');
     sh('adb -s 10.42.30.14:5444 pull /sdcard/window_dump.xml');
     expect(sh('grep -c "Done" window_dump.xml')).toEqual(['0']);
     const out = sh(`curl -X POST http://orca.lab.local:8080/api/xy_touch -H "Content-Type: application/json" -d '{"robot":"r2-d2","screen":"CFD_RECEIPT_DONE","button":"Done"}'`).join('\n');
     expect(out).toContain('"mode":"PHYSICAL_TAP"');
-    runUntil(() => lab().devices['dev-r2-d2-duo']!.secondaryDisplay!.screen !== 'receipt-done', 15_000);
-    expect(lab().devices['dev-r2-d2-duo']!.secondaryDisplay!.screen).not.toBe('receipt-done');
+    runUntil(() => lab().devices['dev-r2-d2-duet']!.secondaryDisplay!.screen !== 'receipt-done', 15_000);
+    expect(lab().devices['dev-r2-d2-duet']!.secondaryDisplay!.screen).not.toBe('receipt-done');
   });
 
   it('INC65 blank Tap URL on JOHNNY-5: 400 has no Tap URL; the Pi /tap URL fixes the tap build', () => {
     start();
-    const params = { ROBOT_NAME: 'johnny-5', DEVICE_TYPE: 'FLEX_1', CARD_PROFILE: 'VISA_STD_TAP' };
+    const params = { ROBOT_NAME: 'johnny-5', DEVICE_TYPE: 'FLUX_1', CARD_PROFILE: 'VISA_STD_TAP' };
     const ids = scenario({ faultId: 'orca.urlWrong', params: { robot: 'johnny-5', field: 'tap', value: '' } });
-    const b = build('Java/uia-remote-regression-flex', params);
+    const b = build('Java/uia-remote-regression-flux', params);
     expect(b.result).toBe('FAILURE');
     expect(b.failureCode).toBe('CARD_ERROR');
     expect(b.console).toContain('[orca] 400 Bad Request: robot johnny-5 has no Tap URL');
@@ -344,8 +344,8 @@ describe('INC59–INC65 cradle, MySQL, HRN, ADB-blind CFD, Tap URL', () => {
     expect(j5.dipUrl).toBe('http://10.42.10.15:8000/dip');
     sim.orca.saveRobot({ id: j5.id, tapUrl: 'http://10.42.10.15:8000/tap' }, 'player');
     expect(resolved(ids)).toBe(true);
-    sim.device.pressKey('dev-johnny-5-flex1', 'HOME', 'player');
+    sim.device.pressKey('dev-johnny-5-flux1', 'HOME', 'player');
     run(2_000);
-    expect(build('Java/uia-remote-regression-flex', params).result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-regression-flux', params).result).toBe('SUCCESS');
   });
 });

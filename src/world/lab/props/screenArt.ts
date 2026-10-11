@@ -230,7 +230,7 @@ export function drawCad(g: G, w: number, h: number): void {
   g.fillRect(0, 0, w * 0.13, h);
   g.fillStyle = '#9aa1a8';
   g.font = `11px ${FONT.UI_SANS}`;
-  g.fillText('cradle_flex_gen3.3mf — Shapes', w * 0.15, h * 0.045);
+  g.fillText('cradle_flux_gen3.3mf — Shapes', w * 0.15, h * 0.045);
   g.strokeStyle = 'rgba(255,255,255,0.08)';
   g.lineWidth = 1;
   const iso = (x: number, y: number, z: number): [number, number] => [w * 0.56 + (x - z) * 0.866 * 2.2, h * 0.62 + (x + z) * 0.5 * 2.2 - y * 2.2];

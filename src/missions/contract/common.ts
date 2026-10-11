@@ -50,7 +50,7 @@ export type Templated<B = IncidentBinding> = string | ((b: B) => string);
  * Rig binding of an incident instance. `TicketBinding` (core) + the chosen variant.
  * Conventional `vars` keys (filled by the default binder, sim doc §4.5 placeholders in brackets):
  * `pi` [$PI] Pi host id (`pi-wall-e`), `piIp` (`10.42.10.11`), `dev` [$DEV] Robot Device runtime id,
- * `device` Orca device-row name (`wall-e-flex3`), `deviceIp`, `deviceType` [$T] (`FLEX_3`),
+ * `device` Orca device-row name (`wall-e-flux3`), `deviceIp`, `deviceType` [$T] (`FLUX_3`),
  * `box` [$BOX] Callus host id (`minix-01`), `probe` [$PROBE] Collis probe id, `rack`, `fuse`, `camera`;
  * seeded truth under `truth.<key>`. `$R` = `rig`.
  */
@@ -76,7 +76,7 @@ export type ScenarioItem = FaultSpec | SetupOpSpec;
 export interface AppGating {
   /** Apps the desktop shows (`'all'` to lift gating). */
   unlock?: readonly AppId[] | 'all';
-  /** Per-app restrictions, e.g. `{ jenkins: { visibleJobs: ['Java/uia-remote-regression-flex'] } }`. */
+  /** Per-app restrictions, e.g. `{ jenkins: { visibleJobs: ['Java/uia-remote-regression-flux'] } }`. */
   restrictions?: Readonly<Record<string, Readonly<Record<string, readonly string[] | string | boolean>>>>;
   /** Orca's tutorial **Force health check** header button. */
   forceHealthCheck?: boolean;
@@ -102,7 +102,7 @@ export interface ScriptContext {
  *     { op: 'orca.setStatus', params: { robot: 'baymax', status: 'OFFLINE', by: 'jared' } },
  *     { faultId: 'pi.hung', params: { host: '$PI' } },
  *   ],
- *   apps: { unlock: ['orca', 'jenkins'], restrictions: { jenkins: { visibleJobs: ['Java/uia-remote-regression-flex'] } }, forceHealthCheck: true },
+ *   apps: { unlock: ['orca', 'jenkins'], restrictions: { jenkins: { visibleJobs: ['Java/uia-remote-regression-flux'] } }, forceHealthCheck: true },
  *   spawn: 'loc.whiteboard',
  * };
  */

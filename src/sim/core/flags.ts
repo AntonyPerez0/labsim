@@ -7,12 +7,12 @@ import type { TerminalDevice, LabFlags, LabState } from '../types';
 import type { Ctx } from './util';
 import { receiptOptionsFor } from './devices';
 
-/** Firmware strings (Sim §2.4): QR firmware 2.26.10.1, pre-QR 2.26.08.3; FLEX_1 stays on 2.19.4. */
+/** Firmware strings (Sim §2.4): QR firmware 2.26.10.1, pre-QR 2.26.08.3; FLUX_1 stays on 2.19.4. */
 export const FW_QR = '2.26.10.1';
 export const FW_PRE_QR = '2.26.08.3';
-export const FW_FLEX1 = '2.19.4';
-/** Device the M16 toggle changes (R2-D2's Duo). */
-export const CFD_V2_DEVICE = 'dev-r2-d2-duo';
+export const FW_FLUX1 = '2.19.4';
+/** Device the M16 toggle changes (R2-D2's Duet). */
+export const CFD_V2_DEVICE = 'dev-r2-d2-duet';
 
 /** Re-render a device's receipt screens after a firmware change (Sim §3.10: `display.rev++`). */
 function rerenderReceipt(lab: LabState, d: TerminalDevice): void {
@@ -25,11 +25,11 @@ function rerenderReceipt(lab: LabState, d: TerminalDevice): void {
 }
 
 /**
- * Set a device's QR firmware (no-op for FLEX_1, which never gets the feature). Returns true when the
+ * Set a device's QR firmware (no-op for FLUX_1, which never gets the feature). Returns true when the
  * device changed. `write` lets the fault engine record the leaves it writes.
  */
 export function setDeviceQrFirmware(lab: LabState, d: TerminalDevice, on: boolean, write?: (path: (string | number)[], value: unknown) => void): boolean {
-  if (d.type === 'FLEX_1') return false;
+  if (d.type === 'FLUX_1') return false;
   const version = on ? FW_QR : FW_PRE_QR;
   if (d.firmwareInfo.receiptQr === on && d.firmwareInfo.version === version && d.firmware === version) return false;
   if (write) {
@@ -48,7 +48,7 @@ export function applyFlag<K extends keyof LabFlags>(lab: LabState, ctx: Ctx, fla
   if (lab.flags[flag] === value) return false;
   lab.flags[flag] = value;
   if (flag === 'receiptQrFeature') {
-    // Lab-wide firmware rollout: every non-FLEX_1 device (Orca rows never change).
+    // Lab-wide firmware rollout: every non-FLUX_1 device (Orca rows never change).
     for (const id of Object.keys(lab.devices).sort()) setDeviceQrFirmware(lab, lab.devices[id]!, value === true);
   } else if (flag === 'cfdLayoutV2Toggle') {
     // Cur M16 tutorial toggle: v2 copy + 10 px label shift on R2-D2's CFD (both, §2.10.2).

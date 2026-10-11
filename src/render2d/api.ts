@@ -74,7 +74,7 @@ export const APP_ICON_COLORS: Readonly<Record<string, string>> = {
 
 /* ───────────────────────────── Layout classes (World §4.2) ───────────────────────────── */
 
-/** P = 68.0 × 136.0 (Flex 2/3/4/Pocket) · P-s = 62.3 × 110.7 (Flex 1, Compact) · L8 = 172.3 × 107.7 (Minis, Station 2, Duo CFD) · L14 = 309.9 × 174.3 (Station 2018, Duo MFD). */
+/** P = 68.0 × 136.0 (Flux 2/3/4/Pocket) · P-s = 62.3 × 110.7 (Flux 1, Compass) · L8 = 172.3 × 107.7 (Micros, Stand 2, Duet CFD) · L14 = 309.9 × 174.3 (Stand 2018, Duet MFD). */
 export type LayoutClass = 'P' | 'P-s' | 'L8' | 'L14';
 
 export const LAYOUT_CLASS_SIZE_MM: Readonly<Record<LayoutClass, { w: number; h: number }>> = {
@@ -95,25 +95,25 @@ export const LAYOUT_DERIVATION: Readonly<Record<'P-s' | 'L14', { from: 'P' | 'L8
 };
 
 const PRIMARY_CLASS: Readonly<Record<DeviceTypeCode, LayoutClass | null>> = {
-  FLEX_2: 'P',
-  FLEX_3: 'P',
-  FLEX_4: 'P',
-  FLEX_POCKET: 'P',
-  FLEX_1: 'P-s',
-  COMPACT: 'P-s',
-  MINI_2: 'L8',
-  MINI_3: 'L8',
-  MINI_4: 'L8',
-  STATION_2: 'L8',
-  STATION_2018: 'L14',
-  STATION_DUO: 'L14',
-  STATION_DUO_2: 'L14',
-  STATION_DUO_3: null,
+  FLUX_2: 'P',
+  FLUX_3: 'P',
+  FLUX_4: 'P',
+  FLUX_POCKET: 'P',
+  FLUX_1: 'P-s',
+  COMPASS: 'P-s',
+  MICRO_2: 'L8',
+  MICRO_3: 'L8',
+  MICRO_4: 'L8',
+  STAND_2: 'L8',
+  STAND_2018: 'L14',
+  STAND_DUET: 'L14',
+  STAND_DUET_2: 'L14',
+  STAND_DUET_3: null,
 };
 
-/** Layout class of a display (Duo family: MFD = L14, CFD = L8). Null = no screen (sealed boxes). */
+/** Layout class of a display (Duet family: MFD = L14, CFD = L8). Null = no screen (sealed boxes). */
 export function layoutClassFor(type: DeviceTypeCode, display: 'primary' | 'secondary' = 'primary'): LayoutClass | null {
-  if (display === 'secondary') return type.startsWith('STATION_DUO') && type !== 'STATION_DUO_3' ? 'L8' : null;
+  if (display === 'secondary') return type.startsWith('STAND_DUET') && type !== 'STAND_DUET_3' ? 'L8' : null;
   return PRIMARY_CLASS[type];
 }
 
@@ -359,7 +359,7 @@ export const TABLET_LOCKOUT = {
   bg: 'rgba(8,12,22,0.80)',
   padlock: { x: 640, y: 330, sizePx: 96 },
   line1: { text: 'TEST IN PROGRESS — CONTROLS LOCKED', sizePx: 34, weight: 700, color: '#ffffff', baseline: 450 },
-  /** `<job> #<n>`, e.g. `Java/uia-remote-regression-flex #4120`. */
+  /** `<job> #<n>`, e.g. `Java/uia-remote-regression-flux #4120`. */
   line2: { sizePx: 24, color: '#b9c6dc', baseline: 492 },
   line3: { text: 'Checked out via Orca · unlocks when the build finishes', sizePx: 20, color: '#8ea0bf', baseline: 528 },
   shakePx: 6,
@@ -439,7 +439,7 @@ export interface ReceiptRenderOptions {
 /* ───────────────────────────── API ───────────────────────────── */
 
 export interface Render2DApi {
-  /** Draw a device display (primary MFD screen or the Duo's secondary CFD) filling the canvas. */
+  /** Draw a device display (primary MFD screen or the Duet's secondary CFD) filling the canvas. */
   drawDeviceDisplay(ctx: CanvasRenderingContext2D, lab: LabState, device: TerminalDevice, display: 'primary' | 'secondary', opts: DisplayRenderOptions): void;
   /** Draw the front status tablet dashboard (WALL-E style) for a rig (World §5, `TABLET_*`). */
   drawTablet(ctx: CanvasRenderingContext2D, lab: LabState, rig: RigState, robot: OrcaRobot, opts: TabletRenderOptions): void;

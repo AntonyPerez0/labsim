@@ -100,7 +100,7 @@ export function CommentForm(props: {
   };
   return (
     <div className="gh-comment-form">
-      <div className="gh-flex" style={{ marginBottom: 8 }}>
+      <div className="gh-flux" style={{ marginBottom: 8 }}>
         <div className="gh-seg">
           <button type="button" aria-pressed={tab === 'write'} onClick={() => setTab('write')}>
             Write
@@ -195,7 +195,7 @@ function Thread(props: { comments: (PrComment | (PendingComment & { pending: tru
     <>
       {props.comments.map((c, i) => (
         <div className="gh-inline-thread" key={i}>
-          <div className="gh-flex" style={{ padding: '8px 12px', borderBottom: '1px solid var(--gh-border-muted)', fontSize: 14 }}>
+          <div className="gh-flux" style={{ padding: '8px 12px', borderBottom: '1px solid var(--gh-border-muted)', fontSize: 14 }}>
             <Avatar who={'pending' in c ? 'player' : c.author} size={20} playerInitials={playerInitials} />
             <b>{login('pending' in c ? 'player' : c.author)}</b>
             {'pending' in c ? <span className="gh-label gh-label-attn">Pending</span> : <span className="gh-muted"><Rel ms={c.atMs} /></span>}

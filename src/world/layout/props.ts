@@ -124,7 +124,7 @@ const DESKS: PropPlacement[] = [
     size: [0.21, 0.2, 0.09],
     spec: { screenText: 'x4117  09:00', canvasPx: [128, 96] },
   }),
-  p('desk.player.mug', 'mug', 'desks', [1.76, 0.74, 4.5], 0, 'White ceramic mug, green four-leaf logo, coffee fill 0–1', { cyl: { d: 0.085, h: 0.095 } }),
+  p('desk.player.mug', 'mug', 'desks', [1.76, 0.74, 4.5], 0, 'White ceramic mug, green three-bar logo, coffee fill 0–1', { cyl: { d: 0.085, h: 0.095 } }),
   p('desk.player.sticky-notes', 'sticky-notes', 'desks', [0.95, 0.741, 4.4], 180, '3 yellow notes 76 × 76 mm — 2 on the left monitor\'s lower bezel, 1 on the desk', {
     size: [0.076, 0.076, 0.001],
     spec: {
@@ -142,12 +142,12 @@ const DESKS: PropPlacement[] = [
   p('desk.morgan', 'desk', 'desks', [-0.9, 0, 4.625], 180, 'Laptop (open) + one 24" monitor + generic boxy toy robot + small plant', { size: DESK, spec: DESK_SPEC }),
   p('desk.morgan.chair', 'chair', 'desks', [-0.9, 0, 4.02], 0, 'Chair', { size: [0.62, 0.62, 1.05], collider: 'chair' }),
   p('desk.coworker-1', 'desk', 'desks', [-6.1, 0, 4.625], 180, 'Two monitors, headphones', { size: DESK, spec: DESK_SPEC }),
-  p('desk.coworker-1.device', 'device', 'desks', [-6.45, 0.74, 4.55], 160, 'Flex on a white charging dock, screen on (Register) — ADB 5555 desk device', {
+  p('desk.coworker-1.device', 'device', 'desks', [-6.45, 0.74, 4.55], 160, 'Flux on a white charging dock, screen on (Register) — ADB 5555 desk device', {
     size: [0.11, 0.09, 0.05],
-    spec: { deviceType: 'FLEX_3', dock: 'white 110 × 90 × 50 pogo-pin cradle' },
+    spec: { deviceType: 'FLUX_3', dock: 'white 110 × 90 × 50 pogo-pin cradle' },
   }),
   p('desk.coworker-2', 'desk', 'desks', [-4.3, 0, 4.625], 180, 'One monitor, mug', { size: DESK, spec: DESK_SPEC }),
-  p('desk.coworker-2.device', 'device', 'desks', [-3.95, 0.74, 4.62], 200, '8" Mini on the desk (INC27)', { spec: { deviceType: 'MINI_3' } }),
+  p('desk.coworker-2.device', 'device', 'desks', [-3.95, 0.74, 4.62], 200, '8" Micro on the desk (INC27)', { spec: { deviceType: 'MICRO_3' } }),
   p('desk.coworker-1.chair', 'chair', 'desks', [-6.1, 0, 4.02], 0, 'Chair', { size: [0.62, 0.62, 1.05], collider: 'chair' }),
   p('desk.coworker-2.chair', 'chair', 'desks', [-4.3, 0, 4.02], 0, 'Chair', { size: [0.62, 0.62, 1.05], collider: 'chair' }),
   p('bin.trash', 'bin', 'desks', [2.2, 0, 4.78], 0, 'Grey bin', { cyl: { d: 0.3, h: 0.4 } }),
@@ -208,7 +208,7 @@ const POWER: PropPlacement[] = [
   p('power.fuse-tray', 'parts', 'power-wall', [-1.25, 0.9, -4.55], 0, 'Clear-lid compartment box: 6 × 5 A tan, 6 × 7.5 A brown, 6 × 10 A red, 6 × 15 A blue', {
     size: [0.2, 0.12, 0.03],
   }),
-  p('power.bench.flex4-psu', 'psu', 'power-wall', [-0.3, 0.9, -4.6], 15, 'New Flex 4 power brick (white, 18 V AC brick, 1.8 m cord)', { size: [0.11, 0.06, 0.032] }),
+  p('power.bench.flux4-psu', 'psu', 'power-wall', [-0.3, 0.9, -4.6], 15, 'New Flux 4 power brick (white, 18 V AC brick, 1.8 m cord)', { size: [0.11, 0.06, 0.032] }),
   p('power.bench.collis-spare', 'device', 'power-wall', [0.2, 0.9, -4.6], 0, 'Spare Collis probe (grey, UL label) + its AC brick', { size: [0.15, 0.11, 0.045] }),
   p('power.bench.desk-fan', 'fan', 'power-wall', [0.55, 0.2, -4.7], 0, 'Desk fan (stored; INC17 moves it onto a strip)', { size: [0.25, 0.15, 0.32] }),
 ];
@@ -295,13 +295,13 @@ const JARED: PropPlacement[] = [
   p('jared.bench-light', 'light-bar', 'jared', [2.7, 1.02, -4.95], 0, 'Warm-white LED bar along the bench back edge', { size: [2.8, 0.02, 0.01], mount: 'wall', wall: 'north' }),
   p('chest.husky', 'tool-chest', 'jared', [4.8, 0, -4.75], 0, 'Rolling tool cabinet, black body, chrome pulls, `HUSKY` badge top front, round emblem bottom door, 4 casters; drawers 1 (top) … 5', {
     size: [0.69, 0.46, 1.0],
-    spec: { drawers: 5, drawer2: 'SPARE FLEX 2', drawer3: 'SPARE MINI 3' },
+    spec: { drawers: 5, drawer2: 'SPARE FLUX 2', drawer3: 'SPARE MICRO 3' },
   }),
   p('cabinet.storage', 'cabinet', 'jared', [6.42, 0, -4.75], 0, 'Grey steel cabinet: lower doors locked (keypad), open upper shelves at 1.05/1.45 with LabSim boxes', {
     size: [1.05, 0.45, 1.95],
     spec: { shelves: [1.05, 1.45], sticker: 'SPARES — SIGN OUT WITH JARED' },
   }),
-  p('cabinet.storage.legacy-shelf', 'shelf', 'jared', [6.42, 1.05, -4.75], 0, 'Upper open shelf that holds the legacy Flex 1 after INC42', {
+  p('cabinet.storage.legacy-shelf', 'shelf', 'jared', [6.42, 1.05, -4.75], 0, 'Upper open shelf that holds the legacy Flux 1 after INC42', {
     size: [1.0, 0.42, 0.02],
     mount: 'surface',
     collider: false,
@@ -340,7 +340,7 @@ const EAST: PropPlacement[] = [
     size: [2.4, 0.45, 2.0],
     spec: { baseTopY: 0.9, s1Y: 1.25, s1D: 0.3, s2Y: 1.62, s2D: 0.35, signY: 2.05, sign: 'DEVICE LIBRARY — ONE OF EVERY LABSIM WE TEST' },
   }),
-  p('library.trays', 'tray', 'east-wall', [6.8, 0.9, 0.3], -90, '4 family trays on the base top (STATION, MINI, FLEX, COMPACT)', {
+  p('library.trays', 'tray', 'east-wall', [6.8, 0.9, 0.3], -90, '4 family trays on the base top (STAND, MICRO, FLUX, COMPASS)', {
     size: [2.32, 0.36, 0.04],
     spec: { trayLenZ: 0.56, trayD: 0.36, trayH: 0.04 },
   }),
@@ -383,7 +383,7 @@ export interface LibraryItemDef {
   readonly lipCard: string;
   readonly sealedBox: boolean;
   /** Family tray the item belongs on (M02 sorting). */
-  readonly tray: 'station' | 'mini' | 'flex' | 'compact';
+  readonly tray: 'stand' | 'micro' | 'flux' | 'compass';
 }
 
 function lib(model: string, deviceType: string, item: string, pos: Vec3, lipCard: string, tray: LibraryItemDef['tray']): LibraryItemDef {
@@ -391,20 +391,20 @@ function lib(model: string, deviceType: string, item: string, pos: Vec3, lipCard
 }
 
 export const LIBRARY_ITEMS: readonly LibraryItemDef[] = [
-  lib('station-2018', 'STATION_2018', 'Station 2018 on stand', [6.82, 1.62, -0.65], 'STATION 2018', 'station'),
-  lib('station-2', 'STATION_2', 'Station 2 head on its base', [6.82, 1.62, -0.27], 'STATION 2', 'station'),
-  lib('station-duo-1', 'STATION_DUO', 'Station Duo', [6.82, 1.62, 0.07], 'STATION DUO', 'station'),
-  lib('station-duo-2', 'STATION_DUO_2', 'Station Duo 2', [6.82, 1.62, 0.47], 'STATION DUO 2 (NO PRINTER)', 'station'),
-  lib('box-duo-3', 'STATION_DUO_3', 'Sealed box', [6.8, 1.62, 0.98], 'STATION DUO 3 — UPCOMING', 'station'),
-  lib('mini-2', 'MINI_2', 'Mini 2 on stand', [6.85, 1.25, -0.68], 'MINI 2', 'mini'),
-  lib('mini-3', 'MINI_3', 'Mini 3 on stand', [6.85, 1.25, -0.42], 'MINI 3', 'mini'),
-  lib('box-mini-4', 'MINI_4', 'Sealed box', [6.85, 1.25, -0.13], 'MINI 4 — UPCOMING', 'mini'),
-  lib('flex-1', 'FLEX_1', 'Flex 1 upright in a printed stand', [6.86, 1.25, 0.12], 'FLEX 1', 'flex'),
-  lib('flex-2', 'FLEX_2', 'Flex 2 upright in a printed stand', [6.86, 1.25, 0.28], 'FLEX 2', 'flex'),
-  lib('flex-3', 'FLEX_3', 'Flex 3 upright in a printed stand', [6.86, 1.25, 0.44], 'FLEX 3', 'flex'),
-  lib('flex-4', 'FLEX_4', 'Flex 4 upright in a printed stand', [6.86, 1.25, 0.6], 'FLEX 4', 'flex'),
-  lib('flex-pocket', 'FLEX_POCKET', 'Flex Pocket', [6.86, 1.25, 0.76], 'FLEX POCKET (NO PRINTER)', 'flex'),
-  lib('compact', 'COMPACT', 'Compact', [6.85, 1.25, 0.98], 'COMPACT (CANADA)', 'compact'),
+  lib('stand-2018', 'STAND_2018', 'Stand 2018 on stand', [6.82, 1.62, -0.65], 'STAND 2018', 'stand'),
+  lib('stand-2', 'STAND_2', 'Stand 2 head on its base', [6.82, 1.62, -0.27], 'STAND 2', 'stand'),
+  lib('stand-duet-1', 'STAND_DUET', 'Stand Duet', [6.82, 1.62, 0.07], 'STAND DUET', 'stand'),
+  lib('stand-duet-2', 'STAND_DUET_2', 'Stand Duet 2', [6.82, 1.62, 0.47], 'STAND DUET 2 (NO PRINTER)', 'stand'),
+  lib('box-duet-3', 'STAND_DUET_3', 'Sealed box', [6.8, 1.62, 0.98], 'STAND DUET 3 — UPCOMING', 'stand'),
+  lib('micro-2', 'MICRO_2', 'Micro 2 on stand', [6.85, 1.25, -0.68], 'MICRO 2', 'micro'),
+  lib('micro-3', 'MICRO_3', 'Micro 3 on stand', [6.85, 1.25, -0.42], 'MICRO 3', 'micro'),
+  lib('box-micro-4', 'MICRO_4', 'Sealed box', [6.85, 1.25, -0.13], 'MICRO 4 — UPCOMING', 'micro'),
+  lib('flux-1', 'FLUX_1', 'Flux 1 upright in a printed stand', [6.86, 1.25, 0.12], 'FLUX 1', 'flux'),
+  lib('flux-2', 'FLUX_2', 'Flux 2 upright in a printed stand', [6.86, 1.25, 0.28], 'FLUX 2', 'flux'),
+  lib('flux-3', 'FLUX_3', 'Flux 3 upright in a printed stand', [6.86, 1.25, 0.44], 'FLUX 3', 'flux'),
+  lib('flux-4', 'FLUX_4', 'Flux 4 upright in a printed stand', [6.86, 1.25, 0.6], 'FLUX 4', 'flux'),
+  lib('flux-pocket', 'FLUX_POCKET', 'Flux Pocket', [6.86, 1.25, 0.76], 'FLUX POCKET (NO PRINTER)', 'flux'),
+  lib('compass', 'COMPASS', 'Compass', [6.85, 1.25, 0.98], 'COMPASS (CANADA)', 'compass'),
 ];
 
 /** Library items face −X (rotY −90). */
@@ -421,10 +421,10 @@ export interface LibraryTrayDef {
 }
 
 export const LIBRARY_TRAYS: readonly LibraryTrayDef[] = [
-  { id: 'library.trays.station', family: 'station', label: 'STATION', pos: [6.8, 0.9, -0.57], size: [0.56, 0.36, 0.04] },
-  { id: 'library.trays.mini', family: 'mini', label: 'MINI', pos: [6.8, 0.9, 0.01], size: [0.56, 0.36, 0.04] },
-  { id: 'library.trays.flex', family: 'flex', label: 'FLEX', pos: [6.8, 0.9, 0.59], size: [0.56, 0.36, 0.04] },
-  { id: 'library.trays.compact', family: 'compact', label: 'COMPACT', pos: [6.8, 0.9, 1.17], size: [0.56, 0.36, 0.04] },
+  { id: 'library.trays.stand', family: 'stand', label: 'STAND', pos: [6.8, 0.9, -0.57], size: [0.56, 0.36, 0.04] },
+  { id: 'library.trays.micro', family: 'micro', label: 'MICRO', pos: [6.8, 0.9, 0.01], size: [0.56, 0.36, 0.04] },
+  { id: 'library.trays.flux', family: 'flux', label: 'FLUX', pos: [6.8, 0.9, 0.59], size: [0.56, 0.36, 0.04] },
+  { id: 'library.trays.compass', family: 'compass', label: 'COMPASS', pos: [6.8, 0.9, 1.17], size: [0.56, 0.36, 0.04] },
 ];
 
 const LIBRARY_PROPS: PropPlacement[] = LIBRARY_ITEMS.map((it) =>

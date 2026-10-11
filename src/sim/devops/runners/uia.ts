@@ -209,15 +209,15 @@ const ops: Record<string, StepHandler> = {
       if (w === 'wait') return 'poll';
       if (w === 'timeout') return testFail(rc, step, 'WAIT_TIMEOUT', '[runner] waitForScreen timed out: HomeScreen');
       const fam = env(rc, 'DEVICE_FAMILY');
-      const codeFlex = fam === 'Flex' || fam === 'Compact';
+      const codeFlux = fam === 'Flux' || fam === 'Compass';
       const dir = openDirection(src);
-      const codeVertical = dir === 'correct' ? codeFlex : dir === 'swapped' ? !codeFlex : dir === 'vertical-only';
+      const codeVertical = dir === 'correct' ? codeFlux : dir === 'swapped' ? !codeFlux : dir === 'vertical-only';
       const actualFam = familyOf(t.device.type);
-      const launcherVertical = actualFam === 'Flex' || actualFam === 'Compact';
+      const launcherVertical = actualFam === 'Flux' || actualFam === 'Compass';
       if (codeVertical !== launcherVertical) {
         ssv(rc, 'ph', 's');
         ssv(rc, 'n', 0);
-        ssv(rc, 'dirText', codeVertical ? 'vertically (Flex)' : 'horizontally (Mini/Station)');
+        ssv(rc, 'dirText', codeVertical ? 'vertically (Flux)' : 'horizontally (Micro/Stand)');
       } else ssv(rc, 'ph', 'c');
       return { sleep: 0 };
     }
@@ -369,7 +369,7 @@ const ops: Record<string, StepHandler> = {
   cust(rc, step) {
     return customer(rc, step);
   },
-  /** UIA 2.3 page-object check on a CFD screen (migrated Duo checks). */
+  /** UIA 2.3 page-object check on a CFD screen (migrated Duet checks). */
   uiaCheck(rc, step) {
     const t = target(rc, String(step.args['role'] ?? 'CFD'));
     if (!t) return testFail(rc, step, 'DEVICE_UNREACHABLE', '[runner] CFD handle lost');
@@ -653,7 +653,7 @@ function S(label: string, role: RunnerStep['role'], op: string, args: Record<str
   return { id: `s${++stepSeq}`, label, role, op, args };
 }
 
-export const TETHERED_TESTS = new Set(['TaxTest', 'TaxTestDuo', 'RefundTest', 'DuoCfdSuite', 'DuoCheckoutTest']);
+export const TETHERED_TESTS = new Set(['TaxTest', 'TaxTestDuet', 'RefundTest', 'DuetCfdSuite', 'DuetCheckoutTest']);
 const PIN_TESTS = new Set(['ContactCanadaPinSaleTest']);
 export const testNeedsPin = (tests: string[]): boolean => tests.some((t) => PIN_TESTS.has(t));
 
@@ -730,8 +730,8 @@ function compileTest(test: string, p: UiaPlanInput, roles: string[]): RunnerStep
     case 'PrinterlessSmokeTest':
     case 'ReceiptScreenTest': {
       const ids = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => L(`${test}-${n}`));
-      // Station Duo (one device, two displays): the customer steps happen on the CFD display (Sim §3.9.5).
-      const duoDev = /^STATION_DUO/.test(p.env['DEVICE_TYPE'] ?? '');
+      // Stand Duet (one device, two displays): the customer steps happen on the CFD display (Sim §3.9.5).
+      const duoDev = /^STAND_DUET/.test(p.env['DEVICE_TYPE'] ?? '');
       const c = duoDev ? 'CFD' : r;
       const C = c as RunnerStep['role'];
       const cp = duoDev ? '[CFD]' : '[DEVICE]';
@@ -757,8 +757,8 @@ function compileTest(test: string, p: UiaPlanInput, roles: string[]): RunnerStep
       break;
     }
     case 'TaxTest':
-    case 'TaxTestDuo': {
-      const duo = test === 'TaxTestDuo';
+    case 'TaxTestDuet': {
+      const duo = test === 'TaxTestDuet';
       const o1 = L('MFD_O1');
       const c1 = L('CFD_O1');
       const o2 = L('MFD_O2');
@@ -789,13 +789,13 @@ function compileTest(test: string, p: UiaPlanInput, roles: string[]): RunnerStep
       out.push(S('HomeScreen', 'MFD', 'assertHome', { role: 'MFD', test, logical: b }));
       break;
     }
-    case 'DuoCfdSuite':
-    case 'DuoCheckoutTest': {
+    case 'DuetCfdSuite':
+    case 'DuetCheckoutTest': {
       const ids = ['MFD', 'CFD_TOTAL', 'payment', 'customer', 'final'].map((x) => L(`${test}-${x}`));
       saleStart('[MFD]', null, null, null, null);
       out[out.length - 1]!.args['logical'] = ids[0]!;
       const compares = screenCompareNames(src);
-      if (test === 'DuoCfdSuite' || compares.includes('CFD_TOTAL')) {
+      if (test === 'DuetCfdSuite' || compares.includes('CFD_TOTAL')) {
         if (compares.includes('CFD_TOTAL')) out.push(S('screenCompare CFD_TOTAL', 'CFD', 'cfdTotals', { via: 'ocr', name: 'CFD_TOTAL', test, logical: ids[1]! }));
         else out.push(S('CFD total (UIA 2.3)', 'CFD', 'cfdTotals', { via: 'uia', only: 'total', test, logical: ids[1]! }));
       } else logical.splice(logical.indexOf(ids[1]!), 1);
@@ -808,7 +808,7 @@ function compileTest(test: string, p: UiaPlanInput, roles: string[]): RunnerStep
       out.push(S('approved', 'CFD', 'cust', { role: 'CFD', seg: 'approved', test, prefix: '[CFD]' }));
       out.push(S('No Receipt', 'CFD', 'cust', { role: 'CFD', seg: 'receipt', button: 'No Receipt', test, prefix: '[CFD]' }));
       out.push(S('CFD_RECEIPT_DONE Done', 'CFD', 'cust', { role: 'CFD', seg: 'done', test, logical: ids[3]! }));
-      if (test === 'DuoCheckoutTest') {
+      if (test === 'DuetCheckoutTest') {
         if (compares.includes('CFD_THANK_YOU')) out.push(S('screenCompare CFD_THANK_YOU', 'CFD', 'screenCompare', { name: 'CFD_THANK_YOU', test, logical: ids[4]! }));
         else out.push(S('CfdThankYouScreen', 'CFD', 'uiaCheck', { role: 'CFD', cls: 'CfdThankYouScreen', screen: 'thank-you', text: 'Thank you', test, logical: ids[4]!, log: '[CFD] Thank you ✓ (UIA 2.3)' }));
       } else {
@@ -861,7 +861,7 @@ function compileTest(test: string, p: UiaPlanInput, roles: string[]): RunnerStep
     default:
       out.push(S(`${test}`, R, 'log', { text: `[runner] ${test}: no runnable steps`, silent: true }));
   }
-  out.push({ ...S(`${test} teardown`, 'SETUP', 'teardown', { test, roles: (tethered ? (test === 'TaxTest' || test === 'TaxTestDuo' || test === 'RefundTest' ? ['MFD', 'CFD'] : ['MFD']) : roles).join('|'), silent: true }), id: `td:${test}` });
+  out.push({ ...S(`${test} teardown`, 'SETUP', 'teardown', { test, roles: (tethered ? (test === 'TaxTest' || test === 'TaxTestDuet' || test === 'RefundTest' ? ['MFD', 'CFD'] : ['MFD']) : roles).join('|'), silent: true }), id: `td:${test}` });
   out.push(S(`${test} result`, 'SETUP', 'testEnd', { test, steps: logical.join('|'), silent: true }));
   void pfx;
   return out;

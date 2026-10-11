@@ -21,7 +21,7 @@ describe('INC13–INC16 motion and actuators', () => {
     const ids = scenario({ faultId: 'rig.steppersDisabled', params: { rig: 'bumblebee' } });
     run(200);
     expect(lab().rigs['bumblebee']!.banner).toBe('green');
-    const b = build('Java/uia-remote-regression-mini');
+    const b = build('Java/uia-remote-regression-micro');
     expect(b.result).toBe('FAILURE');
     expect(consoleOf(b)).toContain('→ 503 Service Unavailable: STEPPERS_DISABLED');
     sim.rig.command('bumblebee', 'steppers.enable', 'player');
@@ -31,7 +31,7 @@ describe('INC13–INC16 motion and actuators', () => {
     run(4_000);
     expect(lab().rigs['bumblebee']!.banner).toBe('green');
     expect(resolved(ids)).toBe(true);
-    expect(build('Java/uia-remote-regression-mini').result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-regression-micro').result).toBe('SUCCESS');
   });
 
   it('INC13-B MOTOR off: MOTOR_POWER_LOST, banner green until MOTOR returns, then yellow → Park All', () => {
@@ -41,7 +41,7 @@ describe('INC13–INC16 motion and actuators', () => {
     expect(lab().rigs['bumblebee']!.banner).toBe('green');
     expect(lab().power.terminals['MOTOR-bumblebee']!.energised).toBe(false);
     expect(lab().power.terminals['MAIN-bumblebee']!.energised).toBe(true);
-    const b = build('Java/uia-remote-regression-mini');
+    const b = build('Java/uia-remote-regression-micro');
     expect(consoleOf(b)).toContain('→ 503 Service Unavailable: MOTOR_POWER_LOST');
     sim.rig.setSwitch('bumblebee', 'motor', true, 'player');
     run(300);
@@ -56,7 +56,7 @@ describe('INC13–INC16 motion and actuators', () => {
     start();
     const ids = scenario({ faultId: 'orca.offsets', params: { robot: 'bumblebee', yMm: 1.5 } });
     expect(notes('bumblebee').some((n) => n.includes('CONFIG offsets.y changed'))).toBe(true);
-    const b = build('Java/uia-remote-regression-mini');
+    const b = build('Java/uia-remote-regression-micro');
     expect(b.result).toBe('FAILURE');
     expect(b.console).toContain('[orca] xy_touch bumblebee PAYMENT/Charge → PHYSICAL_TAP (31.0, 90.5) (offsets +0.0/+1.5)');
     expect(consoleOf(b)).toContain('[orca] xy_touch bumblebee HOME/Register → PHYSICAL_TAP');
@@ -67,13 +67,13 @@ describe('INC13–INC16 motion and actuators', () => {
     const t = sim.orca.xyTouch('bumblebee', 'PAYMENT', 'Charge', 'player');
     expect(t.ok && t.value.yMm).toBe(89.0);
     run(3_000);
-    expect(build('Java/uia-remote-regression-mini').result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-regression-micro').result).toBe('SUCCESS');
   });
 
   it('INC15 loose solenoid: Orca answers 200 PHYSICAL_TAP but nothing is pressed; re-seat → green', () => {
     start();
     const ids = scenario({ faultId: 'rig.solenoidLoose', params: { rig: 'eve' } });
-    const b = build('Java/uia-remote-regression-flex', { DEVICE_TYPE: 'FLEX_4' });
+    const b = build('Java/uia-remote-regression-flux', { DEVICE_TYPE: 'FLUX_4' });
     expect(b.result).toBe('FAILURE');
     expect(b.robotId).toBe(robot('eve').id);
     expect(consoleOf(b)).toMatch(/\[orca\] xy_touch eve HOME\/Register → PHYSICAL_TAP/);
@@ -88,7 +88,7 @@ describe('INC13–INC16 motion and actuators', () => {
     run(4_000);
     expect(lab().rigs['eve']!.banner).toBe('green');
     expect(resolved(ids)).toBe(true);
-    expect(build('Java/uia-remote-regression-flex', { DEVICE_TYPE: 'FLEX_4' }).result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-regression-flux', { DEVICE_TYPE: 'FLUX_4' }).result).toBe('SUCCESS');
   });
 
   it('INC16 dip arm one tooth off: Callus loads OK then CHIP_READ_ERROR; align with steppers off → PL5 green', () => {
@@ -112,33 +112,33 @@ describe('INC13–INC16 motion and actuators', () => {
 });
 
 describe('INC17–INC19 power, probes, NUC', () => {
-  it('INC17 18 V trap: Flex 4 dark, PL1 No route to host; the 24 V tap fries it; the strip socket (fan out) fixes it', () => {
+  it('INC17 18 V trap: Flux 4 dark, PL1 No route to host; the 24 V tap fries it; the strip socket (fan out) fixes it', () => {
     start();
     const ids = scenario(
-      { faultId: 'device.unpowered', params: { device: 'dev-eve-flex4' } },
+      { faultId: 'device.unpowered', params: { device: 'dev-eve-flux4' } },
       { op: 'power.plug', params: { load: 'desk-fan', kind: 'ac-strip', target: 'STRIP-A', socket: 6 } },
     );
     run(500);
-    expect(lab().devices['dev-eve-flex4']!.power).toBe('off');
-    const b = build('Java/uia-remote-regression-flex', { DEVICE_TYPE: 'FLEX_4' });
+    expect(lab().devices['dev-eve-flux4']!.power).toBe('off');
+    const b = build('Java/uia-remote-regression-flux', { DEVICE_TYPE: 'FLUX_4' });
     expect(b.result).toBe('FAILURE');
     expect(consoleOf(b)).toContain("adb: failed to connect to '10.42.30.12:5444': No route to host");
     nextHealthCheck();
     expect(robot('eve').status).toBe('AVAILABLE');
     // Fix: fan out, brick in; 30 s boot.
     expect(sim.power.unplug('desk-fan', 'player').ok).toBe(true);
-    expect(sim.power.plug('psu-eve-flex4', { kind: 'ac-strip', targetId: 'STRIP-A', socket: 6 }, 'player').ok).toBe(true);
-    expect(runUntil(() => lab().devices['dev-eve-flex4']!.power === 'on', 40_000)).toBeGreaterThan(25_000);
+    expect(sim.power.plug('psu-eve-flux4', { kind: 'ac-strip', targetId: 'STRIP-A', socket: 6 }, 'player').ok).toBe(true);
+    expect(runUntil(() => lab().devices['dev-eve-flux4']!.power === 'on', 40_000)).toBeGreaterThan(25_000);
     expect(resolved(ids)).toBe(true);
-    expect(build('Java/uia-remote-regression-flex', { DEVICE_TYPE: 'FLEX_4' }).result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-regression-flux', { DEVICE_TYPE: 'FLUX_4' }).result).toBe('SUCCESS');
   });
 
   it('INC17 wrong move (full damage model): the brick on the spare 24 V tap fries the device', () => {
     start();
-    scenario({ faultId: 'device.unpowered', params: { device: 'dev-eve-flex4' } });
-    sim.power.plug('psu-eve-flex4', { kind: 'dc-rail', targetId: 'T-24V-SPARE' }, 'player');
+    scenario({ faultId: 'device.unpowered', params: { device: 'dev-eve-flux4' } });
+    sim.power.plug('psu-eve-flux4', { kind: 'dc-rail', targetId: 'T-24V-SPARE' }, 'player');
     run(500);
-    expect(lab().devices['dev-eve-flex4']!.power).toBe('fried');
+    expect(lab().devices['dev-eve-flux4']!.power).toBe('fried');
   });
 
   it('INC18-A probe unpowered: PROBE_OFFLINE, Callus /status OFFLINE; plug the PSU → PL3 green', () => {
@@ -220,7 +220,7 @@ describe('INC20–INC25 coordinates, capabilities, Pigeon', () => {
   it('INC20 QR regression: stale _5 rows → "select print" timeout; Jared merges a gort PR, Orca syncs, PL3 green on two rigs', () => {
     start();
     sim.setConfig({ npcAutoMerge: true });
-    const ids = scenario({ faultId: 'orca.screenLocationShift', params: { deviceTypes: ['FLEX_3', 'MINI_3', 'STATION_2018'] } });
+    const ids = scenario({ faultId: 'orca.screenLocationShift', params: { deviceTypes: ['FLUX_3', 'MICRO_3', 'STAND_2018'] } });
     const b = build('Java/pigeon-android-sale-swipe', { ROBOT_NAME: 'wall-e' });
     expect(b.result).toBe('FAILURE');
     expect(b.failureCode).toBe('PRINTER_TIMEOUT');
@@ -230,7 +230,7 @@ describe('INC20–INC25 coordinates, capabilities, Pigeon', () => {
     sim.git.clone('gort', 'player');
     sim.git.checkout('gort', 'fix/receipt-qr-5opt', true);
     const paths: string[] = [];
-    for (const t of ['FLEX_3', 'MINI_3', 'STATION_2018']) {
+    for (const t of ['FLUX_3', 'MICRO_3', 'STAND_2018']) {
       const p = screenLocationPath(t, 'RECEIPT_OPTIONS_5');
       sim.git.writeFile('gort', p, screenLocationFile(t, 'RECEIPT_OPTIONS_5', truthFor(t, 'RECEIPT_OPTIONS_5')!));
       paths.push(p);
@@ -241,59 +241,59 @@ describe('INC20–INC25 coordinates, capabilities, Pigeon', () => {
     const pr = sim.git.createPullRequest('gort', 'Fix RECEIPT_OPTIONS_5 coordinates', 'QR firmware moved every receipt button 3.0 mm down.', 'fix/receipt-qr-5opt', 'player');
     expect(pr.ok).toBe(true);
     expect(runUntil(() => resolved(ids), 60_000)).toBeGreaterThan(15_000);
-    expect(lab().orca.audit.some((a) => /SYNC gort@\w+ config\/screen-locations\/FLEX_3\/RECEIPT_OPTIONS_5\.json/.test(JSON.stringify(a)))).toBe(true);
-    expect(loc('FLEX_3', 'RECEIPT_OPTIONS_4', 'Print')).toBeDefined();
+    expect(lab().orca.audit.some((a) => /SYNC gort@\w+ config\/screen-locations\/FLUX_3\/RECEIPT_OPTIONS_5\.json/.test(JSON.stringify(a)))).toBe(true);
+    expect(loc('FLUX_3', 'RECEIPT_OPTIONS_4', 'Print')).toBeDefined();
     expect(build('Java/pigeon-android-sale-swipe', { ROBOT_NAME: 'wall-e' }).result).toBe('SUCCESS');
     expect(build('Java/pigeon-android-sale-swipe', { ROBOT_NAME: 'bumblebee' }).result).toBe('SUCCESS');
   });
 
-  it('INC20 Jared rejects a PR that is still off: "Print on MINI_3 is still 3.0 mm high"', () => {
+  it('INC20 Jared rejects a PR that is still off: "Print on MICRO_3 is still 3.0 mm high"', () => {
     start();
     sim.setConfig({ npcAutoMerge: true });
-    scenario({ faultId: 'orca.screenLocationShift', params: { deviceTypes: ['MINI_3'] } });
+    scenario({ faultId: 'orca.screenLocationShift', params: { deviceTypes: ['MICRO_3'] } });
     sim.git.clone('gort', 'player');
     sim.git.checkout('gort', 'fix/qr', true);
-    const t = truthFor('MINI_3', 'RECEIPT_OPTIONS_5')!;
+    const t = truthFor('MICRO_3', 'RECEIPT_OPTIONS_5')!;
     // Every row fixed except Print, which is still 3.0 mm high.
     const stale = Object.fromEntries(Object.entries(t).map(([k, v]) => [k, { x: v.x, y: k === 'Print' ? Math.round((v.y - 3) * 10) / 10 : v.y }]));
-    const p = screenLocationPath('MINI_3', 'RECEIPT_OPTIONS_5');
-    sim.git.writeFile('gort', p, screenLocationFile('MINI_3', 'RECEIPT_OPTIONS_5', stale));
+    const p = screenLocationPath('MICRO_3', 'RECEIPT_OPTIONS_5');
+    sim.git.writeFile('gort', p, screenLocationFile('MICRO_3', 'RECEIPT_OPTIONS_5', stale));
     sim.git.stage('gort', [p]);
-    sim.git.commit('gort', 'touch MINI_3 receipt map', 'player');
+    sim.git.commit('gort', 'touch MICRO_3 receipt map', 'player');
     sim.git.push('gort');
-    const pr = sim.git.createPullRequest('gort', 'MINI_3 receipt', '', 'fix/qr', 'player');
+    const pr = sim.git.createPullRequest('gort', 'MICRO_3 receipt', '', 'fix/qr', 'player');
     run(25_000);
     expect(pr.ok).toBe(true);
     const p0 = lab().repos['gort']!.pullRequests.find((x) => x.number === (pr.ok ? pr.value.number : -1))!;
     expect(p0.state).toBe('open');
     expect(p0.verdict).toBe('CHANGES_REQUESTED');
-    expect(p0.comments.map((c) => c.body).join('\n')).toContain('Print on MINI_3 is still 3.0 mm high');
+    expect(p0.comments.map((c) => c.body).join('\n')).toContain('Print on MICRO_3 is still 3.0 mm high');
   });
 
-  it('INC21 missing STATION_2018 _5 map: 404 no Screen Location (deviation: Print first); new rows fix PL3 on baymax', () => {
+  it('INC21 missing STAND_2018 _5 map: 404 no Screen Location (deviation: Print first); new rows fix PL3 on baymax', () => {
     start();
-    const ids = scenario({ faultId: 'orca.missingReceiptMap', params: { deviceType: 'STATION_2018' } });
+    const ids = scenario({ faultId: 'orca.missingReceiptMap', params: { deviceType: 'STAND_2018' } });
     const b = build('Java/pigeon-android-sale-swipe', { ROBOT_NAME: 'baymax' });
     expect(b.result).toBe('FAILURE');
-    expect(consoleOf(b)).toContain('[orca] 404 Not Found: no Screen Location for (STATION_2018, RECEIPT_OPTIONS_5, "Print")');
+    expect(consoleOf(b)).toContain('[orca] 404 Not Found: no Screen Location for (STAND_2018, RECEIPT_OPTIONS_5, "Print")');
     expect(b.console).toContain('FAILED at "select print"');
-    const sid = sim.orca.saveScreen({ name: 'RECEIPT_OPTIONS_5', deviceType: 'STATION_2018', display: 'primary', optionCount: 5, description: '5-option receipt' }, 'player');
+    const sid = sim.orca.saveScreen({ name: 'RECEIPT_OPTIONS_5', deviceType: 'STAND_2018', display: 'primary', optionCount: 5, description: '5-option receipt' }, 'player');
     expect(sid.ok).toBe(true);
-    for (const [button, p] of Object.entries(truthFor('STATION_2018', 'RECEIPT_OPTIONS_5')!)) {
+    for (const [button, p] of Object.entries(truthFor('STAND_2018', 'RECEIPT_OPTIONS_5')!)) {
       expect(sim.orca.saveScreenLocation({ screenId: sid.ok ? sid.value : 0, button, xMm: p.x, yMm: p.y }, 'player').ok).toBe(true);
     }
     expect(resolved(ids)).toBe(true);
     expect(build('Java/pigeon-android-sale-swipe', { ROBOT_NAME: 'baymax' }).result).toBe('SUCCESS');
   });
 
-  it('INC22 FLEX_1 Print typo (62.5 vs 66.5): "select print" times out with a working printer; Y 66.5 fixes PL3 on johnny-5', () => {
+  it('INC22 FLUX_1 Print typo (62.5 vs 66.5): "select print" times out with a working printer; Y 66.5 fixes PL3 on johnny-5', () => {
     start();
-    const ids = scenario({ faultId: 'orca.screenLocationTypo', params: { deviceType: 'FLEX_1', button: 'Print', yMm: 62.5 } });
+    const ids = scenario({ faultId: 'orca.screenLocationTypo', params: { deviceType: 'FLUX_1', button: 'Print', yMm: 62.5 } });
     const b = build('Java/pigeon-android-sale-swipe', { ROBOT_NAME: 'johnny-5' });
     expect(b.result).toBe('FAILURE');
     expect(b.console).toContain('LSTR step 7/9 "select print" … waiting for printer payload … TIMEOUT after 60 s');
-    expect(lab().devices['dev-johnny-5-flex1']!.printer.paper).toBe(true);
-    const l = loc('FLEX_1', 'RECEIPT_OPTIONS_4', 'Print')!;
+    expect(lab().devices['dev-johnny-5-flux1']!.printer.paper).toBe(true);
+    const l = loc('FLUX_1', 'RECEIPT_OPTIONS_4', 'Print')!;
     sim.orca.saveScreenLocation({ id: l.id, yMm: 66.5 }, 'player');
     expect(resolved(ids)).toBe(true);
     expect(build('Java/pigeon-android-sale-swipe', { ROBOT_NAME: 'johnny-5' }).result).toBe('SUCCESS');
@@ -308,7 +308,7 @@ describe('INC20–INC25 coordinates, capabilities, Pigeon', () => {
     expect(pv2.ok && pv2.value.filter((r) => r.matches).map((r) => r.robot).sort()).toEqual(['data', 'tars']);
     const b = build('Java/go-sdk-sale-smoke');
     expect(b.result).toBe('FAILURE');
-    expect(b.console).toContain('[orca] checkout → vision (FLEX_POCKET) OK');
+    expect(b.console).toContain('[orca] checkout → vision (FLUX_POCKET) OK');
     expect(b.console).toContain('[go-sdk] PrintReceipt → PRINTER_NOT_AVAILABLE');
     // Fix: revert Alex's commit on a branch, PR on protected gort main, Jared (owner) merges after 20 s.
     sim.setConfig({ npcAutoMerge: true });
@@ -328,7 +328,7 @@ describe('INC20–INC25 coordinates, capabilities, Pigeon', () => {
 
   it('INC24 screenCompare region 0×0: empty region; GIMP values (208, 512, 304, 40) committed → green', () => {
     start();
-    const ids = scenario({ faultId: 'pigeon.screenCompareEmpty', params: {} }, { op: 'device.stage', params: { device: 'dev-eve-flex4', stage: 'approved' } });
+    const ids = scenario({ faultId: 'pigeon.screenCompareEmpty', params: {} }, { op: 'device.stage', params: { device: 'dev-eve-flux4', stage: 'approved' } });
     const b = build('Java/pigeon-android-payment-compare');
     expect(b.result).toBe('FAILURE');
     expect(consoleOf(b)).toContain('LSTR screenCompare: empty region (0x0)');

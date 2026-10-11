@@ -6,7 +6,7 @@
  * sits on the *other* map = wrong, and the Teach Card shows both overlays.
  *
  * Layout truth = the sim's firmware tables (`src/sim/seed/layouts`, Sim §2.10.2), so the drill and the lab
- * agree; FLEX_4 values are the Cur §0.6 reference set (Print 71.0 → 74.0 mm).
+ * agree; FLUX_4 values are the Cur §0.6 reference set (Print 71.0 → 74.0 mm).
  * Facts: F141, F142, F213, F214, F215, F216 (Ref §3.2, §5).
  */
 import type { RootState } from '@/core/state';
@@ -44,7 +44,7 @@ export interface ReceiptData {
   ask: string;
 }
 
-/** Device Types with a printer (a receipt-options screen with Print) — printerless Pocket/Compact/Duo 2/3 skipped. */
+/** Device Types with a printer (a receipt-options screen with Print) — printerless Pocket/Compass/Duet 2/3 skipped. */
 export const RECEIPT_TYPES: DeviceTypeCode[] = (Object.keys(DEVICE_TYPES) as DeviceTypeCode[]).filter((c) => DEVICE_TYPES[c].hasPrinter && !DEVICE_TYPES[c].upcoming);
 
 const toBtn = (e: LayoutEl): ReceiptButton => ({ name: e.id, x: e.x, y: e.y, w: e.w, h: e.h });
@@ -103,15 +103,15 @@ export function receiptItem(type: DeviceTypeCode, map: ReceiptMap, ask: string):
 export function generateReceipt(rng: RngState, state: RootState | null, index: number): DrillItem<ReceiptData> {
   const recent = recentKeys(state, 3);
   for (let tries = 0; tries < 6; tries++) {
-    // FLEX_4 (the Cur §0.6 reference set) twice as often; later items favour the 5-option trap.
-    const type = weightedPick(rng, RECEIPT_TYPES, (t) => (t === 'FLEX_4' ? 3 : 1));
+    // FLUX_4 (the Cur §0.6 reference set) twice as often; later items favour the 5-option trap.
+    const type = weightedPick(rng, RECEIPT_TYPES, (t) => (t === 'FLUX_4' ? 3 : 1));
     const map: ReceiptMap = chance(rng, index < 2 ? 0.5 : 0.6) ? 5 : 4;
     const names = receiptMaps(type).maps[map].map((b) => b.name);
     const ask = pick(rng, names.length ? names : ['Print']);
     const it = receiptItem(type, map, ask);
     if (!recent.includes(it.id) || tries === 5) return it;
   }
-  return receiptItem('FLEX_4', 5, 'Print');
+  return receiptItem('FLUX_4', 5, 'Print');
 }
 
 export const DR07: DrillDef<ReceiptData> = {

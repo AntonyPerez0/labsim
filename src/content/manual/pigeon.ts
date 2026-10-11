@@ -167,8 +167,8 @@ Because the 5th option is conditional, **Orca must maintain separate coordinate 
 
 | Map† | Print | Email | Text | No Receipt | Scan for receipt |
 |---|---|---|---|---|---|
-| \`RECEIPT_OPTIONS_4\` (FLEX_4) | 34.0, 71.0 | 34.0, 83.0 | 34.0, 95.0 | 34.0, 107.0 | — |
-| \`RECEIPT_OPTIONS_5\` (FLEX_4) | 34.0, 74.0 | 34.0, 86.0 | 34.0, 98.0 | 34.0, 110.0 | 34.0, 122.0 |
+| \`RECEIPT_OPTIONS_4\` (FLUX_4) | 34.0, 71.0 | 34.0, 83.0 | 34.0, 95.0 | 34.0, 107.0 | — |
+| \`RECEIPT_OPTIONS_5\` (FLUX_4) | 34.0, 74.0 | 34.0, 86.0 | 34.0, 98.0 | 34.0, 110.0 | 34.0, 122.0 |
 
 > **Illustrative (sim only):** Screen names and millimetre values are the sim's, and the shift is modelled as 3.0 mm†. The reference says "a few millimetres".
 
@@ -184,18 +184,18 @@ Because the 5th option is conditional, **Orca must maintain separate coordinate 
 `,
   },
   {
-    id: "station-duo-dual-screen",
-    title: "The Station Duo Dual-Screen Problem (OCR → UI Automator 2.3)",
+    id: "stand-duet-dual-screen",
+    title: "The Stand Duet Dual-Screen Problem (OCR → UI Automator 2.3)",
     category: "Test Frameworks",
-    summary: "One Station Duo terminal drives two displays but only the MFD is exposed to ADB. Learn the legacy OCR workaround, why it is brittle, and the UI Automator 2.3 replacement — plus the config rule that both IPs are the same.",
+    summary: "One Stand Duet terminal drives two displays but only the MFD is exposed to ADB. Learn the legacy OCR workaround, why it is brittle, and the UI Automator 2.3 replacement — plus the config rule that both IPs are the same.",
     factIds: ["F151", "F152", "F150", "F153", "F154", "F155", "F156", "F006", "F007", "F193", "F221", "F029", "F030"],
-    tags: ["duo.ocr", "orca.screencompare", "uia.v23", "vision.tesseract", "pigeon.gimp", "bots.types"],
+    tags: ["duet.ocr", "orca.screencompare", "uia.v23", "vision.tesseract", "pigeon.gimp", "bots.types"],
     related: ["orca-screen-compare", "gimp-coordinates", "config-properties", "adb-vs-physical-bots"],
-    keywords: ["Station Duo", "dual screen", "MFD", "CFD", "ADB-blind", "OCR", "Tesseract", "Screen Compare", "UI Automator 2.3", "displayId", "same IP", "R2-D2"],
+    keywords: ["Stand Duet", "dual screen", "MFD", "CFD", "ADB-blind", "OCR", "Tesseract", "Screen Compare", "UI Automator 2.3", "displayId", "same IP", "R2-D2"],
     practice: ["INC30", "INC36", "INC37", "INC38", "INC64"],
     body: `## The problem
 
-On the **Station Duo**, one terminal drives two displays, but **only the primary MFD is exposed to ADB** {F151}. Legacy UI Automator was **completely blind** to the secondary CFD {F152}. An ADB-blind display needs a physical bot or another way to see it {F221}.
+On the **Stand Duet**, one terminal drives two displays, but **only the primary MFD is exposed to ADB** {F151}. Legacy UI Automator was **completely blind** to the secondary CFD {F152}. An ADB-blind display needs a physical bot or another way to see it {F221}.
 
 \`\`\`bash
 adb -s 10.42.30.14:5444 shell uiautomator dump†
@@ -219,9 +219,9 @@ orca.screenCompare("CFD_TOTAL");†
 cfdTotals.assertTotal("$10.83");†
 \`\`\`
 
-## Configuring a Duo locally
+## Configuring a Duet locally
 
-On a Station Duo, **\`merchantFacingDeviceIp\` and \`customerFacingDeviceIp\` are set to the exact same IP address** {F193} — it is one terminal. Leaving the CFD IP blank or pointing it at the Pi is wrong.
+On a Stand Duet, **\`merchantFacingDeviceIp\` and \`customerFacingDeviceIp\` are set to the exact same IP address** {F193} — it is one terminal. Leaving the CFD IP blank or pointing it at the Pi is wrong.
 `,
   },
 ]);

@@ -51,7 +51,7 @@ export const M04: LessonDef = {
     {
       id: 'M04.05',
       kind: 'inspect',
-      hud: 'Look at how the Flex 3 is held',
+      hud: 'Look at how the Flux 3 is held',
       prop: 'prop.walle.cradle',
       callouts: ['Angled 3D-printed cradle', 'Collis probe box (UL Transaction Security)', 'Webcam'],
       factIds: ['F242', 'F088'],

@@ -97,7 +97,7 @@ export interface PipelineDef {
   job: string;
   /** Requirement text for the HUD tooltip. */
   requirement: string;
-  /** Build parameters for run `runIndex` (PL1 alternates DEVICE_TYPE FLEX_3/FLEX_4). */
+  /** Build parameters for run `runIndex` (PL1 alternates DEVICE_TYPE FLUX_3/FLUX_4). */
   params: (runIndex: number) => Readonly<Record<string, string>>;
   eligibleRigs: readonly string[];
   /** 1…7; PL8 is `always`. */

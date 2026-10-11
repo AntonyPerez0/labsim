@@ -13,53 +13,53 @@ const M = 60_000;
 
 // id|name|kind|env|location|status|device(type@ip)|cfd(type@ip)|pi|cam|dts|merchantId|caps
 const ROSTER = `
-1|wall-e|touch|DEV1|Rack A · U33–U36|AVAILABLE|wall-e-flex3:FLEX_3@11||11|11|DTS|1|1,2,3
-2|eve|touch|DEV1|Rack A · U29–U32|AVAILABLE|eve-flex4:FLEX_4@12||12|12|DTS|1|1,2,3
-3|bumblebee|touch|DEV1|Rack A · U25–U28|AVAILABLE|bumblebee-mini3:MINI_3@13||13|13|DTS|1|1,2,3
-4|r2-d2|touch|DEV1|Rack A · U21–U24|AVAILABLE|r2-d2-duo:STATION_DUO@14|=|14|14|DTS|1|1,2,3,7
-5|johnny-5|touch|DEV1|Rack B · U33–U36|AVAILABLE|johnny-5-flex1:FLEX_1@15||15|40|DTS|1|1,2,3
-6|baymax|touch|DEV1|Rack B · U29–U32|AVAILABLE|baymax-st2018:STATION_2018@16||16|40|DTS|1|1,2,3
-7|seti|touch|DEV1|Rack B · U25–U28|AVAILABLE|seti-compact:COMPACT@17||17|40|DTS|6|1,2,3,5
-8|rosie|standalone|DEV1|Rack B · U21–U24|UNAVAILABLE|rosie-pocket:FLEX_POCKET@18||18|40|DTS|4|1,2,3,9
-9|megatron|tethered|DEV1|Tethered rack|AVAILABLE|megatron-mfd:STATION_2@21|megatron-cfd:MINI_2@22|20|20|S|1|3
-10|optimus|tethered|STG|Tethered rack|AVAILABLE|optimus-mfd:MINI_3@23|optimus-cfd:MINI_3@24|20|20|S|1|3
-11|data|adb|DEV1|ADB shelf|AVAILABLE|data-mini3:MINI_3@31||30||-|1|4
-12|tars|adb|DEV1|ADB shelf|AVAILABLE|tars-flex4:FLEX_4@32||30||-|1|4
-13|vision|adb|DEV1|Rack C (off-screen)|AVAILABLE|vision-pocket:FLEX_POCKET@50||50|50|-|1|4
-14|k-9|adb|DEV1|Rack C|AVAILABLE|k-9-duo2:STATION_DUO_2@51||51||-|1|
-15|soundwave|touch|QA|Rack C|AVAILABLE|soundwave-flex3:FLEX_3@52||52|60|DTS|2|1,2,3
-16|starscream|touch|QA|Rack C|AVAILABLE|starscream-flex4:FLEX_4@53||53|60|DTS|2|1,2,3
-17|ratchet|touch|QA|Rack C|AVAILABLE|ratchet-mini3:MINI_3@54||54|60|DTS|2|1,2,3
-18|c-3po|touch|QA|Rack C|AVAILABLE|c-3po-duo:STATION_DUO@55|=|55|60|DTS|2|1,2,3,7
-19|bb-8|tethered|DEV2|Rack D|AVAILABLE|bb-8-mfd:MINI_3@61|bb-8-cfd:MINI_3@62|61|61|S|2|3
-20|bender|standalone|STG|PayCore bench|UNAVAILABLE|bender-st2:STATION_2@63||63|63|DTS|5|1,2,3,8,9
-21|marvin|tethered|QA|Rack D|AVAILABLE|marvin-mfd:STATION_2@64|marvin-cfd:MINI_3@65|64|64|S|2|3
-22|robby|tethered|DEV2|Rack D|OFFLINE|robby-mfd:MINI_3@66|robby-cfd:MINI_3@67|64|64|S|2|3
-23|hal|adb|QA|ADB rack 2|AVAILABLE|hal-st2:STATION_2@70||70||-|2|
-24|bishop|adb|QA|ADB rack 2|AVAILABLE|bishop-mini2:MINI_2@71||70||-|2|
-25|ash|adb|QA|ADB rack 2|AVAILABLE|ash-flex2:FLEX_2@72||70||-|2|
-26|sonny|adb|QA|ADB rack 2|CONNECTION_FAILED|sonny-flex3:FLEX_3@73||74||-|2|
-27|chappie|touch|QA|Rack E|AVAILABLE|chappie-flex4:FLEX_4@75||75|79|DTS|2|1,2,3
-28|case|touch|QA|Rack E|AVAILABLE|case-mini3:MINI_3@76||76|79|DTS|2|1,2,3
-29|atlas|touch|QA|Rack E|AVAILABLE|atlas-st2018:STATION_2018@77||77|79|DTS|2|1,2,3
-30|astro|touch|QA|Rack E|AVAILABLE|astro-flex4:FLEX_4@78||78|79|DTS|3|1,2,3,4,6
-31|iron-giant|touch|QA|Rack F|AVAILABLE|iron-giant-duo2:STATION_DUO_2@80|=|80|80|DTS|2|1,2,3,7
-32|voltron|tethered|INT|Rack D|AVAILABLE|voltron-mfd:STATION_2@81|voltron-cfd:MINI_2@82|81|81|S|2|3
-33|kryten|standalone|STG|PayCore bench|UNAVAILABLE|kryten-flex3:FLEX_3@83||83|83|DTS|4|1,2,3,9
-34|mazinger|touch|DEV2|Rack F|AVAILABLE|mazinger-mini2:MINI_2@84||84|84|DTS|2|1,2,3
-35|jarvis|adb|DEV2|ADB rack 2|AVAILABLE|jarvis-mini3:MINI_3@85||85||-|2|
-36|ultron|adb|DEV2|ADB rack 2|AVAILABLE|ultron-pocket:FLEX_POCKET@86||85||-|2|
-37|dalek|touch|QA|Rack F|OFFLINE|dalek-flex1:FLEX_1@87||87|87|DTS|2|1,2,3
-38|number-5|touch|QA|Rack F|AVAILABLE|number-5-flex2:FLEX_2@88||88|88|DTS|2|1,2,3
-39|gerty|touch|QA|Westers bench|AVAILABLE|gerty-compact:COMPACT@89||89|89|DTS|7|1,2,3,5
-40|mother|touch|QA|Westers bench|RESERVED|mother-compact:COMPACT@90||90|89|DTS|6|1,2,3,5
-41|brainiac|adb|DEV2|ADB rack 2|AVAILABLE|brainiac-duo:STATION_DUO@91||91||-|2|
-42|zorg|tethered|QA|Rack D|AVAILABLE|zorg-mfd:MINI_3@92|zorg-cfd:MINI_2@93|92|92|S|2|3
+1|wall-e|touch|DEV1|Rack A · U33–U36|AVAILABLE|wall-e-flux3:FLUX_3@11||11|11|DTS|1|1,2,3
+2|eve|touch|DEV1|Rack A · U29–U32|AVAILABLE|eve-flux4:FLUX_4@12||12|12|DTS|1|1,2,3
+3|bumblebee|touch|DEV1|Rack A · U25–U28|AVAILABLE|bumblebee-micro3:MICRO_3@13||13|13|DTS|1|1,2,3
+4|r2-d2|touch|DEV1|Rack A · U21–U24|AVAILABLE|r2-d2-duet:STAND_DUET@14|=|14|14|DTS|1|1,2,3,7
+5|johnny-5|touch|DEV1|Rack B · U33–U36|AVAILABLE|johnny-5-flux1:FLUX_1@15||15|40|DTS|1|1,2,3
+6|baymax|touch|DEV1|Rack B · U29–U32|AVAILABLE|baymax-st2018:STAND_2018@16||16|40|DTS|1|1,2,3
+7|seti|touch|DEV1|Rack B · U25–U28|AVAILABLE|seti-compass:COMPASS@17||17|40|DTS|6|1,2,3,5
+8|rosie|standalone|DEV1|Rack B · U21–U24|UNAVAILABLE|rosie-pocket:FLUX_POCKET@18||18|40|DTS|4|1,2,3,9
+9|megatron|tethered|DEV1|Tethered rack|AVAILABLE|megatron-mfd:STAND_2@21|megatron-cfd:MICRO_2@22|20|20|S|1|3
+10|optimus|tethered|STG|Tethered rack|AVAILABLE|optimus-mfd:MICRO_3@23|optimus-cfd:MICRO_3@24|20|20|S|1|3
+11|data|adb|DEV1|ADB shelf|AVAILABLE|data-micro3:MICRO_3@31||30||-|1|4
+12|tars|adb|DEV1|ADB shelf|AVAILABLE|tars-flux4:FLUX_4@32||30||-|1|4
+13|vision|adb|DEV1|Rack C (off-screen)|AVAILABLE|vision-pocket:FLUX_POCKET@50||50|50|-|1|4
+14|k-9|adb|DEV1|Rack C|AVAILABLE|k-9-duet2:STAND_DUET_2@51||51||-|1|
+15|soundwave|touch|QA|Rack C|AVAILABLE|soundwave-flux3:FLUX_3@52||52|60|DTS|2|1,2,3
+16|starscream|touch|QA|Rack C|AVAILABLE|starscream-flux4:FLUX_4@53||53|60|DTS|2|1,2,3
+17|ratchet|touch|QA|Rack C|AVAILABLE|ratchet-micro3:MICRO_3@54||54|60|DTS|2|1,2,3
+18|c-3po|touch|QA|Rack C|AVAILABLE|c-3po-duet:STAND_DUET@55|=|55|60|DTS|2|1,2,3,7
+19|bb-8|tethered|DEV2|Rack D|AVAILABLE|bb-8-mfd:MICRO_3@61|bb-8-cfd:MICRO_3@62|61|61|S|2|3
+20|bender|standalone|STG|PayCore bench|UNAVAILABLE|bender-st2:STAND_2@63||63|63|DTS|5|1,2,3,8,9
+21|marvin|tethered|QA|Rack D|AVAILABLE|marvin-mfd:STAND_2@64|marvin-cfd:MICRO_3@65|64|64|S|2|3
+22|robby|tethered|DEV2|Rack D|OFFLINE|robby-mfd:MICRO_3@66|robby-cfd:MICRO_3@67|64|64|S|2|3
+23|hal|adb|QA|ADB rack 2|AVAILABLE|hal-st2:STAND_2@70||70||-|2|
+24|bishop|adb|QA|ADB rack 2|AVAILABLE|bishop-micro2:MICRO_2@71||70||-|2|
+25|ash|adb|QA|ADB rack 2|AVAILABLE|ash-flux2:FLUX_2@72||70||-|2|
+26|sonny|adb|QA|ADB rack 2|CONNECTION_FAILED|sonny-flux3:FLUX_3@73||74||-|2|
+27|chappie|touch|QA|Rack E|AVAILABLE|chappie-flux4:FLUX_4@75||75|79|DTS|2|1,2,3
+28|case|touch|QA|Rack E|AVAILABLE|case-micro3:MICRO_3@76||76|79|DTS|2|1,2,3
+29|atlas|touch|QA|Rack E|AVAILABLE|atlas-st2018:STAND_2018@77||77|79|DTS|2|1,2,3
+30|astro|touch|QA|Rack E|AVAILABLE|astro-flux4:FLUX_4@78||78|79|DTS|3|1,2,3,4,6
+31|iron-giant|touch|QA|Rack F|AVAILABLE|iron-giant-duet2:STAND_DUET_2@80|=|80|80|DTS|2|1,2,3,7
+32|voltron|tethered|INT|Rack D|AVAILABLE|voltron-mfd:STAND_2@81|voltron-cfd:MICRO_2@82|81|81|S|2|3
+33|kryten|standalone|STG|PayCore bench|UNAVAILABLE|kryten-flux3:FLUX_3@83||83|83|DTS|4|1,2,3,9
+34|mazinger|touch|DEV2|Rack F|AVAILABLE|mazinger-micro2:MICRO_2@84||84|84|DTS|2|1,2,3
+35|jarvis|adb|DEV2|ADB rack 2|AVAILABLE|jarvis-micro3:MICRO_3@85||85||-|2|
+36|ultron|adb|DEV2|ADB rack 2|AVAILABLE|ultron-pocket:FLUX_POCKET@86||85||-|2|
+37|dalek|touch|QA|Rack F|OFFLINE|dalek-flux1:FLUX_1@87||87|87|DTS|2|1,2,3
+38|number-5|touch|QA|Rack F|AVAILABLE|number-5-flux2:FLUX_2@88||88|88|DTS|2|1,2,3
+39|gerty|touch|QA|Westers bench|AVAILABLE|gerty-compass:COMPASS@89||89|89|DTS|7|1,2,3,5
+40|mother|touch|QA|Westers bench|RESERVED|mother-compass:COMPASS@90||90|89|DTS|6|1,2,3,5
+41|brainiac|adb|DEV2|ADB rack 2|AVAILABLE|brainiac-duet:STAND_DUET@91||91||-|2|
+42|zorg|tethered|QA|Rack D|AVAILABLE|zorg-mfd:MICRO_3@92|zorg-cfd:MICRO_2@93|92|92|S|2|3
 `;
 
 const SERIAL_CODE: Record<DeviceTypeCode, string> = {
-  FLEX_1: 'F1', FLEX_2: 'F2', FLEX_3: 'F3', FLEX_4: 'F4', FLEX_POCKET: 'FP', MINI_2: 'M2', MINI_3: 'M3', MINI_4: 'M4',
-  STATION_2018: 'S18', STATION_2: 'S2', STATION_DUO: 'SD', STATION_DUO_2: 'SD2', STATION_DUO_3: 'SD3', COMPACT: 'CP',
+  FLUX_1: 'F1', FLUX_2: 'F2', FLUX_3: 'F3', FLUX_4: 'F4', FLUX_POCKET: 'FP', MICRO_2: 'M2', MICRO_3: 'M3', MICRO_4: 'M4',
+  STAND_2018: 'S18', STAND_2: 'S2', STAND_DUET: 'SD', STAND_DUET_2: 'SD2', STAND_DUET_3: 'SD3', COMPASS: 'CP',
 };
 
 function merchant(id: number, name: string, displayName: string, env: string, region: MerchantConfig['region'], country: 'US' | 'CA', taxBp: number, tips: number[], pinBypass: boolean, cash: boolean, qr: boolean, sig: number | null, owner: string, creds: [string, string, string] | null, apps: string[] = []): MerchantConfig {
@@ -72,7 +72,7 @@ function merchant(id: number, name: string, displayName: string, env: string, re
   };
 }
 
-const FLEX3_LOCATIONS: [string, [string, number, number][]][] = [
+const FLUX3_LOCATIONS: [string, [string, number, number][]][] = [
   ['HOME', [['Orders', 20.3, 30], ['Transactions', 55.7, 30], ['Register', 20.3, 53.6], ['Setup', 55.7, 53.6], ['Sale', 20.3, 77.2], ['Authorizations', 55.7, 77.2]]],
   ['REGISTER_HOME', [['Register', 13, 10], ['Tax Item 5', 20.3, 30], ['Non-Tax Item 1', 55.7, 30], ['Coffee', 20.3, 50], ['Clear', 20, 124], ['Review Order', 56, 124]]],
   ['REVIEW_ORDER', [['Back', 20, 124], ['Pay', 56, 124]]],
@@ -163,7 +163,7 @@ export function seedFakeLab(opts: { force?: boolean } = {}): void {
       }
     }
     // Retired legacy device row.
-    lab.orca.devices[devId] = { id: devId, name: 'retired-flex1-legacy', deviceType: 'FLEX_1', serial: 'SIM-F1-000099', ip: '10.42.30.99', label: 'OLD FLEX 1', simDeviceId: null, retired: true };
+    lab.orca.devices[devId] = { id: devId, name: 'retired-flux1-legacy', deviceType: 'FLUX_1', serial: 'SIM-F1-000099', ip: '10.42.30.99', label: 'OLD FLUX 1', simDeviceId: null, retired: true };
     devId++;
     lab.orca.seq.devices = devId;
     lab.orca.seq.robots = 43;
@@ -174,7 +174,7 @@ export function seedFakeLab(opts: { force?: boolean } = {}): void {
       { id: 2, atMs: 8 * H + 2 * M + 11000, author: 'tate', text: '2026-10-05 08:02:11 Escalated to Jared — SD card reflash pending (tate)', resolved: false, kind: 'MANUAL', repeat: 1, lastAtMs: 8 * H + 2 * M + 11000 },
     ];
     lab.orca.robots[22]!.notes = [{ id: 3, atMs: -4 * 24 * H + 14 * H, author: 'jared', text: '2026-10-01 14:00:00 STATUS Available → Offline (jared): Assembling data profiles — Jared', resolved: false, kind: 'STATUS', repeat: 1, lastAtMs: -4 * 24 * H + 14 * H }];
-    lab.orca.robots[37]!.notes = [{ id: 4, atMs: -3 * 24 * H + 11 * H, author: 'jared', text: '2026-10-02 11:00:00 STATUS Available → Offline (jared): Flex 1 parked; rebuild queued — J', resolved: false, kind: 'STATUS', repeat: 1, lastAtMs: -3 * 24 * H + 11 * H }];
+    lab.orca.robots[37]!.notes = [{ id: 4, atMs: -3 * 24 * H + 11 * H, author: 'jared', text: '2026-10-02 11:00:00 STATUS Available → Offline (jared): Flux 1 parked; rebuild queued — J', resolved: false, kind: 'STATUS', repeat: 1, lastAtMs: -3 * 24 * H + 11 * H }];
     lab.orca.robots[1]!.notes = [{ id: 5, atMs: 8 * H + 15 * M, author: 'orca-health-check', text: '2026-10-05 08:15:00 GET http://10.42.10.11:8000/health → 200 OK (recovered after 1 failure)', resolved: true, kind: 'HEALTH', repeat: 1, lastAtMs: 8 * H + 15 * M }];
     lab.orca.seq.notes = 6;
     // Capabilities.
@@ -185,7 +185,7 @@ export function seedFakeLab(opts: { force?: boolean } = {}): void {
       ['GO_SDK', 'goSdk', 'DYNAMIC_JSON', 'Terminal SDK runner target (David)'],
       ['INTERAC', 'interac', 'BOTH', 'Canadian Interac flows (Westers beds)'],
       ['PHONE', 'phone', 'DYNAMIC_JSON', 'Phone carriage with a mounted phone (mobile runners)'],
-      ['OCR_CAMERA', 'ocrCamera', 'NON_DYNAMIC', 'Webcam aimed for Screen Compare (legacy Duo)'],
+      ['OCR_CAMERA', 'ocrCamera', 'NON_DYNAMIC', 'Webcam aimed for Screen Compare (legacy Duet)'],
       ['lab_dining', 'lab_dining', 'BOTH', 'LabSim Dining app provisioned (PayCore)'],
       ['CARD_MATRIX', 'cardMatrix', 'NON_DYNAMIC', 'PayCore back-to-back card matrix rig'],
     ];
@@ -224,13 +224,13 @@ export function seedFakeLab(opts: { force?: boolean } = {}): void {
       lab.orca.cardProfiles[i + 1] = { id: i + 1, name, brand, entry, trackData: entry === 'SWIPE' ? data : null, gortPath: entry === 'SWIPE' ? null : data, country, requiresPin: !!pin, owner, pin, pan, expiry: '3012' };
     });
     lab.orca.seq.cardProfiles = 10;
-    // Screens + locations (FLEX_3 and FLEX_4 full; others HOME only).
+    // Screens + locations (FLUX_3 and FLUX_4 full; others HOME only).
     lab.orca.screens = {};
     lab.orca.screenLocations = {};
     let sid = 1;
     let lid = 1;
-    for (const type of ['FLEX_3', 'FLEX_4', 'MINI_3', 'FLEX_1', 'FLEX_2', 'STATION_DUO'] as DeviceTypeCode[]) {
-      const list = type === 'FLEX_3' || type === 'FLEX_4' ? FLEX3_LOCATIONS : FLEX3_LOCATIONS.slice(0, 2);
+    for (const type of ['FLUX_3', 'FLUX_4', 'MICRO_3', 'FLUX_1', 'FLUX_2', 'STAND_DUET'] as DeviceTypeCode[]) {
+      const list = type === 'FLUX_3' || type === 'FLUX_4' ? FLUX3_LOCATIONS : FLUX3_LOCATIONS.slice(0, 2);
       for (const [screen, locs] of list) {
         const optionCount = screen === 'RECEIPT_OPTIONS_4' ? 4 : screen === 'RECEIPT_OPTIONS_5' ? 5 : null;
         lab.orca.screens[sid] = { id: sid, name: screen, testingProfile: UI_DEVICE_TYPES[type].profile, description: screen === 'TENDER_CASH_DISCOUNT' ? 'Cash discount tender selection prompt' : '', optionCount, deviceType: type, display: 'primary' };
@@ -241,14 +241,14 @@ export function seedFakeLab(opts: { force?: boolean } = {}): void {
         sid++;
       }
     }
-    lab.orca.screens[sid] = { id: sid, name: 'CFD_CART', testingProfile: 'STATION_DUO', description: 'Duo CFD cart (OCR)', optionCount: null, deviceType: 'STATION_DUO', display: 'secondary' };
+    lab.orca.screens[sid] = { id: sid, name: 'CFD_CART', testingProfile: 'STAND_DUET', description: 'Duet CFD cart (OCR)', optionCount: null, deviceType: 'STAND_DUET', display: 'secondary' };
     sid++;
     lab.orca.seq.screens = sid;
     lab.orca.seq.screenLocations = lid;
     // Screen compare images.
     lab.orca.screenCompareImages = {
-      1: { id: 1, name: 'CFD_TOTAL', robotId: 4, screenName: 'CFD_CART', bbox: { x: 412, y: 288, w: 236, h: 44 }, expectedText: 'TOTAL $10.83', deprecated: false, usedBy: ['uia-remote:DuoCfdSuite'] },
-      2: { id: 2, name: 'CFD_THANK_YOU', robotId: 4, screenName: 'CFD_THANK_YOU', bbox: { x: 514, y: 336, w: 252, h: 48 }, expectedText: 'Thank you', deprecated: false, usedBy: ['uia-remote:DuoCheckoutTest'] },
+      1: { id: 1, name: 'CFD_TOTAL', robotId: 4, screenName: 'CFD_CART', bbox: { x: 412, y: 288, w: 236, h: 44 }, expectedText: 'TOTAL $10.83', deprecated: false, usedBy: ['uia-remote:DuetCfdSuite'] },
+      2: { id: 2, name: 'CFD_THANK_YOU', robotId: 4, screenName: 'CFD_THANK_YOU', bbox: { x: 514, y: 336, w: 252, h: 48 }, expectedText: 'Thank you', deprecated: false, usedBy: ['uia-remote:DuetCheckoutTest'] },
       3: { id: 3, name: 'CFD_TOTAL_C3PO', robotId: 18, screenName: 'CFD_CART', bbox: { x: 985, y: 472, w: 96, h: 18 }, expectedText: 'TOTAL $10.83', deprecated: true, usedBy: [] },
     };
     lab.orca.seq.screenCompareImages = 4;
@@ -290,10 +290,10 @@ export function seedFakeLab(opts: { force?: boolean } = {}): void {
     lab.hosts['pi-40'] = createHost('pi-40', 'pi', 'cam-rackb', '10.42.10.40', { services: { 'camera-stream': { name: 'camera-stream', running: true, port: 8081 } as never } });
     lab.hosts['ws-17'] = createHost('ws-17', 'workstation', 'ws-17', '10.42.50.17');
     // A Jenkins checkout on WALL-E (lockout demo).
-    lab.orca.robots[1]!.checkout = { buildId: 'Java/uia-remote-regression-flex#4127', jobId: 'Java/uia-remote-regression-flex', byName: false, startedMs: 9 * H + 41 * M + 7000, statusAtCheckout: 'AVAILABLE', kind: 'jenkins' };
+    lab.orca.robots[1]!.checkout = { buildId: 'Java/uia-remote-regression-flux#4127', jobId: 'Java/uia-remote-regression-flux', byName: false, startedMs: 9 * H + 41 * M + 7000, statusAtCheckout: 'AVAILABLE', kind: 'jenkins' };
     const walle = lab.rigs['wall-e']!;
     walle.dashboardLocked = true;
-    walle.lockedBy = { kind: 'jenkins', ref: 'Java/uia-remote-regression-flex#4127' };
+    walle.lockedBy = { kind: 'jenkins', ref: 'Java/uia-remote-regression-flux#4127' };
     // EVE: lock released, yellow.
     const eve = lab.rigs.eve!;
     eve.banner = 'yellow';

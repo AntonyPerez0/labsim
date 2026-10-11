@@ -52,7 +52,7 @@ function CodeButton(props: { repo: GitRepo }) {
         </button>
       </div>
       <div className="gh-clone-body">
-        <div className="gh-flex" style={{ fontWeight: 600, marginBottom: 8 }}>
+        <div className="gh-flux" style={{ fontWeight: 600, marginBottom: 8 }}>
           <Oct name="terminal" /> Clone
         </div>
         <div className="gh-subtabs" role="tablist" style={{ padding: 0 }}>
@@ -227,7 +227,7 @@ function Breadcrumb(props: { repo: GitRepo; branch: string; path: string; isBlob
         const sub = parts.slice(0, i + 1).join('/');
         const last = i === parts.length - 1;
         return (
-          <span key={sub} className="gh-flex" style={{ gap: 4 }}>
+          <span key={sub} className="gh-flux" style={{ gap: 4 }}>
             <span className="gh-muted">/</span>
             {last ? (
               <b>{p}</b>

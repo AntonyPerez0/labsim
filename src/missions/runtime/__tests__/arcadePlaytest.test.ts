@@ -40,7 +40,7 @@ describe('verification in shifts without pipelines', () => {
     expect(builds.length).toBe(before + 1);
     const kicked = builds[builds.length - 1]!;
     expect(kicked.params.ROBOT_NAME).toBe('eve');
-    expect(kicked.params.DEVICE_TYPE).toBe('FLEX_4');
+    expect(kicked.params.DEVICE_TYPE).toBe('FLUX_4');
     // No second kick while the first one is recent.
     advance(10);
     expect(Object.keys(state().lab.jenkins.builds).length).toBe(before + 1);
@@ -105,14 +105,14 @@ describe('ADB / reservation etiquette is judged on the player, not the scenario'
     completeModules('M01', 'M02', 'M03', 'M04');
     missions.startShift({ configId: 'shift-5', customSeed: 'gw8c', seedMode: 'custom' });
     asRuntime(() => fire('test.localRunStarted', { runId: 'run-1', testName: 'SaleTest', robotName: 'bumblebee' }));
-    fire('adb.connected', { target: '10.42.60.4:5555', deviceId: 'dev-riley-desk-flex', coworker: true });
-    fire('adb.coworkerDriven', { target: '10.42.60.4:5555', deviceId: 'dev-riley-desk-flex', command: 'input tap', by: 'runner' });
+    fire('adb.connected', { target: '10.42.60.4:5555', deviceId: 'dev-riley-desk-flux', coworker: true });
+    fire('adb.coworkerDriven', { target: '10.42.60.4:5555', deviceId: 'dev-riley-desk-flux', command: 'input tap', by: 'runner' });
     expect(state().session.shift!.penalties.filter((x) => x.gwId === 'GW08')).toHaveLength(0);
     expect(state().session.shift!.strikes).toBe(0);
     fire('test.localRunFinished', { runId: 'run-1', testName: 'SaleTest', passed: false, failureCode: 'UI_NOT_FOUND' });
     // The player's own run on 5555 is charged.
     fire('test.localRunStarted', { runId: 'run-2', testName: 'SaleTest', robotName: 'bumblebee' });
-    fire('adb.coworkerDriven', { target: '10.42.60.4:5555', deviceId: 'dev-riley-desk-flex', command: 'input tap', by: 'runner' });
+    fire('adb.coworkerDriven', { target: '10.42.60.4:5555', deviceId: 'dev-riley-desk-flux', command: 'input tap', by: 'runner' });
     expect(state().session.shift!.penalties.filter((x) => x.gwId === 'GW08')).toHaveLength(1);
   });
 

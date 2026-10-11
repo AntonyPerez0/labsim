@@ -69,7 +69,7 @@ export function islabload(lab: LabState, loadId: string): boolean {
   if (isCollisLoad(lab, loadId)) return false;
   const l = load(lab, loadId);
   if (l) return !!l.deviceId || l.expects === 'AC-BRICK-18V';
-  return loadId.startsWith('dev-') || loadId.startsWith('psu-dev') || /flex|mini|station|compact|duo|pocket/i.test(loadId);
+  return loadId.startsWith('dev-') || loadId.startsWith('psu-dev') || /flux|micro|stand|compass|duet|pocket/i.test(loadId);
 }
 
 export function isDc(hookup: unknown): boolean {
@@ -115,7 +115,7 @@ export function robotUrl(lab: LabState, id: number): string {
 export function isLegacyRow(id: number): boolean {
   if (GWS.legacyDeviceIds.has(id)) return true;
   const name = GWS.deviceNames.get(id) ?? '';
-  return /flex1|legacy/i.test(name);
+  return /flux1|legacy/i.test(name);
 }
 
 export function configTurnedBad(lab: LabState): boolean {

@@ -8,7 +8,7 @@ import type { DeviceTypeCode, TestingProfile } from '@/sim/types';
 export interface UiDeviceType {
   code: DeviceTypeCode;
   displayName: string;
-  family: 'Station' | 'Mini' | 'Flex' | 'Compact';
+  family: 'Stand' | 'Micro' | 'Flux' | 'Compass';
   profile: TestingProfile;
   orientation: 'portrait' | 'landscape';
   wMm: number;
@@ -35,26 +35,26 @@ const t = (
   extra: Partial<UiDeviceType> = {},
 ): UiDeviceType => ({ code, displayName, family, profile, orientation, wMm, hMm, wPx, hPx, printer, secondary: null, upcoming: false, dualScreenSingleAdb: false, ...extra });
 
-const DUO_CFD = { wMm: 172.3, hMm: 107.7, wPx: 1280, hPx: 800 };
+const DUET_CFD = { wMm: 172.3, hMm: 107.7, wPx: 1280, hPx: 800 };
 
 export const UI_DEVICE_TYPES: Record<DeviceTypeCode, UiDeviceType> = {
-  STATION_2018: t('STATION_2018', 'Station (2018)', 'Station', 'STATION_2018', 'landscape', 309.9, 174.3, 1366, 768, true),
-  STATION_2: t('STATION_2', 'Station 2', 'Station', 'STATION_2', 'landscape', 309.9, 174.3, 1920, 1080, true),
-  STATION_DUO: t('STATION_DUO', 'Station Duo', 'Station', 'STATION_DUO', 'landscape', 309.9, 174.3, 1920, 1080, true, { secondary: DUO_CFD, dualScreenSingleAdb: true }),
-  STATION_DUO_2: t('STATION_DUO_2', 'Station Duo 2', 'Station', 'STATION_DUO', 'landscape', 309.9, 174.3, 1920, 1080, false, { secondary: DUO_CFD, dualScreenSingleAdb: true }),
-  STATION_DUO_3: t('STATION_DUO_3', 'Station Duo 3', 'Station', 'STATION_DUO', 'landscape', 309.9, 174.3, 1920, 1080, false, { secondary: DUO_CFD, dualScreenSingleAdb: true, upcoming: true }),
-  MINI_2: t('MINI_2', 'Mini (2nd gen)', 'Mini', 'MINI_GEN2', 'landscape', 154.2, 90.4, 1024, 600, true),
-  MINI_3: t('MINI_3', 'Mini (3rd gen)', 'Mini', 'MINI_GEN3', 'landscape', 172.3, 107.7, 1280, 800, true),
-  MINI_4: t('MINI_4', 'Mini 4', 'Mini', 'MINI_GEN3', 'landscape', 172.3, 107.7, 1280, 800, true, { upcoming: true }),
-  FLEX_1: t('FLEX_1', 'Flex (1st gen)', 'Flex', 'FLEX_GEN1', 'portrait', 62.3, 110.7, 720, 1280, true),
-  FLEX_2: t('FLEX_2', 'Flex (2nd gen)', 'Flex', 'FLEX_GEN2', 'portrait', 68.0, 121.0, 720, 1280, true),
-  FLEX_3: t('FLEX_3', 'Flex 3', 'Flex', 'FLEX_GEN3', 'portrait', 76.0, 135.0, 720, 1280, true),
-  FLEX_4: t('FLEX_4', 'Flex 4', 'Flex', 'FLEX_GEN3', 'portrait', 76.0, 135.0, 720, 1280, true),
-  FLEX_POCKET: t('FLEX_POCKET', 'Flex Pocket', 'Flex', 'FLEX_GEN3', 'portrait', 76.0, 135.0, 720, 1280, false),
-  COMPACT: t('COMPACT', 'LabSim Compact', 'Compact', 'COMPACT', 'portrait', 62.3, 110.7, 720, 1280, false),
+  STAND_2018: t('STAND_2018', 'Stand (2018)', 'Stand', 'STAND_2018', 'landscape', 309.9, 174.3, 1366, 768, true),
+  STAND_2: t('STAND_2', 'Stand 2', 'Stand', 'STAND_2', 'landscape', 309.9, 174.3, 1920, 1080, true),
+  STAND_DUET: t('STAND_DUET', 'Stand Duet', 'Stand', 'STAND_DUET', 'landscape', 309.9, 174.3, 1920, 1080, true, { secondary: DUET_CFD, dualScreenSingleAdb: true }),
+  STAND_DUET_2: t('STAND_DUET_2', 'Stand Duet 2', 'Stand', 'STAND_DUET', 'landscape', 309.9, 174.3, 1920, 1080, false, { secondary: DUET_CFD, dualScreenSingleAdb: true }),
+  STAND_DUET_3: t('STAND_DUET_3', 'Stand Duet 3', 'Stand', 'STAND_DUET', 'landscape', 309.9, 174.3, 1920, 1080, false, { secondary: DUET_CFD, dualScreenSingleAdb: true, upcoming: true }),
+  MICRO_2: t('MICRO_2', 'Micro (2nd gen)', 'Micro', 'MICRO_GEN2', 'landscape', 154.2, 90.4, 1024, 600, true),
+  MICRO_3: t('MICRO_3', 'Micro (3rd gen)', 'Micro', 'MICRO_GEN3', 'landscape', 172.3, 107.7, 1280, 800, true),
+  MICRO_4: t('MICRO_4', 'Micro 4', 'Micro', 'MICRO_GEN3', 'landscape', 172.3, 107.7, 1280, 800, true, { upcoming: true }),
+  FLUX_1: t('FLUX_1', 'Flux (1st gen)', 'Flux', 'FLUX_GEN1', 'portrait', 62.3, 110.7, 720, 1280, true),
+  FLUX_2: t('FLUX_2', 'Flux (2nd gen)', 'Flux', 'FLUX_GEN2', 'portrait', 68.0, 121.0, 720, 1280, true),
+  FLUX_3: t('FLUX_3', 'Flux 3', 'Flux', 'FLUX_GEN3', 'portrait', 76.0, 135.0, 720, 1280, true),
+  FLUX_4: t('FLUX_4', 'Flux 4', 'Flux', 'FLUX_GEN3', 'portrait', 76.0, 135.0, 720, 1280, true),
+  FLUX_POCKET: t('FLUX_POCKET', 'Flux Pocket', 'Flux', 'FLUX_GEN3', 'portrait', 76.0, 135.0, 720, 1280, false),
+  COMPASS: t('COMPASS', 'LabSim Compass', 'Compass', 'COMPASS', 'portrait', 62.3, 110.7, 720, 1280, false),
 };
 
-/** `Flex · FLEX_GEN2 · portrait 68.0 × 121.0 mm · 720 × 1280 px · printer` (Apps §2.6). */
+/** `Flux · FLUX_GEN2 · portrait 68.0 × 121.0 mm · 720 × 1280 px · printer` (Apps §2.6). */
 export function deviceTypeInfoLine(code: DeviceTypeCode | string): string {
   const d = UI_DEVICE_TYPES[code as DeviceTypeCode];
   if (!d) return '';

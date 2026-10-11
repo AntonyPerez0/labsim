@@ -365,7 +365,7 @@ export interface WeakSpotState {
 export interface ComputerGating {
   /** Apps the desktop offers. `'all'` outside Academy (Cur M06: "Orca app unlocked with the Robots page"). */
   unlockedApps: 'all' | string[];
-  /** Per-app restrictions, e.g. `{ jenkins: { visibleJobs: ['Java/uia-remote-regression-flex'] }, orca: { pages: ['robots'] } }`. */
+  /** Per-app restrictions, e.g. `{ jenkins: { visibleJobs: ['Java/uia-remote-regression-flux'] }, orca: { pages: ['robots'] } }`. */
   restrictions: Record<string, Record<string, string[] | string | boolean>>;
   /** Orca's tutorial **Force health check** header button (Academy & Free Play only; never Strict/cert/shift). */
   forceHealthCheckButton: boolean;

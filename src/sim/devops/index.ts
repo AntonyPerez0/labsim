@@ -165,7 +165,7 @@ export interface CoreServices {
   adbConnect(lab: LabState, ctx: TxContext, target: string): { line: string; ok: boolean };
   /** `adb -s <target> shell|exec-out …` argv after the target; drives coworker devices too (emits adb.coworkerDriven). */
   adbShell(lab: LabState, ctx: TxContext, target: string, argv: string[], by: 'terminal' | 'runner'): AdbShellResult;
-  /** UI Automator hierarchy XML of a display (2.2: primary only; 2.3: displayId 1 = Duo CFD), Sim §3.11. */
+  /** UI Automator hierarchy XML of a display (2.2: primary only; 2.3: displayId 1 = Duet CFD), Sim §3.11. */
   uiDump(lab: LabState, deviceId: string, display: 'primary' | 'secondary'): string;
   startLaz(lab: LabState, ctx: TxContext, deviceId: string, toMerchantId: number, opts: { buildId: string | null; actor: Actor }): Result<{ runId: string }>;
 

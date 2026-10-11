@@ -277,7 +277,7 @@ function stageCheckoutRobot(sc: SC): StageOutcome {
   return 'poll';
 }
 
-const PREFLIGHT_ORDER = ['physicalTouch', 'deviceType', 'printer', 'duo'];
+const PREFLIGHT_ORDER = ['physicalTouch', 'deviceType', 'printer', 'duet'];
 
 function stageVerifyRobot(sc: SC): StageOutcome {
   const { lab, b, job } = sc;

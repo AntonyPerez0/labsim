@@ -136,22 +136,22 @@ describe('power (Sim §3.13)', () => {
   });
 
   it('an 18 V device brick on a DC rail fries the device (full damage model) and a 24 V short browns out the Pis', () => {
-    expect(sim.power.unplug('psu-eve-flex4', 'player').ok).toBe(true);
+    expect(sim.power.unplug('psu-eve-flux4', 'player').ok).toBe(true);
     const fried = collect('device.fried', () => {
-      expect(sim.power.plug('psu-eve-flex4', { kind: 'dc-rail', targetId: 'T-24V-SPARE' }, 'player').ok).toBe(true);
+      expect(sim.power.plug('psu-eve-flux4', { kind: 'dc-rail', targetId: 'T-24V-SPARE' }, 'player').ok).toBe(true);
       sim.tick(50);
     });
-    expect(fried).toEqual([{ deviceId: 'dev-eve-flex4', cause: 'Flex 4 power brick (EVE) on 24 V DC (T-24V-SPARE)' }]);
-    expect(device('dev-eve-flex4')).toMatchObject({ power: 'fried', state: 'FRIED' });
+    expect(fried).toEqual([{ deviceId: 'dev-eve-flux4', cause: 'Flux 4 power brick (EVE) on 24 V DC (T-24V-SPARE)' }]);
+    expect(device('dev-eve-flux4')).toMatchObject({ power: 'fried', state: 'FRIED' });
     expect(lab().power.psus['MW-1']!.hiccupUntilPhysMs).not.toBeNull();
     sim.tick(100);
     expect(host('pi-wall-e').os).toBe('OFF'); // full model: every regulator drops for 2 s
     run(2_500);
     expect(host('pi-wall-e').os).toBe('BOOTING');
     // Fried is forever: back on AC it stays dark.
-    sim.power.plug('psu-eve-flex4', { kind: 'ac-strip', targetId: 'STRIP-A', socket: 6 }, 'player');
+    sim.power.plug('psu-eve-flux4', { kind: 'ac-strip', targetId: 'STRIP-A', socket: 6 }, 'player');
     run(31_000);
-    expect(device('dev-eve-flex4').power).toBe('fried');
+    expect(device('dev-eve-flux4').power).toBe('fried');
   });
 
   it('on a 5 V terminal the short blows the branch fuse; a Collis PSU there fries the probe', () => {
@@ -165,10 +165,10 @@ describe('power (Sim §3.13)', () => {
 
   it('academy damage model: a spark and the lead pops out, nothing changes', () => {
     sim.reset({ preset: 'academy:M03' });
-    sim.power.unplug('psu-flex4-new', 'player');
-    const r = sim.power.plug('psu-flex4-new', { kind: 'dc-rail', targetId: 'T-24V-SPARE' }, 'player');
+    sim.power.unplug('psu-flux4-new', 'player');
+    const r = sim.power.plug('psu-flux4-new', { kind: 'dc-rail', targetId: 'T-24V-SPARE' }, 'player');
     expect(r.ok).toBe(false);
-    expect(lab().power.loads['psu-flex4-new']!.supply.kind).toBe('none');
+    expect(lab().power.loads['psu-flux4-new']!.supply.kind).toBe('none');
     expect(lab().power.sparks.length).toBe(1);
   });
 });

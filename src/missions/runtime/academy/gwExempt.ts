@@ -15,7 +15,7 @@ import { L, currentStep } from './runner';
 export const ACADEMY_GW_EXEMPT: Readonly<Record<string, readonly string[]>> = {
   'M04.11': ['GW06'],
   'M06.07': ['GW17'],
-  // M14: the scripted 5555 collision — the run the lesson starts drives the coworker's desk Flex until
+  // M14: the scripted 5555 collision — the run the lesson starts drives the coworker's desk Flux until
   // the player has walked over and stopped it (M14.05's own "still 5555" correction keeps GW08).
   'M14.01': ['GW08'],
   'M14.02': ['GW08'],

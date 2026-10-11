@@ -1,7 +1,7 @@
 /**
  * M06 — Orca Architecture & the Five Robot Statuses (Cur §2 M06). Mentor {{tate}}, cameo {{jared}}.
  * Setup (`academy:M06`): roster as factory; Orca (Robots page) and Jenkins (only
- * `Java/uia-remote-regression-flex`) unlocked; the tutorial **Force health check** button is shown.
+ * `Java/uia-remote-regression-flux`) unlocked; the tutorial **Force health check** button is shown.
  * During the lesson: step 7's unplug is the player's own action; at step 10 the runner re-plugs EVE's
  * Pi as {{jared}} (`power.plug { load: 'pi-eve', kind: 'dc-rail', target: 'MAIN-eve' }`, Sim §4.4.2).
  */
@@ -18,7 +18,7 @@ export const M06: LessonDef = {
   setup: {
     preset: 'academy:M06',
     spawn: 'loc.workstation',
-    apps: { unlock: ['orca', 'jenkins', 'terminal', 'chat'], restrictions: { jenkins: { visibleJobs: [JOB.regressionFlex] } }, forceHealthCheck: true },
+    apps: { unlock: ['orca', 'jenkins', 'terminal', 'chat'], restrictions: { jenkins: { visibleJobs: [JOB.regressionFlux] } }, forceHealthCheck: true },
   },
   deck: 'deck.M06',
   manualChapters: ['Orchestrator'],
@@ -194,34 +194,34 @@ export const M06: LessonDef = {
     {
       id: 'M06.12',
       kind: 'computer-task',
-      hud: "You're going to test WALL-E locally. Reserve it, then build Java/uia-remote-regression-flex with DEVICE_TYPE=FLEX_3 and ROBOT_NAME blank.",
+      hud: "You're going to test WALL-E locally. Reserve it, then build Java/uia-remote-regression-flux with DEVICE_TYPE=FLUX_3 and ROBOT_NAME blank.",
       app: ['orca', 'jenkins'],
       success: c.sequence(
         on('robot.statusChanged', { name: 'wall-e', to: 'RESERVED' }),
-        on('robot.checkoutWaiting', { jobId: JOB.regressionFlex }),
+        on('robot.checkoutWaiting', { jobId: JOB.regressionFlux }),
         on('robot.statusChanged', { name: 'wall-e', to: 'AVAILABLE' }),
         on('robot.checkedOut', { name: 'wall-e' }),
       ),
       objectives: [
         { id: 'M06.12.reserve', text: 'WALL-E → Reserved', done: c.happened(on('robot.statusChanged', { name: 'wall-e', to: 'RESERVED' })) },
-        { id: 'M06.12.build', text: 'Build with DEVICE_TYPE=FLEX_3, ROBOT_NAME blank: watch it wait', done: c.happened(on('robot.checkoutWaiting', { jobId: JOB.regressionFlex })) },
-        { id: 'M06.12.release', text: 'Done locally? Set WALL-E back to Available', done: c.sequence(on('robot.checkoutWaiting', { jobId: JOB.regressionFlex }), on('robot.statusChanged', { name: 'wall-e', to: 'AVAILABLE' })) },
+        { id: 'M06.12.build', text: 'Build with DEVICE_TYPE=FLUX_3, ROBOT_NAME blank: watch it wait', done: c.happened(on('robot.checkoutWaiting', { jobId: JOB.regressionFlux })) },
+        { id: 'M06.12.release', text: 'Done locally? Set WALL-E back to Available', done: c.sequence(on('robot.checkoutWaiting', { jobId: JOB.regressionFlux }), on('robot.statusChanged', { name: 'wall-e', to: 'AVAILABLE' })) },
         { id: 'M06.12.checkout', text: 'The waiting build checks out WALL-E', done: c.happened(on('robot.checkedOut', { name: 'wall-e' })) },
       ],
       hints: [
         { afterS: 60, idle: true, effect: 'text', text: "Reserve WALL-E in Orca first, then Build with Parameters in Jenkins and read the console's [orca] lines." },
-        { afterS: 120, idle: true, effect: 'text', text: 'DEVICE_TYPE=FLEX_3, ROBOT_NAME empty. Then set WALL-E back to Available and watch the queued build grab it.' },
+        { afterS: 120, idle: true, effect: 'text', text: 'DEVICE_TYPE=FLUX_3, ROBOT_NAME empty. Then set WALL-E back to Available and watch the queued build grab it.' },
         { afterS: 180, idle: true, effect: 'show-me-button' },
       ],
-      showMe: [{ app: 'jenkins', route: jobRoute(JOB.regressionFlex, 'build'), target: 'jenkins.param:DEVICE_TYPE', action: 'type', text: 'FLEX_3' }],
+      showMe: [{ app: 'jenkins', route: jobRoute(JOB.regressionFlux, 'build'), target: 'jenkins.param:DEVICE_TYPE', action: 'type', text: 'FLUX_3' }],
       factIds: ['F112', 'F113', 'F095'],
     },
     {
       id: 'M06.13',
       kind: 'computer-task',
-      hud: 'ROSIE is Unavailable (PayCore standalone). Build Java/uia-remote-regression-flex with DEVICE_TYPE=FLEX_POCKET and ROBOT_NAME blank.',
+      hud: 'ROSIE is Unavailable (PayCore standalone). Build Java/uia-remote-regression-flux with DEVICE_TYPE=FLUX_POCKET and ROBOT_NAME blank.',
       app: 'jenkins',
-      route: jobRoute(JOB.regressionFlex, 'build'),
+      route: jobRoute(JOB.regressionFlux, 'build'),
       success: c.all(
         c.happened(on('robot.checkedOut', { name: 'rosie', byName: true })),
         c.happened(on('robot.released', { name: 'rosie', statusAfter: 'UNAVAILABLE' })),
@@ -231,8 +231,8 @@ export const M06: LessonDef = {
       objectives: [
         {
           id: 'M06.13.blank',
-          text: 'Blank ROBOT_NAME: no Available FLEX_POCKET robot',
-          done: c.any(c.happened(on('orca.checkoutRejected', { jobId: JOB.regressionFlex })), c.happened(on('robot.checkoutWaiting', { jobId: JOB.regressionFlex }, (pl) => pl.label.includes('FLEX_POCKET') || pl.reasons.some((r) => r.includes('rosie'))))),
+          text: 'Blank ROBOT_NAME: no Available FLUX_POCKET robot',
+          done: c.any(c.happened(on('orca.checkoutRejected', { jobId: JOB.regressionFlux })), c.happened(on('robot.checkoutWaiting', { jobId: JOB.regressionFlux }, (pl) => pl.label.includes('FLUX_POCKET') || pl.reasons.some((r) => r.includes('rosie'))))),
         },
         { id: 'M06.13.named', text: 'Rebuild with ROBOT_NAME=rosie', done: c.happened(on('robot.checkedOut', { name: 'rosie', byName: true })) },
         { id: 'M06.13.reset', text: 'After the build, Orca puts ROSIE back to Unavailable by itself', done: c.happened(on('robot.released', { name: 'rosie', statusAfter: 'UNAVAILABLE' })) },
@@ -251,7 +251,7 @@ export const M06: LessonDef = {
         { afterS: 120, idle: true, effect: 'text', text: "Build again with ROBOT_NAME=rosie, the robot's exact unique Name." },
         { afterS: 180, idle: true, effect: 'show-me-button' },
       ],
-      showMe: [{ app: 'jenkins', route: jobRoute(JOB.regressionFlex, 'build'), target: 'jenkins.param:ROBOT_NAME', action: 'type', text: 'rosie' }],
+      showMe: [{ app: 'jenkins', route: jobRoute(JOB.regressionFlux, 'build'), target: 'jenkins.param:ROBOT_NAME', action: 'type', text: 'rosie' }],
       factIds: ['F102', 'F103', 'F104'],
     },
     {

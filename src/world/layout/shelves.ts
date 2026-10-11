@@ -146,7 +146,7 @@ export const RACK_T = {
   cableColors: { megatronEthernet: '#8fb7e6', optimusEthernet: '#f0f0ee', usb: ['#151515', '#f0f0ee'] as readonly string[], dcPower: '#151515' },
   cableKeepers: 3,
   lower: {
-    s1: ['8-port switch', 'Station 2 base (MEGATRON MFD)', 'spare hub', 'cable box'] as readonly string[],
+    s1: ['8-port switch', 'Stand 2 base (MEGATRON MFD)', 'spare hub', 'cable box'] as readonly string[],
     s0: ['power.strip.t (rear)', '4 device AC bricks'] as readonly string[],
     top: ['two cardboard boxes'] as readonly string[],
   },

@@ -17,7 +17,7 @@ import { chance, shuffle, type RngState } from '../common/rng';
 import { streakMultiplier } from '../common/scoring';
 import { teach } from '../common/teach';
 
-export type NodeId = 'wall' | 'strip' | 'meanwell' | 'reg12' | 'reg5' | 'fuseA' | 'fuseB' | 'pi' | 'nuc' | 'flex4' | 'mini3' | 'collis' | 'motor';
+export type NodeId = 'wall' | 'strip' | 'meanwell' | 'reg12' | 'reg5' | 'fuseA' | 'fuseB' | 'pi' | 'nuc' | 'flux4' | 'micro3' | 'collis' | 'motor';
 
 export type Volt = 'AC' | '24V' | '12V' | '5V';
 
@@ -41,8 +41,8 @@ export const NODES: Record<NodeId, PowerNode> = {
   fuseB: { id: 'fuseB', label: 'Inline fuse holder', sub: 'DC branch', col: 3, hasIn: true, hasOut: true },
   pi: { id: 'pi', label: 'Raspberry Pi shelf', sub: 'needs 5 V DC', col: 4, hasIn: true, hasOut: false },
   nuc: { id: 'nuc', label: 'Intel NUC', sub: 'needs 12 V DC', col: 4, hasIn: true, hasOut: false },
-  flex4: { id: 'flex4', label: 'Flex 4 PSU', sub: 'LabSim device (18 V)', col: 4, hasIn: true, hasOut: false },
-  mini3: { id: 'mini3', label: 'Mini 3 PSU', sub: 'LabSim device (18 V)', col: 4, hasIn: true, hasOut: false },
+  flux4: { id: 'flux4', label: 'Flux 4 PSU', sub: 'LabSim device (18 V)', col: 4, hasIn: true, hasOut: false },
+  micro3: { id: 'micro3', label: 'Micro 3 PSU', sub: 'LabSim device (18 V)', col: 4, hasIn: true, hasOut: false },
   collis: { id: 'collis', label: 'Collis probe PSU', sub: 'UL Transaction Security', col: 4, hasIn: true, hasOut: false },
   motor: { id: 'motor', label: 'Motor controller PCB', sub: '25-pin · 24 V [illus.]', col: 4, hasIn: true, hasOut: false },
 };
@@ -60,7 +60,7 @@ export interface BoardData {
   columns: NodeId[][];
 }
 
-const terminalish: NodeId[] = ['flex4', 'mini3', 'collis'];
+const terminalish: NodeId[] = ['flux4', 'micro3', 'collis'];
 const DC_LOADS: Partial<Record<NodeId, { reg: NodeId; volt: Volt }>> = { pi: { reg: 'reg5', volt: '5V' }, nuc: { reg: 'reg12', volt: '12V' } };
 
 /** Voltage present at a node's output, following wires upstream (null = unpowered). */
@@ -161,10 +161,10 @@ function boardSpec(rng: RngState, index: number): BoardSpec {
   const slot = index % 3;
   if (slot === 0) return { key: 'shelf', title: 'Board 1 — the Pi & NUC shelf', nodes: ['wall', 'meanwell', 'reg12', 'reg5', 'fuseA', 'fuseB', 'pi', 'nuc'] };
   if (slot === 1) {
-    const lab: NodeId = chance(rng, 0.5) ? 'flex4' : 'mini3';
+    const lab: NodeId = chance(rng, 0.5) ? 'flux4' : 'micro3';
     return { key: `arrivals-${lab}`, title: 'Board 2 — new arrivals on the bench', nodes: ['wall', 'strip', 'meanwell', 'reg5', 'fuseA', 'pi', lab, 'collis'] };
   }
-  return { key: 'full', title: 'Board 3 — the whole power wall', nodes: ['wall', 'strip', 'meanwell', 'reg12', 'reg5', 'fuseA', 'fuseB', 'pi', 'nuc', 'flex4', 'mini3', 'collis', 'motor'] };
+  return { key: 'full', title: 'Board 3 — the whole power wall', nodes: ['wall', 'strip', 'meanwell', 'reg12', 'reg5', 'fuseA', 'fuseB', 'pi', 'nuc', 'flux4', 'micro3', 'collis', 'motor'] };
 }
 
 export function powerItem(spec: BoardSpec, rng: RngState): DrillItem<BoardData> {

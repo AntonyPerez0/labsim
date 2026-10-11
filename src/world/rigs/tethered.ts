@@ -1,15 +1,15 @@
 /**
  * Tethered bench `rack.t` — MEGATRON (DEV1) & OPTIMUS (STG), exactly as IMG-R (World §2.12):
  * rounded-slot perforated shelves, the silver 2020 device panel with four white-bezel faces
- * (MEGATRON MFD = Station 2 head, MEGATRON CFD = Mini 2, OPTIMUS MFD/CFD = Mini 3) carrying three
+ * (MEGATRON MFD = Stand 2 head, MEGATRON CFD = Micro 2, OPTIMUS MFD/CFD = Micro 3) carrying three
  * label-tape pieces each, the SmartStripe probes between the rows (dongles with green LEDs, probe
  * blade / magstripe card in the CFD swipe slots), four black C-holder docks with white
  * connectivity hubs and two-line tape plates, the upright shelf Pi, the bench webcam, the
- * switch / Station 2 base / AC bricks / strip below. Rack-local mm (origin = footprint centre).
+ * switch / Stand 2 base / AC bricks / strip below. Rack-local mm (origin = footprint centre).
  */
 import { RACK_T, TETHERED_RIGS, AC_STRIPS, rigDevice, type TetheredFaceDef } from '../layout';
 import type { LabState } from '@/sim/types';
-import { buildDevice, buildStationBase, type DeviceHandle } from '../devices';
+import { buildDevice, buildStandBase, type DeviceHandle } from '../devices';
 import type { RigKit } from './kit/context';
 import { DEG } from './kit/geom';
 import type { LedHandle } from './kit/instances';
@@ -38,7 +38,7 @@ export interface TetheredHandles {
 
 /** Screen-centre offset above the face centre (bottom bezel is taller than the top one). */
 function screenOffsetY(type: string): number {
-  return type === 'MINI_3' ? (28.3 - 22) / 2 : (30.3 - 22) / 2;
+  return type === 'MICRO_3' ? (28.3 - 22) / 2 : (30.3 - 22) / 2;
 }
 
 export function buildTethered(kit: RigKit, lab: LabState | undefined): TetheredHandles {
@@ -148,7 +148,7 @@ export function buildTethered(kit: RigKit, lab: LabState | undefined): TetheredH
   // bench webcam (gooseneck from S3's front lip)
   const W = T.webcam;
   const webcam = buildWebcam(b, [W.clamp[0] * 1000, W.clamp[1] * 1000, W.clamp[2] * 1000], [W.camera[0] * 1000, W.camera[1] * 1000, W.camera[2] * 1000], [W.lookAt[0] * 1000, W.lookAt[1] * 1000, W.lookAt[2] * 1000]);
-  // S1: 8-port switch, Station 2 base, spare hub, cable box
+  // S1: 8-port switch, Stand 2 base, spare hub, cable box
   const s1 = sh.s1 * 1000;
   const sw = b.sub({ p: [-150, s1, 250] });
   sw.box(m.minixBlack, 160, 28, 100, [0, 14, 0], 3);
@@ -156,7 +156,7 @@ export function buildTethered(kit: RigKit, lab: LabState | undefined): TetheredH
     sw.box(m.darkPort, 12, 10, 1, [-60 + i * 17, 13, 50.3], 0, undefined, true);
     sw.led([-60 + i * 17 - 4, 21, 50.5], 1.6, '#2bff6a', 6);
   }
-  buildStationBase({ kit, frame: b.mat({ p: [80, s1, -80] }), screenParent: kit.screens, arrangement: 'stand' });
+  buildStandBase({ kit, frame: b.mat({ p: [80, s1, -80] }), screenParent: kit.screens, arrangement: 'stand' });
   buildHub(b.sub({ p: [-200, s1, -150], r: [0, 0, -Math.PI / 2] }).sub({ p: [0, -20, 0] }));
   b.box(m.cardboard, 220, 140, 180, [150, s1 + 70, 230], 2);
   // S0: strip T (rear) + four AC bricks

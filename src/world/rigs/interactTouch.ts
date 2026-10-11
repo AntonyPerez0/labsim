@@ -272,7 +272,7 @@ export function registerTouchRig(engine: Engine, offs: (() => void)[], view: Tou
             if (activeTool() === 'screwdriver') out.push(verb('E', local.boltsOut ? 'Fit clamp bolts' : 'Remove clamp bolts', () => (local.boltsOut = !local.boltsOut)));
             else out.push(verb('E', 'Remove / fit clamp bolts', () => {}, { requiresTool: 'screwdriver' }));
             if (rig().cradle === 'CRACKED') out.push(verb('R', 'Replace cradle', () => simCall(engine, 'Cradle', () => sim.rig.replaceCradle(id, 'player'))));
-            // swap the device (JOHNNY-5: Flex 1 ↔ Flex 2 per INC42; others: a fresh unit of the same type)
+            // swap the device (JOHNNY-5: Flux 1 ↔ Flux 2 per INC42; others: a fresh unit of the same type)
             const cur = binder.config.type;
             const next = def.deviceConfigs.find((c) => c.type !== cur)?.type ?? cur;
             out.push(verb('G', next === cur ? `Swap in a spare ${DEVICE_MODELS[cur].displayName}` : `Install ${DEVICE_MODELS[next].displayName}`, () => {
@@ -294,7 +294,7 @@ export function registerTouchRig(engine: Engine, offs: (() => void)[], view: Tou
           const sc = scr.mesh.getWorldPosition(scr.mesh.position.clone());
           const proxy = hitBox(hits, scr.wMm + 6, 8, scr.hMm + 6, { p: [sc.x / MM, sc.y / MM - 2, sc.z / MM] }, `hit:${id}.${part}`);
           const active = () => !vr.group || vr.group.visible;
-          // the inactive configuration's proxy must not steal the crosshair (JOHNNY-5 Flex 1 / Flex 2)
+          // the inactive configuration's proxy must not steal the crosshair (JOHNNY-5 Flux 1 / Flux 2)
           (vr.hitProxies ??= []).push(proxy);
           proxy.visible = active();
           reg(engine, offs, P(part), proxy, {

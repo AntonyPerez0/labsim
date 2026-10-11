@@ -348,7 +348,7 @@ const ORCA_FAULTS: CoreFaultDef[] = [
     'orca.offsets',
     'Legacy offsets left on a robot',
     [robotP('bumblebee'), p('xMm', 'number', 'Offset X (mm)', { default: 0.0 }), p('yMm', 'number', 'Offset Y (mm)', { default: 1.5 })],
-    { tags: ['orca.offsets', 'orca.screens', 'hw.motion'], usedBy: ['INC14', 'M07'], symptoms: ['every PHYSICAL_TAP lands at location + offsets', 'MINI_3 icons still hit, PAYMENT/Charge (core 1.2) misses', '[orca] xy_touch bumblebee PAYMENT/Charge → PHYSICAL_TAP (31.0, 90.5) (offsets +0.0/+1.5)'], clears: 'offsetXMm == 0 && offsetYMm == 0', by: 'bulk-import' },
+    { tags: ['orca.offsets', 'orca.screens', 'hw.motion'], usedBy: ['INC14', 'M07'], symptoms: ['every PHYSICAL_TAP lands at location + offsets', 'MICRO_3 icons still hit, PAYMENT/Charge (core 1.2) misses', '[orca] xy_touch bumblebee PAYMENT/Charge → PHYSICAL_TAP (31.0, 90.5) (offsets +0.0/+1.5)'], clears: 'offsetXMm == 0 && offsetYMm == 0', by: 'bulk-import' },
     (_lab, robot, ps) => {
       const x = num(ps.xMm, 0);
       const y = num(ps.yMm, 1.5);
@@ -421,7 +421,7 @@ const ORCA_FAULTS: CoreFaultDef[] = [
       'orca.screenLocationShift',
       'Stale coordinates for a screen',
       'orca',
-      [p('deviceTypes', 'list', 'Device Types whose rows are stale', { required: true, target: true, default: ['FLEX_3', 'MINI_3', 'STATION_2018'], values: [...DEVICE_TYPE_CODES] }), p('screen', 'string', 'Orca screen', { default: 'RECEIPT_OPTIONS_5' }), p('dxMm', 'number', 'Shift X (mm)', { default: 0.0 }), p('dyMm', 'number', 'Shift Y (mm)', { default: -3.0 }), byP('bulk-import'), atP()],
+      [p('deviceTypes', 'list', 'Device Types whose rows are stale', { required: true, target: true, default: ['FLUX_3', 'MICRO_3', 'STAND_2018'], values: [...DEVICE_TYPE_CODES] }), p('screen', 'string', 'Orca screen', { default: 'RECEIPT_OPTIONS_5' }), p('dxMm', 'number', 'Shift X (mm)', { default: 0.0 }), p('dyMm', 'number', 'Shift Y (mm)', { default: -3.0 }), byP('bulk-import'), atP()],
       {
         tags: ['receipt.qr', 'receipt.maps', 'orca.screens', 'jenkins.logs'],
         clears: 'every location of those rows within ±0.5 mm of firmware truth (§2.10.2)',
@@ -429,7 +429,7 @@ const ORCA_FAULTS: CoreFaultDef[] = [
         usedBy: ['INC20', 'P3-2'],
       },
     ),
-    randomPools: { deviceTypes: ['FLEX_3', 'MINI_3', 'STATION_2018'] },
+    randomPools: { deviceTypes: ['FLUX_3', 'MICRO_3', 'STAND_2018'] },
     validate(lab, params) {
       const types = list(params.deviceTypes);
       const screen = str(params.screen) || 'RECEIPT_OPTIONS_5';
@@ -474,14 +474,14 @@ const ORCA_FAULTS: CoreFaultDef[] = [
     },
   },
   {
-    info: info('orca.screenLocationTypo', 'One wrong coordinate', 'orca', [p('deviceType', 'deviceType', 'Device Type', { target: true, default: 'FLEX_1', values: [...DEVICE_TYPE_CODES] }), p('screen', 'string', 'Orca screen', { default: 'RECEIPT_OPTIONS_4' }), p('button', 'string', 'Button', { default: 'Print' }), p('xMm', 'number', 'X written (default unchanged)'), p('yMm', 'number', 'Y written', { default: 62.5 }), byP('bulk-import'), atP(-28_200_000)], {
+    info: info('orca.screenLocationTypo', 'One wrong coordinate', 'orca', [p('deviceType', 'deviceType', 'Device Type', { target: true, default: 'FLUX_1', values: [...DEVICE_TYPE_CODES] }), p('screen', 'string', 'Orca screen', { default: 'RECEIPT_OPTIONS_4' }), p('button', 'string', 'Button', { default: 'Print' }), p('xMm', 'number', 'X written (default unchanged)'), p('yMm', 'number', 'Y written', { default: 62.5 }), byP('bulk-import'), atP(-28_200_000)], {
       tags: ['jenkins.logs', 'pigeon.lstr', 'orca.screens'],
       clears: 'within ±0.5 mm of truth',
       symptoms: ['probe lands in the gap above Print → select print timeout', 'printer fine'],
       usedBy: ['INC22'],
     }),
     validate(lab, params) {
-      const t = str(params.deviceType) || 'FLEX_1';
+      const t = str(params.deviceType) || 'FLUX_1';
       const screen = str(params.screen) || 'RECEIPT_OPTIONS_4';
       const button = str(params.button) || 'Print';
       const scr = screenRow(lab, t, screen);
@@ -496,7 +496,7 @@ const ORCA_FAULTS: CoreFaultDef[] = [
       return ok(t);
     },
     apply(lab, _ctx, params, record) {
-      const t = str(params.deviceType) || 'FLEX_1';
+      const t = str(params.deviceType) || 'FLUX_1';
       const scr = screenRow(lab, t, str(params.screen) || 'RECEIPT_OPTIONS_4')!;
       const l = Object.values(lab.orca.screenLocations).find((x) => x.screenId === scr.id && x.button === (str(params.button) || 'Print'))!;
       const x = round1(params.xMm === undefined || params.xMm === '' ? l.xMm : num(params.xMm, l.xMm));
@@ -510,13 +510,13 @@ const ORCA_FAULTS: CoreFaultDef[] = [
     isResolved: (lab, f) => locationsTrue(lab, f.target, str(f.params.screen) || 'RECEIPT_OPTIONS_4', false),
   },
   {
-    info: info('orca.missingReceiptMap', 'Receipt map missing', 'orca', [p('deviceType', 'deviceType', 'Device Type', { required: true, target: true, example: 'STATION_2018', values: [...DEVICE_TYPE_CODES] }), p('screen', 'string', 'Orca screen', { default: 'RECEIPT_OPTIONS_5' }), byP('bulk-import'), atP()], {
+    info: info('orca.missingReceiptMap', 'Receipt map missing', 'orca', [p('deviceType', 'deviceType', 'Device Type', { required: true, target: true, example: 'STAND_2018', values: [...DEVICE_TYPE_CODES] }), p('screen', 'string', 'Orca screen', { default: 'RECEIPT_OPTIONS_5' }), byP('bulk-import'), atP()], {
       tags: ['receipt.maps', 'orca.screens', 'orca.devicetype'],
       clears: 'a row (type, screen) exists and every firmware button of that screen has a location within ±0.5 mm',
-      symptoms: ['[orca] 404 Not Found: no Screen Location for (STATION_2018, RECEIPT_OPTIONS_5, "Email") → FAILED at "select email"', 'Orca Screens lists only _4 for the type'],
+      symptoms: ['[orca] 404 Not Found: no Screen Location for (STAND_2018, RECEIPT_OPTIONS_5, "Email") → FAILED at "select email"', 'Orca Screens lists only _4 for the type'],
       usedBy: ['INC21', 'M09', 'P2-3'],
     }),
-    randomPools: { deviceType: ['FLEX_3', 'FLEX_4', 'MINI_3', 'STATION_2018'] },
+    randomPools: { deviceType: ['FLUX_3', 'FLUX_4', 'MICRO_3', 'STAND_2018'] },
     validate(lab, params) {
       const t = str(params.deviceType);
       if (!(DEVICE_TYPE_CODES as readonly string[]).includes(t)) return invalid('orca.missingReceiptMap', 'deviceType', t, `not one of ${DEVICE_TYPE_CODES.join(', ')}`);
@@ -578,7 +578,7 @@ const ORCA_FAULTS: CoreFaultDef[] = [
     info: info('orca.staleReservation', 'Forgotten reservation', 'orca', [robotP('eve', 'eve'), byP('riley'), atP(-22_680_000)], {
       tags: ['orca.status.reserved', 'jenkins.checkout'],
       clears: "status != 'RESERVED'",
-      symptoms: ['[orca] candidate eve: Reserved — skipped', '[orca] no Available FLEX_4 robot — build waiting in queue', 'health log eve  RESERVED — not overridden'],
+      symptoms: ['[orca] candidate eve: Reserved — skipped', '[orca] no Available FLUX_4 robot — build waiting in queue', 'health log eve  RESERVED — not overridden'],
       usedBy: ['INC48'],
     }),
     validate(lab, params) {
@@ -596,14 +596,14 @@ const ORCA_FAULTS: CoreFaultDef[] = [
     isResolved: (lab, f) => robotByName(lab, f.target)?.status !== 'RESERVED',
   },
   {
-    info: info('ocr.labelShift', 'CFD label moved by an app update', 'orca', [p('device', 'device', 'Duo runtime device', { target: true, default: 'dev-r2-d2-duo' }), p('px', 'number', 'Downward label shift in webcam px', { default: 10 })], {
+    info: info('ocr.labelShift', 'CFD label moved by an app update', 'orca', [p('device', 'device', 'Duet runtime device', { target: true, default: 'dev-r2-d2-duet' }), p('px', 'number', 'Downward label shift in webcam px', { default: 10 })], {
       tags: ['orca.screencompare', 'vision.tesseract', 'pigeon.gimp'],
       clears: "every Screen Compare row of the device's robot reads match=true on the canonical cart frame",
       symptoms: ['[ocr] capture webcam → crop 236x44@412,288 → tesseract → "TOTAI $10.B3" → match=false', 'Orca Test panel shows the crop clipping the glyph bottoms'],
       usedBy: ['INC36', 'P3-3'],
     }),
     validate(lab, params) {
-      const d = lab.devices[str(params.device) || 'dev-r2-d2-duo'];
+      const d = lab.devices[str(params.device) || 'dev-r2-d2-duet'];
       if (!d) return invalid('ocr.labelShift', 'device', str(params.device), 'no such device');
       const px = num(params.px, 10);
       if (Number.isNaN(px)) return invalid('ocr.labelShift', 'px', str(params.px), 'not a number');
@@ -611,7 +611,7 @@ const ORCA_FAULTS: CoreFaultDef[] = [
       return ok(d.id);
     },
     apply(lab, _ctx, params, record) {
-      const d = lab.devices[str(params.device) || 'dev-r2-d2-duo']!;
+      const d = lab.devices[str(params.device) || 'dev-r2-d2-duet']!;
       const px = num(params.px, 10);
       rec(record, ['devices', d.id, 'labelShiftPx'], d.labelShiftPx, px);
       d.labelShiftPx = px;
@@ -623,20 +623,20 @@ const ORCA_FAULTS: CoreFaultDef[] = [
     },
   },
   {
-    info: info('ocr.capitalisation', 'CFD copy changed case', 'orca', [p('device', 'device', 'Duo runtime device', { target: true, default: 'dev-r2-d2-duo' })], {
+    info: info('ocr.capitalisation', 'CFD copy changed case', 'orca', [p('device', 'device', 'Duet runtime device', { target: true, default: 'dev-r2-d2-duet' })], {
       tags: ['orca.screencompare', 'vision.tesseract'],
       clears: 'same as ocr.labelShift',
       symptoms: ['… tesseract → "Total $10.83" → match=false'],
       usedBy: ['INC37-A'],
     }),
     validate(lab, params) {
-      const d = lab.devices[str(params.device) || 'dev-r2-d2-duo'];
+      const d = lab.devices[str(params.device) || 'dev-r2-d2-duet'];
       if (!d) return invalid('ocr.capitalisation', 'device', str(params.device), 'no such device');
       if (d.cfdLayout === 'v2') return nothing('ocr.capitalisation', `${d.id} already shows the v2 copy`);
       return ok(d.id);
     },
     apply(lab, _ctx, params, record) {
-      const d = lab.devices[str(params.device) || 'dev-r2-d2-duo']!;
+      const d = lab.devices[str(params.device) || 'dev-r2-d2-duet']!;
       rec(record, ['devices', d.id, 'cfdLayout'], d.cfdLayout, 'v2');
       d.cfdLayout = 'v2';
       if (d.secondaryDisplay) d.secondaryDisplay.rev += 1;

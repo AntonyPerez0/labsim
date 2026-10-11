@@ -50,7 +50,7 @@ export function rigState(lab: LabState | null | undefined, rigId: string): RigSt
 }
 
 /**
- * The device shown on a rig display. Touch/ADB rigs: the rig's device (Station Duo: `secondary` =
+ * The device shown on a rig display. Touch/ADB rigs: the rig's device (Stand Duet: `secondary` =
  * the same device's CFD display). Tethered rigs: `primary` = the MFD device, `secondary` = the CFD
  * device (both use their own `display`).
  */

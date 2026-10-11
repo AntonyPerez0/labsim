@@ -158,9 +158,9 @@ export function deviceByIp(lab: LabState, ip: string): TerminalDevice | null {
   return Object.values(lab.devices).find((d) => d.ip === ip) ?? null;
 }
 
-/** Device + display a role acts on (Duo: CFD = secondary display of the same device). */
+/** Device + display a role acts on (Duet: CFD = secondary display of the same device). */
 export function target(rc: RC, role: string): { device: TerminalDevice; display: 'primary' | 'secondary'; handle: string } | null {
-  // A standalone Station Duo has one handle: its customer display is display 1 of the same device.
+  // A standalone Stand Duet has one handle: its customer display is display 1 of the same device.
   const mfd = rc.rs.handles.mfd;
   const duoCfd = role === 'CFD' && !rc.rs.handles.cfd && mfd && deviceByIp(rc.lab, mfd.split(':')[0]!)?.secondaryDisplay ? mfd : null;
   const h = role === 'CFD' ? (rc.rs.handles.cfd ?? duoCfd) : mfd;
@@ -214,7 +214,7 @@ export function pageObjectName(d: TerminalDevice, display: 'primary' | 'secondar
   }
 }
 
-/** Orca screen name for the runtime screen (Sim §2.10.1); CFD_* on a Duo's secondary display. */
+/** Orca screen name for the runtime screen (Sim §2.10.1); CFD_* on a Duet's secondary display. */
 export function orcaScreenFor(d: TerminalDevice, display: 'primary' | 'secondary'): string | null {
   const disp = displayOf(d, display);
   const base: Partial<Record<ScreenName, string>> = {

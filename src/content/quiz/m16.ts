@@ -1,5 +1,5 @@
 /**
- * Quiz bank — M16 Seeing the Second Screen: Station Duo, OCR, GIMP & UIA 2.3 (Cur §3). 20 items.
+ * Quiz bank — M16 Seeing the Second Screen: Stand Duet, OCR, GIMP & UIA 2.3 (Cur §3). 20 items.
  * Transcribed from docs/design/10-curriculum.md; every answer re-verified against
  * docs/reference/REMOVED-internal-reference.md. Options are stored in the doc's canonical display order
  * (the UI reshuffles); `order` items store options in the CORRECT order; `match` pairs are the correct pairing.
@@ -14,7 +14,7 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     moduleId: "M16",
     difficulty: 1,
     checkpoint: "CP-M16.1",
-    prompt: "On a Station Duo, which display is exposed to ADB?",
+    prompt: "On a Stand Duet, which display is exposed to ADB?",
     options: [
       "Only the CFD",
       "Neither",
@@ -24,14 +24,14 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     answer: 3,
     explanation: "One terminal drives two displays but only the primary MFD is exposed to ADB (F151).",
     factIds: ["F151"],
-    tags: ["duo.ocr", "orca.screencompare", "uia.v23"],
+    tags: ["duet.ocr", "orca.screencompare", "uia.v23"],
   },
   {
     id: "Q332",
     type: "mc",
     moduleId: "M16",
     difficulty: 1,
-    prompt: "How well could legacy UI Automator see the Station Duo's CFD?",
+    prompt: "How well could legacy UI Automator see the Stand Duet's CFD?",
     options: [
       "Fully, with a second device handle",
       "Only in landscape mode",
@@ -39,9 +39,9 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
       "Partially, via accessibility IDs",
     ],
     answer: 2,
-    explanation: "Legacy UI Automator was completely blind to the Station Duo's secondary CFD. (F152)",
+    explanation: "Legacy UI Automator was completely blind to the Stand Duet's secondary CFD. (F152)",
     factIds: ["F152"],
-    tags: ["duo.ocr", "orca.screencompare", "uia.v23"],
+    tags: ["duet.ocr", "orca.screencompare", "uia.v23"],
   },
   {
     id: "Q333",
@@ -49,7 +49,7 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     moduleId: "M16",
     difficulty: 1,
     checkpoint: "CP-M16.1",
-    prompt: "Which Orca entity holds the Station Duo workaround?",
+    prompt: "Which Orca entity holds the Stand Duet workaround?",
     options: [
       "Card Profile",
       "Screens",
@@ -57,9 +57,9 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
       "Screen Compare Image",
     ],
     answer: 3,
-    explanation: "The Screen Compare Image entity is the Station Duo workaround. (F150)",
+    explanation: "The Screen Compare Image entity is the Stand Duet workaround. (F150)",
     factIds: ["F150"],
-    tags: ["duo.ocr", "orca.screencompare"],
+    tags: ["duet.ocr", "orca.screencompare"],
   },
   {
     id: "Q334",
@@ -76,7 +76,7 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     answer: 0,
     explanation: "The OCR workaround stores spatial bounding coordinates on the CFD alongside the expected text string. (F153)",
     factIds: ["F153"],
-    tags: ["duo.ocr", "orca.screencompare"],
+    tags: ["duet.ocr", "orca.screencompare"],
   },
   {
     id: "Q335",
@@ -94,7 +94,7 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     answer: -1,
     explanation: "In the OCR workaround the Robot Controller captures a webcam screenshot, crops it to the bounding box, runs Tesseract OCR and returns a boolean match result. (F154)",
     factIds: ["F154"],
-    tags: ["duo.ocr", "orca.screencompare", "vision.tesseract", "vision.camera"],
+    tags: ["duet.ocr", "orca.screencompare", "vision.tesseract", "vision.camera"],
   },
   {
     id: "Q336",
@@ -111,7 +111,7 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     answer: 0,
     explanation: "In the OCR workaround the Robot Controller captures a webcam screenshot, crops it to the bounding box, runs Tesseract OCR and returns a boolean match result. (F154)",
     factIds: ["F154"],
-    tags: ["duo.ocr", "orca.screencompare", "vision.tesseract", "vision.camera"],
+    tags: ["duet.ocr", "orca.screencompare", "vision.tesseract", "vision.camera"],
   },
   {
     id: "Q337",
@@ -129,7 +129,7 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     answer: 3,
     explanation: "Tesseract OCR (F029).",
     factIds: ["F029"],
-    tags: ["duo.ocr", "vision.tesseract"],
+    tags: ["duet.ocr", "vision.tesseract"],
   },
   {
     id: "Q338",
@@ -141,7 +141,7 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     answer: 0,
     explanation: "Tesseract OCR is the open-source OCR engine run on cropped webcam screenshots to validate text on displays that are blind to ADB. (F029)",
     factIds: ["F029"],
-    tags: ["duo.ocr", "vision.tesseract"],
+    tags: ["duet.ocr", "vision.tesseract"],
   },
   {
     id: "Q339",
@@ -159,7 +159,7 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     answer: 2,
     explanation: "A 10-pixel shift, a capitalisation change or a typo breaks it (F155).",
     factIds: ["F155"],
-    tags: ["duo.ocr", "orca.screencompare"],
+    tags: ["duet.ocr", "orca.screencompare"],
   },
   {
     id: "Q340",
@@ -171,7 +171,7 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     caseInsensitive: true,
     explanation: "The OCR workaround is extremely brittle: a 10-pixel button shift, a capitalisation change or a typo breaks the suite. (F155)",
     factIds: ["F155"],
-    tags: ["duo.ocr", "orca.screencompare"],
+    tags: ["duet.ocr", "orca.screencompare"],
   },
   {
     id: "Q341",
@@ -183,7 +183,7 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     answer: 0,
     explanation: "Capitalisation changes break the brittle OCR workaround (F155).",
     factIds: ["F155"],
-    tags: ["duo.ocr", "orca.screencompare"],
+    tags: ["duet.ocr", "orca.screencompare"],
   },
   {
     id: "Q342",
@@ -195,12 +195,12 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
       "UI Automator 2.3 natively supports dual-screen element tracking",
       "Tesseract's licence changed",
       "The GPUs are needed for Ollama",
-      "Station Duos are being retired",
+      "Stand Duets are being retired",
     ],
     answer: 0,
     explanation: "Screen Compare / OCR is being phased out because UI Automator 2.3 natively supports dual-screen element tracking. (F156)",
     factIds: ["F156"],
-    tags: ["duo.ocr", "orca.screencompare", "uia.v23"],
+    tags: ["duet.ocr", "orca.screencompare", "uia.v23"],
   },
   {
     id: "Q343",
@@ -218,7 +218,7 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     answer: 0,
     explanation: "UI Automator 2.3 is chosen because it adds native support for dual-screen element location tracking. (F007)",
     factIds: ["F007"],
-    tags: ["duo.ocr", "uia.v23"],
+    tags: ["duet.ocr", "uia.v23"],
   },
   {
     id: "Q344",
@@ -235,7 +235,7 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     answer: 2,
     explanation: "GIMP: open screenshot, draw a selection box, read coordinates (F030).",
     factIds: ["F030"],
-    tags: ["duo.ocr", "pigeon.gimp"],
+    tags: ["duet.ocr", "pigeon.gimp"],
   },
   {
     id: "Q345",
@@ -252,7 +252,7 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     answer: 0,
     explanation: "For Pigeon screen comparisons, engineers open a screenshot in GIMP, draw a bounding box around the target text and copy the coordinates into the JSON block. (F212)",
     factIds: ["F212"],
-    tags: ["duo.ocr", "pigeon.gimp"],
+    tags: ["duet.ocr", "pigeon.gimp"],
   },
   {
     id: "Q346",
@@ -269,14 +269,14 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     answer: -1,
     explanation: "For Pigeon screen comparisons, engineers open a screenshot in GIMP, draw a bounding box around the target text and copy the coordinates into the JSON block. (F212)",
     factIds: ["F212", "F030"],
-    tags: ["duo.ocr", "pigeon.gimp"],
+    tags: ["duet.ocr", "pigeon.gimp"],
   },
   {
     id: "Q347",
     type: "mc",
     moduleId: "M16",
     difficulty: 2,
-    prompt: "R2-D2's CFD (Station Duo) is ADB-blind. What kind of bot is needed to interact with it?",
+    prompt: "R2-D2's CFD (Stand Duet) is ADB-blind. What kind of bot is needed to interact with it?",
     options: [
       "A physical/interactive bot",
       "Any bot with portNumber 5555",
@@ -286,19 +286,19 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     answer: 0,
     explanation: "Physical bots are required for ADB-blind displays (F221).",
     factIds: ["F221", "F151"],
-    tags: ["duo.ocr", "bots.types", "orca.screencompare", "uia.v23"],
+    tags: ["duet.ocr", "bots.types", "orca.screencompare", "uia.v23"],
   },
   {
     id: "Q348",
     type: "tf",
     moduleId: "M16",
     difficulty: 2,
-    prompt: "With UI Automator 2.3, uia-remote can locate elements on the Station Duo's CFD natively.",
+    prompt: "With UI Automator 2.3, uia-remote can locate elements on the Stand Duet's CFD natively.",
     options: ["True", "False"],
     answer: 0,
     explanation: "UIA 2.3 natively supports dual-screen tracking (F007, F156).",
     factIds: ["F156", "F152"],
-    tags: ["duo.ocr", "orca.screencompare", "uia.v23"],
+    tags: ["duet.ocr", "orca.screencompare", "uia.v23"],
   },
   {
     id: "Q349",
@@ -315,7 +315,7 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     answer: 1,
     explanation: "The Robot Controller captures a webcam screenshot (F154, F088). ADB can't see the CFD.",
     factIds: ["F088", "F154"],
-    tags: ["duo.ocr", "hw.rigbom", "vision.camera", "orca.screencompare", "vision.tesseract"],
+    tags: ["duet.ocr", "hw.rigbom", "vision.camera", "orca.screencompare", "vision.tesseract"],
   },
   {
     id: "Q350",
@@ -332,6 +332,6 @@ export const QUIZ_M16: QuizQuestion[] = resolvePeople([
     answer: 3,
     explanation: "The Screen Compare Image entity stores CFD bounding coordinates and expected text (F150, F153).",
     factIds: ["F150", "F153"],
-    tags: ["duo.ocr", "orca.screencompare"],
+    tags: ["duet.ocr", "orca.screencompare"],
   },
 ]);

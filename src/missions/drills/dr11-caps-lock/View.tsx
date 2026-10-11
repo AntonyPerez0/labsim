@@ -73,11 +73,11 @@ export function View(props: DrillComponentProps) {
       <div className="dr11-rule">
         {cfg ? (
           <>
-            config.properties <code>deviceType</code> = the family: <b>Mini</b> · <b>Flex</b> · <b>Station</b>
+            config.properties <code>deviceType</code> = the family: <b>Micro</b> · <b>Flux</b> · <b>Stand</b>
           </>
         ) : (
           <>
-            Jenkins <code>DEVICE_TYPE</code> = the exact Orca Device Type enum — ALL CAPS, e.g. <b>FLEX_3</b>
+            Jenkins <code>DEVICE_TYPE</code> = the exact Orca Device Type enum — ALL CAPS, e.g. <b>FLUX_3</b>
           </>
         )}
       </div>

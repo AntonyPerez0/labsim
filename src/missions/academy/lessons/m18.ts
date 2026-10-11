@@ -4,7 +4,7 @@
  *  - step 8: `callus.down { host: 'minix-01', mode: 'box-off' }` → every Rack A rig fails its health check
  *    with `502 … callus upstream 10.42.20.1:9000 unreachable`; the lesson points at BUMBLEBEE;
  *  - step 9: `rig.lockReleased { rig: 'seti' }` (a coworker bumps SETI's arm);
- *  - step 10: `jenkins.envCase` on `Java/uia-remote-regression-mini` (`mini_3`) + a build of that job.
+ *  - step 10: `jenkins.envCase` on `Java/uia-remote-regression-micro` (`micro_3`) + a build of that job.
  */
 import { c, on, p } from '../../types';
 import type { HintDef, LessonDef } from '../../types';
@@ -158,14 +158,14 @@ export const M18: LessonDef = {
     {
       id: 'M18.10',
       kind: 'computer-task',
-      hud: 'Capstone 3: Java/uia-remote-regression-mini just failed',
+      hud: 'Capstone 3: Java/uia-remote-regression-micro just failed',
       app: 'jenkins',
       hints: NO_HINTS,
       onEnter: [
-        inject({ faultId: 'jenkins.envCase', params: { job: JOB.regressionMini, value: 'mini_3' } }),
-        inject({ op: 'jenkins.startBuild', params: { job: JOB.regressionMini, by: 'jenkins' } }),
+        inject({ faultId: 'jenkins.envCase', params: { job: JOB.regressionMicro, value: 'micro_3' } }),
+        inject({ op: 'jenkins.startBuild', params: { job: JOB.regressionMicro, by: 'jenkins' } }),
       ],
-      success: c.sequence(queued(JOB.regressionMini, { DEVICE_TYPE: 'MINI_3' }), finished(JOB.regressionMini, 'SUCCESS')),
+      success: c.sequence(queued(JOB.regressionMicro, { DEVICE_TYPE: 'MICRO_3' }), finished(JOB.regressionMicro, 'SUCCESS')),
       factIds: ['F122', 'F121'],
     },
     {

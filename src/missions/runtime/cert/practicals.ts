@@ -118,12 +118,12 @@ export const BUILT_IN_PRACTICALS: readonly CertPracticalDef[] = [
         examId: "CERT-R2",
         setup: {
           scenario: [
-            { op: "device.swap", params: { rig: "johnny-5", type: "FLEX_2" } },
+            { op: "device.swap", params: { rig: "johnny-5", type: "FLUX_2" } },
           ],
         },
         pass: c.all(
-          c.eq(p.device("johnny-5-flex1").exists, true),
-          c.neq(p.robot("johnny-5").deviceId, "johnny-5-flex1"),
+          c.eq(p.device("johnny-5-flux1").exists, true),
+          c.neq(p.robot("johnny-5").deviceId, "johnny-5-flux1"),
           c.eq(p.robot("johnny-5").hrn, "JOHNNY-5"),
         ),
         failIf: c.happened(
@@ -204,8 +204,8 @@ export const BUILT_IN_PRACTICALS: readonly CertPracticalDef[] = [
         examId: "CERT-R3",
         setup: { flags: { cfdLayoutV2Toggle: true } },
         pass: c.all(
-          c.eq(p.localRun("TaxTestDuo").result, "PASS"),
-          c.eq(p.codeFact("displayId", "TaxTestDuo"), true),
+          c.eq(p.localRun("TaxTestDuet").result, "PASS"),
+          c.eq(p.codeFact("displayId", "TaxTestDuet"), true),
         ),
         timeLimitGameMin: 8,
       } satisfies BuiltInTask,

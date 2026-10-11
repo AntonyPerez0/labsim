@@ -25,7 +25,7 @@ import {
   wm,
 } from './helpers';
 
-const QR_TYPES = ['FLEX_3', 'MINI_3', 'STATION_2018'] as const;
+const QR_TYPES = ['FLUX_3', 'MICRO_3', 'STAND_2018'] as const;
 
 /** Player saved a Screen Location row belonging to `screen`. */
 const savedLocationOf = (screen: string) =>
@@ -307,7 +307,7 @@ export const INC20: IncidentDef = {
   base: 600,
   parS: 420,
   severity: 'P1',
-  rigs: { candidates: ['wall-e'], default: 'wall-e', scope: 'rig', describe: 'receipt rigs on 3 Device Types (FLEX_3, MINI_3, STATION_2018)' },
+  rigs: { candidates: ['wall-e'], default: 'wall-e', scope: 'rig', describe: 'receipt rigs on 3 Device Types (FLUX_3, MICRO_3, STAND_2018)' },
   bind: (ctx) => ({ rig: 'wall-e', hrn: 'WALL-E', rigs: ['wall-e', 'bumblebee', 'baymax'], vars: ctx.defaultVars('wall-e'), seed: 0, variant: ctx.variant }),
   escalatable: false,
   unlockedBy: 'M09',
@@ -335,12 +335,12 @@ export const INC20: IncidentDef = {
   ],
   hints: [
     '"select print" is only the last step attempted. Watch where the plunger lands.',
-    'Orca → Screens → RECEIPT_OPTIONS_5 for FLEX_3, MINI_3 and STATION_2018: compare with what you measure on the devices.',
+    'Orca → Screens → RECEIPT_OPTIONS_5 for FLUX_3, MICRO_3 and STAND_2018: compare with what you measure on the devices.',
     P('GitHub → gort → branch fix/receipt-qr-5opt → edit config/screen-locations/<TYPE>/RECEIPT_OPTIONS_5.json for the three types → PR → {{jared}} merges if every value is within ±0.5 mm.'),
   ],
   fix: {
     handsOn: P(
-      'GitHub → gort → branch fix/receipt-qr-5opt → edit config/screen-locations/<DEVICE_TYPE>/RECEIPT_OPTIONS_5.json [illus. path] for FLEX_3, MINI_3 and STATION_2018 (e.g. FLEX_3 Print 34.0/74.0 … Scan for receipt 34.0/122.0) → open a PR → {{jared}} reviews (20 s) and merges if every value is within ±0.5 mm → Orca syncs. Editing the Orca rows directly also works (without PB03). Keep RECEIPT_OPTIONS_4 unchanged.',
+      'GitHub → gort → branch fix/receipt-qr-5opt → edit config/screen-locations/<DEVICE_TYPE>/RECEIPT_OPTIONS_5.json [illus. path] for FLUX_3, MICRO_3 and STAND_2018 (e.g. FLUX_3 Print 34.0/74.0 … Scan for receipt 34.0/122.0) → open a PR → {{jared}} reviews (20 s) and merges if every value is within ±0.5 mm → Orca syncs. Editing the Orca rows directly also works (without PB03). Keep RECEIPT_OPTIONS_4 unchanged.',
     ),
   },
   success: () =>
@@ -371,7 +371,7 @@ export const INC21: IncidentDef = {
   base: 450,
   parS: 270,
   severity: 'P1',
-  rigs: { candidates: ['baymax'], default: 'baymax', scope: 'rig', describe: 'a Device Type without RECEIPT_OPTIONS_5 (default STATION_2018 / BAYMAX)' },
+  rigs: { candidates: ['baymax'], default: 'baymax', scope: 'rig', describe: 'a Device Type without RECEIPT_OPTIONS_5 (default STAND_2018 / BAYMAX)' },
   escalatable: false,
   unlockedBy: 'M09',
   tags: ['receipt.maps', 'orca.screens', 'orca.devicetype'],
@@ -407,7 +407,7 @@ export const INC21: IncidentDef = {
   wrongButTempting: [
     wm('switch-to-4', 'Switch the test to RECEIPT_OPTIONS_4', 150, undefined, teach('The 4-option map taps "Text" where "Email" now sits.', 'Orca must keep separate 4- and 5-option maps for every device profile. (Ref §5)', 'Create the 5-option map.')),
     wm('qr-off', 'Switch QR receipts off on the merchant', 100, orcaSave('merchant', { fields: ['qrReceiptsEnabled'] }), teach("You'd stop testing the feature.", 'The QR feature adds a conditional 5th option the lab must support. (Ref §5)', 'Create the 5-option map.')),
-    wm('copy-flex3', "Copy FLEX_3's values", 0, undefined, teach('Different layout — still red.', 'Device Type holds dimensions and layout metrics; each type needs its own map. (Ref §3)', 'Measure this device type.')),
+    wm('copy-flux3', "Copy FLUX_3's values", 0, undefined, teach('Different layout — still red.', 'Device Type holds dimensions and layout metrics; each type needs its own map. (Ref §3)', 'Measure this device type.')),
     wm('edit-opt4', 'Edit RECEIPT_OPTIONS_4', 150, savedLocationOf('RECEIPT_OPTIONS_4'), teach('You changed the QR-less map.', 'Merchants without QR still use the 4-option map. (Ref §5)', 'Leave _4 alone; add _5.'), { repeatable: true }),
   ],
   teaches: 'Ref §5: Orca keeps separate 4-option and 5-option maps for every device profile. Ref §3: Device Type holds dimensions and layout.',

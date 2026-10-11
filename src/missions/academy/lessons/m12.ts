@@ -1,6 +1,6 @@
 /**
  * M12 — ADB on Port 5444 (Cur §2 M12). Mentor {{morgan}}.
- * Setup (`academy:M12` = factory): TARS (FLEX_4, `10.42.30.32`) on HomeScreen; Terminal has `adb`
+ * Setup (`academy:M12` = factory): TARS (FLUX_4, `10.42.30.32`) on HomeScreen; Terminal has `adb`
  * (Sim §3.15.1: `adb connect` without a port defaults to 5555 → refused by lab devices).
  */
 import { c, on, p } from '../../types';
@@ -102,8 +102,8 @@ export const M12: LessonDef = {
       hud: 'Tap it',
       app: 'terminal',
       success: c.any(
-        c.happened(on('device.touched', { deviceId: 'dev-tars-flex4', source: 'adb', hitButton: 'Register' })),
-        c.eq(p.hwDevice('dev-tars-flex4').screen, 'register'),
+        c.happened(on('device.touched', { deviceId: 'dev-tars-flux4', source: 'adb', hitButton: 'Register' })),
+        c.eq(p.hwDevice('dev-tars-flux4').screen, 'register'),
       ),
       showMe: [{ app: 'terminal', target: 'terminal.input', action: 'type', text: 'adb -s 10.42.30.32:5444 shell input tap 192 508' }],
       factIds: ['F025'],

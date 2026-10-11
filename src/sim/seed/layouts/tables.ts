@@ -59,8 +59,8 @@ function rows(names: string[], x: number, ys: number[], w: number, h: number): L
 const R4 = ['Print', 'Email', 'Text', 'No Receipt'];
 const R5 = ['Print', 'Email', 'Text', 'No Receipt', 'Scan for receipt'];
 
-/** Launcher apps on page 0 in Flex/Compact (2 columns) order. */
-const FLEX_APPS = ['Orders', 'Transactions', 'Register', 'Setup', 'Sale', 'Authorizations', 'Customers', 'Inventory', 'Settings', 'App Market'];
+/** Launcher apps on page 0 in Flux/Compass (2 columns) order. */
+const FLUX_APPS = ['Orders', 'Transactions', 'Register', 'Setup', 'Sale', 'Authorizations', 'Customers', 'Inventory', 'Settings', 'App Market'];
 /** Landscape (5 × 2) order. */
 const LAND_APPS = ['Register', 'Orders', 'Transactions', 'Setup', 'Sale', 'Authorizations', 'Customers', 'Inventory', 'Settings', 'App Market'];
 /** Page 1 of every launcher (Sim §3.8.2). */
@@ -75,13 +75,13 @@ function reviewTotals(x: number, y: number, w: number, h: number, gap: number): 
   return [L('@revSubtotal', x, y, w, h), L('@revTax', x, y + gap, w, h), L('@revTotal', x, y + 2 * gap, w, h)];
 }
 
-/* ───────────── FLEX_GEN3 (FLEX_3, FLEX_4, FLEX_POCKET · portrait 76.0 × 135.0) ───────────── */
-const FLEX_GEN3: LayoutDef = {
-  id: 'FLEX_GEN3',
+/* ───────────── FLUX_GEN3 (FLUX_3, FLUX_4, FLUX_POCKET · portrait 76.0 × 135.0) ───────────── */
+const FLUX_GEN3: LayoutDef = {
+  id: 'FLUX_GEN3',
   wMm: 76.0,
   hMm: 135.0,
   screens: {
-    HOME: grid(FLEX_APPS, [20.3, 55.7], [30.0, 53.6, 77.2, 100.8, 124.4], 20.3, 20.3),
+    HOME: grid(FLUX_APPS, [20.3, 55.7], [30.0, 53.6, 77.2, 100.8, 124.4], 20.3, 20.3),
     HOME_P1: grid(PAGE1, [20.3, 55.7], [30.0, 53.6], 20.3, 20.3),
     REGISTER_HOME: [
       B('Register', 13.0, 10.0, 22, 8),
@@ -120,13 +120,13 @@ const FLEX_GEN3: LayoutDef = {
   },
 };
 
-/* ───────────── FLEX_GEN2 (FLEX_2 · portrait 68.0 × 121.0) ───────────── */
-const FLEX_GEN2: LayoutDef = {
-  id: 'FLEX_GEN2',
+/* ───────────── FLUX_GEN2 (FLUX_2 · portrait 68.0 × 121.0) ───────────── */
+const FLUX_GEN2: LayoutDef = {
+  id: 'FLUX_GEN2',
   wMm: 68.0,
   hMm: 121.0,
   screens: {
-    HOME: grid(FLEX_APPS, [18.0, 50.0], [24.0, 45.0, 66.0, 87.0, 108.0], 18, 18),
+    HOME: grid(FLUX_APPS, [18.0, 50.0], [24.0, 45.0, 66.0, 87.0, 108.0], 18, 18),
     HOME_P1: grid(PAGE1, [18.0, 50.0], [24.0, 45.0], 18, 18),
     REGISTER_HOME: [
       B('Register', 14.0, 8.0, 22, 7),
@@ -165,13 +165,13 @@ const FLEX_GEN2: LayoutDef = {
   },
 };
 
-/* ───────────── FLEX_GEN1 (FLEX_1 · portrait 62.3 × 110.7) ───────────── */
-const FLEX_GEN1: LayoutDef = {
-  id: 'FLEX_GEN1',
+/* ───────────── FLUX_GEN1 (FLUX_1 · portrait 62.3 × 110.7) ───────────── */
+const FLUX_GEN1: LayoutDef = {
+  id: 'FLUX_GEN1',
   wMm: 62.3,
   hMm: 110.7,
   screens: {
-    HOME: grid(FLEX_APPS, [16.6, 45.7], [22.0, 42.0, 62.0, 82.0, 102.0], 16, 16),
+    HOME: grid(FLUX_APPS, [16.6, 45.7], [22.0, 42.0, 62.0, 82.0, 102.0], 16, 16),
     HOME_P1: grid(PAGE1, [16.6, 45.7], [22.0, 42.0], 16, 16),
     REGISTER_HOME: [
       B('Register', 13.0, 8.0, 22, 7),
@@ -210,9 +210,9 @@ const FLEX_GEN1: LayoutDef = {
   },
 };
 
-/* ───────────── COMPACT (portrait 62.3 × 110.7) ───────────── */
-const COMPACT: LayoutDef = {
-  id: 'COMPACT',
+/* ───────────── COMPASS (portrait 62.3 × 110.7) ───────────── */
+const COMPASS: LayoutDef = {
+  id: 'COMPASS',
   wMm: 62.3,
   hMm: 110.7,
   screens: {
@@ -255,10 +255,10 @@ const COMPACT: LayoutDef = {
   },
 };
 
-/* ───────────── MINI_GEN3 (MINI_3, MINI_4 · landscape 172.3 × 107.7; also the Duo CFD) ───────────── */
+/* ───────────── MICRO_GEN3 (MICRO_3, MICRO_4 · landscape 172.3 × 107.7; also the Duet CFD) ───────────── */
 const CART_V1 = [L('@cartSubtotal', 28.38, 14.0, 59.79, 8.0), L('@cartTax', 28.38, 23.0, 59.79, 8.0), L('@cartTotal', 28.38, 32.43, 59.79, 11.15)];
-const MINI_GEN3: LayoutDef = {
-  id: 'MINI_GEN3',
+const MICRO_GEN3: LayoutDef = {
+  id: 'MICRO_GEN3',
   wMm: 172.3,
   hMm: 107.7,
   screens: {
@@ -304,9 +304,9 @@ const MINI_GEN3: LayoutDef = {
   },
 };
 
-/* ───────────── MINI_GEN2 (MINI_2 · landscape 154.2 × 90.4) ───────────── */
-const MINI_GEN2: LayoutDef = {
-  id: 'MINI_GEN2',
+/* ───────────── MICRO_GEN2 (MICRO_2 · landscape 154.2 × 90.4) ───────────── */
+const MICRO_GEN2: LayoutDef = {
+  id: 'MICRO_GEN2',
   wMm: 154.2,
   hMm: 90.4,
   screens: {
@@ -350,9 +350,9 @@ const MINI_GEN2: LayoutDef = {
   },
 };
 
-/* ───────────── STATION (STATION_2018, STATION_2 and every Duo MFD · landscape 309.9 × 174.3) ───────────── */
-const STATION: LayoutDef = {
-  id: 'STATION',
+/* ───────────── STAND (STAND_2018, STAND_2 and every Duet MFD · landscape 309.9 × 174.3) ───────────── */
+const STAND: LayoutDef = {
+  id: 'STAND',
   wMm: 309.9,
   hMm: 174.3,
   screens: {
@@ -395,7 +395,7 @@ const STATION: LayoutDef = {
   },
 };
 
-export const LAYOUTS: Record<LayoutId, LayoutDef> = { FLEX_GEN3, FLEX_GEN2, FLEX_GEN1, COMPACT, MINI_GEN3, MINI_GEN2, STATION };
+export const LAYOUTS: Record<LayoutId, LayoutDef> = { FLUX_GEN3, FLUX_GEN2, FLUX_GEN1, COMPASS, MICRO_GEN3, MICRO_GEN2, STAND };
 
 /** Probe acceptance half-width (Sim §3.5.4): clamp(0.10 × min(w, h), 1.0, 2.5) mm. */
 export function coreMm(el: { w: number; h: number }): number {
@@ -404,7 +404,7 @@ export function coreMm(el: { w: number; h: number }): number {
 
 /**
  * Orca screens seeded per Device Type, in §2.10.1 table order (ids are assigned enum order × table order).
- * Generic rows exist for every lab type; CUSTOMER_CART for MINI_2/MINI_3; CFD_* for STATION_DUO / DUO_2.
+ * Generic rows exist for every lab type; CUSTOMER_CART for MICRO_2/MICRO_3; CFD_* for STAND_DUET / DUET_2.
  */
 export const GENERIC_ORCA_SCREENS = [
   'HOME',
@@ -421,7 +421,7 @@ export const GENERIC_ORCA_SCREENS = [
   'RECEIPT_OPTIONS_5',
 ] as const;
 
-/** CFD rows on a Duo: Orca name → MINI_GEN3 table used. */
+/** CFD rows on a Duet: Orca name → MICRO_GEN3 table used. */
 export const CFD_ORCA_SCREENS: Record<string, string> = {
   CFD_CART: 'CUSTOMER_CART',
   CFD_TENDER_CASH_DISCOUNT: 'TENDER_CASH_DISCOUNT',
@@ -450,14 +450,14 @@ export const ORCA_SCREEN_DESCRIPTIONS: Record<string, string> = {
   RECEIPT_OPTIONS_4: 'Receipt options — 4 options',
   RECEIPT_OPTIONS_5: 'Receipt options — 5 options (Scan for receipt QR)',
   CUSTOMER_CART: 'Tethered CFD order totals (labels only)',
-  CFD_CART: 'Station Duo CFD order totals (labels only)',
-  CFD_TENDER_CASH_DISCOUNT: 'Station Duo CFD cash-discount prompt',
-  CFD_PAYMENT_PROMPT: 'Station Duo CFD payment prompt',
-  CFD_PIN_ENTRY: 'Station Duo CFD PIN pad',
-  CFD_TIP: 'Station Duo CFD tip selection',
-  CFD_SIGNATURE: 'Station Duo CFD signature pad',
-  CFD_RECEIPT_OPTIONS_4: 'Station Duo CFD receipt options — 4 options',
-  CFD_RECEIPT_OPTIONS_5: 'Station Duo CFD receipt options — 5 options',
-  CFD_RECEIPT_DONE: 'Station Duo CFD "Your receipt is on its way" + Done',
-  CFD_THANK_YOU: 'Station Duo CFD Thank you',
+  CFD_CART: 'Stand Duet CFD order totals (labels only)',
+  CFD_TENDER_CASH_DISCOUNT: 'Stand Duet CFD cash-discount prompt',
+  CFD_PAYMENT_PROMPT: 'Stand Duet CFD payment prompt',
+  CFD_PIN_ENTRY: 'Stand Duet CFD PIN pad',
+  CFD_TIP: 'Stand Duet CFD tip selection',
+  CFD_SIGNATURE: 'Stand Duet CFD signature pad',
+  CFD_RECEIPT_OPTIONS_4: 'Stand Duet CFD receipt options — 4 options',
+  CFD_RECEIPT_OPTIONS_5: 'Stand Duet CFD receipt options — 5 options',
+  CFD_RECEIPT_DONE: 'Stand Duet CFD "Your receipt is on its way" + Done',
+  CFD_THANK_YOU: 'Stand Duet CFD Thank you',
 };

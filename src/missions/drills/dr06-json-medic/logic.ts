@@ -183,7 +183,7 @@ const NAMES = [
   ['Dip sale with tip', 'sale/dip_sale_tip.json'],
   ['Tap sale and refund', 'refund/tap_sale_refund.json'],
   ['Cash discount tender', 'sale/cash_discount_card.json'],
-  ['CFD total check (Station Duo)', 'duo/cfd_total_compare.json'],
+  ['CFD total check (Stand Duet)', 'duet/cfd_total_compare.json'],
   ['Go SDK sale smoke', 'gosdk/sale_smoke.json'],
 ] as const;
 

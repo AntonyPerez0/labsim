@@ -40,7 +40,7 @@ function seedRepo(lab: LabState, id: RepoId, cloned: boolean) {
   });
   repo.files = { ...files };
   repo.branches = { main: parent! };
-  if (id === 'uia-remote') repo.branches['fix/flex4-receipt-qr'] = parent!;
+  if (id === 'uia-remote') repo.branches['fix/flux4-receipt-qr'] = parent!;
   repo.local = cloned
     ? { path: `~/IdeaProjects/${id}`, branch: 'main', headSha: parent!, files: { ...files }, dirty: [], staged: [], ahead: 0, behind: 0 }
     : null;
@@ -49,10 +49,10 @@ function seedRepo(lab: LabState, id: RepoId, cloned: boolean) {
 
 function seedOrca(lab: LabState) {
   const dev = (id: number, name: string, deviceType: OrcaDevice['deviceType'], serial: string, ip: string): OrcaDevice => ({ id, name, deviceType, serial, ip, label: name, simDeviceId: null, retired: false });
-  lab.orca.devices[1] = dev(1, 'megatron-mfd', 'STATION_2', 'SIM-S2-000021', '10.42.30.21');
-  lab.orca.devices[2] = dev(2, 'megatron-cfd', 'MINI_2', 'SIM-M2-000022', '10.42.30.22');
-  lab.orca.devices[3] = dev(3, 'r2-d2-duo', 'STATION_DUO_2', 'SIM-D2-000014', '10.42.30.14');
-  lab.orca.devices[4] = dev(4, 'wall-e-flex3', 'FLEX_3', 'SIM-F3-000011', '10.42.30.11');
+  lab.orca.devices[1] = dev(1, 'megatron-mfd', 'STAND_2', 'SIM-S2-000021', '10.42.30.21');
+  lab.orca.devices[2] = dev(2, 'megatron-cfd', 'MICRO_2', 'SIM-M2-000022', '10.42.30.22');
+  lab.orca.devices[3] = dev(3, 'r2-d2-duet', 'STAND_DUET_2', 'SIM-D2-000014', '10.42.30.14');
+  lab.orca.devices[4] = dev(4, 'wall-e-flux3', 'FLUX_3', 'SIM-F3-000011', '10.42.30.11');
   lab.orca.robots[7] = createOrcaRobot(7, 'megatron', 'tethered', { deviceId: 1, mfdDeviceId: 1, cfdDeviceId: 2, environment: 'DEV1' });
   lab.orca.robots[8] = createOrcaRobot(8, 'r2-d2', 'tethered', { deviceId: 3, mfdDeviceId: 3, cfdDeviceId: 3, environment: 'DEV2' });
   lab.orca.robots[1] = createOrcaRobot(1, 'wall-e', 'touch', { deviceId: 4, environment: 'DEV1' });
@@ -68,7 +68,7 @@ export function seedFakeLab(opts: { cloned?: RepoId[] } = {}) {
     lab.workstation.cwd = '~';
     lab.workstation.shellHistory = ['ping -c 3 10.42.10.11', 'adb connect 10.42.30.32:5444', 'adb devices', 'cd ~/IdeaProjects/uia-remote'];
     lab.workstation.files['~/CodeWithMe/alex/uia-remote/config.properties'] = BROKEN_CONFIG.replace('robotName=megatron', 'robotName=r2-d2');
-    lab.workstation.files['~/CodeWithMe/alex/uia-remote/app/src/androidTest/java/com/labsim/uia/testactions/TaxTestDuo.java'] = UIA_FILES['app/src/androidTest/java/com/labsim/uia/testactions/TaxTestDuo.java'];
+    lab.workstation.files['~/CodeWithMe/alex/uia-remote/app/src/androidTest/java/com/labsim/uia/testactions/TaxTestDuet.java'] = UIA_FILES['app/src/androidTest/java/com/labsim/uia/testactions/TaxTestDuet.java'];
   });
 }
 
@@ -218,7 +218,7 @@ function scriptFor(repo: 'uia-remote' | 'pigeon', testPath: string, lab: LabStat
   if (!files['config.properties']) return { lines: ['java.lang.IllegalStateException: config.properties not found — copy config.properties.example', '\tat com.labsim.uia.BaseTest.loadConfig(BaseTest.java:14)'], passed: false };
   if (cfg.theme !== 'avocado') return { lines: [`java.lang.IllegalStateException: Unsupported theme "${cfg.theme}" — only "avocado" is supported`, '\tat com.labsim.uia.BaseTest.loadConfig(BaseTest.java:14)'], passed: false };
   const home = files['app/src/androidTest/java/com/labsim/uia/pageobjects/HomeScreen.java'] ?? '';
-  if (name === 'HomeScreenTest' && /FLEX\) \{\s*scrollHorizontally/.test(home)) {
+  if (name === 'HomeScreenTest' && /FLUX\) \{\s*scrollHorizontally/.test(home)) {
     return {
       lines: [`[uia-remote] robot ${cfg.robotName} · deviceType=${cfg.deviceType}`, `connect ${cfg.merchantFacingDeviceIp}:${cfg.portNumber} … connected`, '[MFD] open Register', 'androidx.test.uiautomator.UiObjectNotFoundException: "Register" not found', '\tat com.labsim.uia.pageobjects.HomeScreen.open(HomeScreen.java:29)', '\tat com.labsim.uia.testactions.HomeScreenTest.testHomeScreen(HomeScreenTest.java:27)'],
       passed: false,

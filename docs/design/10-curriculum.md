@@ -51,7 +51,7 @@ serials, prices, log lines. Where this document invents such a detail, it marks 
 |---|---|---|
 | S01 | Orca's pool holds **42** rigs named after famous robots (reference: "40+"). 12 are physically modelled. `Gort` is a repo, not a rig. | canon |
 | S02 | Host map: GPU blade `10.42.1.5`; Orca `orca.lab.local` → `10.42.1.10:8080` (MySQL schema `orca`, port 3306); Jenkins `10.42.1.11:8080`; Ollama `10.42.1.12:11434` (vision model `llava`); Robot Pis `10.42.10.<n>` (REST `:8000`, MJPEG `:8081/stream.mjpg`); Callus boxes `10.42.20.<n>:9000`; LabSim devices `10.42.30.<n>` (ADB **5444**); your workstation `10.42.50.17`; coworker desk devices `10.42.60.<n>` (ADB 5555). | canon |
-| S03 | Device Type enum strings `STATION_2018, STATION_2, STATION_DUO, STATION_DUO_2, STATION_DUO_3, MINI_2, MINI_3, MINI_4, FLEX_1, FLEX_2, FLEX_3, FLEX_4, FLEX_POCKET, COMPACT`; shared Flex 3/4/Pocket profile name `FLEX_GEN3`; config.properties `deviceType` uses the family (`Mini`, `Flex`, `Station`). | canon |
+| S03 | Device Type enum strings `STAND_2018, STAND_2, STAND_DUET, STAND_DUET_2, STAND_DUET_3, MICRO_2, MICRO_3, MICRO_4, FLUX_1, FLUX_2, FLUX_3, FLUX_4, FLUX_POCKET, COMPASS`; shared Flux 3/4/Pocket profile name `FLUX_GEN3`; config.properties `deviceType` uses the family (`Micro`, `Flux`, `Stand`). | canon |
 | S04 | "The presenter" who created uia-remote is called **Morgan** in game. | canon |
 | S05 | Rig roster, device assignments, IPs and start statuses in §0.4. | this doc |
 | S06 | REST paths: Pi health `GET http://10.42.10.<n>:8000/health` → `200 {"status":"ok"}`; Orca `POST /api/xy_touch` body `{"robot","screen","button"}`; Orca `POST /api/card/{swipe\|dip\|tap}` body `{"robot","profile"}`; Pi URL mappings `/adb`, `/dip`, `/tap`, `/swipe`. | this doc |
@@ -68,31 +68,31 @@ serials, prices, log lines. Where this document invents such a detail, it marks 
 | S17 | Function of the tablet's **Phone** group (drives a phone carriage Forward/Back and a power-button pusher, used for mobile-runner tests). The photo shows the buttons but not their purpose. | this doc |
 | S18 | Lab Safety Card wording (M01 step 13). | this doc |
 | S19 | *How* port 5555 reached a coworker's device in M14 (the runner's connect to the lab device on 5555 is refused, and it falls back to the first device the workstation's ADB server already knows). The reference says only that 5555 caused collisions in which scripts connected to and controlled coworkers' desk devices. | this doc |
-| S20 | Seeded faults used by lessons: Rack B fuse, EVE Pi unplug, JONNY-5 typo, BUMBLEBEE Offset Y 1.5, OPTIMUS empty MFD/CFD, missing API Key, Pigeon missing comma, MINI_3 receipt coordinates, `DEVICE_TYPE=flex_3`. | this doc |
+| S20 | Seeded faults used by lessons: Rack B fuse, EVE Pi unplug, JONNY-5 typo, BUMBLEBEE Offset Y 1.5, OPTIMUS empty MFD/CFD, missing API Key, Pigeon missing comma, MICRO_3 receipt coordinates, `DEVICE_TYPE=flux_3`. | this doc |
 
 ### 0.4 Rig roster used by lessons (S05, illustrative)
 
-If the world/sim docs assign devices differently, they win. Lessons only need these **roles**: a Flex 3 touch robot
-(WALL-E, matches the photos and video), a Station Duo touch robot, a Compact touch robot (Canada), an Unavailable
+If the world/sim docs assign devices differently, they win. Lessons only need these **roles**: a Flux 3 touch robot
+(WALL-E, matches the photos and video), a Stand Duet touch robot, a Compass touch robot (Canada), an Unavailable
 PayCore rig, a tethered MFD/CFD pair on DEV1 and on STG (photo), and two ADB bots.
 
 | Name / Human Readable Name | Kind | Location | Device(s) · DeviceType | Device IP | Robot Pi | Camera Stream URL | Merchant† | Status at Academy start |
 |---|---|---|---|---|---|---|---|---|
-| `wall-e` / WALL-E | Touch robot | `loc.rack-a` | Flex 3 · `FLEX_3` | 10.42.30.11 | 10.42.10.11 | `http://10.42.10.11:8081/stream.mjpg` (dedicated) | AUTO-US-NOPIN-01 | Available (running build #4120 during M01) |
-| `eve` / EVE | Touch robot | `loc.rack-a` | Flex 4 · `FLEX_4` | 10.42.30.12 | 10.42.10.12 | dedicated | AUTO-US-NOPIN-01 | Available |
-| `bumblebee` / BUMBLEBEE | Touch robot | `loc.rack-a` | Mini 3 · `MINI_3` | 10.42.30.13 | 10.42.10.13 | dedicated | AUTO-US-NOPIN-01 | Available (legacy Offset Y = 1.5 until M07) |
-| `r2-d2` / R2-D2 | Touch robot | `loc.rack-a` | Station Duo · `STATION_DUO` (one terminal, MFD + CFD) | 10.42.30.14 (MFD = CFD) | 10.42.10.14 | dedicated, aimed at the CFD | AUTO-US-NOPIN-01 | Available |
-| `johnny-5` / JOHNNY-5 (typo `JONNY-5` until M07) | Touch robot | `loc.rack-b` | Flex 1 · `FLEX_1` → Flex 2 · `FLEX_2` in M07 | 10.42.30.15 | 10.42.10.15 | shared Rack B camera `http://10.42.10.40:8081/stream.mjpg` | AUTO-US-NOPIN-01 | Available |
-| `baymax` / BAYMAX | Touch robot | `loc.rack-b` | Station 2018 · `STATION_2018` | 10.42.30.16 | 10.42.10.16 | shared Rack B camera | AUTO-US-NOPIN-01 | Available (player sets Offline in M06) |
-| `seti` / SETI | Touch robot (Westers / Canada) | `loc.rack-b` | Compact · `COMPACT` | 10.42.30.17 | 10.42.10.17 | shared Rack B camera | WESTERS-CA-01 (PIN required) | Available |
-| `rosie` / ROSIE | Touch robot (PayCore standalone) | `loc.rack-b` | Flex Pocket · `FLEX_POCKET` | 10.42.30.18 | 10.42.10.18 | shared Rack B camera | PAYCORE-STANDALONE-01 | **Unavailable** |
-| `megatron` / MEGATRON | Tethered test bed, env **DEV1** | `loc.rack-tethered` | MFD Station 2 · `STATION_2` + CFD Mini 2 · `MINI_2` | 10.42.30.21 / .22 | 10.42.10.20 (one per shelf) | `http://10.42.10.20:8081/stream.mjpg` | AUTO-US-NOPIN-01 | Available |
-| `optimus` / OPTIMUS | Tethered test bed, env **STG** | `loc.rack-tethered` | MFD Mini 3 + CFD Mini 3 · `MINI_3` (nested) | 10.42.30.23 / .24 | 10.42.10.20 | same as MEGATRON | AUTO-US-NOPIN-01 | Available (MFD/CFD fields empty until M07) |
-| `data` / DATA | ADB bot | `loc.adb-shelf` | Mini 3 · `MINI_3` | 10.42.30.31 | 10.42.10.30 | — | AUTO-US-NOPIN-01 → 02 in M08 | Available |
-| `tars` / TARS | ADB bot | `loc.adb-shelf` | Flex 4 · `FLEX_4` | 10.42.30.32 | 10.42.10.30 | — | AUTO-US-NOPIN-01 | Available |
+| `wall-e` / WALL-E | Touch robot | `loc.rack-a` | Flux 3 · `FLUX_3` | 10.42.30.11 | 10.42.10.11 | `http://10.42.10.11:8081/stream.mjpg` (dedicated) | AUTO-US-NOPIN-01 | Available (running build #4120 during M01) |
+| `eve` / EVE | Touch robot | `loc.rack-a` | Flux 4 · `FLUX_4` | 10.42.30.12 | 10.42.10.12 | dedicated | AUTO-US-NOPIN-01 | Available |
+| `bumblebee` / BUMBLEBEE | Touch robot | `loc.rack-a` | Micro 3 · `MICRO_3` | 10.42.30.13 | 10.42.10.13 | dedicated | AUTO-US-NOPIN-01 | Available (legacy Offset Y = 1.5 until M07) |
+| `r2-d2` / R2-D2 | Touch robot | `loc.rack-a` | Stand Duet · `STAND_DUET` (one terminal, MFD + CFD) | 10.42.30.14 (MFD = CFD) | 10.42.10.14 | dedicated, aimed at the CFD | AUTO-US-NOPIN-01 | Available |
+| `johnny-5` / JOHNNY-5 (typo `JONNY-5` until M07) | Touch robot | `loc.rack-b` | Flux 1 · `FLUX_1` → Flux 2 · `FLUX_2` in M07 | 10.42.30.15 | 10.42.10.15 | shared Rack B camera `http://10.42.10.40:8081/stream.mjpg` | AUTO-US-NOPIN-01 | Available |
+| `baymax` / BAYMAX | Touch robot | `loc.rack-b` | Stand 2018 · `STAND_2018` | 10.42.30.16 | 10.42.10.16 | shared Rack B camera | AUTO-US-NOPIN-01 | Available (player sets Offline in M06) |
+| `seti` / SETI | Touch robot (Westers / Canada) | `loc.rack-b` | Compass · `COMPASS` | 10.42.30.17 | 10.42.10.17 | shared Rack B camera | WESTERS-CA-01 (PIN required) | Available |
+| `rosie` / ROSIE | Touch robot (PayCore standalone) | `loc.rack-b` | Flux Pocket · `FLUX_POCKET` | 10.42.30.18 | 10.42.10.18 | shared Rack B camera | PAYCORE-STANDALONE-01 | **Unavailable** |
+| `megatron` / MEGATRON | Tethered test bed, env **DEV1** | `loc.rack-tethered` | MFD Stand 2 · `STAND_2` + CFD Micro 2 · `MICRO_2` | 10.42.30.21 / .22 | 10.42.10.20 (one per shelf) | `http://10.42.10.20:8081/stream.mjpg` | AUTO-US-NOPIN-01 | Available |
+| `optimus` / OPTIMUS | Tethered test bed, env **STG** | `loc.rack-tethered` | MFD Micro 3 + CFD Micro 3 · `MICRO_3` (nested) | 10.42.30.23 / .24 | 10.42.10.20 | same as MEGATRON | AUTO-US-NOPIN-01 | Available (MFD/CFD fields empty until M07) |
+| `data` / DATA | ADB bot | `loc.adb-shelf` | Micro 3 · `MICRO_3` | 10.42.30.31 | 10.42.10.30 | — | AUTO-US-NOPIN-01 → 02 in M08 | Available |
+| `tars` / TARS | ADB bot | `loc.adb-shelf` | Flux 4 · `FLUX_4` | 10.42.30.32 | 10.42.10.30 | — | AUTO-US-NOPIN-01 | Available |
 
 Windows boxes†: `MINIX-01` 10.42.20.1 (Callus `:9000`, Collis probes for Rack A); `MINIX-02` 10.42.20.2 (Callus for Rack B + tethered rack);
-`NUC-03` 10.42.20.3 (Windows Intel NUC, retired from hardware control, sticky note in M05). Coworker desk Flex†: 10.42.60.4 (ADB 5555).
+`NUC-03` 10.42.20.3 (Windows Intel NUC, retired from hardware control, sticky note in M05). Coworker desk Flux†: 10.42.60.4 (ADB 5555).
 
 ### 0.5 Anchors used by lesson steps
 
@@ -113,7 +113,7 @@ Windows boxes†: `MINIX-01` 10.42.20.1 (Callus `:9000`, Collis probes for Rack 
 | `loc.server-shelf` | Server shelf | 4-GPU blade (2 on top, 2 underneath), retired tower on the floor |
 | `loc.print-corner` | 3D print corner | Prusa and Bambu Lab printers, CAD screen |
 | `loc.jared-bench` | Jared's bench | Soldering station, bolt bins, red/blue parts bins, Husky tool chest |
-| `loc.coworker-desks` | Office desks | Coworker NPC and their desk Flex (5555) |
+| `loc.coworker-desks` | Office desks | Coworker NPC and their desk Flux (5555) |
 | `loc.whiteboard` | Architecture whiteboard + roadmap board | Drag-and-drop diagram and roadmap |
 | `loc.history-wall` | Team history wall | Framed team timeline + match plaques |
 
@@ -130,15 +130,15 @@ Windows boxes†: `MINIX-01` 10.42.20.1 (Callus `:9000`, Collis probes for Rack 
 | `prop.walle.door` | Enclosure door |
 | `prop.walle.stepper-x` | NEMA-17 + GT2 pulley on 2020 extrusion, V-slot wheels |
 | `prop.walle.motor-pcb` | 25-pin motor controller PCB, "MADE IN HONG KONG"† silkscreen |
-| `prop.walle.cradle` | Angled 3D-printed cradle holding the Flex 3 |
+| `prop.walle.cradle` | Angled 3D-printed cradle holding the Flux 3 |
 | `prop.walle.webcam` | Rig webcam |
 | `prop.walle.carriage` | Gantry carriage with blue push-pull solenoid (draggable when the door is open) |
 | `prop.walle.limit-switch-x`, `prop.walle.limit-switch-y` | Physical limit switches at (0,0) |
 | `prop.walle.dip-arm` | Rotating dip arm, sector gear marked "63", white ribbon card |
 | `prop.walle.pi` | Raspberry Pi in black case |
 | `prop.bolt-bins` | 2.5 mm and 5 mm bolt bins (sorting mini-game) |
-| `prop.device-library.<model>` | One per device model (`station-2018`, `station-2`, `station-duo-1`, `station-duo-2`, `box-duo-3`, `mini-2`, `mini-3`, `box-mini-4`, `flex-1`…`flex-4`, `flex-pocket`, `compact`) |
-| `prop.family-trays` | Four labelled trays: STATION, MINI, FLEX, COMPACT |
+| `prop.device-library.<model>` | One per device model (`stand-2018`, `stand-2`, `stand-duet-1`, `stand-duet-2`, `box-duet-3`, `micro-2`, `micro-3`, `box-micro-4`, `flux-1`…`flux-4`, `flux-pocket`, `compass`) |
+| `prop.family-trays` | Four labelled trays: STAND, MICRO, FLUX, COMPASS |
 | `prop.megatron.mfd`, `prop.megatron.cfd`, `prop.optimus.mfd`, `prop.optimus.cfd` | Tethered screens with labels like `MEGATRON MFD DEV1` |
 | `prop.smartstripe-probe` | USB "SmartStripe Probe" dongle with green LED |
 | `prop.hub-dock` | 3D-printed dock with LabSim connectivity hub (Ethernet, USB, power) |
@@ -147,15 +147,15 @@ Windows boxes†: `MINIX-01` 10.42.20.1 (Callus `:9000`, Collis probes for Rack 
 | `prop.regulator-12v`, `prop.regulator-5v10a` | Step-down regulators with rating labels |
 | `prop.fuse-5v-b`, `prop.fuse-spares`, `prop.multimeter` | Rack B 5V inline fuse, spare fuses, multimeter |
 | `prop.ac-strip` | Commercial AC power strip |
-| `prop.flex4-psu-brick`, `prop.collis-probe-spare` | New Flex 4 power supply, spare Collis probe (plug-in puzzle) |
+| `prop.flux4-psu-brick`, `prop.collis-probe-spare` | New Flux 4 power supply, spare Collis probe (plug-in puzzle) |
 | `prop.nuc-03` | Intel NUC with the corporate sticky note |
 | `prop.minix-01` | Minix box running Callus (screen shows service status) |
 | `prop.collis-probe-a` | Grey Collis probe, "UL Transaction Security", rear ribbon cable |
 | `prop.eve.pi-power` | EVE's Pi power lead (unpluggable) |
 | `prop.eve.device`, `prop.seti.device`, `prop.data.device`, `prop.tars.device` | Rig devices that show live screen content |
 | `prop.ruler` | Steel ruler (measurement interaction, snaps to screen top-left) |
-| `prop.r2d2.mfd`, `prop.r2d2.cfd` | Station Duo's two displays |
-| `prop.coworker-device` | Coworker's desk Flex (ADB 5555) |
+| `prop.r2d2.mfd`, `prop.r2d2.cfd` | Stand Duet's two displays |
+| `prop.coworker-device` | Coworker's desk Flux (ADB 5555) |
 | `prop.whiteboard` | Architecture diagram builder |
 | `prop.roadmap-board` | Roadmap sorter (TODAY / IN PROGRESS / PLANNED / RETIRED / PHASING OUT) |
 | `prop.gpu-blade`, `prop.legacy-tower` | 4-GPU blade (crouch to see GPUs 3–4), retired tower |
@@ -172,12 +172,12 @@ names or they/them, never gendered pronouns (canon).
 
 | Kind | Values† |
 |---|---|
-| Jenkins views / jobs | Views `Java`, `iOS`. Jobs `Java/uia-remote-regression-flex`, `Java/uia-remote-regression-mini`, `Java/uia-remote-tethered-tax`, `Java/go-sdk-sale-smoke`, `Java/laz-oobe-merchant-swap`, `Java/contact-canada-pin-sale`, `Java/pigeon-android-sale-swipe`, `iOS/pigeon-ios-go-sdk-smoke` |
+| Jenkins views / jobs | Views `Java`, `iOS`. Jobs `Java/uia-remote-regression-flux`, `Java/uia-remote-regression-micro`, `Java/uia-remote-tethered-tax`, `Java/go-sdk-sale-smoke`, `Java/laz-oobe-merchant-swap`, `Java/contact-canada-pin-sale`, `Java/pigeon-android-sale-swipe`, `iOS/pigeon-ios-go-sdk-smoke` |
 | Jenkins parameters | `ROBOT_NAME` (blank = any matching Available robot), `DEVICE_TYPE` (enum, ALL CAPS), `MERCHANT`, `CARD_PROFILE` |
 | Card profiles | `VISA_STD_SWIPE` (Track Data), `VISA_STD_DIP` → `cards/emv/visa_std_dip.json`, `VISA_STD_TAP` → `cards/nfc/visa_std_tap.json`, `INTERAC_CA_DIP` → `cards/emv/interac_ca_dip.json`, PayCore-owned `AMEX_MATRIX_DIP`, `DISCOVER_MATRIX_DIP` |
 | Merchants | `AUTO-US-NOPIN-01`, `AUTO-US-NOPIN-02`, `GO-SDK-US-01` (App ID `app_sim_7f3a`, API Key `key_sim_19c0e2`), `PAYCORE-STANDALONE-01`, `WESTERS-CA-01` |
-| Screens (FLEX_4) | `RECEIPT_OPTIONS_4`: Print (34.0, 71.0), Email (34.0, 83.0), Text (34.0, 95.0), No Receipt (34.0, 107.0). `RECEIPT_OPTIONS_5`: Print (34.0, 74.0), Email (34.0, 86.0), Text (34.0, 98.0), No Receipt (34.0, 110.0), Scan for receipt (34.0, 122.0). Units mm from top-left (0,0). |
-| Screens (FLEX_3) | `TENDER_CASH_DISCOUNT`: Cash (22.0, 58.5), Card (62.0, 58.5) |
+| Screens (FLUX_4) | `RECEIPT_OPTIONS_4`: Print (34.0, 71.0), Email (34.0, 83.0), Text (34.0, 95.0), No Receipt (34.0, 107.0). `RECEIPT_OPTIONS_5`: Print (34.0, 74.0), Email (34.0, 86.0), Text (34.0, 98.0), No Receipt (34.0, 110.0), Scan for receipt (34.0, 122.0). Units mm from top-left (0,0). |
+| Screens (FLUX_3) | `TENDER_CASH_DISCOUNT`: Cash (22.0, 58.5), Card (62.0, 58.5) |
 | Screen compare (R2-D2) | `CFD_TOTAL`: x 412, y 288, w 236, h 44 px, expected `TOTAL $10.83` |
 
 ---
@@ -191,7 +191,7 @@ bonus rounds. *Ref* = reference section: §1.1 languages/frameworks · §1.2 inf
 §1.4 internal repos · §1.5 lab hardware · §2 architecture · §3 Orca · §3.1 statuses · §3.2 entities · §4.1 history ·
 §4.2 directory · §4.3 POM · §4.4 Tax test · §4.5 config.properties · §5 Pigeon · §6.1 bots · §6.2 cards · §6.3 power ·
 §6.4 motor safety · IMG-T `walle-status-tablet-front.jpg` · IMG-R `tethered-megatron-optimus-rack.jpg` ·
-IMG-G `touch-robot-side-gantry.jpg` · IMG-V `solenoid-tapping-flex3.mp4`.
+IMG-G `touch-robot-side-gantry.jpg` · IMG-V `solenoid-tapping-flux3.mp4`.
 
 *Taught in* lists every module whose "Facts covered" includes the fact. In that module the fact is taught in
 dialogue or inspection and practised in at least one hands-on step (`interact` or `computer-task`). For pure
@@ -258,14 +258,14 @@ lore facts the step is an `inspect` or a mini-game. *Quiz items* and *Flashcards
 | F052 | USB Pay Display and Secure Network Pay Display are applications maintained by the Semi Team. | §1.4 | supporting | M18 | Q371 | FC155 |
 | F053 | USB Pay Display and Secure Network Pay Display link Merchant Facing Devices and Customer Facing Devices over USB or the local network. | §1.4 | supporting | M18 | Q372 | FC155 |
 | F054 | MFD means Merchant Facing Device and CFD means Customer Facing Device. | §1.4 | core | M02, M14 | Q012, Q013, Q305 | FC009 |
-| F055 | The Station series targets are Station 2018, Station 2 and Station Duo (Duo 1, Duo 2 and the upcoming Duo 3). | §1.5 | core | M02 | Q014, Q022 | FC010 |
-| F056 | The Mini series targets are Mini 2, Mini 3 and the upcoming Mini 4. | §1.5 | core | M02 | Q014, Q024 | FC011 |
-| F057 | The Mini 3 is used as a hot-swap equivalent for the printerless Station Duo 2. | §1.5 | supporting | M02 | Q018, Q019 | FC014 |
-| F058 | The Flex series targets are Flex 1, Flex 2, Flex 3, Flex 4 and Flex Pocket. | §1.5 | core | M02 | Q014, Q023 | FC012 |
-| F059 | Flex 3, Flex 4 and Flex Pocket share exactly the same testing profile. | §1.5 | core | M02 | Q015, Q016 | FC013 |
-| F060 | The Flex Pocket omits the physical printer block. | §1.5 | supporting | M02 | Q017 | FC013 |
-| F061 | The LabSim Compact is the target terminal for the Canadian market and is used on the Westers test beds. | §1.5 | supporting | M02 | Q014, Q020 | FC015 |
-| F062 | The Station Duo 3 and the Mini 4 are upcoming devices. | §1.5 | trivia | M02 | Q021 | FC016 |
+| F055 | The Stand series targets are Stand 2018, Stand 2 and Stand Duet (Duet 1, Duet 2 and the upcoming Duet 3). | §1.5 | core | M02 | Q014, Q022 | FC010 |
+| F056 | The Micro series targets are Micro 2, Micro 3 and the upcoming Micro 4. | §1.5 | core | M02 | Q014, Q024 | FC011 |
+| F057 | The Micro 3 is used as a hot-swap equivalent for the printerless Stand Duet 2. | §1.5 | supporting | M02 | Q018, Q019 | FC014 |
+| F058 | The Flux series targets are Flux 1, Flux 2, Flux 3, Flux 4 and Flux Pocket. | §1.5 | core | M02 | Q014, Q023 | FC012 |
+| F059 | Flux 3, Flux 4 and Flux Pocket share exactly the same testing profile. | §1.5 | core | M02 | Q015, Q016 | FC013 |
+| F060 | The Flux Pocket omits the physical printer block. | §1.5 | supporting | M02 | Q017 | FC013 |
+| F061 | The LabSim Compass is the target terminal for the Canadian market and is used on the Westers test beds. | §1.5 | supporting | M02 | Q014, Q020 | FC015 |
+| F062 | The Stand Duet 3 and the Micro 4 are upcoming devices. | §1.5 | trivia | M02 | Q021 | FC016 |
 | F063 | The lab's Raspberry Pis are cheap units of about $50 each. | §1.5 | supporting | M05 | Q064 | FC038 |
 | F064 | A Raspberry Pi operates as the Robot Pi / Robot Controller on each shelf. | §1.5 | core | M05 | Q063, Q077 | FC037 |
 | F065 | The Robot Pi handles ADB routing, camera streams, stepper motors, solenoids and Wine card-programming emulation. | §1.5 | core | M05 | Q065, Q066 | FC039 |
@@ -323,14 +323,14 @@ lore facts the step is an `inspect` or a mini-game. *Quiz items* and *Flashcards
 | F117 | A robot has a Name (system identifier) and a Human Readable Name (display string). | §3.2 | core | M07 | Q121, Q140 | FC066 |
 | F118 | The Human Readable Name is pushed to the physical status tablet mounted on the front of the lab enclosure. | §3.2 | core | M07 | Q011, Q122, Q140 | FC066 |
 | F119 | The Robot Device field links the robot to a separate Device entity. | §3.2 | core | M07 | Q123, Q125 | FC067 |
-| F120 | Decoupling the Device from the Robot means a hardware upgrade (e.g. Flex 1 to Flex 2) leaves legacy configurations intact for quick rollbacks. | §3.2 | core | M07 | Q123, Q124 | FC067 |
+| F120 | Decoupling the Device from the Robot means a hardware upgrade (e.g. Flux 1 to Flux 2) leaves legacy configurations intact for quick rollbacks. | §3.2 | core | M07 | Q123, Q124 | FC067 |
 | F121 | Device Type is an enum that stores device dimensions, layout metrics and internal string definitions. | §3.2 | core | M07 | Q126, Q141 | FC068 |
 | F122 | The Device Type enum is the reason Jenkins pipeline environment variables must be in ALL CAPS. | §3.2 | core | M07, M11 | Q127, Q128, Q218 | FC069 |
 | F123 | URL Mappings store the Robot ADB Service URL, which routes to the Pi controller. | §3.2 | core | M07 | Q129, Q142 | FC070 |
 | F124 | The Camera Stream URL is either dedicated per Pi or shared across 4 rigs. | §3.2 | supporting | M07 | Q130, Q142 | FC071 |
 | F125 | URL Mappings also store the hardware-specific Dip, Tap and Swipe URLs. | §3.2 | core | M07 | Q131, Q142 | FC072 |
 | F126 | USB Tethered Device Configuration populates MFD and CFD relations for nested setups. | §3.2 | core | M07 | Q133, Q134, Q143 | FC073 |
-| F127 | Tethered examples include a Station 2 tethered to a Mini 2 and nested Mini 3 rigs. | §3.2 | supporting | M07 | Q133 | FC074 |
+| F127 | Tethered examples include a Stand 2 tethered to a Micro 2 and nested Micro 3 rigs. | §3.2 | supporting | M07 | Q133 | FC074 |
 | F128 | If the MFD field is populated, the pipeline treats the rig as tethered. | §3.2 | core | M07 | Q132, Q143 | FC073 |
 | F129 | Offsets are legacy millimetre coordinate adjustments once used to compensate for imprecise physical limit switches. | §3.2 | core | M07 | Q135, Q137 | FC075 |
 | F130 | Jared calibrated the lab hardware to a true (0,0) origin, which made the Offsets field mostly deprecated. | §3.2 | core | M07 | Q136, Q137 | FC075 |
@@ -353,16 +353,16 @@ lore facts the step is an `inspect` or a mini-game. *Quiz items* and *Flashcards
 | F147 | Dip and Tap profiles store file paths pointing to card definitions inside the Gort repository. | §3.2 | core | M10 | Q190, Q191, Q195 | FC093 |
 | F148 | A scheduled job clones the Gort card-definition files onto the local Windows boxes. | §3.2 | core | M10 | Q193, Q195 | FC094 |
 | F149 | During a test run, Callus servers map the file path and load the virtual card. | §3.2 | core | M10 | Q194, Q195 | FC094 |
-| F150 | The Screen Compare Image entity is the Station Duo workaround. | §3.2 | core | M16 | Q333, Q350 | FC144 |
-| F151 | On the Station Duo one terminal drives two displays, but only the primary MFD is exposed to ADB. | §3.2 | core | M16 | Q331, Q347 | FC144 |
-| F152 | Legacy UI Automator was completely blind to the Station Duo's secondary CFD. | §3.2 | core | M16 | Q332, Q348 | FC144 |
+| F150 | The Screen Compare Image entity is the Stand Duet workaround. | §3.2 | core | M16 | Q333, Q350 | FC144 |
+| F151 | On the Stand Duet one terminal drives two displays, but only the primary MFD is exposed to ADB. | §3.2 | core | M16 | Q331, Q347 | FC144 |
+| F152 | Legacy UI Automator was completely blind to the Stand Duet's secondary CFD. | §3.2 | core | M16 | Q332, Q348 | FC144 |
 | F153 | The OCR workaround stores spatial bounding coordinates on the CFD alongside the expected text string. | §3.2 | core | M16 | Q334, Q350 | FC145 |
 | F154 | In the OCR workaround the Robot Controller captures a webcam screenshot, crops it to the bounding box, runs Tesseract OCR and returns a boolean match result. | §3.2 | core | M16 | Q335, Q336, Q349 | FC145 |
 | F155 | The OCR workaround is extremely brittle: a 10-pixel button shift, a capitalisation change or a typo breaks the suite. | §3.2 | core | M16 | Q339, Q340, Q341 | FC146 |
 | F156 | Screen Compare / OCR is being phased out because UI Automator 2.3 natively supports dual-screen element tracking. | §3.2 | core | M16 | Q342, Q348 | FC147 |
 | F157 | Historically the Semi Team developed third-party POS SDKs and the remote pay display apps. | §4.1 | supporting | M18 | Q369, Q377 | FC154 |
 | F158 | The Sedi (QA) Team tested the Semi Team's apps using the legacy Lester framework. | §4.1 | supporting | M18 | Q370, Q377, Q382 | FC154 |
-| F159 | The presenter (Morgan in-game) created uia-remote because no prior framework could automate native tethered setups: Station-to-Mini, Mini-to-Mini and Station Duo. | §4.1 | core | M13, M18 | Q265, Q378 | FC112 |
+| F159 | The presenter (Morgan in-game) created uia-remote because no prior framework could automate native tethered setups: Stand-to-Micro, Micro-to-Micro and Stand Duet. | §4.1 | core | M13, M18 | Q265, Q378 | FC112 |
 | F160 | uia-remote is now integrated with the IPX (Integrated Payment Experience) Team. | §4.1 | supporting | M18 | Q373, Q377 | FC156 |
 | F161 | With IPX, uia-remote tests standalone and tethered devices across the native apps Register, Orders, Authorizations, Sale, Transactions and Setup. | §4.1 | supporting | M18 | Q374 | FC156 |
 | F162 | The PayCore Team adopted uia-remote for apps like LabSim Dining. | §4.1 | supporting | M18 | Q375, Q377 | FC157 |
@@ -380,7 +380,7 @@ lore facts the step is an `inspect` or a mini-game. *Quiz items* and *Flashcards
 | F174 | BaseTest provides global setup, teardown and instance variables. | §4.3 | supporting | M13 | Q253 | FC120 |
 | F175 | Zone 1 of a screen class holds the Element Locators: declared UI elements unique to that view. | §4.3 | core | M13 | Q254, Q256 | FC121 |
 | F176 | Zone 2 of a screen class holds the Helper/Action Methods, where device-specific behaviours are abstracted. | §4.3 | core | M13 | Q255, Q256 | FC121 |
-| F177 | open(String appName) uses vertical scrolling on Flex devices and horizontal scrolling on Mini or Station devices. | §4.3 | core | M13 | Q257, Q258, Q283 | FC122 |
+| F177 | open(String appName) uses vertical scrolling on Flux devices and horizontal scrolling on Micro or Stand devices. | §4.3 | core | M13 | Q257, Q258, Q283 | FC122 |
 | F178 | waitForScreen() pauses execution threads until all UI elements finish rendering, so UI Automator never clicks unrendered buttons. | §4.3 | core | M13 | Q259, Q274 | FC123 |
 | F179 | isScreenPresent() returns a boolean indicating whether that specific screen is currently in focus. | §4.3 | core | M13 | Q260, Q262 | FC123 |
 | F180 | waitForScreen() and isScreenPresent() are mandatory on every screen class. | §4.3 | core | M13 | Q261, Q262 | FC123 |
@@ -396,9 +396,9 @@ lore facts the step is an `inspect` or a mini-game. *Quiz items* and *Flashcards
 | F190 | runType is set to tethered for multi-device testing setups. | §4.5 | core | M14 | Q276, Q304 | FC129 |
 | F191 | merchantFacingDeviceIp is the local network IP of the MFD terminal. | §4.5 | core | M14 | Q277, Q307 | FC130 |
 | F192 | customerFacingDeviceIp is the local network IP of the CFD terminal. | §4.5 | core | M14 | Q278, Q307 | FC130 |
-| F193 | On a Station Duo, merchantFacingDeviceIp and customerFacingDeviceIp are set to the exact same IP address. | §4.5 | core | M14, M16 | Q279, Q280 | FC130 |
+| F193 | On a Stand Duet, merchantFacingDeviceIp and customerFacingDeviceIp are set to the exact same IP address. | §4.5 | core | M14, M16 | Q279, Q280 | FC130 |
 | F194 | serial is the hardware serial number of the primary terminal. | §4.5 | supporting | M14 | Q281 | FC131 |
-| F195 | deviceType is the target form factor (Mini, Flex, Station) and governs layout/scroll logic. | §4.5 | core | M14 | Q282, Q283 | FC131 |
+| F195 | deviceType is the target form factor (Micro, Flux, Stand) and governs layout/scroll logic. | §4.5 | core | M14 | Q282, Q283 | FC131 |
 | F196 | theme is locked strictly to avocado; legacy theme toggles are deprecated. | §4.5 | core | M14 | Q284, Q285, Q304 | FC132 |
 | F197 | kernelType is locked strictly to CPA (Core Payments Application), which replaces the legacy SPA (Secure Processor Application). | §4.5 | core | M14 | Q286, Q287, Q304 | FC133 |
 | F198 | portNumber is locked to 5444. | §4.5 | core | M14 | Q288, Q289, Q304 | FC106 |
@@ -445,7 +445,7 @@ lore facts the step is an `inspect` or a mini-game. *Quiz items* and *Flashcards
 | F239 | Below the tethered screens, black 3D-printed docks hold white LabSim connectivity hubs (Ethernet, USB, power) labelled per device (e.g. MEGATRON MFD). | IMG-R | supporting | M02 | Q027 | FC018 |
 | F240 | Gantry anatomy: 2020 aluminium extrusion rails, a NEMA-17 stepper with a GT2 pulley, V-slot wheels and a carriage carrying a blue push-pull solenoid pointed at the screen. | IMG-G | supporting | M04 | Q056 | FC026 |
 | F241 | A black rotating dip arm (sector gear marked 63) carries a flat white ribbon card (the Collis probe card insert) into the device's chip slot. | IMG-G | supporting | M04 | Q057 | FC031 |
-| F242 | The Flex sits in an angled black 3D-printed cradle, with the grey UL Transaction Security (Collis) probe box on the shelf beside it. | IMG-G | trivia | M04 | Q061 | — |
+| F242 | The Flux sits in an angled black 3D-printed cradle, with the grey UL Transaction Security (Collis) probe box on the shelf beside it. | IMG-G | trivia | M04 | Q061 | — |
 | F243 | Solenoid tap cycle: the gantry moves the head over the target button, the plunger drops to tap, lifts, moves and taps again. | IMG-V | supporting | M04 | Q058 | — |
 | F244 | Touch-robot enclosures sit in racks whose rails are marked with numbered rack units (e.g. 29 to 40). | IMG-T | trivia | M01 | Q009 | — |
 | F245 | A side panel lettered SETI beside WALL-E's tablet carries USB ports for the Minix box / Raspberry Pi. | IMG-T | trivia | M01 | Q010 | — |
@@ -505,7 +505,7 @@ M01 ─┬─ M02 ─┐
 | M13 | uia-remote: Structure & the Page Object Model | Morgan | M12 | 28 | 42 | 8 |
 | M14 | config.properties & the Tethered Tax Test | Morgan; cameo Coworker | M13 | 22 | 33 | 8 |
 | M15 | Pigeon (LSTR) & Legacy JSON | Morgan; cameo Jared | M09, M13 | 17 | 23 | 7 |
-| M16 | Seeing the Second Screen: Station Duo, OCR, GIMP & UIA 2.3 | Morgan | M14, M15 | 15 | 20 | 6 |
+| M16 | Seeing the Second Screen: Stand Duet, OCR, GIMP & UIA 2.3 | Morgan | M14, M15 | 15 | 20 | 6 |
 | M17 | AI, Infrastructure & the Roadmap | Jared; cameo David | M16 | 15 | 18 | 5 |
 | M18 | Teams, History & the Capstone Shift | Morgan; cameos Jared, Tate | M17 (and all earlier modules) | 15 | 14 | 5 |
 
@@ -516,7 +516,7 @@ M01 ─┬─ M02 ─┐
 | **Mentor** | Morgan (`npc.morgan`) |
 | **Prerequisites** | — (first module; starts automatically on a new save) |
 | **Est. duration** | 10–12 min |
-| **Setup (world state on start)** | Player spawns at `loc.entrance`. WALL-E is running scripted Jenkins build `Java/uia-remote-regression-flex #4120`† (tablet locked). All other rigs idle. |
+| **Setup (world state on start)** | Player spawns at `loc.entrance`. WALL-E is running scripted Jenkins build `Java/uia-remote-regression-flux #4120`† (tablet locked). All other rigs idle. |
 | **Facts covered** | F072, F073, F089, F115, F230, F233, F236, F244, F245 |
 | **Unlocks** | M02, M03 · Field Manual chapter "Lab Basics" · flashcard deck `deck.M01` |
 
@@ -556,32 +556,32 @@ M01 ─┬─ M02 ─┐
 | **Mentor** | Morgan (`npc.morgan`); cameo Jared (`npc.jared`) |
 | **Prerequisites** | M01 |
 | **Est. duration** | 12 min |
-| **Setup** | Device library shelf `loc.device-library` holds one of every device plus two sealed boxes labelled "STATION DUO 3 — UPCOMING" and "MINI 4 — UPCOMING". |
+| **Setup** | Device library shelf `loc.device-library` holds one of every device plus two sealed boxes labelled "STAND DUET 3 — UPCOMING" and "MICRO 4 — UPCOMING". |
 | **Facts covered** | F054, F055, F056, F057, F058, F059, F060, F061, F062, F237, F238, F239 |
 | **Unlocks** | M04 (with M03) · deck `deck.M02` |
 
 **Learning objectives**
-1. Sort every LabSim target device into the Station, Mini, Flex and Compact families, including upcoming models.
+1. Sort every LabSim target device into the Stand, Micro, Flux and Compass families, including upcoming models.
 2. Expand MFD and CFD and recognise them on tethered test-bed labels (rig · role · environment).
-3. State that Flex 3, Flex 4 and Flex Pocket share one testing profile and the Pocket has no printer block.
-4. Explain the Mini 3 hot-swap for the printerless Station Duo 2 and the Compact's Canadian / Westers role.
+3. State that Flux 3, Flux 4 and Flux Pocket share one testing profile and the Pocket has no printer block.
+4. Explain the Micro 3 hot-swap for the printerless Stand Duet 2 and the Compass's Canadian / Westers role.
 
 **Lesson script**
 
 | # | Step type | Target | Exact text / action | Success condition |
 |---|---|---|---|---|
 | 1 | walk-to | `loc.device-library` | HUD: "Meet Morgan at the device library" | within 1.5 m |
-| 2 | dialogue | `npc.morgan` | "Every LabSim we test belongs to a family: Station, Mini, Flex, or the Compact. Learn them like your teammates' names." | continue |
-| 3 | inspect | `prop.device-library.station-duo-2` | HUD: "Inspect the Station Duo 2". Callout: "Station Duo 2 — no printer". | Crosshair ≥ 1.0 s |
-| 4 | interact | `prop.family-trays` | HUD: "Sort all 14 devices onto the right family tray". Items: Station 2018, Station 2, Station Duo 1, Station Duo 2, box "Station Duo 3 — upcoming", Mini 2, Mini 3, box "Mini 4 — upcoming", Flex 1, Flex 2, Flex 3, Flex 4, Flex Pocket, Compact. Trays: `STATION`, `MINI`, `FLEX`, `COMPACT`. | All 14 on correct trays (wrong drop: item bounces back, buzz, −0 score in Academy) |
-| 5 | dialogue | `npc.morgan` | "Here's a freebie that saves hours: Flex 3, Flex 4 and Flex Pocket share the exact same testing profile. The Pocket just leaves out the printer block." | continue |
-| 6 | interact | `prop.device-library.flex-pocket` | HUD: "Hold the Flex Pocket next to the Flex 4 and find what's missing". Player picks up both; highlighting the printer area on Flex 4 shows callout "Printer block — absent on Pocket". | Player clicks the printer block on Flex 4 |
-| 7 | dialogue | `npc.jared` | "Jared here. The Station Duo 2 has no printer either. When one is down, we hot-swap a Mini 3 in its place." | continue |
+| 2 | dialogue | `npc.morgan` | "Every LabSim we test belongs to a family: Stand, Micro, Flux, or the Compass. Learn them like your teammates' names." | continue |
+| 3 | inspect | `prop.device-library.stand-duet-2` | HUD: "Inspect the Stand Duet 2". Callout: "Stand Duet 2 — no printer". | Crosshair ≥ 1.0 s |
+| 4 | interact | `prop.family-trays` | HUD: "Sort all 14 devices onto the right family tray". Items: Stand 2018, Stand 2, Stand Duet 1, Stand Duet 2, box "Stand Duet 3 — upcoming", Micro 2, Micro 3, box "Micro 4 — upcoming", Flux 1, Flux 2, Flux 3, Flux 4, Flux Pocket, Compass. Trays: `STAND`, `MICRO`, `FLUX`, `COMPASS`. | All 14 on correct trays (wrong drop: item bounces back, buzz, −0 score in Academy) |
+| 5 | dialogue | `npc.morgan` | "Here's a freebie that saves hours: Flux 3, Flux 4 and Flux Pocket share the exact same testing profile. The Pocket just leaves out the printer block." | continue |
+| 6 | interact | `prop.device-library.flux-pocket` | HUD: "Hold the Flux Pocket next to the Flux 4 and find what's missing". Player picks up both; highlighting the printer area on Flux 4 shows callout "Printer block — absent on Pocket". | Player clicks the printer block on Flux 4 |
+| 7 | dialogue | `npc.jared` | "Jared here. The Stand Duet 2 has no printer either. When one is down, we hot-swap a Micro 3 in its place." | continue |
 | 8 | walk-to | `loc.rack-tethered` | HUD: "Walk to the tethered rack (MEGATRON / OPTIMUS)" | within 1.5 m |
 | 9 | dialogue | `npc.morgan` | "MFD means Merchant Facing Device: the merchant's screen. CFD means Customer Facing Device: the customer's screen. The labels tell you the rig, the role and the environment." | continue |
 | 10 | inspect | `prop.megatron.mfd` | HUD: "Read MEGATRON's MFD label". Callout: `MEGATRON  MFD  DEV1`. Then auto-pan to `prop.optimus.cfd`: `OPTIMUS  CFD  STG`. | Both labels viewed |
 | 11 | inspect | `prop.smartstripe-probe` | HUD: "What are the glowing dongles between the screens?" Callout: "SmartStripe Probe (USB)". Second callout on `prop.hub-dock`: "LabSim connectivity hub: Ethernet, USB, power". | Both viewed |
-| 12 | dialogue | `npc.morgan` | "Last one: the LabSim Compact is our Canadian-market terminal. It runs on the Westers test beds, and SETI carries one in this room. Remember Canada: it matters later for PINs." | continue |
+| 12 | dialogue | `npc.morgan` | "Last one: the LabSim Compass is our Canadian-market terminal. It runs on the Westers test beds, and SETI carries one in this room. Remember Canada: it matters later for PINs." | continue |
 | 13 | quiz-checkpoint | `CP-M02.1`: Q012, Q013, Q014, Q015, Q017 | Checkpoint "Device Families" | ≥ 80 % |
 
 ---
@@ -593,7 +593,7 @@ M01 ─┬─ M02 ─┐
 | **Mentor** | Jared (`npc.jared`) |
 | **Prerequisites** | M01 |
 | **Est. duration** | 12 min |
-| **Setup** | Rack B's 5V inline fuse `prop.fuse-5v-b` is blown: the JOHNNY-5/BAYMAX/SETI/ROSIE Pis show no LEDs. A new Flex 4 power brick `prop.flex4-psu-brick` and a spare Collis probe `prop.collis-probe-spare` lie unplugged on `loc.power-wall`'s bench. |
+| **Setup** | Rack B's 5V inline fuse `prop.fuse-5v-b` is blown: the JOHNNY-5/BAYMAX/SETI/ROSIE Pis show no LEDs. A new Flux 4 power brick `prop.flux4-psu-brick` and a spare Collis probe `prop.collis-probe-spare` lie unplugged on `loc.power-wall`'s bench. |
 | **Facts covered** | F074, F085, F086, F087, F227, F228, F229 |
 | **Unlocks** | M04 (with M02) · Arcade incidents `INC-FUSE-5V`, `INC-WRONG-OUTLET` · deck `deck.M03` |
 
@@ -616,7 +616,7 @@ M01 ─┬─ M02 ─┐
 | 8 | interact | `prop.multimeter` → `prop.fuse-5v-b` | HUD: "Test Rack B's 5V inline fuse with the multimeter". Meter reads "OL" (open). | Reading taken |
 | 9 | interact | `prop.fuse-spares` → `prop.fuse-5v-b` | HUD: "Replace the blown fuse". Fuse holder opens, player inserts new fuse. Rack B Pi LEDs light green; boot chime. | Fuse replaced and Rack B Pis powered |
 | 10 | dialogue | `npc.jared` | "Now the exception. LabSim devices draw an irregular 18 volts. They never touch our DC rails, and neither do the Collis probes. Those things cost more than my car." | continue |
-| 11 | interact | `prop.flex4-psu-brick`, `prop.collis-probe-spare` | HUD: "Plug in the new Flex 4 and the spare Collis probe". Sockets offered: 24V rail tap, 12V NUC line, 5V Pi line, commercial AC power strip `prop.ac-strip`. Wrong socket → spark VFX, Jared: "That's how we fry a terminal. Commercial AC strip. Always." (no permanent damage in Academy; Arcade: −500 pts and "Fried hardware" strike) | Both plugged into `prop.ac-strip` |
+| 11 | interact | `prop.flux4-psu-brick`, `prop.collis-probe-spare` | HUD: "Plug in the new Flux 4 and the spare Collis probe". Sockets offered: 24V rail tap, 12V NUC line, 5V Pi line, commercial AC power strip `prop.ac-strip`. Wrong socket → spark VFX, Jared: "That's how we fry a terminal. Commercial AC strip. Always." (no permanent damage in Academy; Arcade: −500 pts and "Fried hardware" strike) | Both plugged into `prop.ac-strip` |
 | 12 | quiz-checkpoint | `CP-M03.1`: Q028, Q030, Q031, Q033, Q035 | Checkpoint "Power" | ≥ 80 % |
 | 13 | dialogue | `npc.jared` | "Good. Rails for Pis and NUCs, AC strips for terminals and Collis. Tattoo it somewhere. Now let's open up a robot." | continue → complete |
 
@@ -647,9 +647,9 @@ M01 ─┬─ M02 ─┐
 | 2 | dialogue | `npc.jared` | "A touch robot is basically a 3D-printer gantry that taps instead of prints. Aluminium 2020 extrusion, V-slot wheels, a NEMA-17 stepper on a GT2 belt, and a blue push-pull solenoid on the carriage. The steppers move in sub-millimetre steps." | continue |
 | 3 | inspect | `prop.walle.stepper-x` | HUD: "Inspect the X-axis stepper". Callouts: "NEMA-17", "GT2 pulley", "V-slot wheels", "2020 extrusion". | Crosshair ≥ 1.0 s |
 | 4 | inspect | `prop.walle.motor-pcb` | HUD: "Find the motor controller board". Silkscreen: "25-PIN MOTOR CTRL · MADE IN HONG KONG"†. | Crosshair ≥ 1.0 s |
-| 5 | inspect | `prop.walle.cradle` | HUD: "Look at how the Flex 3 is held". Callouts: "Angled 3D-printed cradle", "Collis probe box (UL Transaction Security)" on the shelf beside it, "Webcam" `prop.walle.webcam` above. | Crosshair ≥ 1.0 s |
+| 5 | inspect | `prop.walle.cradle` | HUD: "Look at how the Flux 3 is held". Callouts: "Angled 3D-printed cradle", "Collis probe box (UL Transaction Security)" on the shelf beside it, "Webcam" `prop.walle.webcam` above. | Crosshair ≥ 1.0 s |
 | 6 | interact | `prop.walle.tablet` | HUD: "On the tablet open Robot, then Robot Control, then Motion Control". | All three tabs opened |
-| 7 | interact | `prop.walle.tablet` | HUD: "Fire the solenoid: Solenoid → Down, then Up". Plunger drops onto the Flex 3 screen (tap sound), then lifts. | Both buttons pressed in order |
+| 7 | interact | `prop.walle.tablet` | HUD: "Fire the solenoid: Solenoid → Down, then Up". Plunger drops onto the Flux 3 screen (tap sound), then lifts. | Both buttons pressed in order |
 | 8 | interact | `prop.walle.tablet` | HUD: "Move the head with Park → X, then Park → Y, then tap a button with Solenoid → Lower / Raise". Head moves along X then Y; Lower/Raise is the slow variant. | All four pressed |
 | 9 | interact | `prop.walle.tablet` | HUD: "Run the card mechanics: Dip → In, Dip → Out, Tap → In, Tap → Out". Dip arm (sector gear marked `63`) swings the white ribbon card into the chip slot and back; the tap paddle approaches the NFC area and retracts. | All four pressed |
 | 10 | interact | `prop.walle.tablet` | HUD: "Try the Phone group: Forward, Back, Push Power Button". Phone carriage† moves forward/back; pusher presses the power button. Then Steppers → Disable, Steppers → Enable (motors hum off/on). | All five pressed |
@@ -704,7 +704,7 @@ M01 ─┬─ M02 ─┐
 | **Mentor** | Tate (`npc.tate`); cameo Jared |
 | **Prerequisites** | M05 |
 | **Est. duration** | 22 min |
-| **Setup** | All rigs as in §0.4 roster. Orca app unlocked with the Robots page. Tutorial-only "Force health check" button visible in Orca's header (Academy and Free Play only). Jenkins app unlocked, showing only job `Java/uia-remote-regression-flex`. |
+| **Setup** | All rigs as in §0.4 roster. Orca app unlocked with the Robots page. Tutorial-only "Force health check" button visible in Orca's header (Academy and Free Play only). Jenkins app unlocked, showing only job `Java/uia-remote-regression-flux`. |
 | **Facts covered** | F001, F002, F003, F004, F013, F023, F036, F037, F038, F094, F095, F096, F097, F098, F099, F100, F101, F102, F103, F104, F105, F106, F107, F108, F109, F110, F111, F112, F113, F116 |
 | **Unlocks** | M07, M11 (with M07) · Arcade incident types `INC-CONN-FAILED`, `INC-RESERVED-BLOCK`, `INC-UNAVAILABLE-NAMED` · deck `deck.M06` |
 
@@ -730,8 +730,8 @@ M01 ─┬─ M02 ─┐
 | 9 | computer-task | `app.orca` | HUD: "Open EVE and read the Notes". Notes section shows†: `2026-10-05 09:35:00 GET http://10.42.10.12:8000/health → connect timed out after 10000 ms`. Player then tries **Check out** on EVE → toast "Robot is blocked from checkouts (Connection Failed)". | Notes opened and checkout block seen |
 | 10 | interact | `npc.jared` | HUD: "Escalate EVE". Dialogue choices: (a) "EVE is Connection Failed: health ping timed out on 10.42.10.12:8000. Can you take a look?" ✔ (b) "I'll just set EVE back to Available." ✘ Tate: "Never paper over a failed ping. Hardware goes to Jared." (c) "I'll reboot Orca." ✘ | Choice (a); Jared: "On it. Probably the Pi, or a Minix box running Callus. Same symptom." Jared re-plugs; next ping → EVE `Available`. |
 | 11 | computer-task | `app.orca` | HUD: "Jared is rebuilding BAYMAX. Mark it Offline, then force a health check." Health log shows†: `baymax  SKIPPED (Offline)`. | BAYMAX `Offline` and skip line visible |
-| 12 | computer-task | `app.orca` + `app.jenkins` | HUD: "You're going to test WALL-E locally. Reserve it, then build Java/uia-remote-regression-flex with DEVICE_TYPE=FLEX_3 and ROBOT_NAME blank." Console†: `[orca] candidate wall-e: Reserved — skipped` · `[orca] no Available FLEX_3 robot — build waiting in queue`. HUD: "Done locally? Set WALL-E back to Available." Console: `[orca] checkout → wall-e (FLEX_3) OK`. | Build observed waiting while WALL-E was Reserved, then checked out WALL-E after it returned to Available |
-| 13 | computer-task | `app.jenkins` | HUD: "ROSIE is Unavailable (PayCore standalone). Build Java/uia-remote-regression-flex with DEVICE_TYPE=FLEX_POCKET and ROBOT_NAME blank." Console: `No Available robot matches FLEX_POCKET (rosie is Unavailable)`†. Rebuild with `ROBOT_NAME=rosie` → `Checked out robot rosie (named)`. After the build finishes Orca shows ROSIE `Unavailable` again automatically. | Named build succeeded and ROSIE status returned to Unavailable without player action |
+| 12 | computer-task | `app.orca` + `app.jenkins` | HUD: "You're going to test WALL-E locally. Reserve it, then build Java/uia-remote-regression-flux with DEVICE_TYPE=FLUX_3 and ROBOT_NAME blank." Console†: `[orca] candidate wall-e: Reserved — skipped` · `[orca] no Available FLUX_3 robot — build waiting in queue`. HUD: "Done locally? Set WALL-E back to Available." Console: `[orca] checkout → wall-e (FLUX_3) OK`. | Build observed waiting while WALL-E was Reserved, then checked out WALL-E after it returned to Available |
+| 13 | computer-task | `app.jenkins` | HUD: "ROSIE is Unavailable (PayCore standalone). Build Java/uia-remote-regression-flux with DEVICE_TYPE=FLUX_POCKET and ROBOT_NAME blank." Console: `No Available robot matches FLUX_POCKET (rosie is Unavailable)`†. Rebuild with `ROBOT_NAME=rosie` → `Checked out robot rosie (named)`. After the build finishes Orca shows ROSIE `Unavailable` again automatically. | Named build succeeded and ROSIE status returned to Unavailable without player action |
 | 14 | dialogue | `npc.tate` | "Unavailable keeps general jobs off special rigs like PayCore's standalone setups, so nobody overwrites their merchant profiles. Name the robot exactly and you get it; when your job ends, Orca flips it back to Unavailable for you. Offline skips health checks. Reserved blocks Jenkins and health-check overrides while you work locally." | continue |
 | 15 | quiz-checkpoint | `CP-M06.1`: Q078, Q079, Q084, Q086, Q088, Q091, Q101 | Checkpoint "Orca & Statuses" | ≥ 80 % |
 
@@ -744,7 +744,7 @@ M01 ─┬─ M02 ─┐
 | **Mentor** | Tate (`npc.tate`); cameo Jared |
 | **Prerequisites** | M06 |
 | **Est. duration** | 20 min |
-| **Setup** | JOHNNY-5's Human Readable Name is the typo `JONNY-5` (tablet shows it). Jared has physically swapped JOHNNY-5's Flex 1 for a Flex 2 (serial `SIM-F2-000015`†). JOHNNY-5's Tap URL is blank. OPTIMUS's MFD field is empty (so pipelines treat it as standalone). BUMBLEBEE has legacy `Offset Y = 1.5` mm causing low taps. |
+| **Setup** | JOHNNY-5's Human Readable Name is the typo `JONNY-5` (tablet shows it). Jared has physically swapped JOHNNY-5's Flux 1 for a Flux 2 (serial `SIM-F2-000015`†). JOHNNY-5's Tap URL is blank. OPTIMUS's MFD field is empty (so pipelines treat it as standalone). BUMBLEBEE has legacy `Offset Y = 1.5` mm causing low taps. |
 | **Facts covered** | F014, F114, F115, F117, F118, F119, F120, F121, F122, F123, F124, F125, F126, F127, F128, F129, F130 |
 | **Unlocks** | M08, M09 (with M04), M11 (with M06) · Arcade incidents `INC-HRN-TYPO`, `INC-DEVICE-UPGRADE`, `INC-TETHER-MISSING` · deck `deck.M07` |
 
@@ -763,12 +763,12 @@ M01 ─┬─ M02 ─┐
 | 2 | computer-task | `app.orca` | HUD: "Open JOHNNY-5's robot record". Fields visible: Name `johnny-5`, Human Readable Name `JONNY-5`. | Edit form for johnny-5 open |
 | 3 | computer-task | `app.orca` | HUD: "Fix the typo in the Human Readable Name". Set to `JOHNNY-5`, Save. Do **not** change Name. | HRN == `JOHNNY-5` and Name unchanged (changing Name → Tate: "Name is the system identifier. Pipelines use it. Leave it.") |
 | 4 | inspect | `prop.johnny5.tablet` | HUD: "Check JOHNNY-5's tablet" (`loc.rack-b`). Header now reads `JOHNNY-5`. | Crosshair ≥ 1.0 s |
-| 5 | dialogue | `npc.jared` | "I swapped JOHNNY-5's Flex 1 for a Flex 2 this morning. Don't edit the old device record. Make a new one." | continue |
-| 6 | computer-task | `app.orca` | HUD: "Create a Device for the new Flex 2 and link it to JOHNNY-5". **Devices → Create**: Device Type `FLEX_2`, Serial `SIM-F2-000015`†, IP `10.42.30.15`. Then Robot johnny-5 → **Robot Device** = new device → Save. | Robot linked to new FLEX_2 device **and** old FLEX_1 device still exists unmodified |
-| 7 | dialogue | `npc.tate` | "That's why Robot and Device are separate. If the Flex 2 misbehaves, rolling back is one dropdown. Device Type is an enum: dimensions, layout metrics, internal strings. And because it's an enum, Jenkins env vars like DEVICE_TYPE must be ALL CAPS: FLEX_2, not flex_2." | continue |
+| 5 | dialogue | `npc.jared` | "I swapped JOHNNY-5's Flux 1 for a Flux 2 this morning. Don't edit the old device record. Make a new one." | continue |
+| 6 | computer-task | `app.orca` | HUD: "Create a Device for the new Flux 2 and link it to JOHNNY-5". **Devices → Create**: Device Type `FLUX_2`, Serial `SIM-F2-000015`†, IP `10.42.30.15`. Then Robot johnny-5 → **Robot Device** = new device → Save. | Robot linked to new FLUX_2 device **and** old FLUX_1 device still exists unmodified |
+| 7 | dialogue | `npc.tate` | "That's why Robot and Device are separate. If the Flux 2 misbehaves, rolling back is one dropdown. Device Type is an enum: dimensions, layout metrics, internal strings. And because it's an enum, Jenkins env vars like DEVICE_TYPE must be ALL CAPS: FLUX_2, not flux_2." | continue |
 | 8 | computer-task | `app.orca` | HUD: "Complete JOHNNY-5's URL mappings". Shown: Robot ADB Service URL `http://10.42.10.15:8000/adb`†, Camera Stream URL `http://10.42.10.40:8081/stream.mjpg` (shared across Rack B's 4 rigs)†, Dip URL `http://10.42.10.15:8000/dip`†, Swipe URL `http://10.42.10.15:8000/swipe`†, Tap URL *(blank)*. Player enters Tap URL `http://10.42.10.15:8000/tap`. | Tap URL == expected string |
-| 9 | computer-task | `app.orca` | HUD: "OPTIMUS jobs are running as standalone. Find out why." Player opens optimus: **MFD** empty, **CFD** empty. Sets MFD = device `optimus-mfd` (MINI_3, 10.42.30.23), CFD = `optimus-cfd` (MINI_3, 10.42.30.24). | Both set; banner "Tethered: MFD populated" appears |
-| 10 | dialogue | `npc.tate` | "If MFD is populated, the pipeline treats the rig as tethered. That's how we model nested setups, like a Station 2 tethered to a Mini 2 on MEGATRON, or nested Mini 3s on OPTIMUS." | continue |
+| 9 | computer-task | `app.orca` | HUD: "OPTIMUS jobs are running as standalone. Find out why." Player opens optimus: **MFD** empty, **CFD** empty. Sets MFD = device `optimus-mfd` (MICRO_3, 10.42.30.23), CFD = `optimus-cfd` (MICRO_3, 10.42.30.24). | Both set; banner "Tethered: MFD populated" appears |
+| 10 | dialogue | `npc.tate` | "If MFD is populated, the pipeline treats the rig as tethered. That's how we model nested setups, like a Stand 2 tethered to a Micro 2 on MEGATRON, or nested Micro 3s on OPTIMUS." | continue |
 | 11 | computer-task | `app.camera` + `app.orca` | HUD: "BUMBLEBEE keeps tapping low. Watch the camera, then check Offsets." Camera shows taps ~1.5 mm below targets. Orca bumblebee: `Offset X = 0.0`, `Offset Y = 1.5`. Player sets Offset Y = `0.0`, Save, runs **Test tap** → hits centre. | Offset Y == 0.0 and test tap hits |
 | 12 | dialogue | `npc.jared` | "Offsets were a legacy fudge for imprecise limit switches. I calibrated the whole lab to a true zero-zero, so they're mostly deprecated. If you see a non-zero offset, be suspicious." | continue |
 | 13 | quiz-checkpoint | `CP-M07.1`: Q119, Q121, Q122, Q123, Q127, Q132 | Checkpoint "Orca Entities" | ≥ 80 % |
@@ -782,7 +782,7 @@ M01 ─┬─ M02 ─┐
 | **Mentor** | David (`npc.david`); cameo Tate |
 | **Prerequisites** | M07 |
 | **Est. duration** | 18 min |
-| **Setup** | Merchant Config row `GO-SDK-US-01` has a blank **API Key**. Gort test definition `go-sdk/tests/sale_receipt.json`† lacks a `printer` capability (so Orca may match ROSIE / Flex Pocket). DATA is on merchant `AUTO-US-NOPIN-01`†. |
+| **Setup** | Merchant Config row `GO-SDK-US-01` has a blank **API Key**. Gort test definition `go-sdk/tests/sale_receipt.json`† lacks a `printer` capability (so Orca may match ROSIE / Flux Pocket). DATA is on merchant `AUTO-US-NOPIN-01`†. |
 | **Facts covered** | F008, F009, F011, F046, F047, F051, F131, F132, F133, F134, F135, F136, F137, F138, F139, F140 |
 | **Unlocks** | M10 · Arcade incidents `INC-MERCHANT-KEY`, `INC-CAPABILITY-MISMATCH` · deck `deck.M08` |
 
@@ -797,10 +797,10 @@ M01 ─┬─ M02 ─┐
 |---|---|---|---|---|
 | 1 | walk-to | `loc.workstation` | HUD: "David is waiting at your desk" | Seated |
 | 2 | dialogue | `npc.david` | "I'm David, and I look after the SDK frameworks, including the Terminal SDK. Orca supports Go through custom extensions, and we test it through Pigeon and the mobile runners. Today: how Orca decides which robot runs your test." | continue |
-| 3 | computer-task | `app.orca` | HUD: "Open Robot Capabilities for WALL-E and ROSIE". WALL-E†: `{"deviceType":"FLEX_3","printer":true,"physicalTouch":true,"dip":true,"tap":true}`; ROSIE†: `{"deviceType":"FLEX_POCKET","printer":false,…}`. | Both viewed |
+| 3 | computer-task | `app.orca` | HUD: "Open Robot Capabilities for WALL-E and ROSIE". WALL-E†: `{"deviceType":"FLUX_3","printer":true,"physicalTouch":true,"dip":true,"tap":true}`; ROSIE†: `{"deviceType":"FLUX_POCKET","printer":false,…}`. | Both viewed |
 | 4 | dialogue | `npc.david` | "Two ways to ask for capabilities. SDK frameworks use dynamic JSON lookups: the capabilities live as JSON metadata inside each test definition and Orca parses them at runtime. Traditional UI Automator suites use non-dynamic lookups, hardcoded in the pipeline script. The Contact Canada scripts on the Westers beds use both, interchangeably." | continue |
-| 5 | computer-task | `app.intellij` | HUD: "This Go SDK receipt test needs a printer. Add it to the test's capabilities." Open `gort/go-sdk/tests/sale_receipt.json`†; in the `"capabilities"` object add `"printer": true`. Save → Orca **Match preview**† no longer lists `rosie` (Flex Pocket, `"printer": false`). | JSON valid and contains `"printer": true` |
-| 6 | computer-task | `app.jenkins` | HUD: "Find the hardcoded capabilities in the UI Automator pipeline". Open `Java/uia-remote-regression-flex` → **Pipeline script**; highlight line†: `def capabilities = [deviceType: params.DEVICE_TYPE, physicalTouch: true]`. | Line clicked |
+| 5 | computer-task | `app.intellij` | HUD: "This Go SDK receipt test needs a printer. Add it to the test's capabilities." Open `gort/go-sdk/tests/sale_receipt.json`†; in the `"capabilities"` object add `"printer": true`. Save → Orca **Match preview**† no longer lists `rosie` (Flux Pocket, `"printer": false`). | JSON valid and contains `"printer": true` |
+| 6 | computer-task | `app.jenkins` | HUD: "Find the hardcoded capabilities in the UI Automator pipeline". Open `Java/uia-remote-regression-flux` → **Pipeline script**; highlight line†: `def capabilities = [deviceType: params.DEVICE_TYPE, physicalTouch: true]`. | Line clicked |
 | 7 | computer-task | `app.orca` | HUD: "Open Merchant Config and find GO-SDK-US-01's API Key". The table shows only Name, Region, PIN Bypass… (truncated). Player clicks **Edit** on the row; full form shows App ID `app_sim_7f3a`†, App Secret `••••••`, API Key *(blank)*. | Edit dialog opened |
 | 8 | dialogue | `npc.tate` | "Table display limits: you always have to click Edit to see every field. I added App ID, App Secret and API Key so pipelines can export them as runtime environment variables for the Go SDK." | continue |
 | 9 | computer-task | `app.orca` → `app.jenkins` | HUD: "Enter the API Key from ticket LAB-2231† and run Java/go-sdk-sale-smoke". API Key `key_sim_19c0e2`†. Console shows `APP_ID=app_sim_7f3a`, `APP_SECRET=****`, `API_KEY=****` exported. | Build env shows all three set; build green |
@@ -818,7 +818,7 @@ M01 ─┬─ M02 ─┐
 | **Mentor** | Jared (`npc.jared`) |
 | **Prerequisites** | M04, M07 |
 | **Est. duration** | 22 min |
-| **Setup** | EVE (FLEX_4) has received the "scan for receipt" firmware: its receipt screen now shows 5 options and all buttons sit 3.0 mm† lower. Orca still has only `RECEIPT_OPTIONS_4` for FLEX_4. A ruler `prop.ruler` sits on Rack A. |
+| **Setup** | EVE (FLUX_4) has received the "scan for receipt" firmware: its receipt screen now shows 5 options and all buttons sit 3.0 mm† lower. Orca still has only `RECEIPT_OPTIONS_4` for FLUX_4. A ruler `prop.ruler` sits on Rack A. |
 | **Facts covered** | F082, F096, F141, F142, F143, F144, F213, F214, F215, F216, F217, F218, F219, F220, F221 |
 | **Unlocks** | M15 (with M13) · Arcade incidents `INC-COORD-DRIFT`, `INC-PIN-ON-ADB-BOT` · deck `deck.M09` |
 
@@ -833,17 +833,17 @@ M01 ─┬─ M02 ─┐
 | # | Step type | Target | Exact text / action | Success condition |
 |---|---|---|---|---|
 | 1 | dialogue | `npc.jared` | "Robots don't see buttons. They know where buttons are, in millimetres, because Orca tells them. Screens are the layouts in a transaction flow for each device architecture. Screen Locations are the button positions, X and Y in millimetres from the zero-zero my limit switches give us." | continue |
-| 2 | computer-task | `app.orca` | HUD: "Open Screens → FLEX_3 → TENDER_CASH_DISCOUNT". The cash-discount tender selection prompt. Then open its **Screen Locations**: `Cash  X 22.0  Y 58.5`, `Card  X 62.0  Y 58.5`†. | Screen Locations list viewed |
+| 2 | computer-task | `app.orca` | HUD: "Open Screens → FLUX_3 → TENDER_CASH_DISCOUNT". The cash-discount tender selection prompt. Then open its **Screen Locations**: `Cash  X 22.0  Y 58.5`, `Card  X 62.0  Y 58.5`†. | Screen Locations list viewed |
 | 3 | computer-task | `app.terminal` | HUD: "Tap Cash on WALL-E through Orca". `curl -X POST http://orca.lab.local:8080/api/xy_touch -H "Content-Type: application/json" -d '{"robot":"wall-e","screen":"TENDER_CASH_DISCOUNT","button":"Cash"}'` → `{"result":"OK","mode":"PHYSICAL_TAP","x_mm":22.0,"y_mm":58.5}`†. WALL-E's gantry moves and the solenoid taps Cash (visible on `app.camera` or in-world). | Physical tap executed |
 | 4 | computer-task | `app.terminal` | HUD: "Same call, but robot TARS". Response `"mode":"ADB_TOUCH"`†; TARS's screen reacts with no moving parts. | ADB touch executed |
 | 5 | dialogue | `npc.jared` | "Same endpoint, two outcomes. TARS is an ADB bot, purely programmatic. It can't physically touch a screen or type a PIN, so ADB bots only get merchant configs that bypass PIN security. Touch robots have mechanical probes." | continue |
-| 6 | computer-task | `app.jenkins` | HUD: "A Canadian Interac test needs PIN entry. Pick the robot." Build `Java/contact-canada-pin-sale`† asks for `ROBOT_NAME`; choices: `tars`, `data`, `seti`, `wall-e`. | `seti` chosen (TARS/DATA → console `PIN entry requires physical touch`; WALL-E → `capability mismatch: deviceType COMPACT required`) |
-| 7 | inspect | `prop.seti.device` | HUD: "Watch SETI enter the PIN" (`loc.rack-b`). Solenoid taps 4 PIN digits on the Compact. | Crosshair ≥ 2 s during PIN taps |
+| 6 | computer-task | `app.jenkins` | HUD: "A Canadian Interac test needs PIN entry. Pick the robot." Build `Java/contact-canada-pin-sale`† asks for `ROBOT_NAME`; choices: `tars`, `data`, `seti`, `wall-e`. | `seti` chosen (TARS/DATA → console `PIN entry requires physical touch`; WALL-E → `capability mismatch: deviceType COMPASS required`) |
+| 7 | inspect | `prop.seti.device` | HUD: "Watch SETI enter the PIN" (`loc.rack-b`). Solenoid taps 4 PIN digits on the Compass. | Crosshair ≥ 2 s during PIN taps |
 | 8 | dialogue | `npc.jared` | "Canada mandates physical PIN entry, and some displays are blind to ADB. Those two cases are why physical bots exist. Now, a war story: the day we added a 'scan for receipt' QR code." | continue |
 | 9 | computer-task | `app.camera` | HUD: "EVE's receipt test is failing. Watch the stream." EVE taps ~3 mm above `Print` and hits the gap; the screen shows a 5th option `Scan for receipt`. | Clip watched to end |
 | 10 | interact | `prop.ruler` → `prop.eve.device` | HUD: "Measure the new Print button position with the ruler". Ruler snaps to the screen top-left; reading `Print: Y 74.0 mm` (was 71.0)†. Player measures Print, Email, Text, No Receipt, Scan for receipt. | 5 measurements within ±0.5 mm |
-| 11 | computer-task | `app.orca` | HUD: "Create the 5-option receipt map for FLEX_4 and keep the 4-option one." **Screens → New** `RECEIPT_OPTIONS_5` (FLEX_4) with 5 locations from the measurements. `RECEIPT_OPTIONS_4` must remain unchanged. | Both screens exist; 5-option coordinates within ±0.5 mm |
-| 12 | computer-task | `app.github` | HUD: "Open a PR with the coordinate change and request Jared's review". Repo `gort`, branch `fix/flex4-receipt-qr`, PR title `Add 5-option receipt coordinates for FLEX_4`. Jared approves and merges (scripted, 20 s). | PR merged |
+| 11 | computer-task | `app.orca` | HUD: "Create the 5-option receipt map for FLUX_4 and keep the 4-option one." **Screens → New** `RECEIPT_OPTIONS_5` (FLUX_4) with 5 locations from the measurements. `RECEIPT_OPTIONS_4` must remain unchanged. | Both screens exist; 5-option coordinates within ±0.5 mm |
+| 12 | computer-task | `app.github` | HUD: "Open a PR with the coordinate change and request Jared's review". Repo `gort`, branch `fix/flux4-receipt-qr`, PR title `Add 5-option receipt coordinates for FLUX_4`. Jared approves and merges (scripted, 20 s). | PR merged |
 | 13 | dialogue | `npc.jared` | "When the QR button first shipped, it pushed everything down a few millimetres and broke every ruler-measured coordinate in the lab for 48 hours, until I merged the coordinate PR. And it's conditional, so Orca keeps separate maps for 4-option and 5-option receipt screens on every device profile. You just did it in five minutes." | continue |
 | 14 | quiz-checkpoint | `CP-M09.1`: Q167, Q168, Q170, Q172, Q174, Q180, Q184 | Checkpoint "Coordinates & Bots" | ≥ 80 % |
 
@@ -880,7 +880,7 @@ M01 ─┬─ M02 ─┐
 | 8 | dialogue | `npc.jared` | "Swipes are easy: raw Track Data text, pulled off a real card with a hardware card-reader utility, sits right in the MySQL table. Dip and tap are files: the profile just stores a path into Gort, our monorepo." | continue |
 | 9 | computer-task | `app.github` | HUD: "Find the dip card file in Gort". Navigate `gort` → `cards/emv/visa_std_dip.json`. Top-level folders visible: `cards/`, `config/`, `go-sdk/`, `suites/`†. | File opened |
 | 10 | computer-task | `app.terminal` | HUD: "Check the scheduled clone on MINIX-01". `ssh automation@10.42.20.1` then `schtasks /query /tn GortCardSync` → `GortCardSync  10/05/2026 10:00:00  Ready`† and `dir C:\gort\cards\emv` → lists `visa_std_dip.json`, `interac_ca_dip.json`. | Both commands run |
-| 11 | computer-task | `app.terminal` | HUD: "Dip the Visa card into WALL-E through Orca". `curl -X POST http://orca.lab.local:8080/api/card/dip -H "Content-Type: application/json" -d '{"robot":"wall-e","profile":"VISA_STD_DIP"}'`. Callus log (MINIX-01)†: `map cards/emv/visa_std_dip.json → C:\gort\cards\emv\visa_std_dip.json · load virtual card OK · probe wall-e: DIP`. WALL-E's dip arm inserts the ribbon card; Flex shows "Card inserted". | Dip completed |
+| 11 | computer-task | `app.terminal` | HUD: "Dip the Visa card into WALL-E through Orca". `curl -X POST http://orca.lab.local:8080/api/card/dip -H "Content-Type: application/json" -d '{"robot":"wall-e","profile":"VISA_STD_DIP"}'`. Callus log (MINIX-01)†: `map cards/emv/visa_std_dip.json → C:\gort\cards\emv\visa_std_dip.json · load virtual card OK · probe wall-e: DIP`. WALL-E's dip arm inserts the ribbon card; Flux shows "Card inserted". | Dip completed |
 | 12 | dialogue | `npc.jared` | "Our team keeps it simple: one reliable Visa profile to prove the pipeline, plus Canadian Interac for regional flows. PayCore is the opposite. They run back-to-back card matrices: Visa, Discover, AmEx." | continue |
 | 13 | computer-task | `app.jenkins` | HUD: "Pick card profiles for tonight's runs". `Java/go-sdk-sale-smoke` → `CARD_PROFILE` = ? ; `Java/contact-canada-pin-sale` → `CARD_PROFILE` = ?. Options: `VISA_STD_DIP`, `INTERAC_CA_DIP`, `AMEX_MATRIX_DIP` (PayCore), `DISCOVER_MATRIX_DIP` (PayCore). | US → `VISA_STD_DIP`; Canada → `INTERAC_CA_DIP` |
 | 14 | quiz-checkpoint | `CP-M10.1`: Q189, Q190, Q193, Q196, Q200, Q205, Q207 | Checkpoint "Cards" | ≥ 80 % |
@@ -894,7 +894,7 @@ M01 ─┬─ M02 ─┐
 | **Mentor** | Tate (`npc.tate`) |
 | **Prerequisites** | M06, M07 |
 | **Est. duration** | 12 min |
-| **Setup** | Jenkins job `Java/uia-remote-regression-flex` has a saved parameter `DEVICE_TYPE=flex_3` (lower case). |
+| **Setup** | Jenkins job `Java/uia-remote-regression-flux` has a saved parameter `DEVICE_TYPE=flux_3` (lower case). |
 | **Facts covered** | F015, F016, F017, F094, F095, F102, F122, F189, F203 |
 | **Unlocks** | — (required for M18) · Arcade incident `INC-ENV-CASE` · deck `deck.M11` |
 
@@ -910,12 +910,12 @@ M01 ─┬─ M02 ─┐
 | 1 | dialogue | `npc.tate` | "Jenkins is the Executor. It triggers the pipeline, checks a robot out of Orca, and injects the runtime environment variables the test runner needs. In CI, nobody hand-edits config: Jenkins injects it." | continue |
 | 2 | computer-task | `app.jenkins` | HUD: "Open the legacy views". Dashboard tabs `Java` and `iOS`. | Both views opened |
 | 3 | dialogue | `npc.tate` | "Legacy jobs are organised by platform: Java jobs here, iOS jobs there. The iOS runner is rarely touched, but iOS Go SDK testing is active, so don't delete anything." | continue |
-| 4 | computer-task | `app.jenkins` | HUD: "Build Java/uia-remote-regression-flex with its saved parameters". Console†: `[orca] checkout request deviceType=flex_3` → `java.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.flex_3` → `FAILURE`. | Failed build viewed |
+| 4 | computer-task | `app.jenkins` | HUD: "Build Java/uia-remote-regression-flux with its saved parameters". Console†: `[orca] checkout request deviceType=flux_3` → `java.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.flux_3` → `FAILURE`. | Failed build viewed |
 | 5 | dialogue | `npc.tate` | "Device Type is an enum in Orca, so the string has to match exactly. That's why our Jenkins env vars are ALL CAPS." | continue |
-| 6 | computer-task | `app.jenkins` | HUD: "Fix the parameter and rebuild". `DEVICE_TYPE=FLEX_3`. Console†: `[orca] checkout → wall-e (FLEX_3) OK`. | Build passes checkout |
+| 6 | computer-task | `app.jenkins` | HUD: "Fix the parameter and rebuild". `DEVICE_TYPE=FLUX_3`. Console†: `[orca] checkout → wall-e (FLUX_3) OK`. | Build passes checkout |
 | 7 | computer-task | `app.orca` | HUD: "Check WALL-E in Orca while the build runs". Row shows `Available · in use by Jenkins #4127`†; after the build: no longer in use. | Both states observed |
-| 8 | computer-task | `app.jenkins` | HUD: "Find the injected port number in the console's environment block". Lines†: `RUN_TYPE=standalone`, `DEVICE_TYPE=FLEX_3`, `ROBOT_NAME=wall-e`, `PORT_NUMBER=5444`, `THEME=avocado`, `KERNEL_TYPE=CPA`. | `PORT_NUMBER=5444` line clicked |
-| 9 | computer-task | `app.jenkins` | HUD: "Run Java/uia-remote-regression-flex on ROSIE (Unavailable)". Must set `ROBOT_NAME=rosie` (exact unique name). | Build checks out rosie |
+| 8 | computer-task | `app.jenkins` | HUD: "Find the injected port number in the console's environment block". Lines†: `RUN_TYPE=standalone`, `DEVICE_TYPE=FLUX_3`, `ROBOT_NAME=wall-e`, `PORT_NUMBER=5444`, `THEME=avocado`, `KERNEL_TYPE=CPA`. | `PORT_NUMBER=5444` line clicked |
+| 9 | computer-task | `app.jenkins` | HUD: "Run Java/uia-remote-regression-flux on ROSIE (Unavailable)". Must set `ROBOT_NAME=rosie` (exact unique name). | Build checks out rosie |
 | 10 | quiz-checkpoint | `CP-M11.1`: Q214, Q215, Q216, Q217, Q220 | Checkpoint "Jenkins" | ≥ 80 % |
 
 ---
@@ -927,7 +927,7 @@ M01 ─┬─ M02 ─┐
 | **Mentor** | Morgan (`npc.morgan`) |
 | **Prerequisites** | M05 |
 | **Est. duration** | 12 min |
-| **Setup** | TARS (FLEX_4, `10.42.30.32`) on HomeScreen. Terminal has `adb`. |
+| **Setup** | TARS (FLUX_4, `10.42.30.32`) on HomeScreen. Terminal has `adb`. |
 | **Facts covered** | F024, F025, F026, F199 |
 | **Unlocks** | M13 · Arcade drill "ADB Speedrun" · deck `deck.M12` |
 
@@ -961,7 +961,7 @@ M01 ─┬─ M02 ─┐
 | **Mentor** | Morgan (`npc.morgan`) |
 | **Prerequisites** | M12 |
 | **Est. duration** | 22 min |
-| **Setup** | GitHub org `labsim-lab`† with repos `gort`, `uia-remote`, `pigeon`. `HomeScreen.open()` has a seeded bug (Flex branch scrolls horizontally). `ReceiptScreen.java` lacks the mandatory methods. |
+| **Setup** | GitHub org `labsim-lab`† with repos `gort`, `uia-remote`, `pigeon`. `HomeScreen.open()` has a seeded bug (Flux branch scrolls horizontally). `ReceiptScreen.java` lacks the mandatory methods. |
 | **Facts covered** | F001, F005, F006, F010, F018, F027, F028, F039, F040, F159, F163, F164, F165, F166, F167, F168, F169, F170, F171, F172, F173, F174, F175, F176, F177, F178, F179, F180 |
 | **Unlocks** | M14, M15 · Arcade drills "Where Does It Go?", "POM Doctor" · deck `deck.M13` |
 
@@ -969,21 +969,21 @@ M01 ─┬─ M02 ─┐
 1. Clone uia-remote from GitHub into IntelliJ IDEA and navigate `app/src/{main,test,androidTest}` (Maven-style layout).
 2. Place files correctly: androidTest packages `databases`, `pageobjects`, `testactions`; runner in `test`; never touch `main`.
 3. Read a screen class: extends BaseTest, Zone 1 locators, Zone 2 helpers, mandatory `waitForScreen()` / `isScreenPresent()`.
-4. Fix `open(String appName)` scroll direction (Flex vertical; Mini/Station horizontal).
+4. Fix `open(String appName)` scroll direction (Flux vertical; Micro/Stand horizontal).
 5. Explain the multi-device runner trick (UI Automator talks to one device at a time).
 
 **Lesson script**
 
 | # | Step type | Target | Exact text / action | Success condition |
 |---|---|---|---|---|
-| 1 | dialogue | `npc.morgan` | "uia-remote is mine. I built it because no framework could automate native tethered setups: Station-to-Mini, Mini-to-Mini, Station Duo. It's Java on Google's Android UI Automator, version 2.3, and it drives standalone and tethered devices across native LabSim apps." | continue |
+| 1 | dialogue | `npc.morgan` | "uia-remote is mine. I built it because no framework could automate native tethered setups: Stand-to-Micro, Micro-to-Micro, Stand Duet. It's Java on Google's Android UI Automator, version 2.3, and it drives standalone and tethered devices across native LabSim apps." | continue |
 | 2 | computer-task | `app.github` | HUD: "Copy the uia-remote clone URL". Repo `labsim-lab/uia-remote` → **Code** → copy `git@github.com:labsim-lab/uia-remote.git`†. | URL copied |
 | 3 | computer-task | `app.intellij` | HUD: "Clone it into IntelliJ IDEA". **File → New → Project from Version Control…** → paste → **Clone**. Project opens and indexes. | Project open |
 | 4 | computer-task | `app.intellij` | HUD: "Expand app/src and click the folder QA engineers never modify". Tree shows `main`, `test`, `androidTest` (Maven-style layout). | `main` clicked (wrong → Morgan: "That one's fair game. Try again.") |
 | 5 | computer-task | `app.intellij` | HUD: "Put these files where they belong". Drag: `DbHelper.java` → `androidTest/…/databases`; `HomeScreen.java`, `LockScreen.java` → `androidTest/…/pageobjects`; `TaxTest.java` → `androidTest/…/testactions`; `MultiDeviceRunner.java` → `test`; `AppRegistration.java` → `main`. | 6/6 correct |
 | 6 | computer-task | `app.intellij` | HUD: "Open HomeScreen.java and click Zone 1, then Zone 2". (File content: see snippet below.) | Both zones clicked in order |
-| 7 | dialogue | `npc.morgan` | "Every screen, pop-up or window gets its own class extending BaseTest, which gives you global setup, teardown and instance variables. Zone 1 declares the elements. Zone 2 holds the helpers, and that's where device quirks hide. For example, open(appName) scrolls vertically on a Flex and horizontally on a Mini or a Station." | continue |
-| 8 | computer-task | `app.intellij` | HUD: "HomeScreenTest fails on WALL-E (Flex 3). Fix open()". Seeded bug swaps the branches. Player edits so `FLEX → scrollVertically`, `MINI`/`STATION → scrollHorizontally`; runs `HomeScreenTest` on WALL-E. | Run green |
+| 7 | dialogue | `npc.morgan` | "Every screen, pop-up or window gets its own class extending BaseTest, which gives you global setup, teardown and instance variables. Zone 1 declares the elements. Zone 2 holds the helpers, and that's where device quirks hide. For example, open(appName) scrolls vertically on a Flux and horizontally on a Micro or a Stand." | continue |
+| 8 | computer-task | `app.intellij` | HUD: "HomeScreenTest fails on WALL-E (Flux 3). Fix open()". Seeded bug swaps the branches. Player edits so `FLUX → scrollVertically`, `MICRO`/`STAND → scrollHorizontally`; runs `HomeScreenTest` on WALL-E. | Run green |
 | 9 | computer-task | `app.intellij` | HUD: "ReceiptScreenTest is flaky. Find out why". Run → camera shows the tap landing before the receipt screen finishes rendering → `UiObjectNotFoundException`. Player adds `waitForScreen()` and `isScreenPresent()` to `ReceiptScreen.java` (template insert via **Alt+Enter → Implement mandatory screen methods**†). Run ×3 → green ×3. | Both methods present; 3 green runs |
 | 10 | dialogue | `npc.morgan` | "Google built UI Automator to talk to one Android device at a time. My trick: screen definitions live in androidTest, the runner lives in test, and the runner hops between device handles. MFD runs method X, focus shifts to the CFD for method Y, then back." | continue |
 | 11 | computer-task | `app.intellij` | HUD: "Order the runner's calls for a tethered sale" in `MultiDeviceRunner.java`: drag lines `mfd.run(registerHome::addTaxItem5)`, `mfd.run(registerHome::reviewOrder)`, `cfd.run(cfdTotals::assertTotals)`, `mfd.run(registerHome::payAndCharge)`, `cfd.run(cfdPayment::finalisePayment)`. | Correct order |
@@ -1011,9 +1011,9 @@ public class HomeScreen extends BaseTest {
 
     public void open(String appName) {
         waitForScreen();
-        if (deviceType == DeviceType.FLEX) {
-            scrollVerticallyTo(appName);      // Flex: vertical
-        } else {                              // Mini, Station
+        if (deviceType == DeviceType.FLUX) {
+            scrollVerticallyTo(appName);      // Flux: vertical
+        } else {                              // Micro, Stand
             scrollHorizontallyTo(appName);    // horizontal
         }
         device.findObject(By.text(appName)).click();
@@ -1044,12 +1044,12 @@ cfd.run(cfdPayment::finalisePayment);   // Step 4
 | **Mentor** | Morgan (`npc.morgan`); cameo Coworker (`npc.coworker`) |
 | **Prerequisites** | M13 |
 | **Est. duration** | 22 min |
-| **Setup** | The cloned uia-remote has the broken `config.properties` below. A coworker's desk Flex (`10.42.60.4`, ADB on 5555) is already known to the workstation's ADB server. MEGATRON (STATION_2 MFD `10.42.30.21` + MINI_2 CFD `10.42.30.22`, env DEV1) is Available. |
+| **Setup** | The cloned uia-remote has the broken `config.properties` below. A coworker's desk Flux (`10.42.60.4`, ADB on 5555) is already known to the workstation's ADB server. MEGATRON (STAND_2 MFD `10.42.30.21` + MICRO_2 CFD `10.42.30.22`, env DEV1) is Available. |
 | **Facts covered** | F054, F181, F182, F183, F184, F185, F186, F187, F188, F189, F190, F191, F192, F193, F194, F195, F196, F197, F198, F199, F200, F201 |
-| **Unlocks** | M16 · Arcade incidents `INC-PORT-COLLISION`, `INC-CONFIG-LOCKS`, `INC-DUO-SAME-IP` · deck `deck.M14` |
+| **Unlocks** | M16 · Arcade incidents `INC-PORT-COLLISION`, `INC-CONFIG-LOCKS`, `INC-DUET-SAME-IP` · deck `deck.M14` |
 
 **Learning objectives**
-1. Configure `config.properties` for a local tethered run: runType, MFD/CFD IPs (same IP on a Station Duo), serial, deviceType, theme, kernelType, portNumber, extra keys.
+1. Configure `config.properties` for a local tethered run: runType, MFD/CFD IPs (same IP on a Stand Duet), serial, deviceType, theme, kernelType, portNumber, extra keys.
 2. Explain the 5444 lock (5555 default caused coworker-device collisions) and the avocado / CPA locks.
 3. Reserve the rig, run the Tax test and narrate MFD_O1 → CFD_O1 → MFD_O2 → Step 4, including the Orca→Callus swipe load and the HomeScreen safe state.
 
@@ -1058,11 +1058,11 @@ cfd.run(cfdPayment::finalisePayment);   // Step 4
 | # | Step type | Target | Exact text / action | Success condition |
 |---|---|---|---|---|
 | 1 | computer-task | `app.intellij` | HUD: "Run TaxTest against MEGATRON". Player clicks ▶ on `TaxTest`. Runner log†: `connect 10.42.30.21:5555 … refused` · `falling back to first known device: 10.42.60.4:5555` · `[MFD_O1] open Register`. | Run started |
-| 2 | dialogue | `npc.coworker` | (shouted from `loc.coworker-desks`) "Hey! Something just opened Register on my desk Flex and added a Tax Item 5! Is that one of yours?!" | continue |
+| 2 | dialogue | `npc.coworker` | (shouted from `loc.coworker-desks`) "Hey! Something just opened Register on my desk Flux and added a Tax Item 5! Is that one of yours?!" | continue |
 | 3 | inspect | `prop.coworker-device` | HUD: "Go and look at the coworker's device". Screen shows Register with "Tax Item 5" in the cart. Player presses **Stop** in IntelliJ (HUD reminder) on return. | Viewed and run stopped |
 | 4 | dialogue | `npc.morgan` | "Classic. Check your config.properties. I bet you're on 5555, the out-of-the-box ADB port. Lab devices only listen on 5444, so your connect was refused and the runner grabbed the first device ADB already knew: a coworker's desk device on the default port. That exact collision is why portNumber is locked to 5444." | continue |
 | 5 | computer-task | `app.intellij` | HUD: "Fix config.properties for MEGATRON (tethered)". Start file and required end state: see snippets below. Inline validator† checks each key on save. | Validator: `config.properties ✓ 11/11` |
-| 6 | dialogue | `npc.morgan` | "theme is locked to avocado; the old theme toggles are deprecated. kernelType is CPA, Core Payments Application, which replaced SPA, the Secure Processor Application. deviceType is the family: Mini, Flex or Station, and it drives layout and scroll logic. Extras: unlock passcode, backend environment, and the robot's registration name. On a Station Duo, both IPs are the same address. And in CI you never touch this file. Jenkins injects all of it." | continue |
+| 6 | dialogue | `npc.morgan` | "theme is locked to avocado; the old theme toggles are deprecated. kernelType is CPA, Core Payments Application, which replaced SPA, the Secure Processor Application. deviceType is the family: Micro, Flux or Stand, and it drives layout and scroll logic. Extras: unlock passcode, backend environment, and the robot's registration name. On a Stand Duet, both IPs are the same address. And in CI you never touch this file. Jenkins injects all of it." | continue |
 | 7 | interact | `npc.coworker` | HUD: "Apologise to your coworker". Choice: "Sorry! My script was on 5555. It's 5444 now and it'll stay that way." | Line chosen; coworker: "Ha. Welcome to the club." |
 | 8 | computer-task | `app.orca` | HUD: "You're running locally, so reserve MEGATRON". Status → `Reserved`. | `orca.robot('megatron').status == 'Reserved'` |
 | 9 | computer-task | `app.intellij` | HUD: "Open TaxTest.java, read the header, then run it". Header: see snippet. Run ▶. | Run started with valid config |
@@ -1080,7 +1080,7 @@ runType=standalone
 merchantFacingDeviceIp=10.42.30.21
 customerFacingDeviceIp=
 serial=SIM-S2-000021
-deviceType=Mini
+deviceType=Micro
 theme=classic
 kernelType=SPA
 portNumber=5555
@@ -1096,7 +1096,7 @@ runType=tethered
 merchantFacingDeviceIp=10.42.30.21
 customerFacingDeviceIp=10.42.30.22
 serial=SIM-S2-000021
-deviceType=Station
+deviceType=Stand
 theme=avocado
 kernelType=CPA
 portNumber=5444
@@ -1105,7 +1105,7 @@ backendEnv=DEV1
 robotName=megatron
 ```
 
-Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial`, `deviceType`, `theme`, `kernelType`, `portNumber` are from the reference. `unlockPasscode`, `backendEnv`, `robotName` are **illustrative† names** for the reference's "device unlock passcodes, backend testing environment targets, and the active robot's registration name". For R2-D2 (Station Duo) the validator expects `merchantFacingDeviceIp=customerFacingDeviceIp=10.42.30.14` and `deviceType=Station`.
+Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial`, `deviceType`, `theme`, `kernelType`, `portNumber` are from the reference. `unlockPasscode`, `backendEnv`, `robotName` are **illustrative† names** for the reference's "device unlock passcodes, backend testing environment targets, and the active robot's registration name". For R2-D2 (Stand Duet) the validator expects `merchantFacingDeviceIp=customerFacingDeviceIp=10.42.30.14` and `deviceType=Stand`.
 
 **In-game file — `TaxTest.java` header (illustrative†)**
 
@@ -1129,7 +1129,7 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | **Mentor** | Morgan (`npc.morgan`); cameo Jared |
 | **Prerequisites** | M09, M13 |
 | **Est. duration** | 18 min |
-| **Setup** | `pigeon/tests/sale/swipe_sale_print.json` is missing a comma after line 22. BUMBLEBEE (MINI_3) has outdated receipt coordinates; Jared's PR `gort#418 Update MINI_3 receipt coordinates`† is open. |
+| **Setup** | `pigeon/tests/sale/swipe_sale_print.json` is missing a comma after line 22. BUMBLEBEE (MICRO_3) has outdated receipt coordinates; Jared's PR `gort#418 Update MICRO_3 receipt coordinates`† is open. |
 | **Facts covered** | F009, F012, F041, F042, F043, F044, F045, F202, F203, F204, F205, F206, F207, F208, F209, F210, F211 |
 | **Unlocks** | M16 · Arcade drills "Comma Hunt", "Log Detective" · deck `deck.M15` |
 
@@ -1175,30 +1175,30 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 
 ---
 
-### M16 — Seeing the Second Screen: Station Duo, OCR, GIMP & UIA 2.3
+### M16 — Seeing the Second Screen: Stand Duet, OCR, GIMP & UIA 2.3
 
 | Field | Value |
 |---|---|
 | **Mentor** | Morgan (`npc.morgan`) |
 | **Prerequisites** | M14, M15 |
 | **Est. duration** | 20 min |
-| **Setup** | R2-D2 (STATION_DUO, `10.42.30.14`) mid-sale showing totals on its CFD. R2-D2's webcam (`http://10.42.10.14:8081/stream.mjpg`) is aimed at the CFD. Tutorial toggle "CFD layout v2"† available in Orca's Screen Compare test panel. |
+| **Setup** | R2-D2 (STAND_DUET, `10.42.30.14`) mid-sale showing totals on its CFD. R2-D2's webcam (`http://10.42.10.14:8081/stream.mjpg`) is aimed at the CFD. Tutorial toggle "CFD layout v2"† available in Orca's Screen Compare test panel. |
 | **Facts covered** | F006, F007, F029, F030, F088, F150, F151, F152, F153, F154, F155, F156, F193, F212, F221 |
-| **Unlocks** | M17 · Arcade incidents `INC-OCR-BRITTLE`, `INC-DUO-BLIND` · deck `deck.M16` |
+| **Unlocks** | M17 · Arcade incidents `INC-OCR-BRITTLE`, `INC-DUET-BLIND` · deck `deck.M16` |
 
 **Learning objectives**
-1. Explain the dual-screen problem: on a Station Duo only the primary MFD is exposed to ADB; legacy UI Automator is blind to the CFD (an ADB-blind display).
+1. Explain the dual-screen problem: on a Stand Duet only the primary MFD is exposed to ADB; legacy UI Automator is blind to the CFD (an ADB-blind display).
 2. Build a Screen Compare Image (bounding box from GIMP + expected text), and describe capture → crop → Tesseract → boolean.
 3. Show why it is brittle (10-pixel shift, capitalisation, typo) and why it is being phased out for UI Automator 2.3's native dual-screen tracking.
-4. Configure a Station Duo: MFD IP = CFD IP.
+4. Configure a Stand Duet: MFD IP = CFD IP.
 
 **Lesson script**
 
 | # | Step type | Target | Exact text / action | Success condition |
 |---|---|---|---|---|
-| 1 | walk-to | `loc.rack-a` | HUD: "Go to R2-D2 (Station Duo)" | within 1.5 m |
+| 1 | walk-to | `loc.rack-a` | HUD: "Go to R2-D2 (Stand Duet)" | within 1.5 m |
 | 2 | inspect | `prop.r2d2.cfd` | HUD: "Look at both of R2-D2's screens". Callouts on `prop.r2d2.mfd` "Primary MFD — ADB sees this" and `prop.r2d2.cfd` "Secondary CFD — ADB can't". | Both viewed |
-| 3 | dialogue | `npc.morgan` | "Station Duo: one terminal, two displays, but only the primary MFD is exposed to ADB. Legacy UI Automator was completely blind to the customer screen." | continue |
+| 3 | dialogue | `npc.morgan` | "Stand Duet: one terminal, two displays, but only the primary MFD is exposed to ADB. Legacy UI Automator was completely blind to the customer screen." | continue |
 | 4 | computer-task | `app.terminal` | HUD: "Prove it". `adb connect 10.42.30.14:5444`; `adb devices` → one entry; `adb -s 10.42.30.14:5444 shell uiautomator dump`; `adb -s 10.42.30.14:5444 pull /sdcard/window_dump.xml`; `grep -c "TOTAL" window_dump.xml` → `0` (the MFD's "Review Order" is there; the CFD's total is not). | Output `0` shown |
 | 5 | computer-task | `app.camera` | HUD: "Snapshot R2-D2's CFD from the webcam". Open R2-D2 stream → **Snapshot** → saves `r2d2_cfd.png`. | Snapshot saved |
 | 6 | computer-task | `app.gimp` | HUD: "Draw a box around the total and read its coordinates". **File → Open** `r2d2_cfd.png` → Rectangle Select around `TOTAL $10.83` → Tool Options: Position `412, 288`, Size `236 × 44`†. | Selection within ±3 px of target |
@@ -1207,7 +1207,7 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | 9 | dialogue | `npc.morgan` | "Ten pixels. Or a capital letter. Or a typo. That's all it takes to break the suite. Pigeon's screen comparisons work the same way: GIMP box, copy the coordinates into the JSON block." | continue |
 | 10 | computer-task | `app.intellij` | HUD: "Paste your GIMP coordinates into Pigeon's screenCompare block" (`swipe_sale_print.json`): set `x`, `y`, `w`, `h`, `expected`. | Values match the GIMP selection |
 | 11 | dialogue | `npc.morgan` | "Here's the good news. UI Automator 2.3 natively tracks elements on both screens. That's why uia-remote uses 2.3, and why Screen Compare and OCR are being phased out." | continue |
-| 12 | computer-task | `app.intellij` | HUD: "Replace the OCR check in TaxTestDuo with a UIA 2.3 assertion". In `TaxTestDuo.java` replace `orca.screenCompare("CFD_TOTAL")` with `cfdTotals.assertTotal("$10.83")` (class `CfdTotalsScreen` uses `By.displayId(cfdDisplayId)`†). In `config.properties` set both IPs to `10.42.30.14`. Run on R2-D2 with layout v2 still on. | Run green; both IPs equal |
+| 12 | computer-task | `app.intellij` | HUD: "Replace the OCR check in TaxTestDuet with a UIA 2.3 assertion". In `TaxTestDuet.java` replace `orca.screenCompare("CFD_TOTAL")` with `cfdTotals.assertTotal("$10.83")` (class `CfdTotalsScreen` uses `By.displayId(cfdDisplayId)`†). In `config.properties` set both IPs to `10.42.30.14`. Run on R2-D2 with layout v2 still on. | Run green; both IPs equal |
 | 13 | quiz-checkpoint | `CP-M16.1`: Q331, Q333, Q335, Q337, Q339, Q343 | Checkpoint "Second Screen" | ≥ 80 % |
 
 ---
@@ -1242,7 +1242,7 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | 7 | dialogue | `npc.david` | "Corporate AI initiatives also evaluated Claude, for repository optimisation and automated test generation. Generated tests still get a human review. Here's one." | continue |
 | 8 | computer-task | `app.github` | HUD: "Review PR #212 in uia-remote". Diff adds `ReceiptOptionsScreen.java` with `waitForScreen()` but no `isScreenPresent()`. Player selects **Request changes** and reason "Missing mandatory isScreenPresent()". | Correct reason submitted |
 | 9 | walk-to | `loc.whiteboard` | HUD: "Go to the roadmap board" | within 1.5 m |
-| 10 | interact | `prop.roadmap-board` | HUD: "Sort the roadmap cards". Columns `TODAY` / `IN PROGRESS` / `PLANNED` / `RETIRED / PHASING OUT`. Cards → answers: "Orca on an on-prem lab VM" → TODAY; "Orca containerised in Docker on GCP" → PLANNED; "Hardware control on Linux Raspberry Pis" → TODAY; "Hardware control on Windows Intel NUCs" → RETIRED; "Ollama vision PoC on webcam streams" → IN PROGRESS; "Gen 2 Software PIN Bypass (with Core OS Team)" → IN PROGRESS; "Station Duo Screen Compare / OCR" → RETIRED / PHASING OUT; "Repos on GitHub (Gort, uia-remote, pigeon)" → TODAY. | 8/8 correct |
+| 10 | interact | `prop.roadmap-board` | HUD: "Sort the roadmap cards". Columns `TODAY` / `IN PROGRESS` / `PLANNED` / `RETIRED / PHASING OUT`. Cards → answers: "Orca on an on-prem lab VM" → TODAY; "Orca containerised in Docker on GCP" → PLANNED; "Hardware control on Linux Raspberry Pis" → TODAY; "Hardware control on Windows Intel NUCs" → RETIRED; "Ollama vision PoC on webcam streams" → IN PROGRESS; "Gen 2 Software PIN Bypass (with Core OS Team)" → IN PROGRESS; "Stand Duet Screen Compare / OCR" → RETIRED / PHASING OUT; "Repos on GitHub (Gort, uia-remote, pigeon)" → TODAY. | 8/8 correct |
 | 11 | dialogue | `npc.jared` | "Gen 2 is the big one. We're working with the Core OS Team on a software framework that bypasses the robots for Secure Touch PIN entry. Then the robots only do what can't be faked, like dipping a card." | continue |
 | 12 | quiz-checkpoint | `CP-M17.1`: Q351, Q354, Q355, Q358, Q359 | Checkpoint "Infra & AI" | ≥ 80 % |
 
@@ -1255,7 +1255,7 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | **Mentor** | Morgan (`npc.morgan`); cameos Jared, Tate |
 | **Prerequisites** | M17 (and all earlier modules) |
 | **Est. duration** | 25 min (10 min history + 15 min capstone) |
-| **Setup** | History wall frames. For the capstone: BUMBLEBEE's Minix box (MINIX-01) Callus service is down; SETI's arm gets bumped by a coworker; job `Java/uia-remote-regression-mini` has `DEVICE_TYPE=mini_3`. |
+| **Setup** | History wall frames. For the capstone: BUMBLEBEE's Minix box (MINIX-01) Callus service is down; SETI's arm gets bumped by a coworker; job `Java/uia-remote-regression-micro` has `DEVICE_TYPE=micro_3`. |
 | **Facts covered** | F042, F043, F052, F053, F103, F110, F157, F158, F159, F160, F161, F162, F224, F225, F226 |
 | **Unlocks** | Certification exams (Section 5) · Arcade "Full Shift" mode · deck `deck.M18` |
 
@@ -1277,7 +1277,7 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | 7 | dialogue | `npc.morgan` | "And remember the card philosophy: we prove pipelines with one reliable Visa profile, plus Interac for Canada. PayCore runs the whole matrix. Different jobs, different needs. Ready for your capstone? Three things will break in the next fifteen minutes. No hints." | continue |
 | 8 | computer-task | `app.orca` → `npc.jared` | **Capstone 1**: BUMBLEBEE goes `Connection Failed`. Notes†: `GET http://10.42.10.13:8000/health → 502 Bad Gateway {"error":"callus upstream 10.42.20.1:9000 unreachable"}`. Player must read Notes and escalate to Jared with the right diagnosis. Dialogue choices: (a) "BUMBLEBEE is Connection Failed: the Pi answers 502 because the Minix box running Callus at 10.42.20.1 is unreachable." ✔ (b) "BUMBLEBEE's Pi crashed." ✘ (the Pi answered) (c) Set BUMBLEBEE to Available ✘ | Choice (a) within 5 game-min; no status override |
 | 9 | interact | `prop.seti.tablet` | **Capstone 2**: a coworker bumps SETI's arm → yellow banner. Player walks to SETI and presses **Park All**. | Banner green within 3 game-min |
-| 10 | computer-task | `app.jenkins` | **Capstone 3**: `Java/uia-remote-regression-mini` fails `No enum constant …DeviceType.mini_3`. Player fixes to `MINI_3` and rebuilds green. | Build green |
+| 10 | computer-task | `app.jenkins` | **Capstone 3**: `Java/uia-remote-regression-micro` fails `No enum constant …DeviceType.micro_3`. Player fixes to `MICRO_3` and rebuilds green. | Build green |
 | 11 | quiz-checkpoint | `CP-M18.1`: Q369, Q370, Q373, Q375, Q377 | Final Academy checkpoint "Teams & History" | ≥ 80 % |
 | 12 | dialogue | `npc.morgan` | "That's the Academy. You can walk into the real lab tomorrow and not break anything, which is more than I could say on my first day. Certification exams are unlocked on your desk." | continue → Academy complete |
 
@@ -1293,7 +1293,7 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 * **Display:** the Options column shows the canonical display order. The game reshuffles MC/ORD/MATCH
   options per attempt (seeded by attempt number), so store the correct answer by **value**, not by letter.
 * **Fill-in normalisation:** trim, collapse internal whitespace, case-insensitive **unless the explanation says
-  "Case-sensitive"** (config values `tethered`, `avocado`, `CPA`, enum `FLEX_3`, class `BaseTest`). Any listed
+  "Case-sensitive"** (config values `tethered`, `avocado`, `CPA`, enum `FLUX_3`, class `BaseTest`). Any listed
   alternative is accepted.
 * **Scoring:** 1 point per item, all-or-nothing (ORD/MATCH included). Arcade drills may award partial credit;
   see the gameplay doc.
@@ -1347,17 +1347,17 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 |---|---|---|---|---|---|---|
 | Q012 *(CP-M02.1)* | F054 | multiple-choice | What does MFD stand for? | **A)** Merchant Front Display · **B)** Multi-Function Device · **C)** Merchant Facing Device · **D)** Main Function Display | **C** — Merchant Facing Device | MFD = Merchant Facing Device (F054). |
 | Q013 *(CP-M02.1)* | F054 | fill-in | CFD stands for "Customer ______ Device". Type the missing word. | — (free text) | `Facing` | CFD = Customer Facing Device (F054). Case-insensitive. |
-| Q014 *(CP-M02.1)* | F055, F056, F058, F061 | match | Match each device to its family or role. | **1.** Station 2018 · **2.** Mini 3 · **3.** Flex Pocket · **4.** LabSim Compact ⟷ **A)** Station series · **B)** Mini series · **C)** Canadian-market terminal (Westers) · **D)** Flex series | 1→**A**, 2→**B**, 3→**D**, 4→**C** | Station 2018 is a Station (F055); Mini 3 is a Mini (F056); Flex Pocket is a Flex (F058); the Compact targets Canada on Westers beds (F061). |
-| Q015 *(CP-M02.1)* | F059 | multiple-choice | Which three devices share exactly the same testing profile? | **A)** Flex 3, Flex 4 and Flex Pocket · **B)** Mini 2, Mini 3 and Mini 4 · **C)** Flex 1, Flex 2 and Flex 3 · **D)** Station 2, Station Duo and Station Duo 2 | **A** — Flex 3, Flex 4 and Flex Pocket | Flex 3, Flex 4 and Flex Pocket share the exact same testing profile (F059). |
-| Q016 | F059 | true-false | The Flex 2 shares the Flex 3 testing profile. | True · False | **False** | Only Flex 3, Flex 4 and Flex Pocket share the profile (F059). |
-| Q017 *(CP-M02.1)* | F060 | multiple-choice | What does the Flex Pocket omit compared with the Flex 3 and Flex 4? | **A)** The touch screen · **B)** The EMV chip reader · **C)** The NFC antenna · **D)** The physical printer block | **D** — The physical printer block | The Pocket shares the Flex 3/4 profile but omits the physical printer block (F060). |
-| Q018 | F057 | multiple-choice | Which device is used as the hot-swap equivalent for the printerless Station Duo 2? | **A)** Station 2 · **B)** Flex Pocket · **C)** Mini 3 · **D)** Mini 2 | **C** — Mini 3 | The Mini 3 is the hot-swap equivalent for the printerless Duo 2 (F057). |
-| Q019 | F057 | true-false | The Station Duo 2 has a built-in printer. | True · False | **False** | The Duo 2 is printerless, which is why a Mini 3 can hot-swap for it (F057). |
-| Q020 | F061 | multiple-choice | Which terminal is the target for the Canadian market on the Westers test beds? | **A)** Station 2018 · **B)** Flex Pocket · **C)** Mini 4 · **D)** LabSim Compact | **D** — LabSim Compact | The LabSim Compact targets Canada and is used on Westers test beds (F061). |
-| Q021 | F062 | multiple-choice | Which pair are listed as upcoming devices? | **A)** Compact and Flex Pocket · **B)** Station 2018 and Flex 1 · **C)** Station Duo 3 and Mini 4 · **D)** Flex 4 and Mini 3 | **C** — Station Duo 3 and Mini 4 | Duo 3 and Mini 4 are upcoming (F062). |
-| Q022 | F055 | multiple-choice | Which of these is NOT a LabSim target device in the reference? | **A)** Station 2018 · **B)** Station Mini · **C)** Station 2 · **D)** Station Duo 2 | **B** — Station Mini | The Station series is Station 2018, Station 2 and Station Duo (Duo 1, Duo 2, upcoming Duo 3) (F055). "Station Mini" does not exist. |
-| Q023 | F058 | multiple-choice | How many Flex models are listed, counting the Pocket? | **A)** 4 · **B)** 6 · **C)** 5 · **D)** 3 | **C** — 5 | Flex 1, Flex 2, Flex 3, Flex 4 and Flex Pocket (F058). |
-| Q024 | F056 | multiple-choice | Which list is the Mini series? | **A)** Mini 3, Mini 4, Mini Pocket · **B)** Mini 1, Mini 2, Mini 3 · **C)** Mini 2, Mini 3, Mini 4 (upcoming) · **D)** Mini 2, Mini Duo, Mini 3 | **C** — Mini 2, Mini 3, Mini 4 (upcoming) | The Mini series is Mini 2, Mini 3 and the upcoming Mini 4 (F056). |
+| Q014 *(CP-M02.1)* | F055, F056, F058, F061 | match | Match each device to its family or role. | **1.** Stand 2018 · **2.** Micro 3 · **3.** Flux Pocket · **4.** LabSim Compass ⟷ **A)** Stand series · **B)** Micro series · **C)** Canadian-market terminal (Westers) · **D)** Flux series | 1→**A**, 2→**B**, 3→**D**, 4→**C** | Stand 2018 is a Stand (F055); Micro 3 is a Micro (F056); Flux Pocket is a Flux (F058); the Compass targets Canada on Westers beds (F061). |
+| Q015 *(CP-M02.1)* | F059 | multiple-choice | Which three devices share exactly the same testing profile? | **A)** Flux 3, Flux 4 and Flux Pocket · **B)** Micro 2, Micro 3 and Micro 4 · **C)** Flux 1, Flux 2 and Flux 3 · **D)** Stand 2, Stand Duet and Stand Duet 2 | **A** — Flux 3, Flux 4 and Flux Pocket | Flux 3, Flux 4 and Flux Pocket share the exact same testing profile (F059). |
+| Q016 | F059 | true-false | The Flux 2 shares the Flux 3 testing profile. | True · False | **False** | Only Flux 3, Flux 4 and Flux Pocket share the profile (F059). |
+| Q017 *(CP-M02.1)* | F060 | multiple-choice | What does the Flux Pocket omit compared with the Flux 3 and Flux 4? | **A)** The touch screen · **B)** The EMV chip reader · **C)** The NFC antenna · **D)** The physical printer block | **D** — The physical printer block | The Pocket shares the Flux 3/4 profile but omits the physical printer block (F060). |
+| Q018 | F057 | multiple-choice | Which device is used as the hot-swap equivalent for the printerless Stand Duet 2? | **A)** Stand 2 · **B)** Flux Pocket · **C)** Micro 3 · **D)** Micro 2 | **C** — Micro 3 | The Micro 3 is the hot-swap equivalent for the printerless Duet 2 (F057). |
+| Q019 | F057 | true-false | The Stand Duet 2 has a built-in printer. | True · False | **False** | The Duet 2 is printerless, which is why a Micro 3 can hot-swap for it (F057). |
+| Q020 | F061 | multiple-choice | Which terminal is the target for the Canadian market on the Westers test beds? | **A)** Stand 2018 · **B)** Flux Pocket · **C)** Micro 4 · **D)** LabSim Compass | **D** — LabSim Compass | The LabSim Compass targets Canada and is used on Westers test beds (F061). |
+| Q021 | F062 | multiple-choice | Which pair are listed as upcoming devices? | **A)** Compass and Flux Pocket · **B)** Stand 2018 and Flux 1 · **C)** Stand Duet 3 and Micro 4 · **D)** Flux 4 and Micro 3 | **C** — Stand Duet 3 and Micro 4 | Duet 3 and Micro 4 are upcoming (F062). |
+| Q022 | F055 | multiple-choice | Which of these is NOT a LabSim target device in the reference? | **A)** Stand 2018 · **B)** Stand Micro · **C)** Stand 2 · **D)** Stand Duet 2 | **B** — Stand Micro | The Stand series is Stand 2018, Stand 2 and Stand Duet (Duet 1, Duet 2, upcoming Duet 3) (F055). "Stand Micro" does not exist. |
+| Q023 | F058 | multiple-choice | How many Flux models are listed, counting the Pocket? | **A)** 4 · **B)** 6 · **C)** 5 · **D)** 3 | **C** — 5 | Flux 1, Flux 2, Flux 3, Flux 4 and Flux Pocket (F058). |
+| Q024 | F056 | multiple-choice | Which list is the Micro series? | **A)** Micro 3, Micro 4, Micro Pocket · **B)** Micro 1, Micro 2, Micro 3 · **C)** Micro 2, Micro 3, Micro 4 (upcoming) · **D)** Micro 2, Micro Duet, Micro 3 | **C** — Micro 2, Micro 3, Micro 4 (upcoming) | The Micro series is Micro 2, Micro 3 and the upcoming Micro 4 (F056). |
 | Q025 | F237 | fill-in | In the reference photo, MEGATRON's screens carry which environment label? Type it exactly. | — (free text) | `DEV1` | The labels read MEGATRON MFD DEV1 / MEGATRON CFD DEV1; OPTIMUS carries STG (F237). |
 | Q026 | F238 | multiple-choice | What are the black USB dongles with green LEDs between the tethered screens? | **A)** Collis probes · **B)** Raspberry Pi cameras · **C)** Inline fuses · **D)** SmartStripe Probe dongles | **D** — SmartStripe Probe dongles | The reference photo shows USB "SmartStripe Probe" dongles between the screens (F238). Collis probes are grey boxes on ribbon cables. |
 | Q027 | F239 | multiple-choice | What do the black 3D-printed docks below the tethered screens hold? | **A)** White LabSim connectivity hubs (Ethernet, USB, power) · **B)** Collis probe ribbon spools · **C)** Mean Well transformers · **D)** Spare Raspberry Pis | **A** — White LabSim connectivity hubs (Ethernet, USB, power) | The docks hold LabSim connectivity hubs labelled per device, e.g. MEGATRON MFD (F239). |
@@ -1400,11 +1400,11 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | Q054 | F093 | multiple-choice | A touch robot uses 200+ nuts and bolts in which diameters? | **A)** 2.5 mm and 5 mm · **B)** 3 mm and 6 mm · **C)** 8 mm only · **D)** 2 mm and 4 mm | **A** — 2.5 mm and 5 mm | 200+ nuts and bolts in 2.5 mm and 5 mm diameters (F093). |
 | Q055 | F234 | multiple-choice | Which of these is NOT a tab on the status tablet? | **A)** Motion Control · **B)** Robot Control · **C)** Robot · **D)** Health Check | **D** — Health Check | The tabs are Robot, Robot Control and Motion Control (F234). |
 | Q056 | F240 | multiple-choice | Which motor drives the gantry axes in the reference photo? | **A)** A NEMA-34 stepper on a lead screw · **B)** A brushed DC gear motor · **C)** A NEMA-17 stepper with a GT2 pulley · **D)** A hobby servo | **C** — A NEMA-17 stepper with a GT2 pulley | The gantry uses a NEMA-17 stepper with a GT2 pulley on 2020 extrusion with V-slot wheels (F240). |
-| Q057 | F241 | multiple-choice | What carries the emulated card into the Flex's chip slot? | **A)** The blue push-pull solenoid · **B)** A rotating dip arm (sector gear) holding a flat white ribbon card · **C)** A technician, by hand · **D)** The Phone carriage | **B** — A rotating dip arm (sector gear) holding a flat white ribbon card | A black rotating dip arm (sector gear marked 63) carries the white ribbon card (Collis insert) into the slot (F241). |
-| Q058 | F243, F080 | ordering | Order the solenoid tap cycle seen in the Flex 3 video. | **A)** Plunger drops and taps again · **B)** Plunger lifts · **C)** Plunger drops and taps · **D)** Gantry moves the head over the target button · **E)** Gantry moves to the next button | **D** → **C** → **B** → **E** → **A** | The video shows move → drop → lift → move → tap again (F243). |
+| Q057 | F241 | multiple-choice | What carries the emulated card into the Flux's chip slot? | **A)** The blue push-pull solenoid · **B)** A rotating dip arm (sector gear) holding a flat white ribbon card · **C)** A technician, by hand · **D)** The Phone carriage | **B** — A rotating dip arm (sector gear) holding a flat white ribbon card | A black rotating dip arm (sector gear marked 63) carries the white ribbon card (Collis insert) into the slot (F241). |
+| Q058 | F243, F080 | ordering | Order the solenoid tap cycle seen in the Flux 3 video. | **A)** Plunger drops and taps again · **B)** Plunger lifts · **C)** Plunger drops and taps · **D)** Gantry moves the head over the target button · **E)** Gantry moves to the next button | **D** → **C** → **B** → **E** → **A** | The video shows move → drop → lift → move → tap again (F243). |
 | Q059 | F081 | true-false | Each rig arm is held in place by a magnetic lock. | True · False | **True** | Rigs have magnetic locks; moving an arm by hand breaks the lock (F081, F231). |
 | Q060 | F088 | multiple-choice | What on a rig provides the camera stream used for monitoring and OCR? | **A)** A webcam mounted on the rig · **B)** The LabSim device's own camera · **C)** A camera built into the Raspberry Pi board · **D)** The status tablet's front camera | **A** — A webcam mounted on the rig | Rigs carry webcams (F088), served by the Pi as camera streams. |
-| Q061 | F242 | true-false | In the side-view photo, the Flex lies flat on the shelf with no fixture. | True · False | **False** | The Flex sits in an angled black 3D-printed cradle, next to the grey Collis probe box (F242). |
+| Q061 | F242 | true-false | In the side-view photo, the Flux lies flat on the shelf with no fixture. | True · False | **False** | The Flux sits in an angled black 3D-printed cradle, next to the grey Collis probe box (F242). |
 | Q062 | F231, F232 | ordering | Order the recovery after someone pushes a robot arm by hand. | **A)** Arm moved by hand · **B)** Steppers drive to the limit switches at (0,0) · **C)** Banner turns green · **D)** Engineer presses Park All · **E)** Magnetic lock breaks · **F)** Status banner turns yellow | **A** → **E** → **F** → **D** → **B** → **C** | Moving the arm breaks the lock (yellow); Park All homes to (0,0) and clears it (green) (F231, F232). |
 
 #### Quiz items — M05 The Robot Pi: Raspberry Pi, Linux & Wine
@@ -1481,17 +1481,17 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | Q120 | F114 | multiple-choice | Which of these is NOT one of Orca's core schemas? | **A)** Merchant Config entity · **B)** Screen Compare Image entity · **C)** Jenkins Job entity · **D)** Card Profile entity | **C** — Jenkins Job entity | The 7 are Robot, Robot Creation & Configuration, Robot Capabilities, Merchant Config, Screens & Screen Locations, Card Profile and Screen Compare Image (F114). |
 | Q121 *(CP-M07.1)* | F117 | multiple-choice | What is a robot's "Name" field in Orca? | **A)** The Pi's IP address · **B)** The system identifier · **C)** The display string shown on the tablet · **D)** The LabSim device's serial number | **B** — The system identifier | Name is the system identifier; Human Readable Name is the display string (F117). |
 | Q122 *(CP-M07.1)* | F118 | multiple-choice | Where does a robot's Human Readable Name appear? | **A)** In the GitHub repo name · **B)** On the physical status tablet on the front of the enclosure · **C)** As the Pi's hostname · **D)** Only in the Jenkins console | **B** — On the physical status tablet on the front of the enclosure | The Human Readable Name is pushed to the front-mounted status tablet (F118). |
-| Q123 *(CP-M07.1)* | F119, F120 | multiple-choice | Jared swaps JOHNNY-5's Flex 1 for a Flex 2. What is the right Orca change? | **A)** Create a new Device for the Flex 2 and relink Robot Device, keeping the old Device for rollback · **B)** Change JOHNNY-5's Offsets · **C)** Edit the existing Device and change its type to FLEX_2 · **D)** Delete JOHNNY-5 and recreate it | **A** — Create a new Device for the Flex 2 and relink Robot Device, keeping the old Device for rollback | Robot Device links to a separate Device entity so upgrades leave legacy configs intact for rollback (F119, F120). |
+| Q123 *(CP-M07.1)* | F119, F120 | multiple-choice | Jared swaps JOHNNY-5's Flux 1 for a Flux 2. What is the right Orca change? | **A)** Create a new Device for the Flux 2 and relink Robot Device, keeping the old Device for rollback · **B)** Change JOHNNY-5's Offsets · **C)** Edit the existing Device and change its type to FLUX_2 · **D)** Delete JOHNNY-5 and recreate it | **A** — Create a new Device for the Flux 2 and relink Robot Device, keeping the old Device for rollback | Robot Device links to a separate Device entity so upgrades leave legacy configs intact for rollback (F119, F120). |
 | Q124 | F120 | true-false | Because Robot and Device are decoupled, a hardware upgrade leaves legacy configurations intact for quick rollbacks. | True · False | **True** | That is exactly why they are decoupled (F120). |
 | Q125 | F119 | multiple-choice | What does the Robot Device field point to? | **A)** A camera stream · **B)** A separate Device entity · **C)** A Jenkins job · **D)** A Gort card file | **B** — A separate Device entity | Robot Device links to a separate Device entity (F119). |
 | Q126 | F121 | multiple-choice | What does the Device Type enum store? | **A)** Card Track Data · **B)** The Pi's IP address · **C)** Device dimensions, layout metrics and internal string definitions · **D)** Merchant credentials | **C** — Device dimensions, layout metrics and internal string definitions | Device Type is an enum of dimensions, layout metrics and internal strings (F121). |
 | Q127 *(CP-M07.1)* | F122 | multiple-choice | Why must Jenkins pipeline env vars like DEVICE_TYPE be in ALL CAPS? | **A)** They must match Orca's Device Type enum string definitions · **B)** Jenkins rejects lower-case parameters · **C)** It is only a style convention · **D)** Linux environment variables are case-insensitive | **A** — They must match Orca's Device Type enum string definitions | The Device Type enum dictates that env vars must be all-caps (F122). |
-| Q128† | F122 | fill-in | Type the DEVICE_TYPE value Jenkins needs for a Flex 3 in this sim (enum spelling). | — (free text) | `FLEX_3` | All caps, matching the Device Type enum (F122). Case-sensitive. (Enum spelling FLEX_3 is the sim's illustrative enum.) |
+| Q128† | F122 | fill-in | Type the DEVICE_TYPE value Jenkins needs for a Flux 3 in this sim (enum spelling). | — (free text) | `FLUX_3` | All caps, matching the Device Type enum (F122). Case-sensitive. (Enum spelling FLUX_3 is the sim's illustrative enum.) |
 | Q129 | F123 | multiple-choice | The Robot ADB Service URL routes to which component? | **A)** The Jenkins VM · **B)** Orca's MySQL · **C)** The Pi controller · **D)** The LabSim device directly on port 5555 | **C** — The Pi controller | It is the Robot ADB Service URL routing to the Pi controller (F123). |
 | Q130 | F124 | multiple-choice | A robot's Camera Stream URL is… | **A)** Always shared across all 40+ rigs · **B)** Only configured for CFDs · **C)** Stored in Gort · **D)** Either dedicated per Pi or shared across 4 rigs | **D** — Either dedicated per Pi or shared across 4 rigs | Camera streams are dedicated per Pi or shared across 4 rigs (F124). |
 | Q131 | F125 | multiple-choice | Besides the ADB Service and Camera Stream URLs, which hardware-specific URLs are mapped per robot? | **A)** Health, Park and Reset · **B)** Dip, Tap and Swipe · **C)** PIN, Sign and Tip · **D)** Print, Scan and Email | **B** — Dip, Tap and Swipe | URL Mappings store hardware-specific Dip, Tap and Swipe URLs (F125). |
-| Q132 *(CP-M07.1)* | F128 | multiple-choice | In Orca, what makes a pipeline treat a rig as tethered? | **A)** The camera URL is shared · **B)** The Human Readable Name contains "MFD" · **C)** The device type is STATION_DUO · **D)** The MFD field is populated | **D** — The MFD field is populated | If MFD is populated, the pipeline treats the rig as tethered (F128). |
-| Q133 | F126, F127 | multiple-choice | Which is an example of a nested/tethered setup modelled in Orca? | **A)** A Flex 3 with a Collis probe · **B)** Two Flex Pockets sharing a camera · **C)** A Station 2 tethered to a Mini 2 · **D)** A Pi with a webcam | **C** — A Station 2 tethered to a Mini 2 | Tethered configs populate MFD/CFD relations, e.g. Station 2 + Mini 2, or nested Mini 3s (F126, F127). |
+| Q132 *(CP-M07.1)* | F128 | multiple-choice | In Orca, what makes a pipeline treat a rig as tethered? | **A)** The camera URL is shared · **B)** The Human Readable Name contains "MFD" · **C)** The device type is STAND_DUET · **D)** The MFD field is populated | **D** — The MFD field is populated | If MFD is populated, the pipeline treats the rig as tethered (F128). |
+| Q133 | F126, F127 | multiple-choice | Which is an example of a nested/tethered setup modelled in Orca? | **A)** A Flux 3 with a Collis probe · **B)** Two Flux Pockets sharing a camera · **C)** A Stand 2 tethered to a Micro 2 · **D)** A Pi with a webcam | **C** — A Stand 2 tethered to a Micro 2 | Tethered configs populate MFD/CFD relations, e.g. Stand 2 + Micro 2, or nested Micro 3s (F126, F127). |
 | Q134 | F126 | true-false | USB Tethered Device Configuration populates MFD and CFD relations for nested setups. | True · False | **True** | That is the purpose of the USB Tethered Device Configuration (F126). |
 | Q135 | F129 | multiple-choice | What were Offsets originally for? | **A)** Time-zone corrections for the health check · **B)** Legacy millimetre adjustments compensating for imprecise physical limit switches · **C)** ADB port offsets from 5555 · **D)** Pixel offsets for OCR boxes | **B** — Legacy millimetre adjustments compensating for imprecise physical limit switches | Offsets compensated for imprecise limit switches (F129). |
 | Q136 | F130 | multiple-choice | Why are Offsets now mostly deprecated? | **A)** Tate removed the column · **B)** Orca moved to GCP · **C)** UI Automator 2.3 replaced them · **D)** Jared calibrated the lab hardware to a true (0,0) origin | **D** — Jared calibrated the lab hardware to a true (0,0) origin | Jared's true (0,0) calibration made Offsets mostly deprecated (F130). |
@@ -1541,10 +1541,10 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | Q170 *(CP-M09.1)* | F143 | multiple-choice | What does a script pass to Orca's xy_touch endpoint? | **A)** Raw pixel X and Y · **B)** A card profile name · **C)** A screen name and a button string · **D)** The robot's serial number and a PIN | **C** — A screen name and a button string | Scripts call xy_touch with a screen name and a button string (F143). |
 | Q171 | F144 | multiple-choice | After the xy_touch lookup, what does the Pi fire? | **A)** Always an ADB touch · **B)** Either an electronic ADB touch or a physical mechanical probe tap · **C)** Always a physical tap · **D)** A GIMP selection | **B** — Either an electronic ADB touch or a physical mechanical probe tap | Orca instructs the Pi to fire an ADB touch or a physical probe tap (F144). |
 | Q172 *(CP-M09.1)* | F143, F144, F096 | ordering | Order an xy_touch from script to screen. | **A)** The Pi fires an ADB touch or a physical probe tap · **B)** Orca instructs the Raspberry Pi · **C)** Orca looks up the button's millimetre coordinates · **D)** Test runner calls Orca's xy_touch with a screen name and button | **D** → **C** → **B** → **A** | F096, F143, F144. |
-| Q173 | F217 | multiple-choice | Can an ADB bot enter a PIN? | **A)** Yes, if Offsets are set · **B)** Only on the Compact · **C)** No; ADB bots are purely programmatic and cannot physically touch the screen or enter PINs · **D)** Yes, with adb shell input text | **C** — No; ADB bots are purely programmatic and cannot physically touch the screen or enter PINs | F217. |
-| Q174 *(CP-M09.1)* | F218 | multiple-choice | ADB bots are restricted to which merchant configurations? | **A)** PayCore standalone merchants · **B)** Station Duo merchants only · **C)** Configurations that bypass PIN security · **D)** Canadian merchants only | **C** — Configurations that bypass PIN security | ADB bots only run merchant configs that bypass PIN security (F218). |
-| Q175 | F220 | multiple-choice | Why does a Canadian payment workflow need a physical bot? | **A)** The Compact has no ADB at all · **B)** Westers beds have no Pis · **C)** Interac cards cannot be emulated · **D)** Canadian flows mandate physical PIN entry | **D** — Canadian flows mandate physical PIN entry | Physical bots are required for Canadian flows, which mandate physical PIN entry (F220). |
-| Q176 | F221 | multiple-choice | Besides Canadian PIN flows, what else requires a physical/interactive bot? | **A)** Every MFD · **B)** Any device with a printer · **C)** Every Flex · **D)** ADB-blind displays | **D** — ADB-blind displays | Physical bots are required for ADB-blind displays (F221). |
+| Q173 | F217 | multiple-choice | Can an ADB bot enter a PIN? | **A)** Yes, if Offsets are set · **B)** Only on the Compass · **C)** No; ADB bots are purely programmatic and cannot physically touch the screen or enter PINs · **D)** Yes, with adb shell input text | **C** — No; ADB bots are purely programmatic and cannot physically touch the screen or enter PINs | F217. |
+| Q174 *(CP-M09.1)* | F218 | multiple-choice | ADB bots are restricted to which merchant configurations? | **A)** PayCore standalone merchants · **B)** Stand Duet merchants only · **C)** Configurations that bypass PIN security · **D)** Canadian merchants only | **C** — Configurations that bypass PIN security | ADB bots only run merchant configs that bypass PIN security (F218). |
+| Q175 | F220 | multiple-choice | Why does a Canadian payment workflow need a physical bot? | **A)** The Compass has no ADB at all · **B)** Westers beds have no Pis · **C)** Interac cards cannot be emulated · **D)** Canadian flows mandate physical PIN entry | **D** — Canadian flows mandate physical PIN entry | Physical bots are required for Canadian flows, which mandate physical PIN entry (F220). |
+| Q176 | F221 | multiple-choice | Besides Canadian PIN flows, what else requires a physical/interactive bot? | **A)** Every MFD · **B)** Any device with a printer · **C)** Every Flux · **D)** ADB-blind displays | **D** — ADB-blind displays | Physical bots are required for ADB-blind displays (F221). |
 | Q177 | F219 | multiple-choice | What do physical/interactive bots have that ADB bots lack? | **A)** An Orca record · **B)** A Raspberry Pi · **C)** Mechanical touch probes · **D)** An ADB connection | **C** — Mechanical touch probes | Physical bots are equipped with mechanical touch probes (F219). |
 | Q178 | F217, F219, F220 | true-false | TARS (an ADB bot) is a good choice for a Canadian Interac PIN test. | True · False | **False** | ADB bots cannot enter PINs (F217) and Canadian flows require physical PIN entry on a physical bot (F219, F220). |
 | Q179 | F213 | multiple-choice | What did adding the "scan for receipt" QR code do to the receipt screen? | **A)** Shifted the buttons down by a few millimetres · **B)** Moved the buttons up by 10 pixels · **C)** Renamed every button · **D)** Removed the Print button | **A** — Shifted the buttons down by a few millimetres | The QR feature shifted buttons down a few mm (F213). |
@@ -1596,9 +1596,9 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | Q215 *(CP-M11.1)* | F016 | multiple-choice | Which two things does Jenkins do for a test pipeline? | **A)** Triggers it and injects runtime environment variables · **B)** Stores coordinates and card profiles · **C)** Pings the Pis and parks robots · **D)** Compiles device firmware | **A** — Triggers it and injects runtime environment variables | F016. |
 | Q216 *(CP-M11.1)* | F017 | multiple-choice | How are legacy Jenkins jobs organised? | **A)** By platform: Java jobs separated from iOS jobs · **B)** By date created · **C)** By team · **D)** By robot name | **A** — By platform: Java jobs separated from iOS jobs | F017. |
 | Q217 *(CP-M11.1)* | F189 | multiple-choice | During a CI run, where do the config.properties values come from? | **A)** Orca pushes the file to the device · **B)** The status tablet · **C)** A committed config.properties file per robot · **D)** Jenkins injects them dynamically | **D** — Jenkins injects them dynamically | Jenkins injects these dynamically during CI (F189). |
-| Q218 | F122 | true-false | DEVICE_TYPE=flex_3 works fine because Orca lower-cases the enum. | True · False | **False** | Env vars must be ALL CAPS to match the Device Type enum (F122). |
+| Q218 | F122 | true-false | DEVICE_TYPE=flux_3 works fine because Orca lower-cases the enum. | True · False | **False** | Env vars must be ALL CAPS to match the Device Type enum (F122). |
 | Q219 | F095 | multiple-choice | Before a CI test touches hardware, what does Jenkins do with Orca? | **A)** Checks out a robot · **B)** Copies Orca's database · **C)** Sets the robot Offline · **D)** Reserves the robot permanently | **A** — Checks out a robot | Jenkins checks out a robot from Orca (F095). |
-| Q220† *(CP-M11.1)* | F102 | multiple-choice | A Jenkins job must run on ROSIE, which is Unavailable. What must the job parameters contain? | **A)** ROSIE's exact unique robot name (e.g. ROBOT_NAME=rosie) · **B)** DEVICE_TYPE=FLEX_POCKET only · **C)** Nothing; Jenkins ignores Unavailable · **D)** FORCE=true | **A** — ROSIE's exact unique robot name (e.g. ROBOT_NAME=rosie) | Unavailable robots only accept jobs that pass their exact unique name (F102). (Parameter name ROBOT_NAME is illustrative.) |
+| Q220† *(CP-M11.1)* | F102 | multiple-choice | A Jenkins job must run on ROSIE, which is Unavailable. What must the job parameters contain? | **A)** ROSIE's exact unique robot name (e.g. ROBOT_NAME=rosie) · **B)** DEVICE_TYPE=FLUX_POCKET only · **C)** Nothing; Jenkins ignores Unavailable · **D)** FORCE=true | **A** — ROSIE's exact unique robot name (e.g. ROBOT_NAME=rosie) | Unavailable robots only accept jobs that pass their exact unique name (F102). (Parameter name ROBOT_NAME is illustrative.) |
 | Q221 | F139, F016 | multiple-choice | Which runtime environment variables does a Go SDK pipeline export from Merchant Config? | **A)** Offsets X and Y · **B)** Serial, theme and kernelType · **C)** Track Data and card path · **D)** App ID, App Secret and API Key | **D** — App ID, App Secret and API Key | Pipelines export App ID / App Secret / API Key as env vars for the Go SDK (F139). |
 | Q222 | F094 | multiple-choice | Into which components does Jenkins inject environment variables? | **A)** The Raspberry Pis · **B)** MySQL · **C)** The test runners (uia-remote or Pigeon) · **D)** The status tablets | **C** — The test runners (uia-remote or Pigeon) | F094. |
 | Q223 | F203 | multiple-choice | Which Pigeon/Jenkins runner is rarely touched, even though its Go SDK testing is active? | **A)** REST · **B)** iOS · **C)** Windows · **D)** Android | **B** — iOS | The iOS test runner is rarely touched, though iOS Go testing is active (F203). |
@@ -1645,15 +1645,15 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | Q254 | F175 | multiple-choice | What goes in Zone 1 of a screen class? | **A)** config.properties values · **B)** Element locators: UI elements unique to that view · **C)** Assertions · **D)** Helper and action methods | **B** — Element locators: UI elements unique to that view | F175. |
 | Q255 | F176 | multiple-choice | Where are device-specific behaviours abstracted in a screen class? | **A)** The testactions package · **B)** config.properties · **C)** Zone 1 locators · **D)** Zone 2 helper/action methods | **D** — Zone 2 helper/action methods | F176. |
 | Q256 | F175, F176 | match | Match each zone to its contents. | **1.** Zone 1 · **2.** Zone 2 ⟷ **A)** Helper/action methods, including device-specific behaviour · **B)** Element locators unique to the view | 1→**B**, 2→**A** | F175, F176. |
-| Q257 *(CP-M13.1)* | F177 | multiple-choice | On a Flex, open("Register") scrolls… | **A)** Diagonally · **B)** Horizontally · **C)** Vertically · **D)** Not at all | **C** — Vertically | Vertical on Flex; horizontal on Mini or Station (F177). |
-| Q258 | F177 | true-false | On a Mini or a Station, open(String appName) scrolls horizontally. | True · False | **True** | F177. |
+| Q257 *(CP-M13.1)* | F177 | multiple-choice | On a Flux, open("Register") scrolls… | **A)** Diagonally · **B)** Horizontally · **C)** Vertically · **D)** Not at all | **C** — Vertically | Vertical on Flux; horizontal on Micro or Stand (F177). |
+| Q258 | F177 | true-false | On a Micro or a Stand, open(String appName) scrolls horizontally. | True · False | **True** | F177. |
 | Q259 | F178 | multiple-choice | What problem does waitForScreen() prevent? | **A)** ADB port collisions · **B)** OCR typos · **C)** The wrong theme loading · **D)** UI Automator clicking buttons that have not finished rendering | **D** — UI Automator clicking buttons that have not finished rendering | waitForScreen() pauses until all elements render (F178). |
 | Q260 | F179 | multiple-choice | What does isScreenPresent() return? | **A)** A list of elements · **B)** A screenshot · **C)** A boolean: whether that screen is currently in focus · **D)** Nothing (void) | **C** — A boolean: whether that screen is currently in focus | F179. |
 | Q261 *(CP-M13.1)* | F180 | multiple-choice | Which two methods are mandatory on every screen class? | **A)** setUp() and tearDown() · **B)** open() and close() · **C)** findElement() and click() · **D)** waitForScreen() and isScreenPresent() | **D** — waitForScreen() and isScreenPresent() | F180. |
 | Q262 | F180, F179 | true-false | A new screen class that only implements waitForScreen() meets the uia-remote rules. | True · False | **False** | Both waitForScreen() and isScreenPresent() are mandatory (F180). |
-| Q263 | F039, F040 | multiple-choice | What does uia-remote automate? | **A)** Only REST endpoints · **B)** Only iOS apps · **C)** Only standalone Flex devices · **D)** Both standalone devices and tethered multi-device setups across native LabSim apps | **D** — Both standalone devices and tethered multi-device setups across native LabSim apps | F039, F040. |
+| Q263 | F039, F040 | multiple-choice | What does uia-remote automate? | **A)** Only REST endpoints · **B)** Only iOS apps · **C)** Only standalone Flux devices · **D)** Both standalone devices and tethered multi-device setups across native LabSim apps | **D** — Both standalone devices and tethered multi-device setups across native LabSim apps | F039, F040. |
 | Q264 | F039 | true-false | uia-remote is the team's modern Java / UI Automator repository. | True · False | **True** | F039. |
-| Q265 | F159 | multiple-choice | Why was uia-remote created? | **A)** Pigeon was too slow · **B)** No prior framework could automate native tethered setups (Station-to-Mini, Mini-to-Mini, Station Duo) · **C)** Jenkins required a new framework · **D)** To replace Orca | **B** — No prior framework could automate native tethered setups (Station-to-Mini, Mini-to-Mini, Station Duo) | F159. |
+| Q265 | F159 | multiple-choice | Why was uia-remote created? | **A)** Pigeon was too slow · **B)** No prior framework could automate native tethered setups (Stand-to-Micro, Micro-to-Micro, Stand Duet) · **C)** Jenkins required a new framework · **D)** To replace Orca | **B** — No prior framework could automate native tethered setups (Stand-to-Micro, Micro-to-Micro, Stand Duet) | F159. |
 | Q266 | F001 | multiple-choice | What is the primary programming language for Orca and uia-remote? | **A)** Python · **B)** Go · **C)** Kotlin · **D)** Java | **D** — Java | Java (Oracle Java) powers both (F001). |
 | Q267 | F018 | multiple-choice | Where are the team's repositories hosted for branches and pull requests? | **A)** Perforce · **B)** GitHub · **C)** Bitbucket · **D)** GitLab | **B** — GitHub | GitHub hosts Gort, uia-remote and pigeon (F018). |
 | Q268 | F005 | true-false | Android UI Automator is Google's native Android instrumentation framework. | True · False | **True** | UI Automator is Google's native instrumentation framework, used inside uia-remote (F005). |
@@ -1672,10 +1672,10 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | Q276 *(CP-M14.1)* | F190 | fill-in | Which value must runType have for multi-device testing? Type it exactly. | — (free text) | `tethered` | runType=tethered (F190). Case-sensitive. |
 | Q277 | F191 | multiple-choice | What does merchantFacingDeviceIp hold? | **A)** Orca's IP · **B)** The local network IP of the MFD terminal · **C)** The Pi's IP · **D)** The CFD's IP | **B** — The local network IP of the MFD terminal | F191. |
 | Q278 | F192 | multiple-choice | What does customerFacingDeviceIp hold? | **A)** The local network IP of the CFD terminal · **B)** The webcam's IP · **C)** The Callus box's IP · **D)** The MFD's IP | **A** — The local network IP of the CFD terminal | F192. |
-| Q279 *(CP-M14.1)* | F193 | multiple-choice | On a Station Duo, how are the MFD and CFD IPs set? | **A)** MFD set to 127.0.0.1 · **B)** CFD set to the Pi's IP · **C)** CFD left blank · **D)** Both to the exact same IP address | **D** — Both to the exact same IP address | On a Station Duo both IPs are the exact same address (F193). |
-| Q280 | F193 | true-false | On a Station Duo you leave customerFacingDeviceIp empty because the CFD isn't on ADB. | True · False | **False** | Both IPs are set to the same address (F193). |
+| Q279 *(CP-M14.1)* | F193 | multiple-choice | On a Stand Duet, how are the MFD and CFD IPs set? | **A)** MFD set to 127.0.0.1 · **B)** CFD set to the Pi's IP · **C)** CFD left blank · **D)** Both to the exact same IP address | **D** — Both to the exact same IP address | On a Stand Duet both IPs are the exact same address (F193). |
+| Q280 | F193 | true-false | On a Stand Duet you leave customerFacingDeviceIp empty because the CFD isn't on ADB. | True · False | **False** | Both IPs are set to the same address (F193). |
 | Q281 | F194 | multiple-choice | What is serial in config.properties? | **A)** The robot's Orca name · **B)** The Jenkins build number · **C)** The Pi's serial number · **D)** The hardware serial number of the primary terminal | **D** — The hardware serial number of the primary terminal | F194. |
-| Q282 | F195 | multiple-choice | Which values does deviceType take in config.properties? | **A)** avocado or classic · **B)** FLEX_3, MINI_3, STATION_2 · **C)** Mini, Flex or Station (the form factor) · **D)** 5444 or 5555 | **C** — Mini, Flex or Station (the form factor) | deviceType is the form factor (Mini, Flex, Station) governing layout/scroll logic (F195). |
+| Q282 | F195 | multiple-choice | Which values does deviceType take in config.properties? | **A)** avocado or classic · **B)** FLUX_3, MICRO_3, STAND_2 · **C)** Micro, Flux or Stand (the form factor) · **D)** 5444 or 5555 | **C** — Micro, Flux or Stand (the form factor) | deviceType is the form factor (Micro, Flux, Stand) governing layout/scroll logic (F195). |
 | Q283 | F195, F177 | multiple-choice | What does config.properties' deviceType govern? | **A)** The tablet colour · **B)** Which port ADB uses · **C)** Layout and scroll logic · **D)** The merchant account | **C** — Layout and scroll logic | deviceType governs layout/scroll logic, e.g. vertical vs horizontal scrolling in open() (F195, F177). |
 | Q284 *(CP-M14.1)* | F196 | fill-in | theme is locked to which value? Type it exactly. | — (free text) | `avocado` | theme=avocado; legacy toggles are deprecated (F196). Case-sensitive. |
 | Q285 | F196 | true-false | Legacy theme toggles are still supported; avocado is merely the default. | True · False | **False** | theme is locked strictly to avocado; legacy toggles are deprecated (F196). |
@@ -1730,13 +1730,13 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | Q329 | F041, F044 | multiple-choice | Which legacy repository is built around a Language Specific Test Runner? | **A)** Pigeon · **B)** Orca · **C)** Gort · **D)** uia-remote | **A** — Pigeon | Pigeon (LSTR) = Language Specific Test Runner (F041, F044). |
 | Q330 | F204 | true-false | In Pigeon, "card swipe" always becomes a physical robot action, even on the REST runner. | True · False | **False** | The runner abstracts it into an SDK payment request or a physical robot action depending on platform (F204). |
 
-#### Quiz items — M16 Seeing the Second Screen: Station Duo, OCR, GIMP & UIA 2.3
+#### Quiz items — M16 Seeing the Second Screen: Stand Duet, OCR, GIMP & UIA 2.3
 
 | ID | Facts | Type | Question | Options | Correct answer | Explanation |
 |---|---|---|---|---|---|---|
-| Q331 *(CP-M16.1)* | F151 | multiple-choice | On a Station Duo, which display is exposed to ADB? | **A)** Only the CFD · **B)** Neither · **C)** Both displays · **D)** Only the primary MFD | **D** — Only the primary MFD | One terminal drives two displays but only the primary MFD is exposed to ADB (F151). |
-| Q332 | F152 | multiple-choice | How well could legacy UI Automator see the Station Duo's CFD? | **A)** Fully, with a second device handle · **B)** Only in landscape mode · **C)** Not at all; it was completely blind to it · **D)** Partially, via accessibility IDs | **C** — Not at all; it was completely blind to it | F152. |
-| Q333 *(CP-M16.1)* | F150 | multiple-choice | Which Orca entity holds the Station Duo workaround? | **A)** Card Profile · **B)** Screens · **C)** Robot Capabilities · **D)** Screen Compare Image | **D** — Screen Compare Image | F150. |
+| Q331 *(CP-M16.1)* | F151 | multiple-choice | On a Stand Duet, which display is exposed to ADB? | **A)** Only the CFD · **B)** Neither · **C)** Both displays · **D)** Only the primary MFD | **D** — Only the primary MFD | One terminal drives two displays but only the primary MFD is exposed to ADB (F151). |
+| Q332 | F152 | multiple-choice | How well could legacy UI Automator see the Stand Duet's CFD? | **A)** Fully, with a second device handle · **B)** Only in landscape mode · **C)** Not at all; it was completely blind to it · **D)** Partially, via accessibility IDs | **C** — Not at all; it was completely blind to it | F152. |
+| Q333 *(CP-M16.1)* | F150 | multiple-choice | Which Orca entity holds the Stand Duet workaround? | **A)** Card Profile · **B)** Screens · **C)** Robot Capabilities · **D)** Screen Compare Image | **D** — Screen Compare Image | F150. |
 | Q334 | F153 | multiple-choice | What does a Screen Compare Image row store? | **A)** Spatial bounding coordinates on the CFD plus the expected text string · **B)** Button coordinates in millimetres · **C)** A Gort card path · **D)** A full-resolution screenshot | **A** — Spatial bounding coordinates on the CFD plus the expected text string | F153. |
 | Q335 *(CP-M16.1)* | F154 | ordering | Order the OCR workaround's steps. | **A)** Runs Tesseract OCR · **B)** Crops it to the bounding box · **C)** Robot Controller captures a webcam screenshot · **D)** Returns a boolean match result | **C** → **B** → **A** → **D** | F154. |
 | Q336 | F154 | multiple-choice | What does the OCR workaround return to the test? | **A)** A boolean match result · **B)** An HTTP 200 · **C)** A screenshot · **D)** The recognised text | **A** — A boolean match result | F154. |
@@ -1745,13 +1745,13 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | Q339 *(CP-M16.1)* | F155 | multiple-choice | Which change would break a Screen Compare OCR check? | **A)** Running the job from Jenkins instead of locally · **B)** A Pi reboot between tests · **C)** A 10-pixel shift of the label · **D)** Switching the merchant with Laz | **C** — A 10-pixel shift of the label | A 10-pixel shift, a capitalisation change or a typo breaks it (F155). |
 | Q340 | F155 | fill-in | How many pixels of shift are enough to break the OCR suite? Type the number. | — (free text) | `10` | F155. |
 | Q341 | F155 | true-false | Changing "TOTAL" to "Total" on the CFD can break a Screen Compare check. | True · False | **True** | Capitalisation changes break the brittle OCR workaround (F155). |
-| Q342 | F156 | multiple-choice | Why is Screen Compare / OCR being phased out? | **A)** UI Automator 2.3 natively supports dual-screen element tracking · **B)** Tesseract's licence changed · **C)** The GPUs are needed for Ollama · **D)** Station Duos are being retired | **A** — UI Automator 2.3 natively supports dual-screen element tracking | F156. |
+| Q342 | F156 | multiple-choice | Why is Screen Compare / OCR being phased out? | **A)** UI Automator 2.3 natively supports dual-screen element tracking · **B)** Tesseract's licence changed · **C)** The GPUs are needed for Ollama · **D)** Stand Duets are being retired | **A** — UI Automator 2.3 natively supports dual-screen element tracking | F156. |
 | Q343 *(CP-M16.1)* | F007 | multiple-choice | What does UI Automator 2.3 add that matters most to this lab? | **A)** Native dual-screen element location tracking · **B)** Built-in OCR · **C)** iOS support · **D)** Kotlin support | **A** — Native dual-screen element location tracking | F007. |
 | Q344 | F030 | multiple-choice | Which tool do engineers use to get exact coordinates from a device screenshot? | **A)** Tesseract · **B)** Jenkins · **C)** GIMP · **D)** IntelliJ IDEA | **C** — GIMP | GIMP: open screenshot, draw a selection box, read coordinates (F030). |
 | Q345 | F212 | multiple-choice | In Pigeon screen comparisons, where do the GIMP coordinates go? | **A)** Into the test's JSON block · **B)** Into a Java locator · **C)** Into Orca's Offsets · **D)** Into config.properties | **A** — Into the test's JSON block | F212. |
 | Q346 | F212, F030 | ordering | Order a Pigeon screen-comparison set-up. | **A)** Paste them into the Pigeon JSON block · **B)** Draw a bounding box around the target text · **C)** Open the device screenshot in GIMP · **D)** Copy the coordinates | **C** → **B** → **D** → **A** | F212. |
-| Q347 | F221, F151 | multiple-choice | R2-D2's CFD (Station Duo) is ADB-blind. What kind of bot is needed to interact with it? | **A)** A physical/interactive bot · **B)** Any bot with portNumber 5555 · **C)** An ADB bot · **D)** No bot; it cannot be tested | **A** — A physical/interactive bot | Physical bots are required for ADB-blind displays (F221). |
-| Q348 | F156, F152 | true-false | With UI Automator 2.3, uia-remote can locate elements on the Station Duo's CFD natively. | True · False | **True** | UIA 2.3 natively supports dual-screen tracking (F007, F156). |
+| Q347 | F221, F151 | multiple-choice | R2-D2's CFD (Stand Duet) is ADB-blind. What kind of bot is needed to interact with it? | **A)** A physical/interactive bot · **B)** Any bot with portNumber 5555 · **C)** An ADB bot · **D)** No bot; it cannot be tested | **A** — A physical/interactive bot | Physical bots are required for ADB-blind displays (F221). |
+| Q348 | F156, F152 | true-false | With UI Automator 2.3, uia-remote can locate elements on the Stand Duet's CFD natively. | True · False | **True** | UIA 2.3 natively supports dual-screen tracking (F007, F156). |
 | Q349 | F088, F154 | multiple-choice | Where does the OCR screenshot come from? | **A)** ADB screencap of the CFD · **B)** The rig's webcam, captured by the Robot Controller · **C)** GIMP · **D)** The status tablet camera | **B** — The rig's webcam, captured by the Robot Controller | The Robot Controller captures a webcam screenshot (F154, F088). ADB can't see the CFD. |
 | Q350 | F150, F153 | multiple-choice | A legacy suite must verify text on R2-D2's CFD. Which Orca record do you create? | **A)** A Card Profile · **B)** A Screen Location · **C)** A Robot Capability · **D)** A Screen Compare Image (bounding box + expected text) | **D** — A Screen Compare Image (bounding box + expected text) | The Screen Compare Image entity stores CFD bounding coordinates and expected text (F150, F153). |
 
@@ -1835,13 +1835,13 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | FC007 | F230 | `deck.M01` | What happens to the control dashboard while a test is active? | It locks out external users. |
 | FC008 | F072, F073 | `deck.M01` | Who makes the black shelf fixtures, and how are they designed? | Prusa and Bambu Lab 3D printers; drafted in CAD from simple geometric shapes. |
 | FC009 | F054 | `deck.M02` | MFD / CFD? | Merchant Facing Device / Customer Facing Device. |
-| FC010 | F055 | `deck.M02` | Station series targets? | Station 2018, Station 2, Station Duo (Duo 1, Duo 2, upcoming Duo 3). |
-| FC011 | F056 | `deck.M02` | Mini series targets? | Mini 2, Mini 3, upcoming Mini 4. |
-| FC012 | F058 | `deck.M02` | Flex series targets? | Flex 1, Flex 2, Flex 3, Flex 4, Flex Pocket. |
-| FC013 | F059, F060 | `deck.M02` | Which devices share one testing profile, and what's different? | Flex 3, Flex 4, Flex Pocket. The Pocket omits the printer block. |
-| FC014 | F057 | `deck.M02` | Hot-swap for a printerless Station Duo 2? | Mini 3. |
-| FC015 | F061 | `deck.M02` | Which terminal is for Canada / Westers test beds? | LabSim Compact. |
-| FC016 | F062 | `deck.M02` | Which devices are upcoming? | Station Duo 3 and Mini 4. |
+| FC010 | F055 | `deck.M02` | Stand series targets? | Stand 2018, Stand 2, Stand Duet (Duet 1, Duet 2, upcoming Duet 3). |
+| FC011 | F056 | `deck.M02` | Micro series targets? | Micro 2, Micro 3, upcoming Micro 4. |
+| FC012 | F058 | `deck.M02` | Flux series targets? | Flux 1, Flux 2, Flux 3, Flux 4, Flux Pocket. |
+| FC013 | F059, F060 | `deck.M02` | Which devices share one testing profile, and what's different? | Flux 3, Flux 4, Flux Pocket. The Pocket omits the printer block. |
+| FC014 | F057 | `deck.M02` | Hot-swap for a printerless Stand Duet 2? | Micro 3. |
+| FC015 | F061 | `deck.M02` | Which terminal is for Canada / Westers test beds? | LabSim Compass. |
+| FC016 | F062 | `deck.M02` | Which devices are upcoming? | Stand Duet 3 and Micro 4. |
 | FC017 | F237 | `deck.M02` | What do the tethered test-bed labels encode? | Rig · role · environment, e.g. MEGATRON MFD DEV1, OPTIMUS CFD STG. |
 | FC018 | F238, F239 | `deck.M02` | What sits between and below the tethered screens? | Between: USB "SmartStripe Probe" dongles (green LEDs). Below: 3D-printed docks with LabSim connectivity hubs (Ethernet, USB, power). |
 | FC019 | F074 | `deck.M03` | What does the Mean Well do? | Converts 120V AC wall power to a central 24V DC rail. |
@@ -1892,14 +1892,14 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | FC064 | F114 | `deck.M07` | How many core Orca schemas? | 7 (JHipster entities). |
 | FC065 | F116 | `deck.M06` | Who built the robot-list filter UI? | Tate. |
 | FC066 | F117, F118 | `deck.M07` | Name vs Human Readable Name? | Name = system identifier. Human Readable Name = display string pushed to the status tablet. |
-| FC067 | F119, F120 | `deck.M07` | Why is Device separate from Robot? | Hardware upgrades (e.g. Flex 1 → Flex 2) leave legacy configs intact for quick rollback. |
+| FC067 | F119, F120 | `deck.M07` | Why is Device separate from Robot? | Hardware upgrades (e.g. Flux 1 → Flux 2) leave legacy configs intact for quick rollback. |
 | FC068 | F121 | `deck.M07` | Device Type stores? | Device dimensions, layout metrics, internal string definitions (an enum). |
 | FC069 | F122 | `deck.M07` | Why are Jenkins env vars ALL CAPS? | They must match the Device Type enum strings. |
 | FC070 | F123 | `deck.M07` | Robot ADB Service URL routes to? | The Pi controller. |
 | FC071 | F124 | `deck.M07` | Camera Stream URL scope? | Dedicated per Pi, or shared across 4 rigs. |
 | FC072 | F125 | `deck.M07` | Hardware-specific URLs per robot? | Dip, Tap, Swipe. |
 | FC073 | F126, F128 | `deck.M07` | When is a rig tethered in Orca? | When the MFD field is populated (USB Tethered Device Configuration: MFD/CFD relations). |
-| FC074 | F127 | `deck.M07` | Examples of tethered/nested setups? | Station 2 tethered to a Mini 2; nested Mini 3 rigs. |
+| FC074 | F127 | `deck.M07` | Examples of tethered/nested setups? | Stand 2 tethered to a Micro 2; nested Micro 3 rigs. |
 | FC075 | F129, F130 | `deck.M07` | Offsets? | Legacy mm adjustments for imprecise limit switches; mostly deprecated since Jared calibrated to true (0,0). |
 | FC076 | F131 | `deck.M08` | What does Robot Capabilities do? | Controls how Orca matches pipeline requests to physical hardware. |
 | FC077 | F132, F133 | `deck.M08` | Dynamic JSON lookups? | SDK frameworks (overseen by David); capabilities are JSON metadata in each test definition, parsed at runtime. |
@@ -1937,7 +1937,7 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | FC109 | F001 | `deck.M06` | Primary language for Orca and uia-remote? | Java (Oracle Java). |
 | FC110 | F027, F028 | `deck.M13` | IntelliJ IDEA's role? | Primary IDE: import repos, configure local properties, run test suites. |
 | FC111 | F018 | `deck.M13` | Where are the repos hosted? | GitHub: Gort, uia-remote, pigeon (branches and PRs). |
-| FC112 | F159 | `deck.M13` | Why was uia-remote created? | No framework could automate native tethered setups (Station-to-Mini, Mini-to-Mini, Station Duo). |
+| FC112 | F159 | `deck.M13` | Why was uia-remote created? | No framework could automate native tethered setups (Stand-to-Micro, Micro-to-Micro, Stand Duet). |
 | FC113 | F163, F010 | `deck.M13` | uia-remote layout? | Standard Android/Maven structure under app/src/. |
 | FC114 | F164 | `deck.M13` | app/src/main? | Production/application registration code. QA never modifies it. |
 | FC115 | F165 | `deck.M13` | app/src/test? | Local unit tests + the multi-device execution runner. |
@@ -1947,7 +1947,7 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | FC119 | F172, F173 | `deck.M13` | Screen class rule? | Every screen, pop-up or window gets its own Java class extending BaseTest. |
 | FC120 | F174 | `deck.M13` | What does BaseTest provide? | Global setup, teardown, instance variables. |
 | FC121 | F175, F176 | `deck.M13` | Zone 1 vs Zone 2? | Zone 1: element locators. Zone 2: helper/action methods (device-specific behaviour). |
-| FC122 | F177 | `deck.M13` | open(String appName) scrolling? | Flex: vertical. Mini/Station: horizontal. |
+| FC122 | F177 | `deck.M13` | open(String appName) scrolling? | Flux: vertical. Micro/Stand: horizontal. |
 | FC123 | F178, F179, F180 | `deck.M13` | Mandatory screen methods? | waitForScreen() (wait for render) and isScreenPresent() (boolean: in focus?). |
 | FC124 | F182 | `deck.M14` | Test safe state? | Start from HomeScreen; teardown forces back to HomeScreen. |
 | FC125 | F183, F184 | `deck.M14` | Tax test Step 1 (MFD_O1)? | Open Register, add "Tax Item 5", click "Review Order"; Orca routes to Callus to load a simulated swipe card. |
@@ -1955,8 +1955,8 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | FC127 | F186, F187 | `deck.M14` | Tax test Steps 3 and 4? | MFD_O2: click "Pay" and "Charge". Step 4: payment prompt finalised on the Customer display. |
 | FC128 | F188 | `deck.M14` | Local runs: who sets config.properties? | You, manually. |
 | FC129 | F190 | `deck.M14` | runType for multi-device? | tethered |
-| FC130 | F191, F192, F193 | `deck.M14` | MFD/CFD IP keys, and the Duo rule? | merchantFacingDeviceIp / customerFacingDeviceIp. On a Station Duo both are the same IP. |
-| FC131 | F194, F195 | `deck.M14` | serial and deviceType? | serial = primary terminal's hardware serial. deviceType = Mini / Flex / Station (layout/scroll logic). |
+| FC130 | F191, F192, F193 | `deck.M14` | MFD/CFD IP keys, and the Duet rule? | merchantFacingDeviceIp / customerFacingDeviceIp. On a Stand Duet both are the same IP. |
+| FC131 | F194, F195 | `deck.M14` | serial and deviceType? | serial = primary terminal's hardware serial. deviceType = Micro / Flux / Stand (layout/scroll logic). |
 | FC132 | F196 | `deck.M14` | theme? | Locked to avocado (legacy toggles deprecated). |
 | FC133 | F197 | `deck.M14` | kernelType? | Locked to CPA (Core Payments Application), replacing SPA (Secure Processor Application). |
 | FC134 | F201 | `deck.M14` | Extra config keys? | Device unlock passcodes, backend testing environment targets, active robot's registration name. |
@@ -1969,7 +1969,7 @@ Key names `runType`, `merchantFacingDeviceIp`, `customerFacingDeviceIp`, `serial
 | FC141 | F208, F209 | `deck.M15` | Pigeon's JSON pain? | No linter: hunt missing commas/brackets by hand; copy-paste known-good blocks. |
 | FC142 | F210, F211 | `deck.M15` | Log says failed at "select print"? | Last step before the printer-payload timeout. Usually stale coordinates made the arm miss Print. |
 | FC143 | F212, F030 | `deck.M16` | GIMP's job? | Open screenshot, draw bounding box around text, copy exact coordinates (into Pigeon JSON / screen compare). |
-| FC144 | F150, F151, F152 | `deck.M16` | The Station Duo problem? | One terminal, two displays; only the MFD is on ADB. Legacy UIA was blind to the CFD. |
+| FC144 | F150, F151, F152 | `deck.M16` | The Stand Duet problem? | One terminal, two displays; only the MFD is on ADB. Legacy UIA was blind to the CFD. |
 | FC145 | F153, F154, F029 | `deck.M16` | The OCR workaround? | Stores CFD bounding box + expected text; Pi captures webcam shot, crops, runs Tesseract, returns boolean. |
 | FC146 | F155 | `deck.M16` | Why is OCR brittle? | A 10-pixel shift, a capitalisation change or a typo breaks it. |
 | FC147 | F156 | `deck.M16` | Why is OCR being phased out? | UI Automator 2.3 natively supports dual-screen element tracking. |
@@ -2020,7 +2020,7 @@ quota can't be met otherwise.
 |---|---|---|---|
 | `CERT-R1` | M01 4 · M02 6 · M03 6 · M04 8 · M05 6 | core 75 % · supporting 25 % · trivia 0 | F229 (terminals & Collis on AC strips) · F232 (Park All) · F086 (Pis on 5V 10A) · F231 (yellow banner) |
 | `CERT-R2` | M06 12 · M07 9 · M08 7 · M09 7 · M10 5 | core 75 % · supporting 25 % | F100 (5 statuses) · F102 (named Unavailable) · F107 + F111 (Connection Failed → Jared) · F113 (Reserved) · F120 (device decoupling) · F218 (ADB bots: PIN-bypass merchants) |
-| `CERT-R3` | M11 6 · M12 5 · M13 12 · M14 10 · M15 6 · M16 6 | core 80 % · supporting 20 % | F198 + F200 (5444, collisions) · F164 (never modify main) · F180 (mandatory screen methods) · F193 (Duo same IP) · F197 (CPA) · F210 (misleading "select print") |
+| `CERT-R3` | M11 6 · M12 5 · M13 12 · M14 10 · M15 6 · M16 6 | core 80 % · supporting 20 % | F198 + F200 (5444, collisions) · F164 (never modify main) · F180 (mandatory screen methods) · F193 (Duet same IP) · F197 (CPA) · F210 (misleading "select print") |
 | `CERT-R4` | M01–M18: 3 each (54) + 6 extra core from the player's weakest modules (lowest Leitner mastery) | core 80 % · supporting 20 % | F098 · F229 · F232 · F198 · F107 · F217 · F122 · F171 |
 | `CERT-R5` | M01–M18: 4 each (72) + 8 trivia from any module | core 65 % · supporting 25 % · trivia 10 % | All R1–R4 critical facts (each appears once) |
 
@@ -2036,11 +2036,11 @@ Module quotas take precedence over the tier-mix target: draw the quota per modul
 | CERT-R2 | P2-1 | A random rig's Pi is unplugged | Detect Connection Failed, read Notes, escalate to Jared with the endpoint | Correct escalation choice; status never manually overridden | F107–F111 |
 | CERT-R2 | P2-2 | JOHNNY-5-style hardware swap on a random rig | Create Device, relink Robot Device, keep old Device; fix Human Readable Name | Old device untouched; robot linked; tablet shows the right HRN | F117–F120 |
 | CERT-R2 | P2-3 | A firmware drop adds a conditional receipt option on one device type | Measure, create the 5-option map, keep the 4-option map, PR → merge | Both maps exist, coordinates ±0.5 mm | F213–F216, F142 |
-| CERT-R2 | P2-4 | Canadian PIN job queued with an ADB bot selected | Re-target to the Compact touch robot and choose Interac | Job runs on a physical bot with `INTERAC_CA_DIP` | F217–F220, F225 |
+| CERT-R2 | P2-4 | Canadian PIN job queued with an ADB bot selected | Re-target to the Compass touch robot and choose Interac | Job runs on a physical bot with `INTERAC_CA_DIP` | F217–F220, F225 |
 | CERT-R3 | P3-1 | Broken `config.properties` (port 5555, wrong theme/kernel, empty CFD IP) for a tethered rig | Fix the file, reserve the rig, run TaxTest, release the rig | Validator 11/11; test passes; rig Reserved during run and Available after; no coworker device touched | F188–F201, F112, F183–F187 |
 | CERT-R3 | P3-2 | Pigeon test with a missing bracket, then a "select print" timeout | Fix the JSON; diagnose stale coordinates via camera; approve coordinate PR | Build green; diagnosis choice correct | F208–F211 |
-| CERT-R3 | P3-3 | Station Duo test using Screen Compare fails after a 10 px shift | Replace it with a UIA 2.3 dual-screen assertion; both IPs equal in config | Run green with the layout shifted | F151–F156, F193 |
-| CERT-R3 | P3-4 | New screen class without mandatory methods + Flex scroll bug | Add `waitForScreen()` / `isScreenPresent()`; fix `open()` | 3 consecutive green runs on a Flex and a Mini | F177–F180 |
+| CERT-R3 | P3-3 | Stand Duet test using Screen Compare fails after a 10 px shift | Replace it with a UIA 2.3 dual-screen assertion; both IPs equal in config | Run green with the layout shifted | F151–F156, F193 |
+| CERT-R3 | P3-4 | New screen class without mandatory methods + Flux scroll bug | Add `waitForScreen()` / `isScreenPresent()`; fix `open()` | 3 consecutive green runs on a Flux and a Micro | F177–F180 |
 | CERT-R4 | P4 shift | 5 incidents drawn from §6 (≥ 1 hardware, ≥ 1 Orca, ≥ 1 code/config) | Resolve all | All resolved in 20 game-min, ≤ 1 strike (wrong fix, fried hardware, status override, coworker device touched) | per incident |
 | CERT-R5 | P5 shift | 8 incidents drawn from §6, two simultaneous at minute 10, no HUD objective text | Resolve all | All resolved in 30 game-min, 0 strikes | per incident |
 
@@ -2074,22 +2074,22 @@ incident must only be resolvable by applying the listed facts.
 | `INC-DEVICE-UPGRADE` | M07 | Hardware swapped on a rig | New Device + relink; keep old | Editing old Device in place | F119, F120 |
 | `INC-TETHER-MISSING` | M07 | Tethered rig running as standalone | Populate MFD/CFD | Changing runType in Orca (no such field) | F126, F128 |
 | `INC-MERCHANT-KEY` | M08 | Go SDK build fails: missing API Key | Merchant Config → Edit → fill API Key | Hardcoding the key in the job | F137–F139 |
-| `INC-CAPABILITY-MISMATCH` | M08 | Printer test matched to Flex Pocket | Add printer capability (dynamic JSON) | Setting the Pocket Offline | F059, F060, F131, F132 |
+| `INC-CAPABILITY-MISMATCH` | M08 | Printer test matched to Flux Pocket | Add printer capability (dynamic JSON) | Setting the Pocket Offline | F059, F060, F131, F132 |
 | `INC-COORD-DRIFT` | M09 | UI update shifts buttons | Measure, new map, PR → merge | Using Offsets to compensate | F129, F130, F213–F216 |
 | `INC-PIN-ON-ADB-BOT` | M09 | PIN test scheduled on ADB bot | Re-target to a physical bot | Changing merchant to bypass PIN for a Canadian test | F217–F221 |
 | `INC-CALLUS-DOWN` | M10 | Dip fails, Callus box unreachable | Escalate to Jared (Callus box), not a code fix | Editing card paths | F049, F050, F110 |
 | `INC-CARD-PATH` | M10 | Dip profile path points at a missing Gort file | Fix the path to the Gort file; wait for/force the clone | Pasting Track Data into a dip profile | F145, F147, F148 |
-| `INC-ENV-CASE` | M11 | `DEVICE_TYPE=mini_3` | Use `MINI_3` | Editing the enum in Orca | F121, F122 |
+| `INC-ENV-CASE` | M11 | `DEVICE_TYPE=micro_3` | Use `MICRO_3` | Editing the enum in Orca | F121, F122 |
 | "ADB Speedrun" drill | M12 | Tap a named element on a random device | connect :5444 → dump → tap | Port 5555 | F024–F026, F199 |
 | "Where Does It Go?" drill | M13 | Files rain down | Sort to main/test/androidTest packages | Anything into main | F164–F169 |
 | "POM Doctor" drill | M13 | Broken screen classes | Add mandatory methods, fix scroll direction, put locators in Zone 1 | — | F173–F180 |
 | `INC-PORT-COLLISION` | M14 | Coworker device acting up | Fix portNumber=5444 | Unplugging the coworker device | F198–F200 |
 | `INC-CONFIG-LOCKS` | M14 | Local run fails on theme/kernel | `theme=avocado`, `kernelType=CPA` | `SPA`, any other theme | F196, F197 |
-| `INC-DUO-SAME-IP` | M14 | Duo test can't find CFD | Set both IPs to the same address | Setting CFD IP to the Pi | F193 |
+| `INC-DUET-SAME-IP` | M14 | Duet test can't find CFD | Set both IPs to the same address | Setting CFD IP to the Pi | F193 |
 | "Comma Hunt" drill | M15 | Pigeon JSON with 1–3 syntax errors | Fix by hand / paste a known-good block | — | F208, F209 |
 | "Log Detective" drill | M15 | Misleading Jenkins logs | Pick the true root cause | — | F210, F211 |
 | `INC-OCR-BRITTLE` | M16 | Screen Compare false after a 10 px shift / case change | Migrate to a UIA 2.3 assertion (or re-measure in GIMP for legacy Pigeon) | Disabling the check | F153–F156, F212 |
-| `INC-DUO-BLIND` | M16 | Engineer asks for an ADB tap on the Duo CFD | Use a physical bot or a UIA 2.3 dual-screen locator | ADB-only approach | F151, F152, F221 |
+| `INC-DUET-BLIND` | M16 | Engineer asks for an ADB tap on the Duet CFD | Use a physical bot or a UIA 2.3 dual-screen locator | ADB-only approach | F151, F152, F221 |
 
 ---
 
@@ -2123,7 +2123,7 @@ env block and staged Laz/Ubi output; Pipeline script viewer; failure messages ex
 `grep -o/-c`; Windows `schtasks /query /tn …`, `dir`.
 
 **IntelliJ (`app.intellij`)**: Get from VCS; project tree with drag-to-move; editor click-zones; run configs
-(`HomeScreenTest`, `ReceiptScreenTest`, `TaxTest`, `TaxTestDuo`); green/red run results; `config.properties` validator;
+(`HomeScreenTest`, `ReceiptScreenTest`, `TaxTest`, `TaxTestDuet`); green/red run results; `config.properties` validator;
 JSON editor **without inspections for the pigeon project**; Alt+Enter "Implement mandatory screen methods".
 
 **GitHub (`app.github`)**: repos `gort`, `uia-remote`, `pigeon`; Code → clone URL; file browser; create PR;
@@ -2153,7 +2153,7 @@ review with Approve / Request changes + reason; scripted merges by Jared.
 **Default topic tag per module** (refine in `src/content/tags.ts` if needed): M01 `lab.orientation` · M02 `devices` ·
 M03 `power.rails` · M04 `robots.mechanics` · M05 `pi.controller` · M06 `orca.status` · M07 `orca.entities` ·
 M08 `orca.capabilities` · M09 `orca.screens` · M10 `cards` · M11 `jenkins` · M12 `adb.port` · M13 `uia.pom` ·
-M14 `uia.config` · M15 `pigeon` · M16 `duo.ocr` · M17 `infra.ai` · M18 `teams.history`.
+M14 `uia.config` · M15 `pigeon` · M16 `duet.ocr` · M17 `infra.ai` · M18 `teams.history`.
 
 **Content tests** (`npm run lint:content`) must assert the same invariants this document was checked against:
 every `F` referenced exists; every core fact has ≥ 2 quiz items and every supporting/trivia fact ≥ 1; every fact is

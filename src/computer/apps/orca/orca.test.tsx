@@ -42,7 +42,7 @@ describe('Orca robots list (Apps §2.4)', () => {
     const { mutate } = await import('@/core/store');
     mutate((s) => {
       const w = Object.values(s.lab.orca.robots).find((r) => r.name === 'wall-e')!;
-      w.checkout = { buildId: 'Java/uia-remote-regression-flex#4127', jobId: 'Java/uia-remote-regression-flex', byName: false, startedMs: s.lab.time.nowMs, statusAtCheckout: 'AVAILABLE', kind: 'jenkins' };
+      w.checkout = { buildId: 'Java/uia-remote-regression-flux#4127', jobId: 'Java/uia-remote-regression-flux', byName: false, startedMs: s.lab.time.nowMs, statusAtCheckout: 'AVAILABLE', kind: 'jenkins' };
     });
     const host = await open('/robot');
     const btn = m!.container.querySelector('[data-hint="orca.robots.filter.status:AVAILABLE"]');
@@ -135,10 +135,10 @@ describe('Orca merchant config (Apps §2.8)', () => {
 
 describe('Orca screens (Apps §2.9)', () => {
   it('runs a test tap through sim.orca.xyTouch and shows the raw response', async () => {
-    const screen = Object.values(getState().lab.orca.screens).find((s) => s.name === 'TENDER_CASH_DISCOUNT' && s.deviceType === 'FLEX_3')!;
+    const screen = Object.values(getState().lab.orca.screens).find((s) => s.name === 'TENDER_CASH_DISCOUNT' && s.deviceType === 'FLUX_3')!;
     await open(`/screen/${screen.id}/view`);
-    expect(cap.of('orca.screen.viewed')[0]).toMatchObject({ name: 'TENDER_CASH_DISCOUNT', deviceType: 'FLEX_3' });
-    expect(cap.of('orca.screenLocations.viewed')[0]).toMatchObject({ screen: 'TENDER_CASH_DISCOUNT', deviceType: 'FLEX_3', count: 2 });
+    expect(cap.of('orca.screen.viewed')[0]).toMatchObject({ name: 'TENDER_CASH_DISCOUNT', deviceType: 'FLUX_3' });
+    expect(cap.of('orca.screenLocations.viewed')[0]).toMatchObject({ screen: 'TENDER_CASH_DISCOUNT', deviceType: 'FLUX_3', count: 2 });
     await click(m!.container.querySelector('[data-hint="orca.screenLocation.testTap:Cash"]'));
     const spy = vi.spyOn(sim.orca, 'xyTouch');
     await click(byText(m!.container, '.orca-popover button', 'Tap'));

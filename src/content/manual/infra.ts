@@ -32,7 +32,7 @@ export const INFRA_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
 ## Quick answers
 
 - *Is Orca written in Go?* No — Java on Spring Boot. Go is for the Go SDK.
-- *Why UI Automator 2.3 and not an older version?* Dual-screen element tracking for the Station Duo.
+- *Why UI Automator 2.3 and not an older version?* Dual-screen element tracking for the Stand Duet.
 - *Where do I see Maven?* In uia-remote's \`app/src/{main,test,androidTest}\` layout.
 `,
   },
@@ -76,7 +76,7 @@ export const INFRA_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
 | Hardware control on Windows Intel NUCs | Retired {F068} |
 | Ollama vision checks on webcam streams | Proof of concept {F032} |
 | Gen 2 Software PIN Bypass with the Core OS Team | In progress (partnership) {F222} |
-| Station Duo Screen Compare / OCR | Phasing out {F156} |
+| Stand Duet Screen Compare / OCR | Phasing out {F156} |
 | Repos on GitHub (Gort, uia-remote, pigeon) | Today {F018} |
 
 ## Developer tooling
@@ -106,13 +106,13 @@ GitHub hosts the repos {F018}; IntelliJ IDEA is the primary IDE {F027}; Intel NU
     factIds: ["F157", "F158", "F159", "F160", "F161", "F162", "F052", "F053", "F043", "F042", "F222", "F226", "F135", "F253", "F254", "F261"],
     tags: ["teams.history", "uia.history", "semi.paydisplay"],
     related: ["uia-remote-structure", "pigeon-lstr", "card-testing-philosophy", "who-is-who"],
-    keywords: ["Semi", "Sedi", "QA", "Lester", "IPX", "Integrated Payment Experience", "PayCore", "LabSim Dining", "Core OS", "history", "USB Pay Display", "Secure Network Pay Display", "Contact Canada", "first assignment", "Compact", "UI Automator", "native apps"],
+    keywords: ["Semi", "Sedi", "QA", "Lester", "IPX", "Integrated Payment Experience", "PayCore", "LabSim Dining", "Core OS", "history", "USB Pay Display", "Secure Network Pay Display", "Contact Canada", "first assignment", "Compass", "UI Automator", "native apps"],
     practice: ["INC47", "INC58", "INC61"],
     body: `## The timeline
 
 1. **Semi Team** — historically developed third-party POS SDKs and the remote pay display apps {F157}: **USB Pay Display** and **Secure Network Pay Display**, which link MFDs and CFDs over USB or the local network {F052} {F053}.
 2. **Sedi (QA) Team** — tested the Semi Team's apps using the legacy **Lester** framework {F158}. Lester evolved into **Pigeon** {F043} (the name is a pun on "pidgin language" {F042}).
-3. **uia-remote** — {{morgan}} created it because no prior framework could automate native tethered setups: Station-to-Mini, Mini-to-Mini and Station Duo {F159}.
+3. **uia-remote** — {{morgan}} created it because no prior framework could automate native tethered setups: Stand-to-Micro, Micro-to-Micro and Stand Duet {F159}.
 4. **IPX (Integrated Payment Experience) Team** — uia-remote is now integrated with IPX {F160}, testing standalone and tethered devices across the native apps **Register, Orders, Authorizations, Sale, Transactions and Setup** {F161}.
 5. **PayCore Team** — adopted uia-remote for apps like **LabSim Dining** {F162}, and runs exhaustive Visa/Discover/AmEx card matrices {F226}. PayCore is only now building its third automated shelf and sometimes uses this lab's robots remotely {F261}.
 6. **Core OS Team** — partnering on the Gen 2 Software PIN Bypass {F222}.
@@ -132,7 +132,7 @@ Contact Canada automation scripts run on the Westers test beds and use both capa
 ## Where the team is heading
 
 - The team is **moving away from Pigeon toward UI Automator** (uia-remote), driven by a mandate to **test payments inside the native apps** {F253}.
-- A new engineer's **first assignment** is the **Compact (Canadian-market) test workflow in UI Automator** {F254}.
+- A new engineer's **first assignment** is the **Compass (Canadian-market) test workflow in UI Automator** {F254}.
 
 > **Illustrative (sim only):** The reference calls the uia-remote author "the presenter"; the game's name for that person is {{morgan}}†.
 `,

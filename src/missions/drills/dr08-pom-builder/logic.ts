@@ -42,7 +42,7 @@ const SCREENS: ScreenDef[] = [
       ['ordersIcon', 'By.text("Orders")'],
       ['clock', 'By.res("com.labsim.launcher:id/clock")'],
     ],
-    helpers: [{ name: 'open', code: 'public void open(String appName) { waitForScreen(); if (deviceType == DeviceType.FLEX) scrollVerticallyTo(appName); else scrollHorizontallyTo(appName); … }', why: 'open(appName) is a helper: vertical scrolling on Flex, horizontal on Mini/Station.' }],
+    helpers: [{ name: 'open', code: 'public void open(String appName) { waitForScreen(); if (deviceType == DeviceType.FLUX) scrollVerticallyTo(appName); else scrollHorizontallyTo(appName); … }', why: 'open(appName) is a helper: vertical scrolling on Flux, horizontal on Micro/Stand.' }],
   },
   {
     cls: 'RegisterHomeScreen',
@@ -111,7 +111,7 @@ export interface BuildData {
 export type RepairId = 'swap-scroll' | 'add-wait' | 'add-present' | 'move-locator' | 'fix-package' | 'add-extends' | 'move-test' | 'rename-class';
 
 export const REPAIR_TEXT: Record<RepairId, string> = {
-  'swap-scroll': 'Swap the scroll branches in open(): Flex → vertical, Mini/Station → horizontal',
+  'swap-scroll': 'Swap the scroll branches in open(): Flux → vertical, Micro/Stand → horizontal',
   'add-wait': 'Add the mandatory waitForScreen()',
   'add-present': 'Add the mandatory isScreenPresent()',
   'move-locator': 'Move the locator out of Zone 2 into Zone 1',
@@ -122,7 +122,7 @@ export const REPAIR_TEXT: Record<RepairId, string> = {
 };
 
 const REPAIR_WHY: Record<RepairId, string> = {
-  'swap-scroll': 'open(appName) scrolls vertically on Flex and horizontally on Mini or Station.',
+  'swap-scroll': 'open(appName) scrolls vertically on Flux and horizontally on Micro or Stand.',
   'add-wait': 'waitForScreen() is mandatory on every screen class.',
   'add-present': 'isScreenPresent() is mandatory on every screen class.',
   'move-locator': 'Zone 1 holds the element locators; Zone 2 holds helper/action methods.',
@@ -209,7 +209,7 @@ export function doctorSource(s: ScreenDef, bugs: readonly RepairId[]): string[] 
   if (s.cls === 'HomeScreen') {
     const flex = has('swap-scroll') ? 'scrollHorizontallyTo(appName);' : 'scrollVerticallyTo(appName);  ';
     const other = has('swap-scroll') ? 'scrollVerticallyTo(appName);  ' : 'scrollHorizontallyTo(appName);';
-    L.push('    public void open(String appName) {', '        waitForScreen();', '        if (deviceType == DeviceType.FLEX) {', `            ${flex}  // Flex`, '        } else {', `            ${other}  // Mini, Station`, '        }', '        device.findObject(By.text(appName)).click();', '    }', '');
+    L.push('    public void open(String appName) {', '        waitForScreen();', '        if (deviceType == DeviceType.FLUX) {', `            ${flex}  // Flux`, '        } else {', `            ${other}  // Micro, Stand`, '        }', '        device.findObject(By.text(appName)).click();', '    }', '');
   }
   for (const h of s.helpers.filter((x) => x.name !== 'open')) L.push(`    ${h.code.replace(/ \{ /, ' {\n        ').replace(/ \}$/, '\n    }')}`, '');
   if (has('move-test')) L.push('    @Test', '    public void totalsMatch() {', '        assertEquals("$10.83", cfdTotals.total());', '    }', '');

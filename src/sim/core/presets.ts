@@ -30,11 +30,11 @@ const PIGEON_SWIPE = 'tests/sale/swipe_sale_print.json';
 
 /** Sim §4.4.2 "At reset (in order)" per Academy module. */
 export const ACADEMY_SCENARIOS: Record<string, ScenarioItem[]> = {
-  M01: [{ faultId: 'rig.testRunning', params: { rig: 'wall-e', job: 'Java/uia-remote-regression-flex', number: 4120 } }],
+  M01: [{ faultId: 'rig.testRunning', params: { rig: 'wall-e', job: 'Java/uia-remote-regression-flux', number: 4120 } }],
   M02: [],
   M03: [
     { faultId: 'fuse.blown', params: { fuse: 'F-RACKB-5V' } },
-    { op: 'power.addLoad', params: { id: 'psu-flex4-new', label: 'New Flex 4 power brick', expects: 'AC-BRICK-18V', drawA: 0.5 } },
+    { op: 'power.addLoad', params: { id: 'psu-flux4-new', label: 'New Flux 4 power brick', expects: 'AC-BRICK-18V', drawA: 0.5 } },
     { op: 'power.addLoad', params: { id: 'psu-collis-spare', label: 'Spare Collis probe PSU', expects: 'AC-BRICK-18V', drawA: 0.3 } },
   ],
   M04: [],
@@ -42,7 +42,7 @@ export const ACADEMY_SCENARIOS: Record<string, ScenarioItem[]> = {
   M06: [],
   M07: [
     { faultId: 'orca.hrnTypo', params: { robot: 'johnny-5' } },
-    { op: 'device.swap', params: { rig: 'johnny-5', deviceId: 'dev-spare-flex2' } },
+    { op: 'device.swap', params: { rig: 'johnny-5', deviceId: 'dev-spare-flux2' } },
     { faultId: 'orca.urlWrong', params: { robot: 'johnny-5', field: 'tap', value: '' } },
     { faultId: 'orca.tetherCleared', params: { robot: 'optimus' } },
     { faultId: 'orca.offsets', params: { robot: 'bumblebee', yMm: 1.5 } },
@@ -53,12 +53,12 @@ export const ACADEMY_SCENARIOS: Record<string, ScenarioItem[]> = {
   ],
   M09: [
     { op: 'flag.set', params: { flag: 'receiptQrFeature', value: false } },
-    { faultId: 'receipt.qrRollout', params: { devices: ['dev-eve-flex4'] } },
-    { faultId: 'orca.missingReceiptMap', params: { deviceType: 'FLEX_4' } },
-    { op: 'repo.deleteFile', params: { repo: 'gort', path: 'config/screen-locations/FLEX_4/RECEIPT_OPTIONS_5.json', by: 'jared', message: 'Remove unverified FLEX_4 5-option map' } },
+    { faultId: 'receipt.qrRollout', params: { devices: ['dev-eve-flux4'] } },
+    { faultId: 'orca.missingReceiptMap', params: { deviceType: 'FLUX_4' } },
+    { op: 'repo.deleteFile', params: { repo: 'gort', path: 'config/screen-locations/FLUX_4/RECEIPT_OPTIONS_5.json', by: 'jared', message: 'Remove unverified FLUX_4 5-option map' } },
   ],
   M10: [],
-  M11: [{ faultId: 'jenkins.envCase', params: { job: 'Java/uia-remote-regression-flex', value: 'flex_3' } }],
+  M11: [{ faultId: 'jenkins.envCase', params: { job: 'Java/uia-remote-regression-flux', value: 'flux_3' } }],
   M12: [],
   M13: [
     { faultId: 'uia.scrollSwapped', params: { mode: 'swapped' } },
@@ -78,7 +78,7 @@ export const ACADEMY_SCENARIOS: Record<string, ScenarioItem[]> = {
   M16: [
     { op: 'github.unmergePr', params: { repo: 'uia-remote', number: 398 } },
     { op: 'orca.deleteEntity', params: { entity: 'screenCompareImage', name: 'CFD_TOTAL' } },
-    { op: 'device.stage', params: { device: 'dev-r2-d2-duo', stage: 'review-order' } },
+    { op: 'device.stage', params: { device: 'dev-r2-d2-duet', stage: 'review-order' } },
     { op: 'repo.clone', params: { repo: 'uia-remote' } },
     { op: 'config.write', params: { fixture: 'target', robot: 'megatron' } },
     { op: 'repo.commitFixture', params: { repo: 'pigeon', path: PIGEON_SWIPE, fixture: 'm16-with-compare', by: 'morgan', message: 'Add CFD total screen compare' } },

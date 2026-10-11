@@ -20,8 +20,8 @@ import type { AnyEventMatcher, Condition, NpcKey, ScriptAction, SetupOpSpec, Tea
 /* ───────────────────────────── ids used by several lessons ───────────────────────────── */
 
 export const JOB = {
-  regressionFlex: 'Java/uia-remote-regression-flex',
-  regressionMini: 'Java/uia-remote-regression-mini',
+  regressionFlux: 'Java/uia-remote-regression-flux',
+  regressionMicro: 'Java/uia-remote-regression-micro',
   tetheredTax: 'Java/uia-remote-tethered-tax',
   goSdkSmoke: 'Java/go-sdk-sale-smoke',
   lazSwap: 'Java/laz-oobe-merchant-swap',

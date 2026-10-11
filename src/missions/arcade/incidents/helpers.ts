@@ -47,13 +47,13 @@ export const pi = (b: IncidentBinding): string => v(b, 'pi');
 export const piIp = (b: IncidentBinding): string => v(b, 'piIp');
 /** Robot Controller health endpoint (`http://10.42.10.11:8000/health`). */
 export const healthUrl = (b: IncidentBinding): string => `http://${piIp(b)}:8000/health`;
-/** Robot Device runtime id (`dev-wall-e-flex3`). */
+/** Robot Device runtime id (`dev-wall-e-flux3`). */
 export const dev = (b: IncidentBinding): string => v(b, 'dev');
-/** Orca device-row name (`wall-e-flex3`). */
+/** Orca device-row name (`wall-e-flux3`). */
 export const deviceRow = (b: IncidentBinding): string => v(b, 'device');
 /** Device IP (`10.42.30.11`). */
 export const deviceIp = (b: IncidentBinding): string => v(b, 'deviceIp');
-/** Device Type enum value (`FLEX_3`). */
+/** Device Type enum value (`FLUX_3`). */
 export const deviceType = (b: IncidentBinding): string => v(b, 'deviceType');
 /** Callus box host id (`minix-01`). */
 export const box = (b: IncidentBinding): string => v(b, 'box');

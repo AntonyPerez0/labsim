@@ -63,7 +63,7 @@ export const WHO_ITEMS: readonly DrillItem<CallData>[] = [
     ref: 'Ref §4.2',
   }),
   c('jared', 'A coordinate PR for the receipt screens needs merging.', `${N.jared} merged the coordinate PR that ended the 48-hour receipt QR regression — coordinate PRs go to ${N.jared}.`, { facts: ['F214'], tags: ['receipt.qr'], ref: 'Ref §5' }),
-  c('self', 'Your pipeline was started with `DEVICE_TYPE=flex_3`.', 'Device Type is an enum, so Jenkins env vars must be ALL CAPS: fix it to FLEX_3 yourself and re-run.', { facts: ['F122'], tags: ['jenkins.envvars', 'orca.devicetype'], ref: 'Ref §3.2', doInstead: 'Re-run with DEVICE_TYPE=FLEX_3.' }),
+  c('self', 'Your pipeline was started with `DEVICE_TYPE=flux_3`.', 'Device Type is an enum, so Jenkins env vars must be ALL CAPS: fix it to FLUX_3 yourself and re-run.', { facts: ['F122'], tags: ['jenkins.envvars', 'orca.devicetype'], ref: 'Ref §3.2', doInstead: 'Re-run with DEVICE_TYPE=FLUX_3.' }),
   c('jared', "WALL-E is Connection Failed; the Pi's ACT LED is frozen and ssh times out.", `A crashed Pi board is a Connection Failed hardware cause — escalate to ${N.jared} for hardware intervention.`, {
     facts: ['F110', 'F111'],
     tags: ['orca.status.connfailed', 'hw.pi'],
@@ -72,7 +72,7 @@ export const WHO_ITEMS: readonly DrillItem<CallData>[] = [
   c('tate', 'You want a new filter on the Orca robot list (e.g. by environment).', `${N.tate} built the custom UI filtering for the Robot list.`, { facts: ['F116'], tags: ['orca.robot'], ref: 'Ref §3.2' }),
   c('self', 'Your local config.properties still says `portNumber=5555`.', 'portNumber is locked to 5444; 5555 is the ADB default that hijacked coworkers\' desk devices. Change it yourself.', { facts: ['F198', 'F200'], tags: ['uia.config', 'adb.port'], ref: 'Ref §4.5', doInstead: 'Set portNumber=5444.' }),
   c('jared', 'BUMBLEBEE still has a legacy 1.5 mm Offset — who calibrated the lab to a true (0,0)?', `${N.jared} calibrated the lab hardware to a true (0,0) origin, which made Offsets mostly deprecated.`, { facts: ['F130'], tags: ['orca.offsets'], ref: 'Ref §3.2' }),
-  c('morgan', 'A new hire asks why uia-remote exists at all when Lester and Pigeon were already there.', `${N.morgan} created uia-remote because no prior framework could automate native tethered setups (Station-to-Mini, Mini-to-Mini, Station Duo).`, { facts: ['F159'], tags: ['uia.history'], ref: 'Ref §4.1' }),
+  c('morgan', 'A new hire asks why uia-remote exists at all when Lester and Pigeon were already there.', `${N.morgan} created uia-remote because no prior framework could automate native tethered setups (Stand-to-Micro, Micro-to-Micro, Stand Duet).`, { facts: ['F159'], tags: ['uia.history'], ref: 'Ref §4.1' }),
   c('david', 'Which person oversees the frameworks whose capabilities live inside the test definition?', `That's ${N.david} — SDK frameworks with dynamic JSON capability lookups.`, { facts: ['F133'], tags: ['orca.capabilities'], ref: 'Ref §3.2' }),
   c('self', '`theme=classic` and `kernelType=SPA` in your config.properties.', 'theme is locked to avocado and kernelType to CPA (SPA is legacy). Your file, your fix.', { facts: ['F196', 'F197'], tags: ['uia.config'], ref: 'Ref §4.5', doInstead: 'Set theme=avocado and kernelType=CPA.' }),
   c('jared', 'Four Rack B rigs went Connection Failed at once and all four Pis are completely dark.', `Shared power path (likely the Rack B 5 V inline fuse) — hardware intervention: escalate to ${N.jared}.`, { facts: ['F087', 'F111'], tags: ['power.fuses', 'orca.status.connfailed'] }),

@@ -161,7 +161,7 @@ export const M17: LessonDef = {
       success: minigameDone('roadmap-sort', 8),
       hints: [
         { afterS: 60, effect: 'text', text: 'Orca still runs on the on-prem VM today; Docker on GCP is the plan.' },
-        { afterS: 120, effect: 'text', text: 'The NUCs no longer control hardware, and Station Duo OCR is being phased out for UI Automator 2.3.' },
+        { afterS: 120, effect: 'text', text: 'The NUCs no longer control hardware, and Stand Duet OCR is being phased out for UI Automator 2.3.' },
       ],
       factIds: ['F022', 'F023', 'F068', 'F032', 'F222', 'F156', 'F018'],
     },

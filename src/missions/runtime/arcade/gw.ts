@@ -50,7 +50,7 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
       det(on('device.fried'), (_s, p) => /dc|rail|regulator|terminal|24 ?v|plug/i.test(String(pl(p).cause ?? ''))),
     ],
     teach: {
-      whatHappened: 'The Flex fried on the 24 V tap.',
+      whatHappened: 'The Flux fried on the 24 V tap.',
       why: 'LabSim devices draw an irregular 18 V; they bypass the DC rails and use commercial AC strips. (Ref §6)',
       doInstead: "Free an outlet on the AC strip; use the device's own PSU.",
       ref: 'Ref §6',
@@ -191,7 +191,7 @@ export const GLOBAL_WRONG_ACTIONS: readonly GlobalWrongActionDef[] = [
     strike: 'conditional',
     strikeWhen: (_s, p) => String(pl(p).target ?? pl(p).line ?? '').includes('10.42.60.') || pl(p).coworker === true || pl(p).by === 'terminal' || pl(p).by === 'runner',
     tags: ['adb.port'],
-    consequence: personText("{{riley}}'s desk Flex gets driven (INC27)"),
+    consequence: personText("{{riley}}'s desk Flux gets driven (INC27)"),
     factIds: ['F198', 'F199', 'F200'],
     cooldownS: 20,
     detect: [

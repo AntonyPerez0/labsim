@@ -1,5 +1,5 @@
 /**
- * GP §3.5 INC43–INC50: Flex 1 rollback, the Mini 3 hot-swap for a dead Duo 2, tethered MFD/CFD
+ * GP §3.5 INC43–INC50: Flux 1 rollback, the Micro 3 hot-swap for a dead Duet 2, tethered MFD/CFD
  * relations (missing / cloned / link down), a stale reservation, the Westers capability conflict and the
  * Laz/Ubi merchant switch.
  */
@@ -30,45 +30,45 @@ const LAZ_JOB = 'Java/laz-oobe-merchant-swap';
 
 export const INC43: IncidentDef = {
   id: 'INC43',
-  name: 'Roll back to Flex 1',
+  name: 'Roll back to Flux 1',
   difficulty: 2,
   base: 300,
   parS: 150,
   severity: 'P1',
-  rigs: { roles: ['flex-legacy'], default: 'johnny-5', scope: 'rig', describe: 'JOHNNY-5 after INC42 (or seeded)' },
+  rigs: { roles: ['flux-legacy'], default: 'johnny-5', scope: 'rig', describe: 'JOHNNY-5 after INC42 (or seeded)' },
   escalatable: false,
   unlockedBy: 'M07',
   tags: ['orca.device'],
   factIds: ['F119', 'F120'],
-  ticket: { title: (b) => P(`The Flex 2 build has a regression — roll ${hrn(b)} back to the Flex 1 now`), reporter: 'jared' },
+  ticket: { title: (b) => P(`The Flux 2 build has a regression — roll ${hrn(b)} back to the Flux 1 now`), reporter: 'jared' },
   setup: () => ({
     scenario: [
-      OP('device.swap', { rig: '$R', deviceId: 'dev-spare-flex2' }),
-      OP('orca.createDevice', { name: '$R-flex2', deviceType: 'FLEX_2', serial: 'SIM-F2-000015', ip: '10.42.30.15' }),
-      OP('orca.linkDevice', { robot: '$R', device: '$R-flex2' }),
+      OP('device.swap', { rig: '$R', deviceId: 'dev-spare-flux2' }),
+      OP('orca.createDevice', { name: '$R-flux2', deviceType: 'FLUX_2', serial: 'SIM-F2-000015', ip: '10.42.30.15' }),
+      OP('orca.linkDevice', { robot: '$R', device: '$R-flux2' }),
     ],
   }),
   reveal: 'immediate',
   symptoms: [
-    sym('Orca', (b) => `${hrn(b)} → Robot Device ${rig(b)}-flex2 (FLEX_2); the legacy row ${String(b.vars.device)} (FLEX_1) is still there.`),
-    sym('World', (b) => `${hrn(b)} holds the Flex 2; the Flex 1 sits on the storage shelf.`),
+    sym('Orca', (b) => `${hrn(b)} → Robot Device ${rig(b)}-flux2 (FLUX_2); the legacy row ${String(b.vars.device)} (FLUX_1) is still there.`),
+    sym('World', (b) => `${hrn(b)} holds the Flux 2; the Flux 1 sits on the storage shelf.`),
   ],
-  diagnosisPath: ['The legacy Device row still exists — that is what it is for.', 'Swap the Flex 1 back into the cradle.', 'Robot Device = the Flex 1 row; confirm with a build.'],
+  diagnosisPath: ['The legacy Device row still exists — that is what it is for.', 'Swap the Flux 1 back into the cradle.', 'Robot Device = the Flux 1 row; confirm with a build.'],
   hints: [
     'You kept the old Device row for exactly this moment.',
-    (b) => `Orca → ${hrn(b)} → Robot Device dropdown; the Flex 1 is on the storage shelf.`,
-    (b) => `Swap the Flex 1 back (MOTOR off, cradle bolts, PSU on the AC strip), set Robot Device = ${String(b.vars.device)}, Park All, Available, build.`,
+    (b) => `Orca → ${hrn(b)} → Robot Device dropdown; the Flux 1 is on the storage shelf.`,
+    (b) => `Swap the Flux 1 back (MOTOR off, cradle bolts, PSU on the AC strip), set Robot Device = ${String(b.vars.device)}, Park All, Available, build.`,
   ],
-  fix: { handsOn: (b) => `Swap the Flex 1 back (INC42 steps 2–3) and set Robot Device = ${String(b.vars.device)} ("rolling back is one dropdown").` },
+  fix: { handsOn: (b) => `Swap the Flux 1 back (INC42 steps 2–3) and set Robot Device = ${String(b.vars.device)} ("rolling back is one dropdown").` },
   success: (b) => c.all(c.eq(p.robot(rig(b)).deviceId, String(b.vars.device)), c.status(rig(b), 'AVAILABLE'), c.nextBuild({ robots: [rig(b)] })),
   diagnosisCall: 'none',
   wrongButTempting: [
     wm(
-      'new-flex1-row',
-      'Create a new FLEX_1 row',
+      'new-flux1-row',
+      'Create a new FLUX_1 row',
       50,
-      orcaSave('device', { action: 'create', test: (pl, s) => s.lab.orca.devices[pl.id as number]?.deviceType === 'FLEX_1' }),
-      teach('The legacy row exists for exactly this.', 'Decoupling the Device from the Robot keeps legacy configurations intact for quick rollbacks. (Ref §3)', 'Pick the existing Flex 1 row in Robot Device.'),
+      orcaSave('device', { action: 'create', test: (pl, s) => s.lab.orca.devices[pl.id as number]?.deviceType === 'FLUX_1' }),
+      teach('The legacy row exists for exactly this.', 'Decoupling the Device from the Robot keeps legacy configurations intact for quick rollbacks. (Ref §3)', 'Pick the existing Flux 1 row in Robot Device.'),
     ),
   ],
   teaches: 'Ref §3: decoupling the Device entity enables quick rollbacks.',
@@ -76,48 +76,48 @@ export const INC43: IncidentDef = {
 
 export const INC44: IncidentDef = {
   id: 'INC44',
-  name: 'Hot-swap equivalent: Mini 3 for a dead printerless Duo 2',
+  name: 'Hot-swap equivalent: Micro 3 for a dead printerless Duet 2',
   difficulty: 2,
   base: 300,
   parS: 180,
   severity: 'P2',
-  rigs: { candidates: ['k-9'], default: 'k-9', scope: 'rig', describe: 'K-9 (off-screen STATION_DUO_2) → DATA/BUMBLEBEE' },
+  rigs: { candidates: ['k-9'], default: 'k-9', scope: 'rig', describe: 'K-9 (off-screen STAND_DUET_2) → DATA/BUMBLEBEE' },
   escalatable: false,
   unlockedBy: 'M11',
   plannedWork: true,
   tags: ['hw.devices', 'orca.devicetype', 'jenkins.envvars', 'orca.status.offline'],
   factIds: ['F057', 'F122', 'F105', 'F055'],
   processBonuses: ['PB01'],
-  ticket: { title: P("K-9's Duo 2 died (RMA). Keep printerless-smoke running today."), reporter: 'jared' },
+  ticket: { title: P("K-9's Duet 2 died (RMA). Keep printerless-smoke running today."), reporter: 'jared' },
   setup: () => ({ scenario: [F('device.dead', { device: '$DEV' }), OP('jenkins.startBuild', { job: SMOKE_JOB, by: 'jenkins' })] }),
   reveal: 'immediate',
-  onSpawn: () => [{ do: 'chat', author: 'jared', text: 'Mini 3 is our hot-swap for the printerless Duo 2.', delayS: 15 }],
+  onSpawn: () => [{ do: 'chat', author: 'jared', text: 'Micro 3 is our hot-swap for the printerless Duet 2.', delayS: 15 }],
   symptoms: [
     sym('Jenkins', "Red on k-9: adb: failed to connect to '10.42.30.51:5444': No route to host"),
     sym('Orca', 'K-9 Available (its Pi is fine).'),
-    sym('LabChat', P('{{jared}}: "Mini 3 is our hot-swap for the printerless Duo 2."')),
+    sym('LabChat', P('{{jared}}: "Micro 3 is our hot-swap for the printerless Duet 2."')),
   ],
-  diagnosisPath: ['The device behind K-9 is dead and goes for RMA.', 'Take K-9 out of the pool: Offline.', 'Run the job on the hot-swap equivalent: DEVICE_TYPE=MINI_3.'],
+  diagnosisPath: ['The device behind K-9 is dead and goes for RMA.', 'Take K-9 out of the pool: Offline.', 'Run the job on the hot-swap equivalent: DEVICE_TYPE=MICRO_3.'],
   hints: [
-    'Which device family stands in for a printerless Duo 2?',
+    'Which device family stands in for a printerless Duet 2?',
     'Orca → K-9 → Offline; Jenkins → Java/uia-remote-printerless-smoke → Build with Parameters → DEVICE_TYPE.',
-    'K-9 → Offline, then rebuild with DEVICE_TYPE=MINI_3 (exact ALL-CAPS enum) → [orca] checkout → data (MINI_3) OK.',
+    'K-9 → Offline, then rebuild with DEVICE_TYPE=MICRO_3 (exact ALL-CAPS enum) → [orca] checkout → data (MICRO_3) OK.',
   ],
-  fix: { handsOn: 'K-9 → Offline (PB01, pending RMA) → rebuild with DEVICE_TYPE=MINI_3 → [orca] checkout → data (MINI_3) OK (or BUMBLEBEE).' },
+  fix: { handsOn: 'K-9 → Offline (PB01, pending RMA) → rebuild with DEVICE_TYPE=MICRO_3 → [orca] checkout → data (MICRO_3) OK (or BUMBLEBEE).' },
   success: () => c.all(c.status('k-9', 'OFFLINE'), c.nextBuild({ jobs: [SMOKE_JOB], robots: ['data', 'bumblebee'] })),
   diagnosisCall: dc(
-    'Duo 2 dead; run on its hot-swap equivalent, a Mini 3',
+    'Duet 2 dead; run on its hot-swap equivalent, a Micro 3',
     ["K-9's Pi crashed", 'Orca shows K-9 Available — its Pi answers. "No route to host" is the device.'],
     ['Port', 'Nothing answered at that IP at all.'],
     ['Merchant', 'The build never reached the merchant — it could not reach the device.'],
   ),
   wrongButTempting: [
-    wm('pocket', 'DEVICE_TYPE=FLEX_POCKET', 50, buildWith(SMOKE_JOB, (pp) => pp.DEVICE_TYPE === 'FLEX_POCKET'), teach('Printerless but not the equivalent — layout failures.', 'The Mini 3 is the hot-swap equivalent for the printerless Duo 2. (Ref §1)', 'DEVICE_TYPE=MINI_3.')),
-    wm('mini2', 'DEVICE_TYPE=MINI_2', 50, buildWith(SMOKE_JOB, (pp) => pp.DEVICE_TYPE === 'MINI_2'), teach('Not the hot-swap equivalent.', 'The Mini 3 stands in for the printerless Duo 2. (Ref §1)', 'DEVICE_TYPE=MINI_3.')),
-    gw('retype-row', 'GW10', "Change K-9's Device row to MINI_3"),
-    wm('lowercase', 'DEVICE_TYPE=mini_3', 0, buildWith(SMOKE_JOB, (pp) => pp.DEVICE_TYPE === 'mini_3'), teach('No enum constant … DeviceType.mini_3', 'Device Type is an enum — Jenkins env vars must be ALL CAPS. (Ref §3)', 'DEVICE_TYPE=MINI_3.')),
+    wm('pocket', 'DEVICE_TYPE=FLUX_POCKET', 50, buildWith(SMOKE_JOB, (pp) => pp.DEVICE_TYPE === 'FLUX_POCKET'), teach('Printerless but not the equivalent — layout failures.', 'The Micro 3 is the hot-swap equivalent for the printerless Duet 2. (Ref §1)', 'DEVICE_TYPE=MICRO_3.')),
+    wm('micro2', 'DEVICE_TYPE=MICRO_2', 50, buildWith(SMOKE_JOB, (pp) => pp.DEVICE_TYPE === 'MICRO_2'), teach('Not the hot-swap equivalent.', 'The Micro 3 stands in for the printerless Duet 2. (Ref §1)', 'DEVICE_TYPE=MICRO_3.')),
+    gw('retype-row', 'GW10', "Change K-9's Device row to MICRO_3"),
+    wm('lowercase', 'DEVICE_TYPE=micro_3', 0, buildWith(SMOKE_JOB, (pp) => pp.DEVICE_TYPE === 'micro_3'), teach('No enum constant … DeviceType.micro_3', 'Device Type is an enum — Jenkins env vars must be ALL CAPS. (Ref §3)', 'DEVICE_TYPE=MICRO_3.')),
   ],
-  teaches: 'Ref §1: the Mini 3 is the hot-swap equivalent for the printerless Duo 2; enum values are ALL CAPS; Offline for rigs out of service.',
+  teaches: 'Ref §1: the Micro 3 is the hot-swap equivalent for the printerless Duet 2; enum values are ALL CAPS; Offline for rigs out of service.',
 };
 
 export const INC45: IncidentDef = {
@@ -160,7 +160,7 @@ export const INC45: IncidentDef = {
     wm('runtype-param', 'Look for a runType field in Orca / force RUN_TYPE=tethered as a job param', 100, undefined, teach('There is no runType field in Orca; forcing it still fails.', 'If MFD is populated, the pipeline treats the rig as tethered. (Ref §3)', 'Populate MFD and CFD.')),
     wm('swap-mfd-cfd', 'Swap MFD and CFD', 0, undefined, teach('Red — the roles are reversed.', 'MFD = Merchant Facing Device, CFD = Customer Facing Device. (Ref §3)', 'MFD = the -mfd row, CFD = the -cfd row.')),
   ],
-  teaches: 'Ref §3: if MFD is populated, the pipeline treats the rig as tethered (Station 2 + Mini 2 on MEGATRON, nested Mini 3s on OPTIMUS).',
+  teaches: 'Ref §3: if MFD is populated, the pipeline treats the rig as tethered (Stand 2 + Micro 2 on MEGATRON, nested Micro 3s on OPTIMUS).',
 };
 
 export const INC46: IncidentDef = {
@@ -283,7 +283,7 @@ export const INC48: IncidentDef = {
   tags: ['orca.status.reserved', 'jenkins.checkout', 'orca.status'],
   factIds: ['F112', 'F113'],
   processBonuses: ['PB06'],
-  ticket: { title: 'uia-remote-regression-flex (FLEX_4) waiting forever', reporter: 'jenkins-bot' },
+  ticket: { title: 'uia-remote-regression-flux (FLUX_4) waiting forever', reporter: 'jenkins-bot' },
   setup: () => ({ scenario: [F('orca.staleReservation', { robot: '$R', by: 'riley' })] }),
   reveal: 'immediate',
   symptoms: [
@@ -356,20 +356,20 @@ export const INC49: IncidentDef = {
   tags: ['orca.capabilities', 'hw.devices', 'jenkins.envvars'],
   factIds: ['F132', 'F134', 'F135', 'F061', 'F133'],
   ticket: { title: 'contact-canada-pin-sale checkout error', reporter: 'jenkins-bot' },
-  setup: () => ({ scenario: [F('jenkins.capsConflict', { job: PIN_JOB, value: 'MINI_3' }), OP('jenkins.startBuild', { job: PIN_JOB, by: 'jenkins' })] }),
+  setup: () => ({ scenario: [F('jenkins.capsConflict', { job: PIN_JOB, value: 'MICRO_3' }), OP('jenkins.startBuild', { job: PIN_JOB, by: 'jenkins' })] }),
   reveal: 'immediate',
   symptoms: [
-    sym('Jenkins', '[orca] 409 Conflict: capability conflict (pipeline deviceType=MINI_3, test deviceType=COMPACT) [illus.]'),
-    sym('IDE', "Pipeline script: def capabilities = [deviceType: 'MINI_3', physicalTouch: true] (copy-paste) vs the test's \"capabilities\": {\"deviceType\": \"COMPACT\", \"physicalTouch\": true}"),
+    sym('Jenkins', '[orca] 409 Conflict: capability conflict (pipeline deviceType=MICRO_3, test deviceType=COMPASS) [illus.]'),
+    sym('IDE', "Pipeline script: def capabilities = [deviceType: 'MICRO_3', physicalTouch: true] (copy-paste) vs the test's \"capabilities\": {\"deviceType\": \"COMPASS\", \"physicalTouch\": true}"),
   ],
-  diagnosisPath: ['Orca received two capability sources that disagree.', 'The pipeline script hardcodes MINI_3; the test\'s dynamic JSON says COMPACT.', 'Fix the pipeline script: Westers beds run COMPACT.'],
+  diagnosisPath: ['Orca received two capability sources that disagree.', 'The pipeline script hardcodes MICRO_3; the test\'s dynamic JSON says COMPASS.', 'Fix the pipeline script: Westers beds run COMPASS.'],
   hints: [
     'The 409 lists two sources for deviceType. Which one is wrong for a Canadian test?',
     'Jenkins → Java/contact-canada-pin-sale → Configure → Pipeline script → def capabilities.',
-    "Set deviceType: 'COMPACT' in the pipeline script and rebuild.",
+    "Set deviceType: 'COMPASS' in the pipeline script and rebuild.",
   ],
-  fix: { handsOn: "Pipeline script → deviceType: 'COMPACT'; rebuild." },
-  success: () => c.all(c.contains(p.job(PIN_JOB).script, "deviceType: 'COMPACT'"), c.nextBuild({ pipeline: 'PL5', robots: ['seti'] })),
+  fix: { handsOn: "Pipeline script → deviceType: 'COMPASS'; rebuild." },
+  success: () => c.all(c.contains(p.job(PIN_JOB).script, "deviceType: 'COMPASS'"), c.nextBuild({ pipeline: 'PL5', robots: ['seti'] })),
   diagnosisCall: dc(
     "The hardcoded pipeline capability contradicts the test's dynamic JSON",
     ['SETI offline', 'The checkout failed before Orca looked at any robot: a capability conflict.'],
@@ -379,7 +379,7 @@ export const INC49: IncidentDef = {
   wrongButTempting: [
     wm('delete-dynamic', "Delete the test's dynamic capabilities", 100, on('git.fileEdited', { repo: 'gort' }, (pl) => /contact-canada/.test(pl.path)), teach('Contact Canada scripts use both styles.', 'Both lookup methods are used interchangeably for Contact Canada automation on Westers test beds. (Ref §3)', 'Fix the hardcoded pipeline value.')),
   ],
-  teaches: P('Ref §3 Robot Capabilities: dynamic JSON (SDK frameworks, {{david}}) vs non-dynamic (hardcoded in the pipeline script); both are used interchangeably for Contact Canada on Westers beds; COMPACT is the Canadian terminal.'),
+  teaches: P('Ref §3 Robot Capabilities: dynamic JSON (SDK frameworks, {{david}}) vs non-dynamic (hardcoded in the pipeline script); both are used interchangeably for Contact Canada on Westers beds; COMPASS is the Canadian terminal.'),
 };
 
 export const INC50: IncidentDef = {

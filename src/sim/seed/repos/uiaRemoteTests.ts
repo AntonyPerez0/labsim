@@ -74,12 +74,12 @@ export const TAX_TEST_NO_TEARDOWN = TAX_TEST.replace(
 );
 
 const duoBody = (cfdCheck: string): string => `/*
- * TaxTestDuo — Station Duo (one terminal, two displays: MFD = display 0, CFD = display 1)
- * config.properties: merchantFacingDeviceIp == customerFacingDeviceIp, runType=tethered, deviceType=Station.
+ * TaxTestDuet — Stand Duet (one terminal, two displays: MFD = display 0, CFD = display 1)
+ * config.properties: merchantFacingDeviceIp == customerFacingDeviceIp, runType=tethered, deviceType=Stand.
  * Safe state: starts on HomeScreen; teardown returns both displays to their idle screens.
  */
 ${HEAD([...COMMON, ...po('CfdPaymentScreen', 'CfdTotalsScreen', 'HomeScreen', 'RegisterHomeScreen'), 'static org.junit.Assert.assertTrue'])}
-public class TaxTestDuo extends BaseTest {
+public class TaxTestDuet extends BaseTest {
 
     private final HomeScreen homeScreen = new HomeScreen();
     private final RegisterHomeScreen registerHome = new RegisterHomeScreen();
@@ -88,12 +88,12 @@ public class TaxTestDuo extends BaseTest {
 
     @Before
     public void setUp() {
-        assertTrue("TaxTestDuo requires a tethered rig (MFD/CFD)", isTethered());
+        assertTrue("TaxTestDuet requires a tethered rig (MFD/CFD)", isTethered());
         mfd.run(() -> assertTrue(homeScreen.isScreenPresent()));
     }
 
     @Test
-    public void testTaxDuo() {
+    public void testTaxDuet() {
         mfd.run(() -> homeScreen.open("Register"));
         mfd.run(registerHome::addTaxItem5);
         mfd.run(registerHome::reviewOrder);
@@ -110,8 +110,8 @@ ${cfdCheck}
     }
 }
 `;
-export const TAX_TEST_DUO_PRE398 = duoBody('        assertTrue(orca.screenCompare("CFD_TOTAL"));');
-export const TAX_TEST_DUO = duoBody('        cfd.run(() -> cfdTotals.assertTotal("$10.83"));');
+export const TAX_TEST_DUET_PRE398 = duoBody('        assertTrue(orca.screenCompare("CFD_TOTAL"));');
+export const TAX_TEST_DUET = duoBody('        cfd.run(() -> cfdTotals.assertTotal("$10.83"));');
 
 const SALE_TEST = `/*
  * SaleTest — standalone card sale with Tax Item 5 and no receipt.
@@ -153,7 +153,7 @@ public class SaleTest extends BaseTest {
 
 const HOME_SCREEN_TEST = `/*
  * HomeScreenTest — opens Register, Orders and Setup from the launcher and returns home after each.
- * Exercises HomeScreen.open(): vertical scrolling on a Flex, horizontal on a Mini or Station.
+ * Exercises HomeScreen.open(): vertical scrolling on a Flux, horizontal on a Micro or Stand.
  */
 ${HEAD([...COMMON, ...po('HomeScreen'), 'static org.junit.Assert.assertTrue'])}
 public class HomeScreenTest extends BaseTest {
@@ -249,12 +249,12 @@ public class RefundTest extends BaseTest {
 }
 `;
 
-const DUO_CFD_SUITE = `/*
- * DuoCfdSuite — Station Duo customer display flow (PL7). MFD steps through UI Automator,
+const DUET_CFD_SUITE = `/*
+ * DuetCfdSuite — Stand Duet customer display flow (PL7). MFD steps through UI Automator,
  * customer steps by physical taps (Orca xy_touch on CFD_* screens), totals by legacy OCR.
  */
 ${HEAD([...COMMON, ...po('HomeScreen', 'RegisterHomeScreen'), 'static org.junit.Assert.assertTrue'])}
-public class DuoCfdSuite extends BaseTest {
+public class DuetCfdSuite extends BaseTest {
 
     private final HomeScreen homeScreen = new HomeScreen();
     private final RegisterHomeScreen registerHome = new RegisterHomeScreen();
@@ -265,7 +265,7 @@ public class DuoCfdSuite extends BaseTest {
     }
 
     @Test
-    public void testDuoCfd() {
+    public void testDuetCfd() {
         String robot = config.getString("robotName");
         mfd.run(() -> homeScreen.open("Register"));
         mfd.run(registerHome::addTaxItem5);
@@ -285,12 +285,12 @@ public class DuoCfdSuite extends BaseTest {
 }
 `;
 
-const DUO_CHECKOUT_TEST = `/*
- * DuoCheckoutTest — Station Duo checkout ending on the customer "Thank you" screen.
+const DUET_CHECKOUT_TEST = `/*
+ * DuetCheckoutTest — Stand Duet checkout ending on the customer "Thank you" screen.
  * TODO(morgan): migrate the CFD_THANK_YOU OCR check to a UIA 2.3 page object like CFD_TOTAL (#398).
  */
 ${HEAD([...COMMON, ...po('HomeScreen', 'RegisterHomeScreen'), 'static org.junit.Assert.assertTrue'])}
-public class DuoCheckoutTest extends BaseTest {
+public class DuetCheckoutTest extends BaseTest {
 
     private final HomeScreen homeScreen = new HomeScreen();
     private final RegisterHomeScreen registerHome = new RegisterHomeScreen();
@@ -301,7 +301,7 @@ public class DuoCheckoutTest extends BaseTest {
     }
 
     @Test
-    public void testDuoCheckout() {
+    public void testDuetCheckout() {
         String robot = config.getString("robotName");
         mfd.run(() -> homeScreen.open("Register"));
         mfd.run(registerHome::addTaxItem5);
@@ -322,7 +322,7 @@ public class DuoCheckoutTest extends BaseTest {
 `;
 
 const PRINTERLESS_SMOKE = `/*
- * PrinterlessSmokeTest — SaleTest for printerless devices (Station Duo 2, its hot-swap Mini 3): always No Receipt.
+ * PrinterlessSmokeTest — SaleTest for printerless devices (Stand Duet 2, its hot-swap Micro 3): always No Receipt.
  */
 ${HEAD([...COMMON, ...po('HomeScreen', 'PaymentScreen', 'ReceiptScreen', 'RegisterHomeScreen', 'ReviewOrderScreen'), 'static org.junit.Assert.assertTrue'])}
 public class PrinterlessSmokeTest extends BaseTest {
@@ -398,7 +398,7 @@ public class PaycoreMatrixTest extends BaseTest {
 `;
 
 const CONTACT_CANADA = `/*
- * ContactCanadaPinSaleTest — Westers test bed (LabSim Compact). Canadian flows mandate physical PIN entry:
+ * ContactCanadaPinSaleTest — Westers test bed (LabSim Compass). Canadian flows mandate physical PIN entry:
  * the PIN pad is Secure Touch, so it is pressed by the robot's solenoid through Orca xy_touch.
  * Evidence: a webcam frame of the approved sale is attached to the build.
  */
@@ -445,10 +445,10 @@ export const TESTACTIONS: Record<string, string> = {
   ReceiptScreenTest: RECEIPT_SCREEN_TEST,
   SaleTest: SALE_TEST,
   TaxTest: TAX_TEST,
-  TaxTestDuo: TAX_TEST_DUO,
+  TaxTestDuet: TAX_TEST_DUET,
   RefundTest: REFUND_TEST,
-  DuoCfdSuite: DUO_CFD_SUITE,
-  DuoCheckoutTest: DUO_CHECKOUT_TEST,
+  DuetCfdSuite: DUET_CFD_SUITE,
+  DuetCheckoutTest: DUET_CHECKOUT_TEST,
   PrinterlessSmokeTest: PRINTERLESS_SMOKE,
   PaycoreMatrixTest: PAYCORE_MATRIX,
   ContactCanadaPinSaleTest: CONTACT_CANADA,

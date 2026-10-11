@@ -123,7 +123,7 @@ Gort is the core monorepo housing the testing ecosystem and its configuration mo
     factIds: ["F224", "F225", "F226", "F103", "F220", "F222", "F223", "F061", "F218", "F261"],
     tags: ["cards", "cards.philosophy", "bots.pin", "bots.types"],
     related: ["adb-vs-physical-bots", "card-profiles", "orca-statuses", "teams-and-history"],
-    keywords: ["Visa", "Interac", "Discover", "AmEx", "card matrix", "PayCore", "Canada", "PIN", "Westers", "Compact", "Gen 2", "Secure Touch", "Core OS"],
+    keywords: ["Visa", "Interac", "Discover", "AmEx", "card matrix", "PayCore", "Canada", "PIN", "Westers", "Compass", "Gen 2", "Secure Touch", "Core OS"],
     practice: ["INC52", "INC58", "INC41"],
     body: `## Two philosophies
 
@@ -138,7 +138,7 @@ PayCore's standalone rigs are kept **Unavailable** so general tests don't overwr
 
 ## Canada
 
-- The LabSim **Compact** is the Canadian-market terminal, used on the **Westers** test beds {F061}.
+- The LabSim **Compass** is the Canadian-market terminal, used on the **Westers** test beds {F061}.
 - Canadian payment workflows **mandate physical PIN entry**, so they need a **physical bot** {F220}. ADB bots can only use merchants that bypass PIN security {F218}.
 - Card choice: **Interac** for the Canadian flow {F225}.
 

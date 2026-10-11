@@ -2,7 +2,7 @@
  * East wall (World §1.4 "East wall", §3.2, §9.2): the device library — white melamine shelving on
  * black brackets with one of every LabSim device (powered off, one merged mesh until an item is
  * picked up), the four family trays for the M02 sort, lip cards and the header sign — plus the
- * coffee counter (mini fridge, drip/pod machine, carafe) and the power / park posters.
+ * coffee counter (micro fridge, drip/pod machine, carafe) and the power / park posters.
  */
 import { MeshStandardMaterial } from 'three';
 import { bus } from '@/core/bus';
@@ -160,7 +160,7 @@ export function buildEastWall(ctx: LabCtx): void {
   /* ── interactions: library ── */
   for (const it of LIBRARY_ITEMS) {
     const h = it.pos[1] > 1.5 ? 0.36 : 0.24;
-    const proxy = ctx.ia.proxy(ctx.root, 0.3, h, it.model.startsWith('flex') ? 0.12 : 0.3, xf(it.pos[0], it.pos[1] + h / 2, it.pos[2]), it.id);
+    const proxy = ctx.ia.proxy(ctx.root, 0.3, h, it.model.startsWith('flux') ? 0.12 : 0.3, xf(it.pos[0], it.pos[1] + h / 2, it.pos[2]), it.id);
     ctx.ia.register(it.id, proxy, () => {
       const carriedMe = carriedRef() === it.id;
       return pickVerbs([
@@ -261,15 +261,15 @@ export function buildEastWall(ctx: LabCtx): void {
 
 function compareLines(it: LibraryItemDef): string[] {
   switch (it.model) {
-    case 'flex-pocket':
-      return ['Flex Pocket — no printer block (flat top end)', 'Same FLEX_GEN3 testing profile as Flex 3 / Flex 4', 'hasPrinter = false'];
-    case 'flex-4':
-    case 'flex-3':
-      return [`${it.lipCard} — printer block at the top end`, 'FLEX_GEN3 profile (Flex 3 / Flex 4 / Pocket)', 'Compare with the Flex Pocket: no printer'];
-    case 'station-duo-2':
-      return ['Station Duo 2 — no printer in the base', 'MINI_3 is the hot-swap equivalent'];
-    case 'compact':
-      return ['Compact — Canadian-market terminal', 'Used on Westers test beds', 'PIN-capable (Interac)'];
+    case 'flux-pocket':
+      return ['Flux Pocket — no printer block (flat top end)', 'Same FLUX_GEN3 testing profile as Flux 3 / Flux 4', 'hasPrinter = false'];
+    case 'flux-4':
+    case 'flux-3':
+      return [`${it.lipCard} — printer block at the top end`, 'FLUX_GEN3 profile (Flux 3 / Flux 4 / Pocket)', 'Compare with the Flux Pocket: no printer'];
+    case 'stand-duet-2':
+      return ['Stand Duet 2 — no printer in the base', 'MICRO_3 is the hot-swap equivalent'];
+    case 'compass':
+      return ['Compass — Canadian-market terminal', 'Used on Westers test beds', 'PIN-capable (Interac)'];
     default:
       return [it.lipCard, `Orca DeviceType ${it.deviceType}`];
   }

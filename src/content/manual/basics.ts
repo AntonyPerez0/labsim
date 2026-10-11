@@ -47,7 +47,7 @@ All the matte-black plastic you see — cradles, panels, docks — is 3D-printed
 ## How the lab got this way
 
 - About **three years ago** the lab was redesigned around **standardised modular shelves**. Before that, fixtures were **raw CNC-cut particle board on open racks**, so every rig was configured differently {F257}.
-- Modular shelves are why recovery is fast: a failed **Duo 2 can be swapped for a Flex 3 in minutes rather than days** {F258}.
+- Modular shelves are why recovery is fast: a failed **Duet 2 can be swapped for a Flux 3 in minutes rather than days** {F258}.
 - The lab has **one clear owner** ({{jared}}). A lab that "belongs to everyone" does not work: **everyone's responsibility is no one's responsibility** {F259}. Tell the owner before you rebuild, re-cable or repurpose anything.
 
 ## The five safety rules

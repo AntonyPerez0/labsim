@@ -63,7 +63,7 @@ These behave exactly as in the real lab, in every mode — they are the point of
 - **ADB on port 5444**; 5555 is the default and the cause of the coworker collision ([[adb-port-5444]]).
 - The **power chain** and the 18V rule: LabSim devices and Collis probes only on commercial AC strips {F228} {F229}.
 - The **Device Type** enum is ALL CAPS and case-sensitive.
-- \`config.properties\` locks (\`theme=avocado\`, \`kernelType=CPA\`, \`portNumber=5444\`) and the Station Duo same-IP rule.
+- \`config.properties\` locks (\`theme=avocado\`, \`kernelType=CPA\`, \`portNumber=5444\`) and the Stand Duet same-IP rule.
 - The status tablet's tabs and buttons, the yellow banner after a manual move, and Park All.
 - uia-remote's folder layout, packages, page-object rules and the Tax test flow.
 
@@ -139,7 +139,7 @@ Where the reference is silent, LabSim invents plausible details and marks them *
 |---|---|
 | S01 | Orca's pool has **42** rigs (the reference says "40+" {F115}); 12 are modelled in 3D. \`Gort\` is a repo, not a rig |
 | S02 | The host map: GPU blade \`10.42.1.5\`, Orca \`orca.lab.local\` → \`10.42.1.10:8080\` (MySQL schema \`orca\`, port 3306), Jenkins \`10.42.1.11:8080\`, Ollama \`10.42.1.12:11434\` (model \`llava\`), Robot Pis \`10.42.10.<n>\` (REST \`:8000\`, camera \`:8081/stream.mjpg\`), Callus boxes \`10.42.20.<n>:9000\`, LabSim devices \`10.42.30.<n>\`, your workstation \`10.42.50.17\`, coworker desk devices \`10.42.60.<n>\` |
-| S03 | The exact Device Type enum strings (\`FLEX_3\`, \`MINI_3\`, \`STATION_DUO\`, …) and the shared profile name \`FLEX_GEN3\` |
+| S03 | The exact Device Type enum strings (\`FLUX_3\`, \`MICRO_3\`, \`STAND_DUET\`, …) and the shared profile name \`FLUX_GEN3\` |
 | S04 | The uia-remote author's name, {{morgan}} |
 | S05 | The rig roster: which device sits in which rig, IPs and starting statuses |
 | S06 | REST paths: \`GET /health\` on the Pi, Orca \`POST /api/xy_touch\`, \`POST /api/card/{swipe,dip,tap}\`, Pi paths \`/adb\`, \`/dip\`, \`/tap\`, \`/swipe\` |
@@ -156,7 +156,7 @@ Where the reference is silent, LabSim invents plausible details and marks them *
 | S17 | What the tablet's **Phone** group does (a phone carriage and power-button pusher for mobile-runner tests) — the photo shows the buttons, not their purpose |
 | S18 | The Lab Safety Card wording |
 | S19 | *How* port 5555 reached a coworker's device (connect refused → the runner falls back to the first device the ADB server already knows). The reference only says 5555 caused collisions where scripts controlled coworkers' desk devices |
-| S20 | The seeded lesson faults (Rack B fuse, EVE Pi unplug, the JONNY-5 typo, BUMBLEBEE's Offset Y 1.5, OPTIMUS empty MFD/CFD, missing API Key, Pigeon missing comma, MINI_3 receipt coordinates, \`DEVICE_TYPE=flex_3\`) |
+| S20 | The seeded lesson faults (Rack B fuse, EVE Pi unplug, the JONNY-5 typo, BUMBLEBEE's Offset Y 1.5, OPTIMUS empty MFD/CFD, missing API Key, Pigeon missing comma, MICRO_3 receipt coordinates, \`DEVICE_TYPE=flux_3\`) |
 
 ## Also invented (simulation, gameplay and world designs)
 
@@ -165,7 +165,7 @@ Where the reference is silent, LabSim invents plausible details and marks them *
 | Network | Every IP and hostname, ports other than ADB 5444 / 5555, the lab switch, latencies |
 | REST | Pi endpoints (\`/health\`, \`/adb\`, \`/dip\`, \`/tap\`, \`/swipe\` …), Callus endpoints, Orca paths such as \`/api/xy_touch\` and \`/api/card/*\`, every status code and JSON body |
 | Strings | Orca Notes formats, health-log lines, console lines, error messages, tablet texts beyond the photo, toasts |
-| Hardware | Screen sizes and button coordinates, the 3.0 mm QR shift, travel limits and speeds, fuse ratings and labels, regulator topology, the SmartStripe Probe's role, the look of a Station 2 |
+| Hardware | Screen sizes and button coordinates, the 3.0 mm QR shift, travel limits and speeds, fuse ratings and labels, regulator topology, the SmartStripe Probe's role, the look of a Stand 2 |
 | Orca behaviour | Orca restoring a Connection Failed robot by itself at the next 200 ping (the reference describes only how Connection Failed is set); a checkout marking a robot "in use" without changing its status; queued builds waiting for a matching Available robot |
 | Orca data | The 42-rig roster beyond the reference's examples, environments, device rows and serials, merchants and their fields, capability keys, Screen Compare rows, test card numbers and Track Data, the Interac test PIN |
 | Software | Job names and parameters, pipeline script lines, stage names, page-object class names beyond the reference's examples, test names, commits and PR numbers, Pigeon field spellings, LSTR error texts, Go SDK messages, Laz/Ubi console lines, Ollama prompts and answers, Wine paths |

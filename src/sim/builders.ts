@@ -115,10 +115,10 @@ export function createRigState(id: string, orcaRobotId: number, kind: RigKind, o
 
 /** A powered, provisioned lab device on `home` (Sim §2.4 runtime seeds). */
 export function createTerminalDevice(id: string, type: DeviceTypeCode, overrides: Partial<TerminalDevice> = {}): TerminalDevice {
-  const handheld = type.startsWith('FLEX');
-  const printerless = type === 'FLEX_POCKET' || type === 'STATION_DUO_2' || type === 'STATION_DUO_3' || type === 'COMPACT';
-  const duo = type.startsWith('STATION_DUO');
-  const firmware = type === 'FLEX_1' ? { version: '2.19.4', receiptQr: false } : { version: '2.26.10.1', receiptQr: true };
+  const handheld = type.startsWith('FLUX');
+  const printerless = type === 'FLUX_POCKET' || type === 'STAND_DUET_2' || type === 'STAND_DUET_3' || type === 'COMPASS';
+  const duo = type.startsWith('STAND_DUET');
+  const firmware = type === 'FLUX_1' ? { version: '2.19.4', receiptQr: false } : { version: '2.26.10.1', receiptQr: true };
   return {
     id,
     type,
@@ -130,7 +130,7 @@ export function createTerminalDevice(id: string, type: DeviceTypeCode, overrides
     bootProgress: 1,
     supply: { kind: 'none', targetId: null },
     rigId: null,
-    role: duo ? 'duo' : 'standalone',
+    role: duo ? 'duet' : 'standalone',
     tetheredTo: null,
     link: null,
     payDisplayApp: null,

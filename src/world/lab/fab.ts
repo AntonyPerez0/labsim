@@ -233,11 +233,11 @@ export function buildFab(ctx: LabCtx): void {
     const out = L?.printer3d?.output ?? [];
     if (out.length) toast('info', 'Print tray', `Finished: ${out.join(', ')} — pick it up from the parts bin.`);
     // the sim prints `.3mf` files exported to the CAD PC (~/CAD/, Sim §3 printer3d)
-    const r = simCall<{ endsPhysMs: number }>('Start print', () => sim.printer3d.start(k, 'cradle_flex_gen3.3mf', 'player'));
+    const r = simCall<{ endsPhysMs: number }>('Start print', () => sim.printer3d.start(k, 'cradle_flux_gen3.3mf', 'player'));
     if (r?.ok) {
       engine.audio.play('ui-click');
       const secs = r.value ? Math.max(1, Math.round((r.value.endsPhysMs - (store.getState().lab.time?.physMs ?? 0)) / 1000)) : 90;
-      toast('success', 'Print started', `cradle_flex_gen3.3mf — replacement cradle (black PLA), about ${secs} s.`);
+      toast('success', 'Print started', `cradle_flux_gen3.3mf — replacement cradle (black PLA), about ${secs} s.`);
     }
   };
   ctx.ia.register('fab.printer-prusa', prusaProxy, () => pickVerbs([{ key: 'E', label: printerState(store.getState().lab, 'prusa').busy ? 'Check print' : 'Start print', run: startOrCheck('prusa') }]));
@@ -257,7 +257,7 @@ export function buildFab(ctx: LabCtx): void {
       },
     ]),
   );
-  ctx.ia.register('fab.spare-cradle', cradle, () => pickVerbs([{ key: 'E', label: 'Pick up', run: () => void carry('cradle-new', 'Printed cradle', 'cradle_flex_gen3', 'fab.spare-cradle') }]));
+  ctx.ia.register('fab.spare-cradle', cradle, () => pickVerbs([{ key: 'E', label: 'Pick up', run: () => void carry('cradle-new', 'Printed cradle', 'cradle_flux_gen3', 'fab.spare-cradle') }]));
   // One card per activity: once it is in your pocket the holder offers a re-read, not another card
   // (a new lesson / shift / Free Play run starts with the card back in the holder).
   let cardTaken = false;

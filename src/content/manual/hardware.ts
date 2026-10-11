@@ -10,42 +10,42 @@ export const HARDWARE_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>
     id: "device-families",
     title: "LabSim Device Families",
     category: "Hardware",
-    summary: "Every LabSim target device the lab tests — Station, Mini, Flex and Compact — plus the shortcuts that matter day to day: the shared Flex 3/4/Pocket profile, the printerless Pocket and Duo 2, and the Mini 3 hot-swap.",
+    summary: "Every LabSim target device the lab tests — Stand, Micro, Flux and Compass — plus the shortcuts that matter day to day: the shared Flux 3/4/Pocket profile, the printerless Pocket and Duet 2, and the Micro 3 hot-swap.",
     factIds: ["F055", "F056", "F057", "F058", "F059", "F060", "F061", "F062", "F054", "F258", "F254"],
     tags: ["devices", "hw.devices"],
-    related: ["mfd-cfd-tethered", "orca-robot-device", "adb-vs-physical-bots", "station-duo-dual-screen"],
-    keywords: ["Station 2018", "Station 2", "Station Duo", "Duo 2", "Duo 3", "Mini 2", "Mini 3", "Mini 4", "Flex 1", "Flex 2", "Flex 3", "Flex 4", "Flex Pocket", "Compact", "printer", "profile", "hot-swap"],
+    related: ["mfd-cfd-tethered", "orca-robot-device", "adb-vs-physical-bots", "stand-duet-dual-screen"],
+    keywords: ["Stand 2018", "Stand 2", "Stand Duet", "Duet 2", "Duet 3", "Micro 2", "Micro 3", "Micro 4", "Flux 1", "Flux 2", "Flux 3", "Flux 4", "Flux Pocket", "Compass", "printer", "profile", "hot-swap"],
     practice: ["INC44", "INC23", "DR18"],
     body: `## The four families
 
 | Family | Models in the lab | Notes |
 |---|---|---|
-| **Station** | Station 2018, Station 2, Station Duo (Duo 1, Duo 2, upcoming Duo 3) {F055} | Countertop terminals. The Station Duo is one terminal driving two displays (MFD + CFD) — see [[station-duo-dual-screen]]. The Duo 2 is printerless |
-| **Mini** | Mini 2, Mini 3, upcoming Mini 4 {F056} | Compact countertop terminals. The Mini 3 is the hot-swap equivalent for the printerless Station Duo 2 {F057} |
-| **Flex** | Flex 1, Flex 2, Flex 3, Flex 4, Flex Pocket {F058} | Handhelds. Flex 3, Flex 4 and Flex Pocket share exactly the same testing profile {F059}; the Pocket omits the physical printer block {F060} |
-| **Compact** | LabSim Compact | The target terminal for the Canadian market, used on the Westers test beds {F061} |
+| **Stand** | Stand 2018, Stand 2, Stand Duet (Duet 1, Duet 2, upcoming Duet 3) {F055} | Countertop terminals. The Stand Duet is one terminal driving two displays (MFD + CFD) — see [[stand-duet-dual-screen]]. The Duet 2 is printerless |
+| **Micro** | Micro 2, Micro 3, upcoming Micro 4 {F056} | Compass countertop terminals. The Micro 3 is the hot-swap equivalent for the printerless Stand Duet 2 {F057} |
+| **Flux** | Flux 1, Flux 2, Flux 3, Flux 4, Flux Pocket {F058} | Handhelds. Flux 3, Flux 4 and Flux Pocket share exactly the same testing profile {F059}; the Pocket omits the physical printer block {F060} |
+| **Compass** | LabSim Compass | The target terminal for the Canadian market, used on the Westers test beds {F061} |
 
-The **Station Duo 3** and **Mini 4** are upcoming devices on the roadmap, and their release timing is uncertain {F062}. You will see them as sealed boxes in the device library.
+The **Stand Duet 3** and **Micro 4** are upcoming devices on the roadmap, and their release timing is uncertain {F062}. You will see them as sealed boxes in the device library.
 
 ## Shortcuts that save hours
 
-- **One profile for three Flexes.** A test that passes on the Flex 3 profile covers the Flex 4 and Flex Pocket too, because they share the same testing profile {F059}. In the sim that shared profile is called \`FLEX_GEN3\`†.
-- **…but the Pocket has no printer.** Anything that prints (receipt tests, "select print") must not land on a Flex Pocket {F060}. That is what the \`printer\` capability is for ([[orca-capabilities]]).
-- **Mini 3 for a dead Duo 2.** The Duo 2 has no receipt printer, and printer mechanics are outside these testing profiles, so a functionally equivalent Mini 3 sits ready as its hot-swap {F057}.
-- **Modular shelves make swaps quick.** A failed Duo 2 can be swapped for a Flex 3 in minutes rather than days {F258}.
-- **Canada means Compact.** Canadian payment flows need physical PIN entry, so they run on Compact touch robots on the Westers beds {F061} ([[adb-vs-physical-bots]]). A new engineer's first assignment is the Compact test workflow in UI Automator {F254}.
+- **One profile for three Fluxes.** A test that passes on the Flux 3 profile covers the Flux 4 and Flux Pocket too, because they share the same testing profile {F059}. In the sim that shared profile is called \`FLUX_GEN3\`†.
+- **…but the Pocket has no printer.** Anything that prints (receipt tests, "select print") must not land on a Flux Pocket {F060}. That is what the \`printer\` capability is for ([[orca-capabilities]]).
+- **Micro 3 for a dead Duet 2.** The Duet 2 has no receipt printer, and printer mechanics are outside these testing profiles, so a functionally equivalent Micro 3 sits ready as its hot-swap {F057}.
+- **Modular shelves make swaps quick.** A failed Duet 2 can be swapped for a Flux 3 in minutes rather than days {F258}.
+- **Canada means Compass.** Canadian payment flows need physical PIN entry, so they run on Compass touch robots on the Westers beds {F061} ([[adb-vs-physical-bots]]). A new engineer's first assignment is the Compass test workflow in UI Automator {F254}.
 
 ## MFD and CFD
 
-**MFD** = Merchant Facing Device, **CFD** = Customer Facing Device {F054}. Some setups use two physical devices (a Station 2 tethered to a Mini 2); the Station Duo has both screens on one terminal. See [[mfd-cfd-tethered]].
+**MFD** = Merchant Facing Device, **CFD** = Customer Facing Device {F054}. Some setups use two physical devices (a Stand 2 tethered to a Micro 2); the Stand Duet has both screens on one terminal. See [[mfd-cfd-tethered]].
 
 ## How devices appear in software
 
 | Where | Looks like |
 |---|---|
-| Orca Device Type (enum, ALL CAPS) | \`STATION_2018\`, \`STATION_2\`, \`STATION_DUO\`, \`STATION_DUO_2\`, \`STATION_DUO_3\`, \`MINI_2\`, \`MINI_3\`, \`MINI_4\`, \`FLEX_1\` … \`FLEX_4\`, \`FLEX_POCKET\`, \`COMPACT\`† |
-| Jenkins \`DEVICE_TYPE\` parameter | The same enum string, exactly — \`FLEX_3\`, never \`flex_3\` |
-| uia-remote \`config.properties\` \`deviceType\` | The family only: \`Mini\`, \`Flex\` or \`Station\` |
+| Orca Device Type (enum, ALL CAPS) | \`STAND_2018\`, \`STAND_2\`, \`STAND_DUET\`, \`STAND_DUET_2\`, \`STAND_DUET_3\`, \`MICRO_2\`, \`MICRO_3\`, \`MICRO_4\`, \`FLUX_1\` … \`FLUX_4\`, \`FLUX_POCKET\`, \`COMPASS\`† |
+| Jenkins \`DEVICE_TYPE\` parameter | The same enum string, exactly — \`FLUX_3\`, never \`flux_3\` |
+| uia-remote \`config.properties\` \`deviceType\` | The family only: \`Micro\`, \`Flux\` or \`Stand\` |
 
 > **Illustrative (sim only):** The exact enum spellings are the sim's†; the rule that Device Type is an enum and Jenkins values must be ALL CAPS is from the reference.
 `,
@@ -66,7 +66,7 @@ The **Station Duo 3** and **Mini 4** are upcoming devices on the roadmap, and th
 - **MFD — Merchant Facing Device**: the merchant's screen. Register runs here; items are added, Pay and Charge are pressed.
 - **CFD — Customer Facing Device**: the customer's screen. Totals, tip and payment prompts appear here {F054}.
 
-A **tethered** setup pairs two devices, for example a Station 2 tethered to a Mini 2, or nested Mini 3 rigs {F127}. The **Station Duo** is the odd one out: a single terminal with both displays.
+A **tethered** setup pairs two devices, for example a Stand 2 tethered to a Micro 2, or nested Micro 3 rigs {F127}. The **Stand Duet** is the odd one out: a single terminal with both displays.
 
 ## The tethered bench (reference photo)
 
@@ -90,7 +90,7 @@ The **USB Pay Display** and **Secure Network Pay Display** apps, maintained by t
 - **If the MFD field is populated, the pipeline treats the rig as tethered** {F128}. An empty MFD field makes a tethered rig run as standalone — see [[orca-urls-tethering-offsets]].
 - Running locally, uia-remote's \`config.properties\` needs \`runType=tethered\`, \`merchantFacingDeviceIp\` and \`customerFacingDeviceIp\` — see [[config-properties]].
 
-> **Illustrative (sim only):** MEGATRON's devices (Station 2 MFD + Mini 2 CFD) and OPTIMUS's nested Mini 3s are the sim's roster†; the labels and hardware are as in the reference photo.
+> **Illustrative (sim only):** MEGATRON's devices (Stand 2 MFD + Micro 2 CFD) and OPTIMUS's nested Micro 3s are the sim's roster†; the labels and hardware are as in the reference photo.
 `,
   },
   {
@@ -226,11 +226,11 @@ ps aux | grep -i wine
     image: "touch-robot-side-gantry.jpg",
     body: `## Printed fixtures
 
-All the black plastic modular shelf fixtures — cradles, panels, docks — are 3D-printed in-house: on **Prusa** printers in this lab, while the team's other lab uses **Bambu Lab** printers {F072}. They are drafted in CAD using simple geometric shapes (rectangles and circles) {F073}. A Flex sits in an angled black 3D-printed cradle {F242}; a cracked cradle tilts the device and makes taps drift.
+All the black plastic modular shelf fixtures — cradles, panels, docks — are 3D-printed in-house: on **Prusa** printers in this lab, while the team's other lab uses **Bambu Lab** printers {F072}. They are drafted in CAD using simple geometric shapes (rectangles and circles) {F073}. A Flux sits in an angled black 3D-printed cradle {F242}; a cracked cradle tilts the device and makes taps drift.
 
 ## Modular shelves
 
-About three years ago the lab was redesigned around **standardised modular shelves**; before that, fixtures were raw CNC-cut particle board on open racks and every rig was different {F257}. Now a failed **Duo 2 can be swapped for a Flex 3 in minutes rather than days** {F258}.
+About three years ago the lab was redesigned around **standardised modular shelves**; before that, fixtures were raw CNC-cut particle board on open racks and every rig was different {F257}. Now a failed **Duet 2 can be swapped for a Flux 3 in minutes rather than days** {F258}.
 
 ## The numbers per touch robot
 

@@ -63,7 +63,7 @@ Jenkins (Executor) ──triggers pipeline, injects env vars──▶ Test runne
 | Merchant Config | Merchant parameters (click **Edit** to see every field) | [[orca-merchant-config]] |
 | Screens / Screen Locations | Button coordinates in mm | [[orca-screens-xytouch]] |
 | Card Profiles | Track Data and Gort paths | [[card-profiles]] |
-| Screen Compare Images | Station Duo OCR checks | [[orca-screen-compare]] |
+| Screen Compare Images | Stand Duet OCR checks | [[orca-screen-compare]] |
 
 > **Illustrative (sim only):** Orca's address \`orca.lab.local\` → \`10.42.1.10:8080\`† and REST paths such as \`POST /api/xy_touch\`† are the sim's.
 `,
@@ -186,7 +186,7 @@ Fixing the Pi does not instantly fix Orca: recovery is only observed at the **ne
     factIds: ["F114", "F115", "F117", "F118", "F119", "F120", "F121", "F122"],
     tags: ["orca.entities", "orca.names", "orca.device", "orca.devicetype", "jenkins.envvars"],
     related: ["orca-urls-tethering-offsets", "status-tablet", "jenkins-env-vars", "device-families", "orca-overview"],
-    keywords: ["Name", "Human Readable Name", "HRN", "Robot Device", "Device entity", "Device Type", "enum", "ALL CAPS", "upgrade", "rollback", "Flex 1", "Flex 2", "typo", "JONNY-5"],
+    keywords: ["Name", "Human Readable Name", "HRN", "Robot Device", "Device entity", "Device Type", "enum", "ALL CAPS", "upgrade", "rollback", "Flux 1", "Flux 2", "typo", "JONNY-5"],
     practice: ["INC42", "INC43", "INC63", "INC39", "DR12"],
     body: `## Orca's seven core schemas
 
@@ -203,7 +203,7 @@ Orca has **7** core database schemas, generated as JHipster entities {F114}: **R
 
 ## Robot Device → a separate Device entity
 
-The **Robot Device** field links the robot to a separate **Device** entity {F119}. Decoupling the target device from the robot means a hardware upgrade — e.g. swapping a Flex 1 for a Flex 2 — leaves the legacy configuration intact for quick rollbacks {F120}.
+The **Robot Device** field links the robot to a separate **Device** entity {F119}. Decoupling the target device from the robot means a hardware upgrade — e.g. swapping a Flux 1 for a Flux 2 — leaves the legacy configuration intact for quick rollbacks {F120}.
 
 **Upgrading hardware the right way:**
 
@@ -218,8 +218,8 @@ The **Robot Device** field links the robot to a separate **Device** entity {F119
 **Device Type** is an enum that stores device dimensions, layout metrics and internal string definitions {F121}. Because it is an enum, the strings must match exactly — and that is why **Jenkins pipeline environment variables must be in ALL CAPS** {F122}:
 
 \`\`\`log
-DEVICE_TYPE=flex_3   → No enum constant …DeviceType.flex_3   (FAILURE)†
-DEVICE_TYPE=FLEX_3   → [orca] checkout → wall-e (FLEX_3) OK†
+DEVICE_TYPE=flux_3   → No enum constant …DeviceType.flux_3   (FAILURE)†
+DEVICE_TYPE=FLUX_3   → [orca] checkout → wall-e (FLUX_3) OK†
 \`\`\`
 
 See [[jenkins-env-vars]] and [[device-families]].
@@ -257,7 +257,7 @@ Symptoms of a bad mapping: a blank Tap URL makes every tap test on that rig fail
 
 ## USB Tethered Device Configuration (MFD / CFD)
 
-- This configuration populates **MFD** and **CFD** relations for nested setups {F126} — for example a Station 2 tethered to a Mini 2, or nested Mini 3 rigs {F127}.
+- This configuration populates **MFD** and **CFD** relations for nested setups {F126} — for example a Stand 2 tethered to a Micro 2, or nested Micro 3 rigs {F127}.
 - **If the MFD field is populated, the pipeline treats the rig as tethered** {F128}.
 
 | MFD field | Pipeline treats the rig as |

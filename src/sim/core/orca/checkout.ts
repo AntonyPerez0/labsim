@@ -11,8 +11,8 @@ import { addNote, audit, changeStatus, orcaDown, robotByName } from './status';
 import { fmtStamp } from '../../text/time';
 import { rigOf } from './entities';
 
-export const CANONICAL_KEYS = ['deviceType', 'printer', 'physicalTouch', 'dip', 'tap', 'swipe', 'pinEntry', 'tethered', 'duo', 'adbOnly', 'testingProfile'];
-const DERIVED = new Set(['deviceType', 'printer', 'physicalTouch', 'pinEntry', 'tethered', 'duo', 'adbOnly', 'testingProfile']);
+export const CANONICAL_KEYS = ['deviceType', 'printer', 'physicalTouch', 'dip', 'tap', 'swipe', 'pinEntry', 'tethered', 'duet', 'adbOnly', 'testingProfile'];
+const DERIVED = new Set(['deviceType', 'printer', 'physicalTouch', 'pinEntry', 'tethered', 'duet', 'adbOnly', 'testingProfile']);
 const ENUM_ERR = (raw: string) => `java.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.${raw}`;
 
 export function isDeviceTypeConstant(raw: string): boolean {
@@ -25,7 +25,7 @@ export function capabilityDocument(lab: LabState, robot: OrcaRobot): CapabilityD
   const info = dev ? DEVICE_TYPES[dev.deviceType] : undefined;
   const rig = rigOf(lab, robot);
   const physicalTouch = robot.rigKind === 'touch' || robot.rigKind === 'standalone';
-  // PIN pad shows on the customer-facing display: a Duo's secondary, otherwise the primary.
+  // PIN pad shows on the customer-facing display: a Duet's secondary, otherwise the primary.
   const pinDisplay = info?.dualScreenSingleAdb ? 'secondary' : 'primary';
   const probeDisplay = rig?.probeDisplay ?? (physicalTouch ? 'primary' : null);
   const doc: Record<string, string | boolean> = {};
@@ -40,7 +40,7 @@ export function capabilityDocument(lab: LabState, robot: OrcaRobot): CapabilityD
   for (const k of ['dip', 'tap', 'swipe']) if (k in linked) doc[k] = linked[k]!;
   doc.pinEntry = physicalTouch && probeDisplay === pinDisplay;
   doc.tethered = robot.mfdDeviceId != null;
-  doc.duo = info?.dualScreenSingleAdb ?? false;
+  doc.duet = info?.dualScreenSingleAdb ?? false;
   doc.adbOnly = robot.rigKind === 'adb';
   if (info) doc.testingProfile = info.testingProfile;
   for (const k of Object.keys(linked).sort()) if (!(k in doc)) doc[k] = linked[k]!;

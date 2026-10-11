@@ -141,7 +141,7 @@ export class TouchRigBinder {
     const live = rig !== this.fallback;
     const dtMs = dtS * 1000;
 
-    // ── device configuration (JOHNNY-5 Flex 1 → Flex 2) ──
+    // ── device configuration (JOHNNY-5 Flux 1 → Flux 2) ──
     const dev = this.device(lab);
     const type = dev?.type ?? this.cfg.type;
     if (type !== this.variantType && def.deviceConfigs.some((c) => c.type === type)) {

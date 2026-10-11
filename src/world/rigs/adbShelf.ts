@@ -1,6 +1,6 @@
 /**
- * ADB shelf `shelf.adb` — DATA & TARS (World §2.13): black perforated 2-tier shelf, DATA (Mini 3 on
- * its standard stand) and TARS (Flex 4 in an upright printed dock, 70°), front-lip tapes (`DATA`,
+ * ADB shelf `shelf.adb` — DATA & TARS (World §2.13): black perforated 2-tier shelf, DATA (Micro 3 on
+ * its standard stand) and TARS (Flux 4 in an upright printed dock, 70°), front-lip tapes (`DATA`,
  * `TARS`, yellow `ADB ONLY — NO PIN`), the shelf Pi, a 5-port switch, STRIP-D, two AC bricks and
  * the webcam on the rear-right post. Shelf-local mm.
  */
@@ -44,19 +44,19 @@ export function buildAdbShelf(kit: RigKit, lab: LabState | undefined): AdbHandle
   for (const rig of ADB_RIGS) {
     const base: V3 = [rig.local[0] * 1000, rig.local[1] * 1000, rig.local[2] * 1000];
     const serial = Object.values(lab?.devices ?? {}).find((d) => d?.rigId === rig.id)?.serial ?? `SIM-${rig.hrn}-01`;
-    if (rig.stand.kind === 'mini-stand') {
-      // Mini on its standard wedge stand: compose the shelf point with the device's rest frame
+    if (rig.stand.kind === 'micro-stand') {
+      // Micro on its standard wedge stand: compose the shelf point with the device's rest frame
       const probe = buildDeviceProbe(kit, rig.deviceType);
       const frame = b.mat({ p: base }).multiply(probe.rest); // `rest` maps device-local → rest frame (devices/types.ts)
       const handle = buildDevice(rig.deviceType, { kit, frame, screenParent: kit.screens, arrangement: 'stand', tape: rig.tape, serial });
       devices.push({ rigId: rig.id, worldId: rig.propId, handle, frame });
     } else {
-      // Flex in an upright printed dock: face 70° from horizontal, bottom edge in the dock lip
+      // Flux in an upright printed dock: face 70° from horizontal, bottom edge in the dock lip
       const tilt = -rig.stand.screenTiltFromVerticalDeg * DEG;
       const botY = -(136 / 2 + 50);
       const rest = placeMatrix({ p: [0, 30, 10], r: [tilt, 0, 0] }).multiply(placeMatrix({ p: [0, -botY, 11] }));
       const frame = b.mat({ p: base }).multiply(rest);
-      const handle = buildDevice(rig.deviceType, { kit, frame, screenParent: kit.screens, arrangement: 'stand', tape: 'FLEX 4', serial });
+      const handle = buildDevice(rig.deviceType, { kit, frame, screenParent: kit.screens, arrangement: 'stand', tape: 'FLUX 4', serial });
       devices.push({ rigId: rig.id, worldId: rig.propId, handle, frame });
       const dock = b.sub({ p: base });
       dock.box(m.blackPla, 100, 8, 110, [0, 4, 0], 2);

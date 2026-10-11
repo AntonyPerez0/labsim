@@ -51,7 +51,7 @@ const RAW: readonly GwSpec[] = [
     id: 'GW01', name: 'Fried hardware', action: 'Connect a LabSim device (or its PSU lead) to any DC rail/regulator terminal', penalty: 500, strike: 'always',
     consequence: 'Device FRIED (spark, smoke); follow-up "Replace fried device" ticket', tags: ['power.18v'], factIds: ['F228', 'F229'],
     trigger: { events: ['power.plugged', 'device.fried'], rule: 'power.plugged with hookup.kind == "dc-rail" and the load is a LabSim device or its PSU brick (load.deviceId set or expects AC-BRICK-18V); or device.fried caused by a DC hookup', playerOnly: true },
-    teach: t('The Flex fried on the 24 V tap.', 'LabSim devices draw an irregular 18 V; they bypass the DC rails and use commercial AC strips. (Ref §6)', "Free an outlet on the AC strip; use the device's own PSU.", { ref: 'Ref §6', practiceDrillId: 'DR04', tag: 'power.18v' }),
+    teach: t('The Flux fried on the 24 V tap.', 'LabSim devices draw an irregular 18 V; they bypass the DC rails and use commercial AC strips. (Ref §6)', "Free an outlet on the AC strip; use the device's own PSU.", { ref: 'Ref §6', practiceDrillId: 'DR04', tag: 'power.18v' }),
   },
   {
     id: 'GW02', name: 'Fried Collis probe', action: 'Connect a Collis probe to any DC terminal', penalty: 750, strike: 'always',
@@ -93,7 +93,7 @@ const RAW: readonly GwSpec[] = [
   {
     id: 'GW08', name: 'Port 5555', action: 'Use port 5555 (config, `adb connect`, `adb tcpip 5555`, Orca URL)', penalty: 300, strike: 'conditional',
     strikeRule: 'The 5555 connection reaches a coworker desk device (10.42.60.x; adb.coworkerDriven)',
-    consequence: "{{riley}}'s desk Flex gets driven (INC27)", tags: ['adb.port'], factIds: ['F198', 'F199', 'F200'],
+    consequence: "{{riley}}'s desk Flux gets driven (INC27)", tags: ['adb.port'], factIds: ['F198', 'F199', 'F200'],
     trigger: {
       events: ['git.fileEdited', 'adb.connected', 'adb.command', 'orca.entitySaved'],
       rule: 'config.properties portNumber becomes 5555; adb connect to <host>:5555; adb tcpip 5555; or a robot URL saved with :5555',

@@ -195,5 +195,5 @@ class Parser {
   }
 }
 
-/** Compact JSON as JHipster/Jackson writes it (no spaces). */
+/** Compass JSON as JHipster/Jackson writes it (no spaces). */
 export const compact = (v: unknown): string => JSON.stringify(v);

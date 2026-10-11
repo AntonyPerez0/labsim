@@ -16,20 +16,20 @@ import { receiptVerdict } from '../ollama';
 
 /** Fallback roster facts for history consoles when Orca rows are not seeded yet. */
 const ROSTER: Record<string, { type: string; ip: string; cfdIp?: string; env: string; status: string }> = {
-  'wall-e': { type: 'FLEX_3', ip: '10.42.30.11', env: 'DEV1', status: 'Available' },
-  eve: { type: 'FLEX_4', ip: '10.42.30.12', env: 'DEV1', status: 'Available' },
-  bumblebee: { type: 'MINI_3', ip: '10.42.30.13', env: 'DEV1', status: 'Available' },
-  'r2-d2': { type: 'STATION_DUO', ip: '10.42.30.14', cfdIp: '10.42.30.14', env: 'DEV1', status: 'Available' },
-  'johnny-5': { type: 'FLEX_1', ip: '10.42.30.15', env: 'DEV1', status: 'Available' },
-  baymax: { type: 'STATION_2018', ip: '10.42.30.16', env: 'DEV1', status: 'Available' },
-  seti: { type: 'COMPACT', ip: '10.42.30.17', env: 'DEV1', status: 'Available' },
-  rosie: { type: 'FLEX_POCKET', ip: '10.42.30.18', env: 'DEV1', status: 'Unavailable' },
-  megatron: { type: 'STATION_2', ip: '10.42.30.21', cfdIp: '10.42.30.22', env: 'DEV1', status: 'Available' },
-  optimus: { type: 'MINI_3', ip: '10.42.30.23', cfdIp: '10.42.30.24', env: 'STG', status: 'Available' },
-  data: { type: 'MINI_3', ip: '10.42.30.31', env: 'DEV1', status: 'Available' },
-  tars: { type: 'FLEX_4', ip: '10.42.30.32', env: 'DEV1', status: 'Available' },
-  'k-9': { type: 'STATION_DUO_2', ip: '10.42.30.51', env: 'DEV1', status: 'Available' },
-  astro: { type: 'FLEX_4', ip: '10.42.30.78', env: 'QA', status: 'Available' },
+  'wall-e': { type: 'FLUX_3', ip: '10.42.30.11', env: 'DEV1', status: 'Available' },
+  eve: { type: 'FLUX_4', ip: '10.42.30.12', env: 'DEV1', status: 'Available' },
+  bumblebee: { type: 'MICRO_3', ip: '10.42.30.13', env: 'DEV1', status: 'Available' },
+  'r2-d2': { type: 'STAND_DUET', ip: '10.42.30.14', cfdIp: '10.42.30.14', env: 'DEV1', status: 'Available' },
+  'johnny-5': { type: 'FLUX_1', ip: '10.42.30.15', env: 'DEV1', status: 'Available' },
+  baymax: { type: 'STAND_2018', ip: '10.42.30.16', env: 'DEV1', status: 'Available' },
+  seti: { type: 'COMPASS', ip: '10.42.30.17', env: 'DEV1', status: 'Available' },
+  rosie: { type: 'FLUX_POCKET', ip: '10.42.30.18', env: 'DEV1', status: 'Unavailable' },
+  megatron: { type: 'STAND_2', ip: '10.42.30.21', cfdIp: '10.42.30.22', env: 'DEV1', status: 'Available' },
+  optimus: { type: 'MICRO_3', ip: '10.42.30.23', cfdIp: '10.42.30.24', env: 'STG', status: 'Available' },
+  data: { type: 'MICRO_3', ip: '10.42.30.31', env: 'DEV1', status: 'Available' },
+  tars: { type: 'FLUX_4', ip: '10.42.30.32', env: 'DEV1', status: 'Available' },
+  'k-9': { type: 'STAND_DUET_2', ip: '10.42.30.51', env: 'DEV1', status: 'Available' },
+  astro: { type: 'FLUX_4', ip: '10.42.30.78', env: 'QA', status: 'Available' },
 };
 
 function robotFacts(lab: LabState, name: string): { id: number | null; type: string; ip: string; cfdIp: string; env: string; status: string } {
@@ -41,7 +41,7 @@ function robotFacts(lab: LabState, name: string): { id: number | null; type: str
     const st = r.status === 'UNAVAILABLE' ? 'Unavailable' : 'Available';
     return { id: r.id, type: dev?.deviceType ?? '', ip: dev?.ip ?? '', cfdIp: mfd ? (cfd?.ip ?? '') : '', env: r.environment, status: st };
   }
-  const f = ROSTER[name] ?? { type: 'FLEX_3', ip: '10.42.30.11', env: 'DEV1', status: 'Available' };
+  const f = ROSTER[name] ?? { type: 'FLUX_3', ip: '10.42.30.11', env: 'DEV1', status: 'Available' };
   return { id: null, type: f.type, ip: f.ip, cfdIp: f.cfdIp ?? '', env: f.env, status: f.status };
 }
 
@@ -231,7 +231,7 @@ export function synthBuild(
 /**
  * The Laz lines a finished historical swap printed (Sim §3.17.2, same formats as `core/laz.ts`). A Laz
  * job always swapped (its history alternates merchants); another job's `Merchant` stage swapped when the
- * rig's Orca merchant (what it should hold) differs from `MERCHANT` — e.g. Riley's FLEX_POCKET run on ROSIE
+ * rig's Orca merchant (what it should hold) differs from `MERCHANT` — e.g. Riley's FLUX_POCKET run on ROSIE
  * (INC40). The restore-adb line is omitted when the device is now without ADB over TCP (INC28's seeded swap).
  */
 function lazHistoryLines(lab: LabState, job: JenkinsJob, robotName: string | null, merchant: string): string[] {
@@ -263,7 +263,7 @@ function runLines(lab: LabState, job: JenkinsJob, facts: ReturnType<typeof robot
     out.push(`[runner] uia-remote 4.2.0 · UI Automator ${lab.flags.uiaVersion} · runType=${tethered ? 'tethered' : 'standalone'} · deviceType=${facts ? familyOf(facts.type) : ''}`);
     if (tethered) out.push(`[runner] MFD handle ${facts!.ip}:5444 connected`, `[runner] CFD handle ${facts!.cfdIp}:5444 connected`);
     else out.push(`[runner] DEVICE handle ${facts?.ip ?? ''}:5444 connected`);
-    const counts: Record<string, number> = { HomeScreenTest: 4, SaleTest: 8, TaxTest: 4, TaxTestDuo: 4, RefundTest: 2, DuoCfdSuite: 5, DuoCheckoutTest: 5, PrinterlessSmokeTest: 8, ContactCanadaPinSaleTest: 9, ReceiptScreenTest: 8 };
+    const counts: Record<string, number> = { HomeScreenTest: 4, SaleTest: 8, TaxTest: 4, TaxTestDuet: 4, RefundTest: 2, DuetCfdSuite: 5, DuetCheckoutTest: 5, PrinterlessSmokeTest: 8, ContactCanadaPinSaleTest: 9, ReceiptScreenTest: 8 };
     for (const t of tests) {
       out.push(`[runner] ${t}`, '[setup] wake + unlock (passcode ****) … OK', `[setup] HomeScreen.waitForScreen() … OK  (${tethered ? 'MFD, CFD' : 'DEVICE'})`);
       if (t === 'PaycoreMatrixTest') {
@@ -314,7 +314,7 @@ export function seedHistory(lab: LabState): void {
       const robot = s.historyRobots.length ? s.historyRobots[idx % s.historyRobots.length]! : null;
       const params: Record<string, string> = { ...job.savedParams };
       if (s.historyEnvs) params['BACKEND_ENV'] = s.historyEnvs[idx % s.historyEnvs.length]!;
-      if (s.id === 'Java/uia-remote-regression-flex') params['DEVICE_TYPE'] = idx % 2 === 0 ? 'FLEX_3' : 'FLEX_4';
+      if (s.id === 'Java/uia-remote-regression-flux') params['DEVICE_TYPE'] = idx % 2 === 0 ? 'FLUX_3' : 'FLUX_4';
       if (s.runner === 'laz') {
         params['ROBOT_NAME'] = 'data';
         params['MERCHANT'] = idx % 2 === 0 ? 'AUTO-US-NOPIN-02' : 'AUTO-US-NOPIN-01';

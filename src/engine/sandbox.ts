@@ -301,7 +301,7 @@ function boot(): void {
     engine.registerInteractable({
       id: 'sandbox.device',
       object: device,
-      label: () => 'Station — test device',
+      label: () => 'Stand — test device',
       verbs: () => [
         { key: 'E', label: 'Inspect', run: () => console.log('[sandbox] inspect device') },
         { key: 'F', label: 'Replace fuse', requiresTool: 'spare-fuse-5v', run: () => console.log('[sandbox] replace fuse') },

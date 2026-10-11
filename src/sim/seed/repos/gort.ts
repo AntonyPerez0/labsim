@@ -315,17 +315,17 @@ export const SALE_RECEIPT = `{
 `;
 
 const PIN_SALE = `{ "name": "Contact Canada Interac PIN sale",
-  "capabilities": { "deviceType": "COMPACT", "physicalTouch": true },
+  "capabilities": { "deviceType": "COMPASS", "physicalTouch": true },
   "card": "INTERAC_CA_DIP", "expectPin": true, "receipt": "RECEIPT_OPTIONS_4" }
 `;
 
 const CC_README = `# Contact Canada (Westers test beds)
 
 Canadian payment flows mandate **physical PIN entry** (Secure Touch), so these suites only run on
-physical touch robots holding a LabSim Compact (SETI, GERTY, MOTHER).
+physical touch robots holding a LabSim Compass (SETI, GERTY, MOTHER).
 
 The pipeline \`Java/contact-canada-pin-sale\` uses BOTH capability styles:
-* non-dynamic, hard-coded in the Jenkinsfile: \`[deviceType: 'COMPACT', physicalTouch: true]\`
+* non-dynamic, hard-coded in the Jenkinsfile: \`[deviceType: 'COMPASS', physicalTouch: true]\`
 * dynamic, from \`pin_sale.json\` → \`"capabilities"\`
 
 They must agree; Orca rejects a conflicting key with \`409 Conflict: capability conflict\`.
@@ -389,8 +389,8 @@ const INITIAL: SeedCommit = {
   },
 };
 
-/** MINI_3 5-option rows were measured on a pre-release build: 3.0 mm too high until #418. */
-export const STALE_MINI3_DY = -3.0;
+/** MICRO_3 5-option rows were measured on a pre-release build: 3.0 mm too high until #418. */
+export const STALE_MICRO3_DY = -3.0;
 
 const REORG: Record<string, string | null> = {};
 for (const [now, legacy] of Object.entries(LEGACY_CARD_PATH)) {
@@ -398,8 +398,8 @@ for (const [now, legacy] of Object.entries(LEGACY_CARD_PATH)) {
   REORG[now] = cardFile(CARD_DEFS[now]!);
 }
 
-const MINI3_FIX = screenFiles((s) => s === 'RECEIPT_OPTIONS_5');
-const MINI3_FIX_ONLY = { 'config/screen-locations/MINI_3/RECEIPT_OPTIONS_5.json': MINI3_FIX['config/screen-locations/MINI_3/RECEIPT_OPTIONS_5.json']! };
+const MICRO3_FIX = screenFiles((s) => s === 'RECEIPT_OPTIONS_5');
+const MICRO3_FIX_ONLY = { 'config/screen-locations/MICRO_3/RECEIPT_OPTIONS_5.json': MICRO3_FIX['config/screen-locations/MICRO_3/RECEIPT_OPTIONS_5.json']! };
 
 const COMMITS: SeedCommit[] = [
   INITIAL,
@@ -415,7 +415,7 @@ const COMMITS: SeedCommit[] = [
     message: 'Add 5-option receipt maps for all profiles (#417)',
     author: 'jared',
     at: '2026-09-25 17:48',
-    changes: screenFiles(isFive, (type, screen) => (type === 'MINI_3' && screen === 'RECEIPT_OPTIONS_5' ? STALE_MINI3_DY : 0)),
+    changes: screenFiles(isFive, (type, screen) => (type === 'MICRO_3' && screen === 'RECEIPT_OPTIONS_5' ? STALE_MICRO3_DY : 0)),
   },
   {
     short: '5be7c90',
@@ -426,10 +426,10 @@ const COMMITS: SeedCommit[] = [
   },
   {
     short: '9f02a1b',
-    message: 'Update MINI_3 receipt coordinates (#418)',
+    message: 'Update MICRO_3 receipt coordinates (#418)',
     author: 'jared',
     at: '2026-10-02 16:31',
-    changes: MINI3_FIX_ONLY,
+    changes: MICRO3_FIX_ONLY,
   },
   {
     short: 'c41d9e2',
@@ -493,10 +493,10 @@ export const GORT: RepoSeed = {
     },
     {
       number: 418,
-      title: 'Update MINI_3 receipt coordinates',
+      title: 'Update MICRO_3 receipt coordinates',
       author: 'jared',
       body: 'Re-measured RECEIPT_OPTIONS_5 on the release firmware (QR block pushes every option 3.0 mm down). Values from BUMBLEBEE with the steel ruler, checked with Test tap.',
-      sourceBranch: 'jared/mini3-receipt-coords',
+      sourceBranch: 'jared/micro3-receipt-coords',
       state: 'merged',
       createdAt: '2026-10-02 15:55',
       mergedAt: '2026-10-02 16:31',

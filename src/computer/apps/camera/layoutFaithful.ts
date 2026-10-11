@@ -2,7 +2,7 @@
  * Layout-faithful device displays for webcam frames and screencaps (Apps §6.5, §8.5).
  *
  * The lessons measure text in these images (Cur M16 s6: R2-D2 CFD `TOTAL $10.83` at 412, 288, 236 × 44 in the
- * webcam frame; GP INC24: FLEX_3 `Payment Successful` at 208, 512, 304 × 40 in a screencap). The sim's frame model
+ * webcam frame; GP INC24: FLUX_3 `Payment Successful` at 208, 512, 304 × 40 in a screencap). The sim's frame model
  * (`sim.ocr.frame`, Sim §3.12.1) places every *label* from the firmware layout tables, while `render2d` draws its
  * own illustrated screens whose text does not sit on those rectangles. Buttons agree (render2d takes them from the
  * same layouts), labels do not — so for a display that shows layout labels we composite:

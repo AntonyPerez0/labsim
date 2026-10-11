@@ -18,7 +18,7 @@ export const UIA_ARTICLES: ManualArticle[] = resolvePeople<ManualArticle[]>([
     practice: ["INC34", "DR15"],
     body: `## What it is
 
-**uia-remote** is the team's modern **Java / UI Automator** test repository {F039}, built on Google's **Android UI Automator** {F005} — specifically **version 2.3** {F006} — in Java {F001}. It automates **both standalone devices and tethered multi-device setups across native LabSim apps** {F040}. {{morgan}} created it because no prior framework could automate native tethered setups: Station-to-Mini, Mini-to-Mini and Station Duo {F159}. It lives on GitHub with Gort and pigeon {F018}.
+**uia-remote** is the team's modern **Java / UI Automator** test repository {F039}, built on Google's **Android UI Automator** {F005} — specifically **version 2.3** {F006} — in Java {F001}. It automates **both standalone devices and tethered multi-device setups across native LabSim apps** {F040}. {{morgan}} created it because no prior framework could automate native tethered setups: Stand-to-Micro, Micro-to-Micro and Stand Duet {F159}. It lives on GitHub with Gort and pigeon {F018}.
 
 ## Layout
 
@@ -80,7 +80,7 @@ Every screen, pop-up or window has its own Java class — e.g. \`HomeScreen\`, \
 | **Zone 1 — Element Locators** | Declared UI elements unique to that view, e.g. the app icons on HomeScreen {F175} |
 | **Zone 2 — Helper / Action Methods** | The logic driving interactions; **device-specific behaviours are abstracted here** {F176} |
 
-Example of a device quirk in Zone 2: **\`open(String appName)\` scrolls vertically on Flex devices and horizontally on Mini or Station devices** {F177}. Which branch runs is decided by the form factor in \`config.properties\` \`deviceType\` (Mini, Flex, Station), which governs layout and scroll logic {F195}.
+Example of a device quirk in Zone 2: **\`open(String appName)\` scrolls vertically on Flux devices and horizontally on Micro or Stand devices** {F177}. Which branch runs is decided by the form factor in \`config.properties\` \`deviceType\` (Micro, Flux, Stand), which governs layout and scroll logic {F195}.
 
 ## The mandatory methods
 
@@ -114,9 +114,9 @@ public class HomeScreen extends BaseTest {
 
     public void open(String appName) {
         waitForScreen();
-        if (deviceType == DeviceType.FLEX) {
-            scrollVerticallyTo(appName);      // Flex: vertical
-        } else {                              // Mini, Station
+        if (deviceType == DeviceType.FLUX) {
+            scrollVerticallyTo(appName);      // Flux: vertical
+        } else {                              // Micro, Stand
             scrollHorizontallyTo(appName);    // horizontal
         }
         device.findObject(By.text(appName)).click();
@@ -131,7 +131,7 @@ public class HomeScreen extends BaseTest {
 | Symptom | Cause |
 |---|---|
 | Flaky \`UiObjectNotFoundException\`, the tap lands before the screen finishes drawing | Missing \`waitForScreen()\` |
-| \`open("Register")\` can't find the app on a Flex | Scroll branches swapped (Flex must scroll vertically) |
+| \`open("Register")\` can't find the app on a Flux | Scroll branches swapped (Flux must scroll vertically) |
 | Tests start on random screens | Missing \`isScreenPresent()\` checks / teardown ([[tax-test]]) |
 `,
   },
@@ -188,10 +188,10 @@ MFD = Merchant Facing Device, CFD = Customer Facing Device {F054}. The hand-offs
     id: "config-properties",
     title: "config.properties (Local Runs)",
     category: "Test Frameworks",
-    summary: "Every key in uia-remote's config.properties, the three locked values (avocado, CPA, 5444), the Station Duo same-IP rule, and why you only edit it for local runs.",
+    summary: "Every key in uia-remote's config.properties, the three locked values (avocado, CPA, 5444), the Stand Duet same-IP rule, and why you only edit it for local runs.",
     factIds: ["F188", "F189", "F190", "F191", "F192", "F193", "F194", "F195", "F196", "F197", "F198", "F199", "F200", "F201"],
     tags: ["uia.config", "adb.port"],
-    related: ["adb-port-5444", "tax-test", "jenkins-env-vars", "ts-adb", "station-duo-dual-screen"],
+    related: ["adb-port-5444", "tax-test", "jenkins-env-vars", "ts-adb", "stand-duet-dual-screen"],
     keywords: ["config.properties", "runType", "tethered", "merchantFacingDeviceIp", "customerFacingDeviceIp", "serial", "deviceType", "theme", "avocado", "kernelType", "CPA", "SPA", "portNumber", "5444", "5555", "unlockPasscode", "backendEnv", "robotName"],
     practice: ["INC27", "INC29", "INC30", "DR02"],
     body: `## When you edit it
@@ -205,9 +205,9 @@ MFD = Merchant Facing Device, CFD = Customer Facing Device {F054}. The hand-offs
 |---|---|---|
 | \`runType\` | \`tethered\` for multi-device setups {F190} | |
 | \`merchantFacingDeviceIp\` | Local network IP of the **MFD** terminal {F191} | |
-| \`customerFacingDeviceIp\` | Local network IP of the **CFD** terminal {F192} | **Station Duo: both IPs are the exact same address** {F193} |
+| \`customerFacingDeviceIp\` | Local network IP of the **CFD** terminal {F192} | **Stand Duet: both IPs are the exact same address** {F193} |
 | \`serial\` | Hardware serial of the primary terminal {F194} | |
-| \`deviceType\` | The form factor: \`Mini\`, \`Flex\` or \`Station\` {F195} | Governs layout and scroll logic |
+| \`deviceType\` | The form factor: \`Micro\`, \`Flux\` or \`Stand\` {F195} | Governs layout and scroll logic |
 | \`theme\` | Locked to **\`avocado\`** {F196} | Legacy theme toggles are deprecated |
 | \`kernelType\` | Locked to **\`CPA\`** (Core Payments Application) {F197} | Replaces the legacy SPA (Secure Processor Application) |
 | \`portNumber\` | Locked to **\`5444\`** {F198} | Standard ADB defaults to 5555 {F199} |
@@ -224,13 +224,13 @@ Standard ADB defaults to **5555** {F199}. Using 5555 caused severe office port c
 runType=standalone           runType=tethered
 merchantFacingDeviceIp=…21   merchantFacingDeviceIp=10.42.30.21
 customerFacingDeviceIp=      customerFacingDeviceIp=10.42.30.22
-deviceType=Mini              deviceType=Station
+deviceType=Micro              deviceType=Stand
 theme=classic                theme=avocado
 kernelType=SPA               kernelType=CPA
 portNumber=5555              portNumber=5444
 \`\`\`
 
-For a **Station Duo** (one terminal, two displays) set both IPs to the same address, e.g. \`merchantFacingDeviceIp=customerFacingDeviceIp=10.42.30.14\`†, and \`deviceType=Station\`.
+For a **Stand Duet** (one terminal, two displays) set both IPs to the same address, e.g. \`merchantFacingDeviceIp=customerFacingDeviceIp=10.42.30.14\`†, and \`deviceType=Stand\`.
 
 > **Illustrative (sim only):** IPs, serials and the extra key names are the sim's†. Key names \`runType\`, \`merchantFacingDeviceIp\`, \`customerFacingDeviceIp\`, \`serial\`, \`deviceType\`, \`theme\`, \`kernelType\`, \`portNumber\` and the locked values are from the reference.
 `,

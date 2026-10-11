@@ -42,10 +42,10 @@ rest, exactly as the real lab would.
 | Money | integer **cents** (`totalCents`), currency per merchant (`USD`/`CAD`). Rates in **basis points** (8.25 % = `825`). |
 | Durations | integer ms. `…Ms` suffix. Which clock a duration runs on is stated (§0.3). |
 | Orca table ids | numbers (MySQL auto-increment), stable in seed. |
-| Runtime ids | kebab strings: rigs `wall-e`, devices `dev-wall-e` (sim) / `wall-e-flex3` (Orca device row *name*), hosts `pi-wall-e`, `minix-01`, `orca-vm`, faults `pi.hung`. |
+| Runtime ids | kebab strings: rigs `wall-e`, devices `dev-wall-e` (sim) / `wall-e-flux3` (Orca device row *name*), hosts `pi-wall-e`, `minix-01`, `orca-vm`, faults `pi.hung`. |
 | Robot names | system Name lowercase-kebab (`johnny-5`), Human Readable Name caps (`JOHNNY-5`) — canon. |
 | Orca screen names | ALL CAPS snake (`RECEIPT_OPTIONS_5`, `TENDER_CASH_DISCOUNT`) — Cur S10. Runtime display screens (what a device is showing) are lowercase-kebab (`receipt-options`) — mapping in §2.10.1. |
-| Enum strings | exactly as canon (`FLEX_3`, `CONNECTION_FAILED`). Orca's UI shows statuses title-cased (`Connection Failed`). |
+| Enum strings | exactly as canon (`FLUX_3`, `CONNECTION_FAILED`). Orca's UI shows statuses title-cased (`Connection Failed`). |
 | Timestamps in text | `YYYY-MM-DD HH:MM:SS` local game time (`2026-10-05 08:15:00`), from `time.nowMs` (§0.3). |
 
 ### 0.3 The two clocks
@@ -73,7 +73,7 @@ advance both clocks equally.
 | `LabState` | `rngStreams: Record<RngStream, RngState>`, `config: SimConfig`, `network: NetworkState`, `windowsBoxes?` (no — hosts cover it), `local: LocalRunState`, `ubi: UbiState`, `printer3d: Printer3dState`, `timers: SimTimer[]`, `seq: { event: number; note: number; build: number; laz: number; ollama: number; chat: number; fault: number; run: number }` | §1.1 |
 | `OrcaRobot` | `preFailureStatus: 'AVAILABLE'\|'UNAVAILABLE'\|null`, `statusChangedMs`, `reservedAtMs`, `lastReleasedMs`, `lastHealth: {atMs, http: number\|null, error: string\|null, latencyMs}\|null`, `statusHistory: {atMs, from, to, by}[]`, `probeDisplay: 'primary'\|'secondary'\|null` (moved to rig) — see §1.3.2 | health/restore rule, LRU, DSL |
 | `OrcaRobot.checkout` | `statusAtCheckout: RobotStatus`, `kind: 'jenkins'\|'local'` | named-job auto-reset (§3.4.5) |
-| `OrcaDevice` | `name: string` (unique, e.g. `johnny-5-flex2`) | GP DSL compares device *names* |
+| `OrcaDevice` | `name: string` (unique, e.g. `johnny-5-flux2`) | GP DSL compares device *names* |
 | `OrcaScreen` | `deviceType: DeviceTypeCode` (keyed by Device Type; `testingProfile` becomes derived/informational), `display: 'primary'\|'secondary'` | INC20/INC21 per-type rows (§2.10) |
 | `MerchantConfig` | `region: 'US-EAST'\|'CA-CENTRAL'`, `qrReceiptsEnabled`, `signatureThresholdCents`, `acceptedBrands: CardBrand[]`, `apps: string[]`, `displayName`, `address` | §1.3.5 |
 | `CardProfile` | `pin: string\|null`, `pan: string` (masked in UI), `expiry: 'YYMM'` | §1.3.7 |
@@ -296,16 +296,16 @@ interface RobotNote {
 #### 1.3.3 `OrcaDevice` and the `DeviceType` enum
 
 ```ts
-type DeviceTypeCode = 'STATION_2018'|'STATION_2'|'STATION_DUO'|'STATION_DUO_2'|'STATION_DUO_3'
-  |'MINI_2'|'MINI_3'|'MINI_4'|'FLEX_1'|'FLEX_2'|'FLEX_3'|'FLEX_4'|'FLEX_POCKET'|'COMPACT';
+type DeviceTypeCode = 'STAND_2018'|'STAND_2'|'STAND_DUET'|'STAND_DUET_2'|'STAND_DUET_3'
+  |'MICRO_2'|'MICRO_3'|'MICRO_4'|'FLUX_1'|'FLUX_2'|'FLUX_3'|'FLUX_4'|'FLUX_POCKET'|'COMPASS';
 
 interface OrcaDevice {
   id: number;
-  name: string;             // NEW unique row name, "<robot>-<model>" e.g. "johnny-5-flex1"
+  name: string;             // NEW unique row name, "<robot>-<model>" e.g. "johnny-5-flux1"
   deviceType: DeviceTypeCode;
   serial: string;           // "SIM-F1-000015"
   ip: string;               // terminal IP; ADB over TCP on 5444
-  label: string;            // free text, e.g. "Flex 1 (JOHNNY-5) — keep for rollback"
+  label: string;            // free text, e.g. "Flux 1 (JOHNNY-5) — keep for rollback"
   simDeviceId: string | null;   // runtime TerminalDevice id if the hardware exists in the sim
   retired: boolean;
 }
@@ -376,7 +376,7 @@ interface OrcaScreen {
   name: string;                 // "RECEIPT_OPTIONS_5"
   deviceType: DeviceTypeCode;   // NEW — rows are per Device Type (INC20/INC21; GP DSL)
   testingProfile: TestingProfile;   // derived from deviceType; informational
-  display: 'primary' | 'secondary'; // NEW — 'secondary' only for STATION_DUO* "CFD_*" screens
+  display: 'primary' | 'secondary'; // NEW — 'secondary' only for STAND_DUET* "CFD_*" screens
   description: string;
   optionCount: 4 | 5 | null;    // receipt screens
 }
@@ -425,7 +425,7 @@ interface ScreenCompareImage {
   bbox: { x: number; y: number; w: number; h: number };   // webcam px
   expectedText: string;         // exact, case-sensitive
   deprecated: boolean;          // being phased out for UIA 2.3 (Ref §3)
-  usedBy: string[];             // NEW — test ids, e.g. ["uia-remote:DuoCfdSuite"]
+  usedBy: string[];             // NEW — test ids, e.g. ["uia-remote:DuetCfdSuite"]
 }
 ```
 
@@ -514,8 +514,8 @@ interface RigMotionCommand {
 type DevicePower = 'off' | 'booting' | 'on' | 'fried';
 
 interface TerminalDevice {
-  id: string;                     // "dev-wall-e-flex3"
-  orcaDeviceName: string;         // NEW — "wall-e-flex3"
+  id: string;                     // "dev-wall-e-flux3"
+  orcaDeviceName: string;         // NEW — "wall-e-flux3"
   type: DeviceTypeCode;
   serial: string;
   ip: string;
@@ -528,7 +528,7 @@ interface TerminalDevice {
   dead: boolean;                  // NEW — hardware failure: never finishes boot (INC44)
   supply: PowerHookup;            // where its PSU brick (or lead) is plugged
   rigId: string | null;           // rig, desk ("desk-riley"), storage ("husky-drawer-2"), device library
-  role: 'standalone' | 'mfd' | 'cfd' | 'duo';
+  role: 'standalone' | 'mfd' | 'cfd' | 'duet';
   tetheredTo: string | null;
   link: 'usb' | 'network' | null;
   payDisplayApp: 'USB_PAY_DISPLAY' | 'SECURE_NETWORK_PAY_DISPLAY' | null;
@@ -545,8 +545,8 @@ interface TerminalDevice {
   firmwareInfo: { version: string; receiptQr: boolean };   // NEW (authoritative)
   launcher: { page: number; apps: string[] };          // NEW — current launcher page; app order
   display: DisplayState;          // primary (MFD) display
-  secondaryDisplay: DisplayState | null;   // Station Duo family CFD
-  cfdLayout: 'v1' | 'v2';         // NEW — Duo CFD copy/layout version (INC37A, M16 toggle)
+  secondaryDisplay: DisplayState | null;   // Stand Duet family CFD
+  cfdLayout: 'v1' | 'v2';         // NEW — Duet CFD copy/layout version (INC37A, M16 toggle)
   labelShiftPx: number;           // NEW — extra vertical shift of CFD labels in webcam px (INC36)
   order: OrderState | null;
   printer: { present: boolean; paper: boolean; lastPayloadMs: number | null };   // NEW
@@ -769,16 +769,16 @@ interface PullRequest {
 interface JenkinsState {
   up: boolean;                       // jenkins service on jenkins-vm
   url: 'http://jenkins.lab.local:8080';
-  jobs: Record<string, JenkinsJob>;  // key = full path "Java/uia-remote-regression-flex"
+  jobs: Record<string, JenkinsJob>;  // key = full path "Java/uia-remote-regression-flux"
   views: Record<string, { name: string; include: string }>;   // NEW — name → regex over job paths
   builds: Record<string, JenkinsBuild>;   // key "<jobPath>#<n>"; cap 20 per job (oldest pruned)
   queue: string[];                   // build ids waiting for an executor
   executors: 8;                      // §3.18.1
-  nextBuildNumber: Record<string, number>;   // NEW — per job; seeded (e.g. uia-remote-regression-flex → 4120)
+  nextBuildNumber: Record<string, number>;   // NEW — per job; seeded (e.g. uia-remote-regression-flux → 4120)
 }
 
 interface JenkinsJob {
-  id: string;                        // "Java/uia-remote-regression-flex"
+  id: string;                        // "Java/uia-remote-regression-flux"
   folder: 'Java' | 'iOS';            // legacy platform split (Ref §1). Every job lives in exactly one.
   name: string;
   views: string[];                   // NEW — derived from JenkinsState.views
@@ -871,7 +871,7 @@ interface ReceiptScenario { imageRef: string; deviceId: string; subtotalCents: n
   printedTipCents: number; misread: { field: 'tip' | 'total'; shownAs: string } | null; }
 
 interface Printer3dState { printers: Record<'prusa' | 'bambu', { busy: boolean; job: string | null; endsPhysMs: number | null }>;
-  output: string[]; }                // printed parts waiting on the tray: "cradle_flex_gen3"
+  output: string[]; }                // printed parts waiting on the tray: "cradle_flux_gen3"
 
 interface ActiveFault { id: string; faultId: string; params: Record<string, string | number | boolean>;
   injectedMs: number; cleared: boolean; clearedMs: number | null;
@@ -901,7 +901,7 @@ webcam.aimOffsetDeg: { yaw: number; pitch: number };   // aimedOk mirrors |yaw|,
 // TerminalDevice
 firmwareInfo: { version: string; receiptQr: boolean };  // authoritative; `firmware` mirrors version
 lastReceiptDoc: ReceiptDoc | null;                      // authoritative; `lastReceipt` mirrors the text
-battery: { pct: number; charging: boolean } | null;     // handhelds (FLEX_*, FLEX_POCKET), §3.8.1
+battery: { pct: number; charging: boolean } | null;     // handhelds (FLUX_*, FLUX_POCKET), §3.8.1
 state: 'OK' | 'BOOTING' | 'DEAD' | 'FRIED';             // derived view (§0.4), recomputed each tick
 interface ReceiptDoc {
   merchantName: string; address: string; printedAtMs: number; orderId: string;
@@ -934,7 +934,7 @@ Rules introduced with these fields:
   `.supply` mirror it (load ids: `pi-<rig>`/host id for Pis and boxes, `psu-<orca device name>` for
   devices, `psu-collis-<rig>` for probes). Off-screen hosts and devices have no load; their own
   `.supply` is authoritative.
-* **Spare devices.** `dev-spare-flex2` (`SIM-F2-000015`, Husky drawer 2) and `dev-spare-mini3`
+* **Spare devices.** `dev-spare-flux2` (`SIM-F2-000015`, Husky drawer 2) and `dev-spare-micro3`
   (`SIM-M3-000122`, Husky drawer 3) exist at factory, unpowered, `orcaDeviceName: ''`, `ip` assigned
   when seated on a rig (the rig position's IP, §2.4).
 * **Serial binding.** `orca.saveDevice` sets the row's `simDeviceId` to the runtime device whose
@@ -980,39 +980,39 @@ Default seed: `20261005`. Arcade passes its shift seed (GP §2.3.1/§4.6).
 ### 2.2 Device Type enum metrics (`DeviceTypeInfo`, Orca `DeviceType`)
 
 Screen sizes and resolutions are [illus.] (the reference gives none); Ref/canon facts are the
-family, profile sharing, printers (Pocket and Duo 2 printerless), dual-screen ADB blindness, upcoming
-models and the Compact's market.
+family, profile sharing, printers (Pocket and Duet 2 printerless), dual-screen ADB blindness, upcoming
+models and the Compass's market.
 
 | `code` | Display name | Family (`config.properties deviceType`) | Testing profile | Primary screen (orientation) mm · px · in | px/mm (x / y) | Secondary (CFD) | Printer | Launcher scroll | Dual-screen, single ADB | Upcoming | Market |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| `STATION_2018` | Station (2018) | Station | `STATION_2018` | landscape 309.9 × 174.3 · 1366 × 768 · 14.0 | 4.408 / 4.406 | — | yes | horizontal | no | no | US |
-| `STATION_2` | Station 2 | Station | `STATION_2` | landscape 309.9 × 174.3 · 1920 × 1080 · 14.0 | 6.196 / 6.196 | — | yes | horizontal | no | no | US |
-| `STATION_DUO` | Station Duo | Station | `STATION_DUO` | landscape 309.9 × 174.3 · 1920 × 1080 · 14.0 | 6.196 / 6.196 | 172.3 × 107.7 · 1280 × 800 · 8.0 | yes | horizontal | **yes** | no | US |
-| `STATION_DUO_2` | Station Duo 2 | Station | `STATION_DUO` | as Duo | as Duo | as Duo | **no** | horizontal | **yes** | no | US |
-| `STATION_DUO_3` | Station Duo 3 | Station | `STATION_DUO` | as Duo | as Duo | as Duo | no | horizontal | yes | **yes** | US |
-| `MINI_2` | Mini (2nd gen) | Mini | `MINI_GEN2` | landscape 154.2 × 90.4 · 1024 × 600 · 7.0 | 6.641 / 6.637 | — | yes | horizontal | no | no | US |
-| `MINI_3` | Mini (3rd gen) | Mini | `MINI_GEN3` | landscape 172.3 × 107.7 · 1280 × 800 · 8.0 | 7.429 / 7.428 | — | yes | horizontal | no | no | US |
-| `MINI_4` | Mini 4 | Mini | `MINI_GEN3` | as Mini 3 | as Mini 3 | — | yes | horizontal | no | **yes** | US |
-| `FLEX_1` | Flex (1st gen) | Flex | `FLEX_GEN1` | portrait 62.3 × 110.7 · 720 × 1280 · 5.0 | 11.557 / 11.563 | — | yes | vertical | no | no | US |
-| `FLEX_2` | Flex (2nd gen) | Flex | `FLEX_GEN2` | portrait 68.0 × 121.0 · 720 × 1280 · 5.5 | 10.588 / 10.579 | — | yes | vertical | no | no | US |
-| `FLEX_3` | Flex 3 | Flex | `FLEX_GEN3` | portrait 76.0 × 135.0 · 720 × 1280 · 6.1 | 9.474 / 9.481 | — | yes | vertical | no | no | US |
-| `FLEX_4` | Flex 4 | Flex | `FLEX_GEN3` | as Flex 3 | as Flex 3 | — | yes | vertical | no | no | US |
-| `FLEX_POCKET` | Flex Pocket | Flex | `FLEX_GEN3` | as Flex 3 | as Flex 3 | — | **no** (printer block omitted) | vertical | no | no | US |
-| `COMPACT` | LabSim Compact | Compact | `COMPACT` | portrait 62.3 × 110.7 · 720 × 1280 · 5.0 | 11.557 / 11.563 | — | no [illus.] | vertical | no | no | **CA** (Westers) |
+| `STAND_2018` | Stand (2018) | Stand | `STAND_2018` | landscape 309.9 × 174.3 · 1366 × 768 · 14.0 | 4.408 / 4.406 | — | yes | horizontal | no | no | US |
+| `STAND_2` | Stand 2 | Stand | `STAND_2` | landscape 309.9 × 174.3 · 1920 × 1080 · 14.0 | 6.196 / 6.196 | — | yes | horizontal | no | no | US |
+| `STAND_DUET` | Stand Duet | Stand | `STAND_DUET` | landscape 309.9 × 174.3 · 1920 × 1080 · 14.0 | 6.196 / 6.196 | 172.3 × 107.7 · 1280 × 800 · 8.0 | yes | horizontal | **yes** | no | US |
+| `STAND_DUET_2` | Stand Duet 2 | Stand | `STAND_DUET` | as Duet | as Duet | as Duet | **no** | horizontal | **yes** | no | US |
+| `STAND_DUET_3` | Stand Duet 3 | Stand | `STAND_DUET` | as Duet | as Duet | as Duet | no | horizontal | yes | **yes** | US |
+| `MICRO_2` | Micro (2nd gen) | Micro | `MICRO_GEN2` | landscape 154.2 × 90.4 · 1024 × 600 · 7.0 | 6.641 / 6.637 | — | yes | horizontal | no | no | US |
+| `MICRO_3` | Micro (3rd gen) | Micro | `MICRO_GEN3` | landscape 172.3 × 107.7 · 1280 × 800 · 8.0 | 7.429 / 7.428 | — | yes | horizontal | no | no | US |
+| `MICRO_4` | Micro 4 | Micro | `MICRO_GEN3` | as Micro 3 | as Micro 3 | — | yes | horizontal | no | **yes** | US |
+| `FLUX_1` | Flux (1st gen) | Flux | `FLUX_GEN1` | portrait 62.3 × 110.7 · 720 × 1280 · 5.0 | 11.557 / 11.563 | — | yes | vertical | no | no | US |
+| `FLUX_2` | Flux (2nd gen) | Flux | `FLUX_GEN2` | portrait 68.0 × 121.0 · 720 × 1280 · 5.5 | 10.588 / 10.579 | — | yes | vertical | no | no | US |
+| `FLUX_3` | Flux 3 | Flux | `FLUX_GEN3` | portrait 76.0 × 135.0 · 720 × 1280 · 6.1 | 9.474 / 9.481 | — | yes | vertical | no | no | US |
+| `FLUX_4` | Flux 4 | Flux | `FLUX_GEN3` | as Flux 3 | as Flux 3 | — | yes | vertical | no | no | US |
+| `FLUX_POCKET` | Flux Pocket | Flux | `FLUX_GEN3` | as Flux 3 | as Flux 3 | — | **no** (printer block omitted) | vertical | no | no | US |
+| `COMPASS` | LabSim Compass | Compass | `COMPASS` | portrait 62.3 × 110.7 · 720 × 1280 · 5.0 | 11.557 / 11.563 | — | no [illus.] | vertical | no | no | **CA** (Westers) |
 
 Rules derived from the table:
-* **Same testing profile ⇒ identical firmware layout** (FLEX_3/FLEX_4/FLEX_POCKET share `FLEX_GEN3`; the
+* **Same testing profile ⇒ identical firmware layout** (FLUX_3/FLUX_4/FLUX_POCKET share `FLUX_GEN3`; the
   Pocket's Print receipt row is rendered but disabled, §3.9.6). Orca still stores Screens **per Device
-  Type** (separate rows per type, identical values) — INC20 must fix FLEX_3 rows independently.
-* Hot-swap equivalence (Ref §1): `MINI_3` is the hot-swap equivalent for the printerless `STATION_DUO_2`;
-  the sim encodes it as `DeviceTypeInfo.hotSwapFor = ['STATION_DUO_2']` on `MINI_3` (informational;
-  Jenkins does not auto-substitute — the engineer re-runs with `DEVICE_TYPE=MINI_3`, INC44).
-* `config.properties deviceType` accepts exactly `Mini`, `Flex`, `Station`, `Compact` (the uia-remote
-  runner maps `Compact` to vertical launcher logic). Anything else (`FLEX_4`, `flex`) ⇒
-  `java.lang.IllegalArgumentException: unknown deviceType "FLEX_4" (expected Mini, Flex or Station)`.
-* Body sizes for 3D (mm, w×h×d) [illus.]: Station 330×255×230, Duo 330×255×300, Mini 2 205×150×150,
-  Mini 3/4 220×165×160, Flex 1 85×190×60, Flex 2 85×200×60, Flex 3/4 88×210×62 (printer hump),
-  Pocket 82×168×18, Compact 180×140×120.
+  Type** (separate rows per type, identical values) — INC20 must fix FLUX_3 rows independently.
+* Hot-swap equivalence (Ref §1): `MICRO_3` is the hot-swap equivalent for the printerless `STAND_DUET_2`;
+  the sim encodes it as `DeviceTypeInfo.hotSwapFor = ['STAND_DUET_2']` on `MICRO_3` (informational;
+  Jenkins does not auto-substitute — the engineer re-runs with `DEVICE_TYPE=MICRO_3`, INC44).
+* `config.properties deviceType` accepts exactly `Micro`, `Flux`, `Stand`, `Compass` (the uia-remote
+  runner maps `Compass` to vertical launcher logic). Anything else (`FLUX_4`, `flux`) ⇒
+  `java.lang.IllegalArgumentException: unknown deviceType "FLUX_4" (expected Micro, Flux or Stand)`.
+* Body sizes for 3D (mm, w×h×d) [illus.]: Stand 330×255×230, Duet 330×255×300, Micro 2 205×150×150,
+  Micro 3/4 220×165×160, Flux 1 85×190×60, Flux 2 85×200×60, Flux 3/4 88×210×62 (printer hump),
+  Pocket 82×168×18, Compass 180×140×120.
 
 ### 2.3 Robot roster (Orca `robots`, 42 rows)
 
@@ -1025,48 +1025,48 @@ string). **D/T/S** = which of Dip/Tap/Swipe are mapped. Offsets are `0.0 / 0.0` 
 
 | id | Name | HRN | Kind | Env | Location | Status | Robot Device (type, IP `10.42.30.x`) | MFD / CFD | Pi `10.42.10.x` | Cam | D/T/S | Callus | Merchant | Linked capabilities |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | `wall-e` | WALL-E | touch | DEV1 | Rack A · U33–U36 | AVAILABLE | `wall-e-flex3` (FLEX_3, .11) | — | .11 | .11 | D T S | MINIX-01 | AUTO-US-NOPIN-01 | DIP, TAP, SWIPE |
-| 2 | `eve` | EVE | touch | DEV1 | Rack A · U29–U32 | AVAILABLE | `eve-flex4` (FLEX_4, .12) | — | .12 | .12 | D T S | MINIX-01 | AUTO-US-NOPIN-01 | DIP, TAP, SWIPE |
-| 3 | `bumblebee` | BUMBLEBEE | touch | DEV1 | Rack A · U25–U28 | AVAILABLE | `bumblebee-mini3` (MINI_3, .13) | — | .13 | .13 | D T S | MINIX-01 | AUTO-US-NOPIN-01 | DIP, TAP, SWIPE |
-| 4 | `r2-d2` | R2-D2 | touch (probe on CFD) | DEV1 | Rack A · U21–U24 | AVAILABLE | `r2-d2-duo` (STATION_DUO, .14) | `r2-d2-duo` / `r2-d2-duo` (**same row ⇒ same IP**) | .14 | .14 (aimed at CFD) | D T S | MINIX-01 | AUTO-US-NOPIN-01 | DIP, TAP, SWIPE, OCR_CAMERA |
-| 5 | `johnny-5` | JOHNNY-5 | touch | DEV1 | Rack B · U33–U36 | AVAILABLE | `johnny-5-flex1` (FLEX_1, .15) | — | .15 | .40 (Rack B shared) | D T S | MINIX-02 | AUTO-US-NOPIN-01 | DIP, TAP, SWIPE |
-| 6 | `baymax` | BAYMAX | touch | DEV1 | Rack B · U29–U32 | AVAILABLE | `baymax-st2018` (STATION_2018, .16) | — | .16 | .40 | D T S | MINIX-02 | AUTO-US-NOPIN-01 | DIP, TAP, SWIPE |
-| 7 | `seti` | SETI | touch (Westers) | DEV1 | Rack B · U25–U28 | AVAILABLE | `seti-compact` (COMPACT, .17) | — | .17 | .40 | D T S | MINIX-02 | WESTERS-CA-01 | DIP, TAP, SWIPE, INTERAC |
-| 8 | `rosie` | ROSIE | standalone (PayCore) | DEV1 | Rack B · U21–U24 | **UNAVAILABLE** | `rosie-pocket` (FLEX_POCKET, .18) | — | .18 | .40 | D T S | MINIX-02 | PAYCORE-STANDALONE-01 | DIP, TAP, SWIPE, CARD_MATRIX |
-| 9 | `megatron` | MEGATRON | tethered (Station 2 → Mini 2) | DEV1 | Tethered rack | AVAILABLE | `megatron-mfd` (STATION_2, .21) | `megatron-mfd` / `megatron-cfd` (MINI_2, .22) | .20 (shelf Pi, shared) | .20 | S | MINIX-02 | AUTO-US-NOPIN-01 | SWIPE |
-| 10 | `optimus` | OPTIMUS | tethered (nested Mini 3s) | STG | Tethered rack | AVAILABLE | `optimus-mfd` (MINI_3, .23) | `optimus-mfd` / `optimus-cfd` (MINI_3, .24) | .20 | .20 | S | MINIX-02 | AUTO-US-NOPIN-01 | SWIPE |
-| 11 | `data` | DATA | adb | DEV1 | ADB shelf | AVAILABLE | `data-mini3` (MINI_3, .31) | — | .30 (shared) | — | — | — | AUTO-US-NOPIN-01 | GO_SDK |
-| 12 | `tars` | TARS | adb | DEV1 | ADB shelf | AVAILABLE | `tars-flex4` (FLEX_4, .32) | — | .30 | — | — | — | AUTO-US-NOPIN-01 | GO_SDK |
-| 13 | `vision` | VISION | adb | DEV1 | Rack C (off-screen) | AVAILABLE | `vision-pocket` (FLEX_POCKET, .50) | — | .50 | .50 | — | — | AUTO-US-NOPIN-01 | GO_SDK |
-| 14 | `k-9` | K-9 | adb | DEV1 | Rack C | AVAILABLE | `k-9-duo2` (STATION_DUO_2, .51) | — | .51 | — | — | — | AUTO-US-NOPIN-01 | — |
-| 15 | `soundwave` | SOUNDWAVE | touch | QA | Rack C | AVAILABLE | `soundwave-flex3` (FLEX_3, .52) | — | .52 | .60 (Rack C shared) | D T S | MINIX-03 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
-| 16 | `starscream` | STARSCREAM | touch | QA | Rack C | AVAILABLE | `starscream-flex4` (FLEX_4, .53) | — | .53 | .60 | D T S | MINIX-03 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
-| 17 | `ratchet` | RATCHET | touch | QA | Rack C | AVAILABLE | `ratchet-mini3` (MINI_3, .54) | — | .54 | .60 | D T S | MINIX-03 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
-| 18 | `c-3po` | C-3PO | touch (probe on CFD) | QA | Rack C | AVAILABLE | `c-3po-duo` (STATION_DUO, .55) | `c-3po-duo` / `c-3po-duo` | .55 | .60 | D T S | MINIX-03 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE, OCR_CAMERA |
-| 19 | `bb-8` | BB-8 | tethered (nested Mini 3s) | DEV2 | Rack D | AVAILABLE | `bb-8-mfd` (MINI_3, .61) | `bb-8-mfd` / `bb-8-cfd` (MINI_3, .62) | .61 | .61 | S | MINIX-03 | AUTO-US-NOPIN-02 | SWIPE |
-| 20 | `bender` | BENDER | standalone (PayCore · LabSim Dining) | STG | PayCore bench | **UNAVAILABLE** | `bender-st2` (STATION_2, .63) | — | .63 | .63 | D T S | MINIX-03 | PAYCORE-DINING-01 | DIP, TAP, SWIPE, lab_dining, CARD_MATRIX |
-| 21 | `marvin` | MARVIN | tethered (Station 2 → Mini 3) | QA | Rack D | AVAILABLE | `marvin-mfd` (STATION_2, .64) | `marvin-mfd` / `marvin-cfd` (MINI_3, .65) | .64 | .64 | S | MINIX-03 | AUTO-US-NOPIN-02 | SWIPE |
-| 22 | `robby` | ROBBY | tethered (nested Mini 3s) | DEV2 | Rack D | **OFFLINE** (note: "Assembling data profiles — Jared") | `robby-mfd` (MINI_3, .66) | `robby-mfd` / `robby-cfd` (MINI_3, .67) | .64 (shared with MARVIN) | .64 | S | MINIX-03 | AUTO-US-NOPIN-02 | SWIPE |
-| 23 | `hal` | HAL | adb | QA | ADB rack 2 | AVAILABLE | `hal-st2` (STATION_2, .70) | — | .70 (shared ×3) | — | — | — | AUTO-US-NOPIN-02 | — |
-| 24 | `bishop` | BISHOP | adb | QA | ADB rack 2 | AVAILABLE | `bishop-mini2` (MINI_2, .71) | — | .70 | — | — | — | AUTO-US-NOPIN-02 | — |
-| 25 | `ash` | ASH | adb | QA | ADB rack 2 | AVAILABLE | `ash-flex2` (FLEX_2, .72) | — | .70 | — | — | — | AUTO-US-NOPIN-02 | — |
-| 26 | `sonny` | SONNY | adb | QA | ADB rack 2 | **CONNECTION_FAILED** (pre-failure AVAILABLE; off-screen Pi .74 hung since 07:55; note "Escalated to Jared — SD card reflash pending") | `sonny-flex3` (FLEX_3, .73) | — | .74 | — | — | — | AUTO-US-NOPIN-02 | — |
-| 27 | `chappie` | CHAPPIE | touch | QA | Rack E | AVAILABLE | `chappie-flex4` (FLEX_4, .75) | — | .75 | .79 (Rack E shared) | D T S | MINIX-04 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
-| 28 | `case` | CASE | touch | QA | Rack E | AVAILABLE | `case-mini3` (MINI_3, .76) | — | .76 | .79 | D T S | MINIX-04 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
-| 29 | `atlas` | ATLAS | touch | QA | Rack E | AVAILABLE | `atlas-st2018` (STATION_2018, .77) | — | .77 | .79 | D T S | MINIX-04 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
-| 30 | `astro` | ASTRO | touch + phone carriage (iOS Go SDK mobile runner) | QA | Rack E | AVAILABLE | `astro-flex4` (FLEX_4, .78) | — | .78 | .79 | D T S | MINIX-04 | GO-SDK-US-01 | DIP, TAP, SWIPE, GO_SDK, PHONE |
-| 31 | `iron-giant` | IRON-GIANT | touch (probe on CFD) | QA | Rack F | AVAILABLE | `iron-giant-duo2` (STATION_DUO_2, .80) | `iron-giant-duo2` / `iron-giant-duo2` | .80 | .80 | D T S | MINIX-04 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE, OCR_CAMERA |
-| 32 | `voltron` | VOLTRON | tethered (Station 2 → Mini 2) | INT | Rack D | AVAILABLE | `voltron-mfd` (STATION_2, .81) | `voltron-mfd` / `voltron-cfd` (MINI_2, .82) | .81 | .81 | S | MINIX-03 | AUTO-US-NOPIN-02 | SWIPE |
-| 33 | `kryten` | KRYTEN | standalone (PayCore) | STG | PayCore bench | **UNAVAILABLE** | `kryten-flex3` (FLEX_3, .83) | — | .83 | .83 | D T S | MINIX-03 | PAYCORE-STANDALONE-01 | DIP, TAP, SWIPE, CARD_MATRIX |
-| 34 | `mazinger` | MAZINGER | touch | DEV2 | Rack F | AVAILABLE | `mazinger-mini2` (MINI_2, .84) | — | .84 | .84 | D T S | MINIX-04 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
-| 35 | `jarvis` | JARVIS | adb | DEV2 | ADB rack 2 | AVAILABLE | `jarvis-mini3` (MINI_3, .85) | — | .85 (shared ×2) | — | — | — | AUTO-US-NOPIN-02 | — |
-| 36 | `ultron` | ULTRON | adb | DEV2 | ADB rack 2 | AVAILABLE | `ultron-pocket` (FLEX_POCKET, .86) | — | .85 | — | — | — | AUTO-US-NOPIN-02 | — |
-| 37 | `dalek` | DALEK | touch | QA | Rack F | **OFFLINE** (note: "Flex 1 parked; rebuild queued — J") | `dalek-flex1` (FLEX_1, .87) | — | .87 | .87 | D T S | MINIX-04 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
-| 38 | `number-5` | NUMBER-5 | touch | QA | Rack F | AVAILABLE | `number-5-flex2` (FLEX_2, .88) | — | .88 | .88 | D T S | MINIX-04 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
-| 39 | `gerty` | GERTY | touch (Westers) | QA | Westers bench | AVAILABLE | `gerty-compact` (COMPACT, .89) | — | .89 | .89 (shared ×2) | D T S | MINIX-05 | WESTERS-CA-02 | DIP, TAP, SWIPE, INTERAC |
-| 40 | `mother` | MOTHER | touch (Westers) | QA | Westers bench | **RESERVED** (`morgan`, 07:40) | `mother-compact` (COMPACT, .90) | — | .90 | .89 | D T S | MINIX-05 | WESTERS-CA-01 | DIP, TAP, SWIPE, INTERAC |
-| 41 | `brainiac` | BRAINIAC | adb | DEV2 | ADB rack 2 | AVAILABLE | `brainiac-duo` (STATION_DUO, .91) | — | .91 | — | — | — | AUTO-US-NOPIN-02 | — |
-| 42 | `zorg` | ZORG | tethered (Mini 3 → Mini 2) | QA | Rack D | AVAILABLE | `zorg-mfd` (MINI_3, .92) | `zorg-mfd` / `zorg-cfd` (MINI_2, .93) | .92 | .92 | S | MINIX-03 | AUTO-US-NOPIN-02 | SWIPE |
+| 1 | `wall-e` | WALL-E | touch | DEV1 | Rack A · U33–U36 | AVAILABLE | `wall-e-flux3` (FLUX_3, .11) | — | .11 | .11 | D T S | MINIX-01 | AUTO-US-NOPIN-01 | DIP, TAP, SWIPE |
+| 2 | `eve` | EVE | touch | DEV1 | Rack A · U29–U32 | AVAILABLE | `eve-flux4` (FLUX_4, .12) | — | .12 | .12 | D T S | MINIX-01 | AUTO-US-NOPIN-01 | DIP, TAP, SWIPE |
+| 3 | `bumblebee` | BUMBLEBEE | touch | DEV1 | Rack A · U25–U28 | AVAILABLE | `bumblebee-micro3` (MICRO_3, .13) | — | .13 | .13 | D T S | MINIX-01 | AUTO-US-NOPIN-01 | DIP, TAP, SWIPE |
+| 4 | `r2-d2` | R2-D2 | touch (probe on CFD) | DEV1 | Rack A · U21–U24 | AVAILABLE | `r2-d2-duet` (STAND_DUET, .14) | `r2-d2-duet` / `r2-d2-duet` (**same row ⇒ same IP**) | .14 | .14 (aimed at CFD) | D T S | MINIX-01 | AUTO-US-NOPIN-01 | DIP, TAP, SWIPE, OCR_CAMERA |
+| 5 | `johnny-5` | JOHNNY-5 | touch | DEV1 | Rack B · U33–U36 | AVAILABLE | `johnny-5-flux1` (FLUX_1, .15) | — | .15 | .40 (Rack B shared) | D T S | MINIX-02 | AUTO-US-NOPIN-01 | DIP, TAP, SWIPE |
+| 6 | `baymax` | BAYMAX | touch | DEV1 | Rack B · U29–U32 | AVAILABLE | `baymax-st2018` (STAND_2018, .16) | — | .16 | .40 | D T S | MINIX-02 | AUTO-US-NOPIN-01 | DIP, TAP, SWIPE |
+| 7 | `seti` | SETI | touch (Westers) | DEV1 | Rack B · U25–U28 | AVAILABLE | `seti-compass` (COMPASS, .17) | — | .17 | .40 | D T S | MINIX-02 | WESTERS-CA-01 | DIP, TAP, SWIPE, INTERAC |
+| 8 | `rosie` | ROSIE | standalone (PayCore) | DEV1 | Rack B · U21–U24 | **UNAVAILABLE** | `rosie-pocket` (FLUX_POCKET, .18) | — | .18 | .40 | D T S | MINIX-02 | PAYCORE-STANDALONE-01 | DIP, TAP, SWIPE, CARD_MATRIX |
+| 9 | `megatron` | MEGATRON | tethered (Stand 2 → Micro 2) | DEV1 | Tethered rack | AVAILABLE | `megatron-mfd` (STAND_2, .21) | `megatron-mfd` / `megatron-cfd` (MICRO_2, .22) | .20 (shelf Pi, shared) | .20 | S | MINIX-02 | AUTO-US-NOPIN-01 | SWIPE |
+| 10 | `optimus` | OPTIMUS | tethered (nested Micro 3s) | STG | Tethered rack | AVAILABLE | `optimus-mfd` (MICRO_3, .23) | `optimus-mfd` / `optimus-cfd` (MICRO_3, .24) | .20 | .20 | S | MINIX-02 | AUTO-US-NOPIN-01 | SWIPE |
+| 11 | `data` | DATA | adb | DEV1 | ADB shelf | AVAILABLE | `data-micro3` (MICRO_3, .31) | — | .30 (shared) | — | — | — | AUTO-US-NOPIN-01 | GO_SDK |
+| 12 | `tars` | TARS | adb | DEV1 | ADB shelf | AVAILABLE | `tars-flux4` (FLUX_4, .32) | — | .30 | — | — | — | AUTO-US-NOPIN-01 | GO_SDK |
+| 13 | `vision` | VISION | adb | DEV1 | Rack C (off-screen) | AVAILABLE | `vision-pocket` (FLUX_POCKET, .50) | — | .50 | .50 | — | — | AUTO-US-NOPIN-01 | GO_SDK |
+| 14 | `k-9` | K-9 | adb | DEV1 | Rack C | AVAILABLE | `k-9-duet2` (STAND_DUET_2, .51) | — | .51 | — | — | — | AUTO-US-NOPIN-01 | — |
+| 15 | `soundwave` | SOUNDWAVE | touch | QA | Rack C | AVAILABLE | `soundwave-flux3` (FLUX_3, .52) | — | .52 | .60 (Rack C shared) | D T S | MINIX-03 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
+| 16 | `starscream` | STARSCREAM | touch | QA | Rack C | AVAILABLE | `starscream-flux4` (FLUX_4, .53) | — | .53 | .60 | D T S | MINIX-03 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
+| 17 | `ratchet` | RATCHET | touch | QA | Rack C | AVAILABLE | `ratchet-micro3` (MICRO_3, .54) | — | .54 | .60 | D T S | MINIX-03 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
+| 18 | `c-3po` | C-3PO | touch (probe on CFD) | QA | Rack C | AVAILABLE | `c-3po-duet` (STAND_DUET, .55) | `c-3po-duet` / `c-3po-duet` | .55 | .60 | D T S | MINIX-03 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE, OCR_CAMERA |
+| 19 | `bb-8` | BB-8 | tethered (nested Micro 3s) | DEV2 | Rack D | AVAILABLE | `bb-8-mfd` (MICRO_3, .61) | `bb-8-mfd` / `bb-8-cfd` (MICRO_3, .62) | .61 | .61 | S | MINIX-03 | AUTO-US-NOPIN-02 | SWIPE |
+| 20 | `bender` | BENDER | standalone (PayCore · LabSim Dining) | STG | PayCore bench | **UNAVAILABLE** | `bender-st2` (STAND_2, .63) | — | .63 | .63 | D T S | MINIX-03 | PAYCORE-DINING-01 | DIP, TAP, SWIPE, lab_dining, CARD_MATRIX |
+| 21 | `marvin` | MARVIN | tethered (Stand 2 → Micro 3) | QA | Rack D | AVAILABLE | `marvin-mfd` (STAND_2, .64) | `marvin-mfd` / `marvin-cfd` (MICRO_3, .65) | .64 | .64 | S | MINIX-03 | AUTO-US-NOPIN-02 | SWIPE |
+| 22 | `robby` | ROBBY | tethered (nested Micro 3s) | DEV2 | Rack D | **OFFLINE** (note: "Assembling data profiles — Jared") | `robby-mfd` (MICRO_3, .66) | `robby-mfd` / `robby-cfd` (MICRO_3, .67) | .64 (shared with MARVIN) | .64 | S | MINIX-03 | AUTO-US-NOPIN-02 | SWIPE |
+| 23 | `hal` | HAL | adb | QA | ADB rack 2 | AVAILABLE | `hal-st2` (STAND_2, .70) | — | .70 (shared ×3) | — | — | — | AUTO-US-NOPIN-02 | — |
+| 24 | `bishop` | BISHOP | adb | QA | ADB rack 2 | AVAILABLE | `bishop-micro2` (MICRO_2, .71) | — | .70 | — | — | — | AUTO-US-NOPIN-02 | — |
+| 25 | `ash` | ASH | adb | QA | ADB rack 2 | AVAILABLE | `ash-flux2` (FLUX_2, .72) | — | .70 | — | — | — | AUTO-US-NOPIN-02 | — |
+| 26 | `sonny` | SONNY | adb | QA | ADB rack 2 | **CONNECTION_FAILED** (pre-failure AVAILABLE; off-screen Pi .74 hung since 07:55; note "Escalated to Jared — SD card reflash pending") | `sonny-flux3` (FLUX_3, .73) | — | .74 | — | — | — | AUTO-US-NOPIN-02 | — |
+| 27 | `chappie` | CHAPPIE | touch | QA | Rack E | AVAILABLE | `chappie-flux4` (FLUX_4, .75) | — | .75 | .79 (Rack E shared) | D T S | MINIX-04 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
+| 28 | `case` | CASE | touch | QA | Rack E | AVAILABLE | `case-micro3` (MICRO_3, .76) | — | .76 | .79 | D T S | MINIX-04 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
+| 29 | `atlas` | ATLAS | touch | QA | Rack E | AVAILABLE | `atlas-st2018` (STAND_2018, .77) | — | .77 | .79 | D T S | MINIX-04 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
+| 30 | `astro` | ASTRO | touch + phone carriage (iOS Go SDK mobile runner) | QA | Rack E | AVAILABLE | `astro-flux4` (FLUX_4, .78) | — | .78 | .79 | D T S | MINIX-04 | GO-SDK-US-01 | DIP, TAP, SWIPE, GO_SDK, PHONE |
+| 31 | `iron-giant` | IRON-GIANT | touch (probe on CFD) | QA | Rack F | AVAILABLE | `iron-giant-duet2` (STAND_DUET_2, .80) | `iron-giant-duet2` / `iron-giant-duet2` | .80 | .80 | D T S | MINIX-04 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE, OCR_CAMERA |
+| 32 | `voltron` | VOLTRON | tethered (Stand 2 → Micro 2) | INT | Rack D | AVAILABLE | `voltron-mfd` (STAND_2, .81) | `voltron-mfd` / `voltron-cfd` (MICRO_2, .82) | .81 | .81 | S | MINIX-03 | AUTO-US-NOPIN-02 | SWIPE |
+| 33 | `kryten` | KRYTEN | standalone (PayCore) | STG | PayCore bench | **UNAVAILABLE** | `kryten-flux3` (FLUX_3, .83) | — | .83 | .83 | D T S | MINIX-03 | PAYCORE-STANDALONE-01 | DIP, TAP, SWIPE, CARD_MATRIX |
+| 34 | `mazinger` | MAZINGER | touch | DEV2 | Rack F | AVAILABLE | `mazinger-micro2` (MICRO_2, .84) | — | .84 | .84 | D T S | MINIX-04 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
+| 35 | `jarvis` | JARVIS | adb | DEV2 | ADB rack 2 | AVAILABLE | `jarvis-micro3` (MICRO_3, .85) | — | .85 (shared ×2) | — | — | — | AUTO-US-NOPIN-02 | — |
+| 36 | `ultron` | ULTRON | adb | DEV2 | ADB rack 2 | AVAILABLE | `ultron-pocket` (FLUX_POCKET, .86) | — | .85 | — | — | — | AUTO-US-NOPIN-02 | — |
+| 37 | `dalek` | DALEK | touch | QA | Rack F | **OFFLINE** (note: "Flux 1 parked; rebuild queued — J") | `dalek-flux1` (FLUX_1, .87) | — | .87 | .87 | D T S | MINIX-04 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
+| 38 | `number-5` | NUMBER-5 | touch | QA | Rack F | AVAILABLE | `number-5-flux2` (FLUX_2, .88) | — | .88 | .88 | D T S | MINIX-04 | AUTO-US-NOPIN-02 | DIP, TAP, SWIPE |
+| 39 | `gerty` | GERTY | touch (Westers) | QA | Westers bench | AVAILABLE | `gerty-compass` (COMPASS, .89) | — | .89 | .89 (shared ×2) | D T S | MINIX-05 | WESTERS-CA-02 | DIP, TAP, SWIPE, INTERAC |
+| 40 | `mother` | MOTHER | touch (Westers) | QA | Westers bench | **RESERVED** (`morgan`, 07:40) | `mother-compass` (COMPASS, .90) | — | .90 | .89 | D T S | MINIX-05 | WESTERS-CA-01 | DIP, TAP, SWIPE, INTERAC |
+| 41 | `brainiac` | BRAINIAC | adb | DEV2 | ADB rack 2 | AVAILABLE | `brainiac-duet` (STAND_DUET, .91) | — | .91 | — | — | — | AUTO-US-NOPIN-02 | — |
+| 42 | `zorg` | ZORG | tethered (Micro 3 → Micro 2) | QA | Rack D | AVAILABLE | `zorg-mfd` (MICRO_3, .92) | `zorg-mfd` / `zorg-cfd` (MICRO_2, .93) | .92 | .92 | S | MINIX-03 | AUTO-US-NOPIN-02 | SWIPE |
 
 Design notes (why the off-screen pool looks like this):
 * **Environment isolates the lab room's pipelines.** Every rig the Arcade pipelines PL1–PL8 must use
@@ -1074,9 +1074,9 @@ Design notes (why the off-screen pool looks like this):
   rigs" hold exactly (§3.4.2 checks the build's `BACKEND_ENV`). VISION and K-9 are `DEV1` on purpose
   (INC23, INC44).
 * Shared resources: Camera URL shared by 4 rigs (Rack B `.40`, Rack C `.60`, Rack E `.79`), Pi shared by
-  2–3 rigs (`.20`, `.30`, `.64`, `.70`, `.85`), Duo rigs whose MFD = CFD row (`r2-d2`, `c-3po`,
-  `iron-giant`), a Duo used standalone (`k-9`, `brainiac`: MFD empty), Station 2 → Mini 2 tethers
-  (`megatron`, `voltron`), nested Mini 3s (`optimus`, `bb-8`, `robby`).
+  2–3 rigs (`.20`, `.30`, `.64`, `.70`, `.85`), Duet rigs whose MFD = CFD row (`r2-d2`, `c-3po`,
+  `iron-giant`), a Duet used standalone (`k-9`, `brainiac`: MFD empty), Stand 2 → Micro 2 tethers
+  (`megatron`, `voltron`), nested Micro 3s (`optimus`, `bb-8`, `robby`).
 * One rig in every non-Available status at factory: UNAVAILABLE (`rosie`, `bender`, `kryten`), OFFLINE
   (`robby`, `dalek`), CONNECTION_FAILED (`sonny`), RESERVED (`mother`). Tate's status filter always has
   something to show.
@@ -1099,20 +1099,20 @@ Device rows `id` 1… in roster order (MFD before CFD). Serial pattern `SIM-<mod
 
 | Orca row | Type | Serial | IP | Notes |
 |---|---|---|---|---|
-| (none at factory) | FLEX_2 | `SIM-F2-000015` | — | Physical spare Flex 2 in the Husky chest drawer 2 (`rigId: 'husky-drawer-2'`, unpowered). INC42 / Cur M07 create the Orca row `johnny-5-flex2`. |
-| `retired-flex1-legacy` | FLEX_1 | `SIM-F1-000099` | 10.42.30.99 | `retired: true` (history flavour; shows the Retired filter) |
-| (none at factory) | MINI_3 | `SIM-M3-000122` | — | Physical spare Mini 3 in the Husky chest drawer 3 (`rigId: 'husky-drawer-3'`, unpowered) — the CFD upgrade for MEGATRON (Mini 2 → Mini 3) in CERT P2-2. |
+| (none at factory) | FLUX_2 | `SIM-F2-000015` | — | Physical spare Flux 2 in the Husky chest drawer 2 (`rigId: 'husky-drawer-2'`, unpowered). INC42 / Cur M07 create the Orca row `johnny-5-flux2`. |
+| `retired-flux1-legacy` | FLUX_1 | `SIM-F1-000099` | 10.42.30.99 | `retired: true` (history flavour; shows the Retired filter) |
+| (none at factory) | MICRO_3 | `SIM-M3-000122` | — | Physical spare Micro 3 in the Husky chest drawer 3 (`rigId: 'husky-drawer-3'`, unpowered) — the CFD upgrade for MEGATRON (Micro 2 → Micro 3) in CERT P2-2. |
 
-Spare runtime ids (§1.15): `dev-spare-flex2` (`SIM-F2-000015`) and `dev-spare-mini3`
+Spare runtime ids (§1.15): `dev-spare-flux2` (`SIM-F2-000015`) and `dev-spare-micro3`
 (`SIM-M3-000122`); `orcaDeviceName = ''` until an Orca Device row with the same serial exists.
 
 Runtime `TerminalDevice` seeds (every row with `simDeviceId`): `power: 'on'`, `adbTcpPort: 5444`,
 `provisioned: true`, `merchantConfigId` = robot's merchant, `firmwareInfo: { version: '2.26.10.1',
 receiptQr: true }` (`'2.26.08.3'`/`false` when `flags.receiptQrFeature` is off). **Exception:
-FLEX_1** runs end-of-life firmware `'2.19.4'` that never gets the QR feature (`receiptQr: false`
+FLUX_1** runs end-of-life firmware `'2.19.4'` that never gets the QR feature (`receiptQr: false`
 always) [illus.] — so JOHNNY-5 shows 4 receipt options while the other receipt rigs show 5 (INC22 vs
 INC20). `launcher.page: 0`,
-`display.screen: 'home'` (tethered CFDs and Duo CFDs: `'customer-idle'`), `printer.paper: true` where
+`display.screen: 'home'` (tethered CFDs and Duet CFDs: `'customer-idle'`), `printer.paper: true` where
 the type has a printer, `cfdLayout: 'v1'`, `labelShiftPx: 0`, `payDisplayApp`: MEGATRON/VOLTRON
 `USB_PAY_DISPLAY` (`link: 'usb'`), OPTIMUS/BB-8/ROBBY/MARVIN/ZORG `SECURE_NETWORK_PAY_DISPLAY`
 (`link: 'network'`) [illus. split], `payDisplayLink: 'UP'`, `hubEthernet: true`, `hubUsbToPeer: true`.
@@ -1121,12 +1121,12 @@ the type has a printer, `cfdLayout: 'v1'`, `labelShiftPx: 0`, `payDisplayApp`: M
 
 | id | Type | IP | Owner | Desk | Screen |
 |---|---|---|---|---|---|
-| `dev-riley-desk-flex` | FLEX_3 | 10.42.60.4 | Riley (`npc.coworker`) | `desk-riley` | home |
-| `dev-sam-desk-mini` | MINI_3 | 10.42.60.5 | Sam | `desk-sam` | home |
-| `dev-alex-desk-flex` | FLEX_4 | 10.42.60.6 | Alex | `desk-alex` | lock |
+| `dev-riley-desk-flux` | FLUX_3 | 10.42.60.4 | Riley (`npc.coworker`) | `desk-riley` | home |
+| `dev-sam-desk-micro` | MICRO_3 | 10.42.60.5 | Sam | `desk-sam` | home |
+| `dev-alex-desk-flux` | FLUX_4 | 10.42.60.6 | Alex | `desk-alex` | lock |
 
 Device library (`loc.device-library`): one unpowered device per model (14 incl. sealed "UPCOMING"
-boxes for STATION_DUO_3 and MINI_4, which have no `TerminalDevice` — props only).
+boxes for STAND_DUET_3 and MICRO_4, which have no `TerminalDevice` — props only).
 
 ### 2.5 Hosts
 
@@ -1222,14 +1222,14 @@ AC power strips (6 sockets, 15 A breaker each):
 
 | Strip | Location | 1 | 2 | 3 | 4 | 5 | 6 |
 |---|---|---|---|---|---|---|---|
-| `STRIP-A` | Rack A | `psu-wall-e-flex3` | `psu-bumblebee-mini3` | `psu-r2-d2-duo` | `brick-minix-01` | `psu-collis-eve` | `psu-eve-flex4` |
-| `STRIP-B` | Rack B | `psu-johnny-5-flex1` | `psu-baymax-st2018` | `psu-seti-compact` | `psu-rosie-pocket` | `brick-minix-02` | `psu-collis-rosie` |
+| `STRIP-A` | Rack A | `psu-wall-e-flux3` | `psu-bumblebee-micro3` | `psu-r2-d2-duet` | `brick-minix-01` | `psu-collis-eve` | `psu-eve-flux4` |
+| `STRIP-B` | Rack B | `psu-johnny-5-flux1` | `psu-baymax-st2018` | `psu-seti-compass` | `psu-rosie-pocket` | `brick-minix-02` | `psu-collis-rosie` |
 | `STRIP-C` | Callus shelf | `psu-collis-wall-e` | `psu-collis-bumblebee` | `psu-collis-r2-d2` | `psu-collis-johnny-5` | `psu-collis-baymax` | `psu-collis-seti` |
-| `STRIP-T` | Tethered rack + ADB shelf | `psu-megatron-mfd` | `psu-megatron-cfd` | `psu-optimus-mfd` | `psu-optimus-cfd` | `psu-data-mini3` | `psu-tars-flex4` |
+| `STRIP-T` | Tethered rack + ADB shelf | `psu-megatron-mfd` | `psu-megatron-cfd` | `psu-optimus-mfd` | `psu-optimus-cfd` | `psu-data-micro3` | `psu-tars-flux4` |
 | `STRIP-W` | Power-wall bench | `soldering-station` | `desk-lamp` | free | free | free | free |
 
 (`STRIP-C` is new in this doc; GP §3.1 lists A, B, T, W. INC17's "STRIP-A outlets 1–5 … outlet 6 desk
-fan" matches this numbering once `psu-eve-flex4` is unplugged and the fan takes socket 6.)
+fan" matches this numbering once `psu-eve-flux4` is unplugged and the fan takes socket 6.)
 
 Loads (nominal draw at expected voltage; `expects`):
 
@@ -1273,14 +1273,14 @@ Multimeter probe points (`power.measure(pointId)`) and healthy readings:
 | `physicalTouch` | rig `hasGantry` (touch / standalone) |
 | `pinEntry` | `physicalTouch` and the gantry covers the display that shows the PIN pad |
 | `tethered` | `mfdDeviceId != null` |
-| `duo` | Robot Device type has `dualScreenSingleAdb` |
+| `duet` | Robot Device type has `dualScreenSingleAdb` |
 | `adbOnly` | `rigKind == 'adb'` |
 | `testingProfile` | profile of the Robot Device type |
 
 Canonical key order in the UI JSON: `deviceType, printer, physicalTouch, dip, tap, swipe, pinEntry,
-tethered, duo, adbOnly, testingProfile`, then linked flags alphabetically. WALL-E renders
-`{"deviceType":"FLEX_3","printer":true,"physicalTouch":true,"dip":true,"tap":true,"swipe":true,"pinEntry":true,"tethered":false,"duo":false,"adbOnly":false,"testingProfile":"FLEX_GEN3"}`;
-ROSIE begins `{"deviceType":"FLEX_POCKET","printer":false,…` (Cur M08).
+tethered, duet, adbOnly, testingProfile`, then linked flags alphabetically. WALL-E renders
+`{"deviceType":"FLUX_3","printer":true,"physicalTouch":true,"dip":true,"tap":true,"swipe":true,"pinEntry":true,"tethered":false,"duet":false,"adbOnly":false,"testingProfile":"FLUX_GEN3"}`;
+ROSIE begins `{"deviceType":"FLUX_POCKET","printer":false,…` (Cur M08).
 
 #### 2.7.2 Linked capability rows (`capabilities` table)
 
@@ -1292,7 +1292,7 @@ ROSIE begins `{"deviceType":"FLEX_POCKET","printer":false,…` (Cur M08).
 | 4 | GO_SDK | `goSdk` | DYNAMIC_JSON | Terminal SDK runner target (David) | `{"goSdk": true}` |
 | 5 | INTERAC | `interac` | BOTH | Canadian Interac flows (Westers beds) | `{"interac": true}` |
 | 6 | PHONE | `phone` | DYNAMIC_JSON | Phone carriage with a mounted phone (mobile runners) | `{"phone": true}` |
-| 7 | OCR_CAMERA | `ocrCamera` | NON_DYNAMIC | Webcam aimed for Screen Compare (legacy Duo) | `{"ocrCamera": true}` |
+| 7 | OCR_CAMERA | `ocrCamera` | NON_DYNAMIC | Webcam aimed for Screen Compare (legacy Duet) | `{"ocrCamera": true}` |
 | 8 | lab_dining | `lab_dining` | BOTH | LabSim Dining app provisioned (PayCore) | `{"lab_dining": true}` |
 | 9 | CARD_MATRIX | `cardMatrix` | NON_DYNAMIC | PayCore back-to-back card matrix rig | `{"cardMatrix": true}` |
 
@@ -1376,16 +1376,16 @@ yesterday 15:20:20 = `-31_180_000`, `lastRunMs` = `-31_200_000`). INC54's box mi
 | `RECEIPT_OPTIONS_4` | `receipt-options` (`receiptOptions: 4`) | customer-facing | `Print` `Email` `Text` `No Receipt` |
 | `RECEIPT_OPTIONS_5` | `receipt-options` (`receiptOptions: 5`) | customer-facing | + `Scan for receipt`; QR block above the list; every button 3.0 mm lower (Cur S10) |
 | `CUSTOMER_CART` | `customer-cart` | CFD device (tethered) | labels `Subtotal $…`, `Tax $…`, `TOTAL $…`; no buttons |
-| `CFD_CART`, `CFD_TENDER_CASH_DISCOUNT`, `CFD_PAYMENT_PROMPT`, `CFD_PIN_ENTRY`, `CFD_TIP`, `CFD_SIGNATURE`, `CFD_RECEIPT_OPTIONS_4`, `CFD_RECEIPT_OPTIONS_5`, `CFD_RECEIPT_DONE`, `CFD_THANK_YOU` | same runtime names as above + `receipt-done`, `thank-you` on `secondaryDisplay` | **secondary** (Station Duo family only) | as the generic screen; `CFD_RECEIPT_DONE` = "Your receipt is on its way" + `Done`; `CFD_THANK_YOU` = label `Thank you` |
+| `CFD_CART`, `CFD_TENDER_CASH_DISCOUNT`, `CFD_PAYMENT_PROMPT`, `CFD_PIN_ENTRY`, `CFD_TIP`, `CFD_SIGNATURE`, `CFD_RECEIPT_OPTIONS_4`, `CFD_RECEIPT_OPTIONS_5`, `CFD_RECEIPT_DONE`, `CFD_THANK_YOU` | same runtime names as above + `receipt-done`, `thank-you` on `secondaryDisplay` | **secondary** (Stand Duet family only) | as the generic screen; `CFD_RECEIPT_DONE` = "Your receipt is on its way" + `Done`; `CFD_THANK_YOU` = label `Thank you` |
 | — | `off`, `boot`, `lock`, `customer-idle` ("Welcome" + merchant name), `waiting-for-merchant` (`Waiting for merchant device…`), `processing`, `declined`, `printing`, `receipt-done`, `thank-you`, `oobe-*`, `deprovisioning`, `app-*`, `error` | | non-automated screens (no Orca rows) |
 
-"Customer-facing" = the CFD device on tethered rigs, the secondary display on a Duo, or the same
-display on single-screen devices (Flex, Mini, Station, Compact).
+"Customer-facing" = the CFD device on tethered rigs, the secondary display on a Duet, or the same
+display on single-screen devices (Flux, Micro, Stand, Compass).
 
-Orca rows exist at factory for every Device Type that has a device row in the lab: `STATION_2018,
-STATION_2, STATION_DUO, STATION_DUO_2, MINI_2, MINI_3, FLEX_1, FLEX_2, FLEX_3, FLEX_4, FLEX_POCKET,
-COMPACT` (not the upcoming `STATION_DUO_3`, `MINI_4`). Each gets `HOME … RECEIPT_OPTIONS_5` and
-`APPROVED` (no locations); MINI_2/MINI_3 also get `CUSTOMER_CART`; STATION_DUO and STATION_DUO_2 also
+Orca rows exist at factory for every Device Type that has a device row in the lab: `STAND_2018,
+STAND_2, STAND_DUET, STAND_DUET_2, MICRO_2, MICRO_3, FLUX_1, FLUX_2, FLUX_3, FLUX_4, FLUX_POCKET,
+COMPASS` (not the upcoming `STAND_DUET_3`, `MICRO_4`). Each gets `HOME … RECEIPT_OPTIONS_5` and
+`APPROVED` (no locations); MICRO_2/MICRO_3 also get `CUSTOMER_CART`; STAND_DUET and STAND_DUET_2 also
 get the `CFD_*` rows (`display: 'secondary'`). Ids are assigned in enum order × table order. Every
 Screen Location equals the firmware tap point below (factory = no drift).
 
@@ -1394,7 +1394,7 @@ Screen Location equals the firmware tap point below (factory = no drift).
 Hit rules are in §3.5.4. "Probe core" = the half-width of the acceptance window for physical taps,
 `clamp(0.10 × min(w,h), 1.0, 2.5)` — listed where it matters for incidents.
 
-**Layout `FLEX_GEN3`** (FLEX_3, FLEX_4, FLEX_POCKET · portrait 76.0 × 135.0)
+**Layout `FLUX_GEN3`** (FLUX_3, FLUX_4, FLUX_POCKET · portrait 76.0 × 135.0)
 
 | Screen | Button (x, y) w×h |
 |---|---|
@@ -1402,7 +1402,7 @@ Hit rules are in §3.5.4. "Probe core" = the half-width of the acceptance window
 | REGISTER_HOME | `Register` tab (13.0, 10.0) 22×8 · `Tax Item 5` (20.3, 30.0) 32×16 · `Non-Tax Item 1` (55.7, 30.0) 32×16 · `Coffee` (20.3, 50.0) 32×16 · `Catering Deposit` (55.7, 50.0) 32×16 · `Clear` (20.0, 124.0) 32×12 · `Review Order` (56.0, 124.0) 36×12 (core 1.2) |
 | REVIEW_ORDER | `Back` (20.0, 124.0) 32×12 · `Pay` (56.0, 124.0) 36×12 |
 | PAYMENT | `Charge` (38.0, 60.0) 68×14 · `Cash` (38.0, 78.0) 68×14 · `Other` (38.0, 96.0) 68×14 · `Cancel` (38.0, 124.0) 68×10 |
-| TENDER_CASH_DISCOUNT | `Cash` (22.0, 58.5) 26×16 · `Card` (62.0, 58.5) 26×16 (Cur §0.6 FLEX_3 values) |
+| TENDER_CASH_DISCOUNT | `Cash` (22.0, 58.5) 26×16 · `Card` (62.0, 58.5) 26×16 (Cur §0.6 FLUX_3 values) |
 | PAYMENT_PROMPT | `Cancel` (38.0, 124.0) 40×10 · label `Tap, insert or swipe` rect (6.0, 52.0, 64.0, 8.0) · amount label rect (18.0, 36.0, 40.0, 10.0) |
 | PIN_ENTRY | `1` (19.0, 62.0) · `2` (38.0, 62.0) · `3` (57.0, 62.0) · `4` (19.0, 76.0) · `5` (38.0, 76.0) · `6` (57.0, 76.0) · `7` (19.0, 90.0) · `8` (38.0, 90.0) · `9` (57.0, 90.0) · `Clear` (19.0, 104.0) · `0` (38.0, 104.0) · `Enter` (57.0, 104.0) — keys 17×12 · `Cancel` (38.0, 122.0) 40×9 |
 | TIP | `15%` (20.3, 62.0) · `18%` (55.7, 62.0) · `20%` (20.3, 80.0) · `22%` (55.7, 80.0) — 32×14 · `No Tip` (20.3, 98.0) 32×12 · `Custom` (55.7, 98.0) 32×12 |
@@ -1411,7 +1411,7 @@ Hit rules are in §3.5.4. "Probe core" = the half-width of the acceptance window
 | RECEIPT_OPTIONS_4 | `Print` (34.0, 71.0) · `Email` (34.0, 83.0) · `Text` (34.0, 95.0) · `No Receipt` (34.0, 107.0) — rows 60×6 (core 1.0) (Cur §0.6) |
 | RECEIPT_OPTIONS_5 | QR block (34.0, 61.0) 20×20 (non-button; bottom edge at 71.0) · `Print` (34.0, 74.0) · `Email` (34.0, 86.0) · `Text` (34.0, 98.0) · `No Receipt` (34.0, 110.0) · `Scan for receipt` (34.0, 122.0) — rows 60×6 (Cur §0.6) |
 
-**Layout `FLEX_GEN2`** (FLEX_2 · portrait 68.0 × 121.0)
+**Layout `FLUX_GEN2`** (FLUX_2 · portrait 68.0 × 121.0)
 
 | Screen | Buttons |
 |---|---|
@@ -1427,7 +1427,7 @@ Hit rules are in §3.5.4. "Probe core" = the half-width of the acceptance window
 | RECEIPT_OPTIONS_4 | `Print` (34.0, 70.0) · `Email` (34.0, 80.0) · `Text` (34.0, 90.0) · `No Receipt` (34.0, 100.0) — 56×6 |
 | RECEIPT_OPTIONS_5 | QR (34.0, 60.0) 18×20 · `Print` (34.0, 73.0) · `Email` (34.0, 83.0) · `Text` (34.0, 93.0) · `No Receipt` (34.0, 103.0) · `Scan for receipt` (34.0, 113.0) — 56×6 |
 
-**Layout `FLEX_GEN1`** (FLEX_1 · portrait 62.3 × 110.7)
+**Layout `FLUX_GEN1`** (FLUX_1 · portrait 62.3 × 110.7)
 
 | Screen | Buttons |
 |---|---|
@@ -1443,7 +1443,7 @@ Hit rules are in §3.5.4. "Probe core" = the half-width of the acceptance window
 | RECEIPT_OPTIONS_4 | `Print` (31.2, **66.5**) · `Email` (31.2, 75.5) · `Text` (31.2, 84.5) · `No Receipt` (31.2, 93.5) — 52×7 (GP INC22 truth 66.5) |
 | RECEIPT_OPTIONS_5 | QR (31.2, 57.0) 16×18 · `Print` (31.2, 69.5) · `Email` (31.2, 78.5) · `Text` (31.2, 87.5) · `No Receipt` (31.2, 96.5) · `Scan for receipt` (31.2, 105.5) — 52×7 |
 
-**Layout `COMPACT`** (portrait 62.3 × 110.7)
+**Layout `COMPASS`** (portrait 62.3 × 110.7)
 
 | Screen | Buttons |
 |---|---|
@@ -1456,10 +1456,10 @@ Hit rules are in §3.5.4. "Probe core" = the half-width of the acceptance window
 | PIN_ENTRY | columns 15.6 / 31.2 / 46.8, rows 50.0 / 63.0 / 76.0 / 89.0, keys 14×11 · `Cancel` (31.2, 103.0) 34×7 |
 | TIP | `15%` (16.6, 50.0) · `18%` (45.7, 50.0) · `20%` (16.6, 66.0) · `22%` (45.7, 66.0) 26×13 · `No Tip` (16.6, 82.0) · `Custom` (45.7, 82.0) 26×11 (Westers merchants offer 15/18/20 — the `22%` button is hidden) |
 | SIGNATURE | pad (31.2, 55.0) 56×50 · `Clear` (16.0, 102.0) · `Done` (46.0, 102.0) 26×8 |
-| RECEIPT_OPTIONS_4 | `Print` (31.2, 60.0) · `Email` (31.2, 70.0) · `Text` (31.2, 80.0) · `No Receipt` (31.2, 90.0) — 52×6 (Compact has no printer: `Print` rendered disabled) |
+| RECEIPT_OPTIONS_4 | `Print` (31.2, 60.0) · `Email` (31.2, 70.0) · `Text` (31.2, 80.0) · `No Receipt` (31.2, 90.0) — 52×6 (Compass has no printer: `Print` rendered disabled) |
 | RECEIPT_OPTIONS_5 | QR (31.2, 51.0) 16×16 · `Print` (31.2, 63.0) · `Email` (31.2, 73.0) · `Text` (31.2, 83.0) · `No Receipt` (31.2, 93.0) · `Scan for receipt` (31.2, 103.0) — 52×6 |
 
-**Layout `MINI_GEN3`** (MINI_3, MINI_4 · landscape 172.3 × 107.7). Also the Station Duo CFD layout.
+**Layout `MICRO_GEN3`** (MICRO_3, MICRO_4 · landscape 172.3 × 107.7). Also the Stand Duet CFD layout.
 
 | Screen | Buttons |
 |---|---|
@@ -1478,11 +1478,11 @@ Hit rules are in §3.5.4. "Probe core" = the half-width of the acceptance window
 | CUSTOMER_CART / CFD_CART (labels, v1) | `Subtotal $10.00` rect (28.38, 14.00, 59.79, 8.00) · `Tax $0.83` (28.38, 23.00, 59.79, 8.00) · `TOTAL $10.83` (28.38, 32.43, 59.79, 11.15). **v2 copy** (`cfdLayout: 'v2'`): total line reads `Total $10.83`, same rect (INC37-A). `labelShiftPx` moves CFD labels down in the webcam frame (10 px = 2.53 mm on R2-D2, INC36). Cur M16's tutorial toggle "CFD layout v2" sets **both** (v2 copy + 10 px). Amounts are live (`$` + cents formatted). |
 | CFD_THANK_YOU | label `Thank you` rect (54.22, 44.59, 63.85, 12.16) |
 
-**Layout `MINI_GEN2`** (MINI_2 · landscape 154.2 × 90.4)
+**Layout `MICRO_GEN2`** (MICRO_2 · landscape 154.2 × 90.4)
 
 | Screen | Buttons |
 |---|---|
-| HOME (5 × 2) | columns x 20.0 / 48.5 / 77.0 / 105.5 / 134.0, rows y 32.0 / 61.0, same app order as MINI_GEN3 — 22×22 |
+| HOME (5 × 2) | columns x 20.0 / 48.5 / 77.0 / 105.5 / 134.0, rows y 32.0 / 61.0, same app order as MICRO_GEN3 — 22×22 |
 | REGISTER_HOME | `Register` (12.5, 7.0) 20×7 · `Tax Item 5` (20.0, 25.0) · `Non-Tax Item 1` (54.0, 25.0) · `Coffee` (20.0, 44.0) · `Catering Deposit` (54.0, 44.0) — 30×15 · `Clear` (89.5, 81.0) 18×13 · `Review Order` (125.0, 81.0) 50×13 |
 | REVIEW_ORDER | `Back` (89.5, 81.0) 18×13 · `Pay` (125.0, 81.0) 50×13 |
 | PAYMENT | `Cash` (28.0, 44.5) · `Other` (28.0, 59.5) · `Charge` (28.0, 74.5) — 44×10 · `Cancel` (134.0, 81.0) 32×10 |
@@ -1495,7 +1495,7 @@ Hit rules are in §3.5.4. "Probe core" = the half-width of the acceptance window
 | RECEIPT_OPTIONS_5 | QR (77.0, 26.0) 14×14 · `Print` (77.0, 36.0) · `Email` (77.0, 46.0) · `Text` (77.0, 56.0) · `No Receipt` (77.0, 66.0) · `Scan for receipt` (77.0, 76.0) — 70×6 |
 | CUSTOMER_CART | `Subtotal …` (25.0, 25.0, 54.0, 7.0) · `Tax …` (25.0, 33.0, 54.0, 7.0) · `TOTAL …` (25.0, 42.0, 54.0, 10.0) |
 
-**Layout `STATION`** (STATION_2018, STATION_2, and the **MFD** of STATION_DUO / DUO_2 / DUO_3 · landscape 309.9 × 174.3)
+**Layout `STAND`** (STAND_2018, STAND_2, and the **MFD** of STAND_DUET / DUET_2 / DUET_3 · landscape 309.9 × 174.3)
 
 | Screen | Buttons |
 |---|---|
@@ -1503,7 +1503,7 @@ Hit rules are in §3.5.4. "Probe core" = the half-width of the acceptance window
 | REGISTER_HOME | `Register` (22.0, 10.0) 36×10 · `Tax Item 5` (35.0, 40.0) · `Non-Tax Item 1` (90.0, 40.0) · `Coffee` (35.0, 70.0) · `Catering Deposit` (90.0, 70.0) — 50×24 · `Clear` (190.0, 158.0) 50×16 · `Review Order` (262.0, 158.0) 80×16 |
 | REVIEW_ORDER | `Back` (190.0, 158.0) 50×16 · `Pay` (262.0, 158.0) 80×16 |
 | PAYMENT | `Cash` (60.0, 80.0) · `Other` (60.0, 110.0) · `Charge` (60.0, 140.0) — 90×18 · `Cancel` (270.0, 160.0) 60×12 |
-| TENDER_CASH_DISCOUNT | `Cash` (105.0, 90.0) 100×30 · `Card` (205.0, 90.0) 100×30 (single-display Stations only) |
+| TENDER_CASH_DISCOUNT | `Cash` (105.0, 90.0) 100×30 · `Card` (205.0, 90.0) 100×30 (single-display Stands only) |
 | PAYMENT_PROMPT | `Cancel` (155.0, 158.0) 60×12 · headline rect (95.0, 70.0, 120.0, 14.0) |
 | PIN_ENTRY | columns 125.0 / 155.0 / 185.0, rows 50.0 / 75.0 / 100.0 / 125.0, keys 26×20 · `Cancel` (270.0, 160.0) 50×12 |
 | TIP | `15%` (80.0, 80.0) · `18%` (130.0, 80.0) · `20%` (180.0, 80.0) · `22%` (230.0, 80.0) 44×26 · `No Tip` (110.0, 125.0) · `Custom` (200.0, 125.0) 60×16 |
@@ -1511,7 +1511,7 @@ Hit rules are in §3.5.4. "Probe core" = the half-width of the acceptance window
 | RECEIPT_OPTIONS_4 | `Print` (155.0, 60.0) · `Email` (155.0, 80.0) · `Text` (155.0, 100.0) · `No Receipt` (155.0, 120.0) — 120×8 |
 | RECEIPT_OPTIONS_5 | QR (155.0, 47.0) 22×22 · `Print` (155.0, 63.0) · `Email` (155.0, 83.0) · `Text` (155.0, 103.0) · `No Receipt` (155.0, 123.0) · `Scan for receipt` (155.0, 143.0) — 120×8 |
 
-On a **Duo** the customer screens appear on the secondary display only (`CFD_*` rows, MINI_GEN3
+On a **Duet** the customer screens appear on the secondary display only (`CFD_*` rows, MICRO_GEN3
 values); the MFD shows `waiting-for-customer` ("Customer is paying…") meanwhile.
 
 **Text that runners read via UIA** (all layouts): Register cart footer `Subtotal $X`, `Tax $Y`,
@@ -1519,7 +1519,7 @@ values); the MFD shows `waiting-for-customer` ("Customer is paying…") meanwhil
 order (§3.9); positions only matter for OCR/GIMP and are defined above where needed.
 
 **Screencap px**: a primary-display screencap is `wPx × hPx` of the type; px = round(mm × px/mm).
-The Duo screencap (ADB) contains only the MFD (§3.11).
+The Duet screencap (ADB) contains only the MFD (§3.11).
 
 ### 2.11 Cameras and Screen Compare Images
 
@@ -1529,9 +1529,9 @@ Each camera maps device-screen mm to frame px with `px = ox + s·x`, `py = oy + 
 
 | Camera (host) | URL | Shows (display → ox, oy, s) |
 |---|---|---|
-| `cam-wall-e` (`pi-wall-e`) | `http://10.42.10.11:8081/stream.mjpg` | WALL-E Flex 3 primary → 397, 112, 3.5 (plus gantry, dip arm, printer slot) |
-| `cam-eve` | `…10.42.10.12…` | EVE Flex 4 → 397, 112, 3.5 |
-| `cam-bumblebee` | `…10.42.10.13…` | BUMBLEBEE Mini 3 → 296, 145, 4.0 |
+| `cam-wall-e` (`pi-wall-e`) | `http://10.42.10.11:8081/stream.mjpg` | WALL-E Flux 3 primary → 397, 112, 3.5 (plus gantry, dip arm, printer slot) |
+| `cam-eve` | `…10.42.10.12…` | EVE Flux 4 → 397, 112, 3.5 |
+| `cam-bumblebee` | `…10.42.10.13…` | BUMBLEBEE Micro 3 → 296, 145, 4.0 |
 | `cam-r2-d2` | `…10.42.10.14…` | R2-D2 **secondary (CFD)** → 300, 160, 3.947 (MFD not in view) |
 | `cam-rackb` (`pi-cam-rackb`) | `http://10.42.10.40:8081/stream.mjpg` | quad: JOHNNY-5 → 239, 36, 2.6 · BAYMAX → 712, 40, 1.6 · SETI → 239, 396, 2.6 · ROSIE → 877, 400, 2.2 |
 | `cam-tethered` (`pi-tethered`) | `http://10.42.10.20:8081/stream.mjpg` | MEGATRON MFD → 72, 40, 1.6 · OPTIMUS MFD → 736, 40, 2.6 · MEGATRON CFD → 97, 410, 2.9 · OPTIMUS CFD → 736, 400, 2.6 (2 × 2 as in the photo, labels `MEGATRON MFD DEV1` …) |
@@ -1544,8 +1544,8 @@ Webcam `Snapshot` (Camera app) saves `~/Pictures/<rig>_<what>.png` as an image r
 
 | id | Name | Robot | Screen | bbox (x, y, w, h) px | Expected | Deprecated | usedBy |
 |---|---|---|---|---|---|---|---|
-| 1 | `CFD_TOTAL` | r2-d2 | `CFD_CART` | 412, 288, 236, 44 | `TOTAL $10.83` | no | `uia-remote:DuoCfdSuite` |
-| 2 | `CFD_THANK_YOU` | r2-d2 | `CFD_THANK_YOU` | 514, 336, 252, 48 | `Thank you` | no | `uia-remote:DuoCheckoutTest` |
+| 1 | `CFD_TOTAL` | r2-d2 | `CFD_CART` | 412, 288, 236, 44 | `TOTAL $10.83` | no | `uia-remote:DuetCfdSuite` |
+| 2 | `CFD_THANK_YOU` | r2-d2 | `CFD_THANK_YOU` | 514, 336, 252, 48 | `Thank you` | no | `uia-remote:DuetCheckoutTest` |
 | 3 | `CFD_TOTAL_C3PO` | c-3po | `CFD_CART` | 985, 472, 96, 18 | `TOTAL $10.83` | **yes** | — |
 
 Cur M16 deletes row 1 in its setup (the player recreates it); Cur §0.6 values are identical.
@@ -1555,7 +1555,7 @@ Cur M16 deletes row 1 in its setup (the player recreates it); Cur §0.6 values a
 | Repo | Remote | Default branch | Top level | Factory head |
 |---|---|---|---|---|
 | `gort` | `git@github.com:labsim-lab/gort.git` | `main` | `cards/`, `config/`, `go-sdk/`, `suites/`, `README.md` | `c41d9e2` "Add INTERAC_CA_TAP card definition" (riley, 2026-10-04 15:12) |
-| `uia-remote` | `git@github.com:labsim-lab/uia-remote.git` | `main` | `app/src/{main,test,androidTest}`, `pom.xml`, `config.properties.example`, `.gitignore` (`config.properties`) | `7a20f5b` "Migrate CFD_TOTAL to UIA 2.3 in TaxTestDuo (#398)" (morgan) |
+| `uia-remote` | `git@github.com:labsim-lab/uia-remote.git` | `main` | `app/src/{main,test,androidTest}`, `pom.xml`, `config.properties.example`, `.gitignore` (`config.properties`) | `7a20f5b` "Migrate CFD_TOTAL to UIA 2.3 in TaxTestDuet (#398)" (morgan) |
 | `pigeon` | `git@github.com:labsim-lab/pigeon.git` | `main` | `runners/{rest,android,windows,ios}/`, `tests/`, `tests/_templates/`, `lstr.json` | `e93b0c4` "LSTR: retry adb connect once" (morgan) |
 | `orchestrator` | `git@github.com:labsim-lab/orchestrator.git` | `main` | JHipster app: `.jhipster/*.json`, `src/main/java/com/lab/orca/…`, `src/main/resources/config/liquibase/…`, `src/main/webapp/`, `src/main/docker/` | `3b8d17a` "MerchantConfig: add App ID / App Secret / API Key (#77)" (tate) |
 
@@ -1563,8 +1563,8 @@ Seeded history (newest first; author keys from `src/content/team.ts`):
 
 | Repo | Commits | PRs |
 |---|---|---|
-| gort | `c41d9e2` Add INTERAC_CA_TAP card definition (riley) · `9f02a1b` Update MINI_3 receipt coordinates (#418, jared, 10-02) · `5be7c90` Reorganise card definitions under cards/emv/ and cards/nfc/ (jared, 09-28) · `0d3e441` Add 5-option receipt maps for all profiles (#417, jared — "QR receipt hotfix, 48 h") · `a11f2c3` go-sdk: sale_receipt capabilities (david) | #418 merged · #417 merged · #415 closed "Per-rig offsets for QR shift" (closed by Jared: "No offsets. Fix the maps.") |
-| uia-remote | `7a20f5b` (#398) · `61cc0de` HomeScreen.open(): vertical on Flex, horizontal on Mini/Station (morgan) · `2f9a7b3` Add RegisterHomeScreen.waitForScreen (morgan) · `b07c1e5` Initial tethered runner (morgan) | #398 merged · #212 "[AI eval] Generated tests for ReceiptScreen" closed (re-opened by Cur M17 setup) |
+| gort | `c41d9e2` Add INTERAC_CA_TAP card definition (riley) · `9f02a1b` Update MICRO_3 receipt coordinates (#418, jared, 10-02) · `5be7c90` Reorganise card definitions under cards/emv/ and cards/nfc/ (jared, 09-28) · `0d3e441` Add 5-option receipt maps for all profiles (#417, jared — "QR receipt hotfix, 48 h") · `a11f2c3` go-sdk: sale_receipt capabilities (david) | #418 merged · #417 merged · #415 closed "Per-rig offsets for QR shift" (closed by Jared: "No offsets. Fix the maps.") |
+| uia-remote | `7a20f5b` (#398) · `61cc0de` HomeScreen.open(): vertical on Flux, horizontal on Micro/Stand (morgan) · `2f9a7b3` Add RegisterHomeScreen.waitForScreen (morgan) · `b07c1e5` Initial tethered runner (morgan) | #398 merged · #212 "[AI eval] Generated tests for ReceiptScreen" closed (re-opened by Cur M17 setup) |
 | pigeon | `e93b0c4` · `4c1f0aa` Add tip_sale_print.json (alex, 10-01) · `8d2e6b9` known_good_actions template (morgan) | — |
 | orchestrator | `3b8d17a` (#77) · `c9a0d12` Robot list status filter UI (#64, tate) · `77e1b3f` JHipster entity regen: ScreenCompareImage (tate) | #81 open "WIP: Dockerfile + GCP Cloud SQL profile (planned migration)" (tate, draft) |
 
@@ -1592,7 +1592,7 @@ Orca's rows are synced from these on merge (§3.22.3).
 `gort/suites/contact-canada/pin_sale.json` (dynamic half of the Contact Canada lookup):
 ```json
 { "name": "Contact Canada Interac PIN sale",
-  "capabilities": { "deviceType": "COMPACT", "physicalTouch": true },
+  "capabilities": { "deviceType": "COMPASS", "physicalTouch": true },
   "card": "INTERAC_CA_DIP", "expectPin": true, "receipt": "RECEIPT_OPTIONS_4" }
 ```
 
@@ -1605,13 +1605,13 @@ Orca's rows are synced from these on merge (§3.22.3).
 `app/src/androidTest/java/com/lab/uia/BaseTest.java`; `…/databases/DbHelper.java`;
 `…/pageobjects/{HomeScreen, LockScreen, NavigationBar, RegisterHomeScreen, ReviewOrderScreen,
 PaymentScreen, CfdTotalsScreen, CfdPaymentScreen, ReceiptScreen}.java`;
-`…/testactions/{HomeScreenTest, ReceiptScreenTest, SaleTest, TaxTest, TaxTestDuo, RefundTest,
-DuoCfdSuite, DuoCheckoutTest, PrinterlessSmokeTest, PaycoreMatrixTest, ContactCanadaPinSaleTest}.java`.
+`…/testactions/{HomeScreenTest, ReceiptScreenTest, SaleTest, TaxTest, TaxTestDuet, RefundTest,
+DuetCfdSuite, DuetCheckoutTest, PrinterlessSmokeTest, PaycoreMatrixTest, ContactCanadaPinSaleTest}.java`.
 Factory `RegisterHomeScreen.java` is GP INC32's file with `waitForScreen()` implemented as
 `device.wait(Until.hasObject(reviewOrderBtn), TIMEOUT_MS);` and `reviewOrder()` calling it first;
 `TaxTest.java` has `@After public void tearDown() { mfd.run(homeScreen::goHome); cfd.run(homeScreen::goHome); }`;
-`DuoCheckoutTest` still asserts `orca.screenCompare("CFD_THANK_YOU")` (INC38's starting point);
-`DuoCfdSuite` asserts `orca.screenCompare("CFD_TOTAL")`.
+`DuetCheckoutTest` still asserts `orca.screenCompare("CFD_THANK_YOU")` (INC38's starting point);
+`DuetCfdSuite` asserts `orca.screenCompare("CFD_TOTAL")`.
 
 `pigeon/tests/sale/swipe_sale_print.json` (factory, valid, 9 actions; `select print` is step 7 so
 the canonical failure reads `step 7/9`):
@@ -1636,7 +1636,7 @@ the canonical failure reads `step 7/9`):
 `${RECEIPT_SCREEN}` is a **runner-provided variable**: before any receipt action the LSTR Android
 runner counts the options on screen via ADB and sets `RECEIPT_OPTIONS_4` or `RECEIPT_OPTIONS_5`
 (that is *why* Orca must keep both maps for every profile, Ref §5). On QR rigs (WALL-E, EVE,
-BUMBLEBEE, BAYMAX) it resolves to `_5` — INC20/INC21; on JOHNNY-5 (FLEX_1, no QR firmware) to `_4` —
+BUMBLEBEE, BAYMAX) it resolves to `_5` — INC20/INC21; on JOHNNY-5 (FLUX_1, no QR firmware) to `_4` —
 INC22. A file that hard-codes a literal screen name uses it as written (INC21's wrong move; Cur M15's
 academy variant hard-codes `RECEIPT_OPTIONS_5` on BUMBLEBEE, which is correct there).
 
@@ -1653,10 +1653,10 @@ package com.labsim.orca.domain.enumeration;
 
 /** The DeviceType enumeration. ALL CAPS — Jenkins env vars must match exactly. */
 public enum DeviceType {
-    STATION_2018, STATION_2, STATION_DUO, STATION_DUO_2, STATION_DUO_3,
-    MINI_2, MINI_3, MINI_4,
-    FLEX_1, FLEX_2, FLEX_3, FLEX_4, FLEX_POCKET,
-    COMPACT
+    STAND_2018, STAND_2, STAND_DUET, STAND_DUET_2, STAND_DUET_3,
+    MICRO_2, MICRO_3, MICRO_4,
+    FLUX_1, FLUX_2, FLUX_3, FLUX_4, FLUX_POCKET,
+    COMPASS
 }
 ```
 
@@ -1682,19 +1682,19 @@ Common parameters (Cur S07): `ROBOT_NAME` (string, blank = any matching Availabl
 
 | Job | Runner · platform | Saved params (defaults) | Capabilities (script line / dynamic source) | Test | Next # |
 |---|---|---|---|---|---|
-| `Java/uia-remote-regression-flex` | uia-remote · android | `ROBOT_NAME=` `DEVICE_TYPE=FLEX_3` `MERCHANT=AUTO-US-NOPIN-01` `CARD_PROFILE=VISA_STD_SWIPE` `BACKEND_ENV=DEV1` | `def capabilities = [deviceType: params.DEVICE_TYPE, physicalTouch: true]` | `HomeScreenTest`, `SaleTest` | 4120 |
-| `Java/uia-remote-regression-mini` | uia-remote · android | as above, `DEVICE_TYPE=MINI_3` | same line | `HomeScreenTest`, `SaleTest` | 2210 |
-| `Java/uia-remote-tethered-tax` | uia-remote · android | `ROBOT_NAME=` `MERCHANT=AUTO-US-NOPIN-01` `CARD_PROFILE=VISA_STD_SWIPE` `BACKEND_ENV=DEV1` (PL2 alternates `DEV1`/`STG`) | `def capabilities = [tethered: true, duo: false]` | `TaxTest`, `RefundTest` (in that order; INC35) | 1830 |
-| `Java/uia-remote-duo-cfd` [illus.] | uia-remote · android | `BACKEND_ENV=DEV1` | `def capabilities = [deviceType: 'STATION_DUO', tethered: true]` | `DuoCfdSuite`, `DuoCheckoutTest` | 640 |
-| `Java/uia-remote-printerless-smoke` [illus.] | uia-remote · android | `DEVICE_TYPE=STATION_DUO_2` | `def capabilities = [deviceType: params.DEVICE_TYPE]` | `PrinterlessSmokeTest` | 310 |
+| `Java/uia-remote-regression-flux` | uia-remote · android | `ROBOT_NAME=` `DEVICE_TYPE=FLUX_3` `MERCHANT=AUTO-US-NOPIN-01` `CARD_PROFILE=VISA_STD_SWIPE` `BACKEND_ENV=DEV1` | `def capabilities = [deviceType: params.DEVICE_TYPE, physicalTouch: true]` | `HomeScreenTest`, `SaleTest` | 4120 |
+| `Java/uia-remote-regression-micro` | uia-remote · android | as above, `DEVICE_TYPE=MICRO_3` | same line | `HomeScreenTest`, `SaleTest` | 2210 |
+| `Java/uia-remote-tethered-tax` | uia-remote · android | `ROBOT_NAME=` `MERCHANT=AUTO-US-NOPIN-01` `CARD_PROFILE=VISA_STD_SWIPE` `BACKEND_ENV=DEV1` (PL2 alternates `DEV1`/`STG`) | `def capabilities = [tethered: true, duet: false]` | `TaxTest`, `RefundTest` (in that order; INC35) | 1830 |
+| `Java/uia-remote-duet-cfd` [illus.] | uia-remote · android | `BACKEND_ENV=DEV1` | `def capabilities = [deviceType: 'STAND_DUET', tethered: true]` | `DuetCfdSuite`, `DuetCheckoutTest` | 640 |
+| `Java/uia-remote-printerless-smoke` [illus.] | uia-remote · android | `DEVICE_TYPE=STAND_DUET_2` | `def capabilities = [deviceType: params.DEVICE_TYPE]` | `PrinterlessSmokeTest` | 310 |
 | `Java/pigeon-android-sale-swipe` | pigeon · android | `ROBOT_NAME=` `BACKEND_ENV=DEV1` | `def capabilities = [physicalTouch: true, printer: true, tethered: false]` | `pigeon:tests/sale/swipe_sale_print.json` | 5402 |
 | `Java/pigeon-android-tip-sale` [illus.] | pigeon · android | `ROBOT_NAME=johnny-5` `BACKEND_ENV=DEV1` | same | `pigeon:tests/sale/tip_sale_print.json` | 880 |
 | `Java/pigeon-android-payment-compare` [illus.] | pigeon · android | `ROBOT_NAME=eve` | `def capabilities = [physicalTouch: true]` | `pigeon:tests/sale/payment_success_compare.json` | 45 |
 | `Java/pigeon-windows-tender` [illus.] | pigeon · windows | — (no robot) | — | `pigeon:tests/tender/windows_tender.json` | 212 |
 | `Java/go-sdk-sale-smoke` | go-sdk · go | `ROBOT_NAME=` `MERCHANT=GO-SDK-US-01` `CARD_PROFILE=VISA_STD_DIP` `BACKEND_ENV=DEV1` | dynamic: `def capabilities = readJSON(file: 'go-sdk/tests/sale_receipt.json').capabilities` | `gort:go-sdk/tests/sale_receipt.json` | 1290 |
-| `Java/contact-canada-pin-sale` | uia-remote · android | `ROBOT_NAME=` `MERCHANT=WESTERS-CA-01` `CARD_PROFILE=INTERAC_CA_DIP` `BACKEND_ENV=DEV1` | **both**: `def capabilities = [deviceType: 'COMPACT', physicalTouch: true]` + `def dynamicCaps = readJSON(file: 'suites/contact-canada/pin_sale.json').capabilities` | `ContactCanadaPinSaleTest` | 733 |
+| `Java/contact-canada-pin-sale` | uia-remote · android | `ROBOT_NAME=` `MERCHANT=WESTERS-CA-01` `CARD_PROFILE=INTERAC_CA_DIP` `BACKEND_ENV=DEV1` | **both**: `def capabilities = [deviceType: 'COMPASS', physicalTouch: true]` + `def dynamicCaps = readJSON(file: 'suites/contact-canada/pin_sale.json').capabilities` | `ContactCanadaPinSaleTest` | 733 |
 | `Java/laz-oobe-merchant-swap` | laz | `ROBOT_NAME` (required) `MERCHANT` (required) | named only | — | 512 |
-| `Java/paycore-standalone-matrix` [illus.] | uia-remote · android | `ROBOT_NAME=rosie` `MERCHANT=PAYCORE-STANDALONE-01` `CARD_PROFILE=VISA_STD_DIP,DISCOVER_MATRIX_DIP,AMEX_MATRIX_DIP` | `def capabilities = [deviceType: 'FLEX_POCKET', physicalTouch: true]` | `PaycoreMatrixTest` | 2077 |
+| `Java/paycore-standalone-matrix` [illus.] | uia-remote · android | `ROBOT_NAME=rosie` `MERCHANT=PAYCORE-STANDALONE-01` `CARD_PROFILE=VISA_STD_DIP,DISCOVER_MATRIX_DIP,AMEX_MATRIX_DIP` | `def capabilities = [deviceType: 'FLUX_POCKET', physicalTouch: true]` | `PaycoreMatrixTest` | 2077 |
 | `Java/vision-poc-receipt-check` [illus.] | vision | `ROBOT_NAME=wall-e` | `def capabilities = [physicalTouch: true, printer: true]` | Ollama `llava` | 96 |
 | `Java/nightly-java-regression` [illus.] | trigger | — | — | builds every other `Java/*` job (02:00) | 61 |
 | `iOS/pigeon-ios-go-sdk-smoke` | ios · ios | `ROBOT_NAME=astro` `BACKEND_ENV=QA` | `def capabilities = [phone: true]` | `pigeon:tests/go/ios_go_smoke.json` | 377 (last run today 06:12, SUCCESS) |
@@ -1703,7 +1703,7 @@ Common parameters (Cur S07): `ROBOT_NAME` (string, blank = any matching Availabl
 Every job script is a short Jenkinsfile; the sim reads only the lines matching §3.18.2. Example:
 
 ```groovy
-// Java/uia-remote-regression-flex — Jenkinsfile (excerpt) [illus.]
+// Java/uia-remote-regression-flux — Jenkinsfile (excerpt) [illus.]
 def capabilities = [deviceType: params.DEVICE_TYPE, physicalTouch: true]
 
 pipeline {
@@ -1713,7 +1713,7 @@ pipeline {
     stage('Checkout robot')    { steps { script { robot = orca.checkout(name: params.ROBOT_NAME, env: params.BACKEND_ENV, capabilities: capabilities) } } }
     stage('Merchant')          { steps { script { orca.ensureMerchant(robot, params.MERCHANT) } } }
     stage('Inject environment'){ steps { script { env.putAll(orca.runtimeEnv(robot, params)) } } }
-    stage('Run tests')         { steps { sh './gradlew connectedAndroidTest -Psuite=RegressionFlex' } }
+    stage('Run tests')         { steps { sh './gradlew connectedAndroidTest -Psuite=RegressionFlux' } }
   }
   post { always { script { orca.release(robot) } } }
 }
@@ -1729,7 +1729,7 @@ Seeded history: each job has its last 5 builds (all SUCCESS, robots per PL table
   `img:receipt:wall-e:0912`); ssh keys present; `configProperties = {}`.
 * Coworker ADB knowledge: in factory the workstation ADB server knows nothing; Cur M14 and INC27
   seed `10.42.60.4:5555` as the first known device (setup op `ws.adbKnows`).
-* 3D printers idle; `cradle_flex_gen3.3mf`, `cradle_mini3.3mf`, `cradle_station.3mf` on the CAD PC.
+* 3D printers idle; `cradle_flux_gen3.3mf`, `cradle_micro3.3mf`, `cradle_stand.3mf` on the CAD PC.
 
 ---
 ## 3. Behaviours and state machines
@@ -1927,13 +1927,13 @@ interface CheckoutRequest {
 3. **Enum validation**: every `deviceType` value (param or either capability source) goes through
    `DeviceType.valueOf`. Failure prints exactly
    `java.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.<raw>`
-   → `ENUM_CASE`. (`flex_3`, `Flex_3`, `FLEX3`, `FLEX-3`, `FLEX_GEN3`, `mini_3` all fail; INC39, DR11.)
+   → `ENUM_CASE`. (`flux_3`, `Flux_3`, `FLUX3`, `FLUX-3`, `FLUX_GEN3`, `micro_3` all fail; INC39, DR11.)
 4. **Merge requirements** `R = nonDynamic ∪ dynamic`. Same key with different values →
-   `[orca] 409 Conflict: capability conflict (pipeline deviceType=MINI_3, test deviceType=COMPACT)`
+   `[orca] 409 Conflict: capability conflict (pipeline deviceType=MICRO_3, test deviceType=COMPASS)`
    (format `capability conflict (pipeline <k>=<v1>, test <k>=<v2>)`, first conflicting key in canonical
    order) → `CAPABILITY_CONFLICT`. A key that is neither derived (§2.7.1) nor in the capability
    catalogue → `[orca] 400 Bad Request: unknown capability '<k>'` → `UNKNOWN_CAPABILITY`. Print
-   `[orca] capabilities: deviceType=FLEX_3, physicalTouch=true (non-dynamic)` (sources listed:
+   `[orca] capabilities: deviceType=FLUX_3, physicalTouch=true (non-dynamic)` (sources listed:
    `non-dynamic`, `dynamic: <file>`, or `non-dynamic + dynamic: <file>`).
 5. **Named** (`robotName != ''`): exact, case-sensitive match on `name` (not HRN).
    * none → `[orca] 404 Not Found: no robot named 'ROSIE'` → `ROBOT_NOT_FOUND`.
@@ -1948,12 +1948,12 @@ interface CheckoutRequest {
    INC23 lands on VISION).
    * no candidate → `[orca] No robot matches <summary>` → `NO_MATCH` (summary = `R` as `k=v` in
      canonical order).
-   * first candidate that is `AVAILABLE` and not checked out → `[orca] checkout → wall-e (FLEX_3) OK`.
-   * otherwise, if **every** candidate is `UNAVAILABLE` → `No Available robot matches FLEX_POCKET (rosie is Unavailable)`
+   * first candidate that is `AVAILABLE` and not checked out → `[orca] checkout → wall-e (FLUX_3) OK`.
+   * otherwise, if **every** candidate is `UNAVAILABLE` → `No Available robot matches FLUX_POCKET (rosie is Unavailable)`
      (label = required `deviceType` or the summary; names joined `, `, `are` for plural) → `ONLY_UNAVAILABLE`.
    * otherwise print one skip line per candidate — `[orca] candidate eve: Reserved — skipped`,
      `… Connection Failed — skipped`, `… Offline — skipped`, `… Unavailable — skipped (name it to use it)`,
-     `… in use by Jenkins #4127 — skipped` — then `[orca] no Available FLEX_3 robot — build waiting in queue`
+     `… in use by Jenkins #4127 — skipped` — then `[orca] no Available FLUX_3 robot — build waiting in queue`
      (label = `deviceType` value, else `matching`). The build stays in stage `Checkout robot`, polls every
      10 s physical, reprints skip lines only when the set of reasons changes, and prints
      `[orca] still waiting (N s)…` every 60 s. No timeout (INC48 "waiting forever").
@@ -1996,17 +1996,17 @@ holding the checkout, or the player (curl / Orca **Test tap**).
 1. Orca up/DB up (else timeout/500).
 2. Robot by exact Name → `404 Not Found: no robot named 'x'`.
 3. **Target device & display**: tethered (MFD ≠ CFD): `target` or, if absent, `CFD` when the
-   screen name starts with `CFD_` else `MFD` (runners always pass `target` on tethered rigs); Duo
-   (MFD = CFD or Duo type): the Robot Device, display = the screen row's `display` (`CFD_*` →
+   screen name starts with `CFD_` else `MFD` (runners always pass `target` on tethered rigs); Duet
+   (MFD = CFD or Duet type): the Robot Device, display = the screen row's `display` (`CFD_*` →
    secondary); otherwise the Robot Device, primary.
 4. **Lookup** Screen `(target device's deviceType, screen)` and its Location `(button)`; either missing →
-   `[orca] 404 Not Found: no Screen Location for (STATION_2018, RECEIPT_OPTIONS_5, "Email")`.
+   `[orca] 404 Not Found: no Screen Location for (STAND_2018, RECEIPT_OPTIONS_5, "Email")`.
 5. **Offsets**: `x = loc.xMm + robot.offsetXMm`, `y = loc.yMm + robot.offsetYMm` (applied in both
    modes — Orca does not know they were meant for limit switches).
 6. **Lock check**: robot checked out and caller is not the holder → `423 Locked: robot wall-e is in use by Jenkins #4127`.
 7. **Mode**: `PHYSICAL_TAP` if the rig has a gantry and `rig.probeDisplay` is the target display;
-   else `ADB_TOUCH` if the target display is ADB-visible (every primary display; never a Duo
-   secondary); else `422 Unprocessable Entity: secondary display of STATION_DUO is not exposed to ADB and robot <r> has no probe on it`.
+   else `ADB_TOUCH` if the target display is ADB-visible (every primary display; never a Duet
+   secondary); else `422 Unprocessable Entity: secondary display of STAND_DUET is not exposed to ADB and robot <r> has no probe on it`.
 8. **PHYSICAL_TAP preconditions** (first failure wins; codes [illus.]):
 
 | Check | Response |
@@ -2034,7 +2034,7 @@ holding the checkout, or the player (curl / Orca **Test tap**).
 
 `wall-e`/`TENDER_CASH_DISCOUNT`/`Cash` → `PHYSICAL_TAP` (22.0, 58.5); same on `tars` → `ADB_TOUCH`;
 `r2-d2`/`CFD_RECEIPT_DONE`/`Done` → `PHYSICAL_TAP` (CFD probe); `r2-d2`/`REVIEW_ORDER`/`Pay` →
-`ADB_TOUCH` (MFD); `megatron` (`target: CFD`)/`TIP`/`No Tip` → `ADB_TOUCH` on the Mini 2.
+`ADB_TOUCH` (MFD); `megatron` (`target: CFD`)/`TIP`/`No Tip` → `ADB_TOUCH` on the Micro 2.
 
 #### 3.5.4 Hit test on the device (firmware truth)
 
@@ -2055,9 +2055,9 @@ Buttons come from the device type's layout (§2.10.2) for the screen currently s
 | Measured coordinates within ±0.5 mm | ≤ 0.5 | always hits (every core ≥ 1.0) |
 | BUMBLEBEE Offset Y 1.5 (INC14) | 1.5 | hits icons/items (core 1.6–2.4), **misses `PAYMENT/Charge`** (core 1.2) |
 | QR shift: stale `_5` rows 3.0 mm high (INC20) | 3.0 | misses every receipt row (core 1.0) |
-| FLEX_1 Print 62.5 vs 66.5 (INC22) | 4.0 | misses (lands in the gap above Print) |
+| FLUX_1 Print 62.5 vs 66.5 (INC22) | 4.0 | misses (lands in the gap above Print) |
 | EVE cradle 2° (INC59) | 0.035·x | left-side targets hit; `Review Order` at x 56.0 (dy 1.96, core 1.2) misses |
-| Flex 2 driven with FLEX_1 rows (INC42 skipped relink) | (1.4, 3.0) on Register | miss |
+| Flux 2 driven with FLUX_1 rows (INC42 skipped relink) | (1.4, 3.0) on Register | miss |
 
 * Disabled buttons: printerless `Print` → press shows toast `Printer not available`; hidden buttons
   (e.g. `22%` for 3-percent merchants) behave as absent.
@@ -2186,11 +2186,11 @@ off (rule 3), turns yellow when MOTOR returns.
 #### 3.8.1 Power and boot
 
 * Powered iff its PSU brick is plugged into an energised AC strip socket (`supply.kind == 'ac-strip'`)
-  and the device is neither `dead` nor `fried`. Handhelds (FLEX_*, FLEX_POCKET) have a battery
+  and the device is neither `dead` nor `fried`. Handhelds (FLUX_*, FLUX_POCKET) have a battery
   (`battery.pct`, NEW): unplugged they run on battery (−0.5 %/min physical, +2 %/min charging); at 0 %
   they power off. Factory 100 %; a device "back from repair" (INC17) starts at 0 %.
 * `off → booting` when power appears; boot takes **30 s** physical (lab logo, progress) then
-  `on` at `lock` (lab devices keep the passcode screen after boot) — CFD devices and Duo CFDs show
+  `on` at `lock` (lab devices keep the passcode screen after boot) — CFD devices and Duet CFDs show
   `customer-idle`. Power loss → `off` immediately (no battery). `dead` devices show nothing and never
   join the network. `fried` = dark forever (`state: 'FRIED'`).
 * Idle lock: after 10 min physical with no input the primary display goes to `lock` (clock + date
@@ -2199,7 +2199,7 @@ off (rule 3), turns yellow when MOTOR returns.
 
 #### 3.8.2 Launcher
 
-`launcher.page` (0 or 1). FLEX/COMPACT pages scroll vertically, MINI/STATION horizontally. Apps on
+`launcher.page` (0 or 1). FLUX/COMPASS pages scroll vertically, MICRO/STAND horizontally. Apps on
 page 0 per layout; page 1 holds `Reporting`, `Employees`, `Cash Log`, `Help`. A swipe in the wrong
 direction does nothing.
 
@@ -2218,8 +2218,8 @@ or player) register (Ref §6: ADB bots cannot enter PINs).
 
 #### 3.8.5 Model strings
 
-`adb shell getprop ro.product.model`: `Station 2018`, `Station 2`, `Station Duo`, `Station Duo 2`,
-`Mini 2`, `Mini 3`, `Flex`, `Flex 2`, `Flex 3`, `Flex 4`, `Flex Pocket`, `Compact` [illus.].
+`adb shell getprop ro.product.model`: `Stand 2018`, `Stand 2`, `Stand Duet`, `Stand Duet 2`,
+`Micro 2`, `Micro 3`, `Flux`, `Flux 2`, `Flux 3`, `Flux 4`, `Flux Pocket`, `Compass` [illus.].
 `ro.serialno` = serial.
 
 #### 3.8.6 Tethered pay-display link (USB Pay Display / Secure Network Pay Display)
@@ -2229,7 +2229,7 @@ USB Pay Display → both hubs' `hubUsbToPeer` seated; Secure Network Pay Display
 `hubEthernet` seated (and both reachable). When DOWN: the CFD shows `waiting-for-merchant`
 (`Waiting for merchant device…`); the MFD's Charge shows `Connecting to customer display…` and times
 out after 30 s back to `review-order`. Recovers within 2 s of the cable being re-seated (INC47). The
-Duo's two displays are one device — no link to break.
+Duet's two displays are one device — no link to break.
 
 ---
 ### 3.9 LabSim transaction state machine
@@ -2303,7 +2303,7 @@ total       = subtotal + tax + cardAdjust + tip
 | `processing` | 1.5 s | | `approved` | `authCode = "SIM" + 3 digits` (`devices` rng) |
 | `approved` | 2.0 s | | `receipt-options` (4 or 5, §3.10) | `status: 'paid'`; dip/tap actuators auto-retract |
 | `receipt-options` | `Print` | printer present & paper | `printing` 3.0 s → `thank-you` | printer payload at +2.5 s (`device.receiptPrinted`), `lastReceipt` |
-| `receipt-options` | `Print` | printerless (Pocket, Duo 2, Compact) | stays | toast `Printer not available` |
+| `receipt-options` | `Print` | printerless (Pocket, Duet 2, Compass) | stays | toast `Printer not available` |
 | `receipt-options` | `Print` | no paper (fault) | stays | toast `Printer out of paper` |
 | `receipt-options` | `Email` / `Text` | | `receipt-sent` 1.5 s → `thank-you` | |
 | `receipt-options` | `No Receipt` | | `thank-you` | |
@@ -2322,7 +2322,7 @@ MFD shows `waiting-for-customer` (`Customer is paying…`) and every customer-fa
 (`cash-discount-tender` … `thank-you`) runs on the CFD; afterwards CFD → `customer-idle`, MFD →
 `register` with toast `Payment complete`. Requires `payDisplayLink == 'UP'` (§3.8.6).
 
-#### 3.9.5 Station Duo (one terminal, two displays)
+#### 3.9.5 Stand Duet (one terminal, two displays)
 
 As tethered, but both displays belong to one `TerminalDevice`: primary = MFD screens, secondary
 (`secondaryDisplay`) = CFD screens (`CFD_*` Orca rows): `customer-idle` → `customer-cart` (CFD_CART) →
@@ -2332,7 +2332,7 @@ As tethered, but both displays belong to one `TerminalDevice`: primary = MFD scr
 
 #### 3.9.6 Printerless devices
 
-FLEX_POCKET, STATION_DUO_2, COMPACT: identical layouts, `Print` row rendered greyed. Go SDK
+FLUX_POCKET, STAND_DUET_2, COMPASS: identical layouts, `Print` row rendered greyed. Go SDK
 `printReceipt` on them returns `PRINTER_NOT_AVAILABLE` (INC23); Pigeon `select print` times out
 waiting for a payload that never comes.
 
@@ -2362,7 +2362,7 @@ discount adds `Non-cash adj. (4.00%)`. Order ids: `ORD-<RIG>-<4-digit sequence p
 * `receiptOptions(device) = device.firmwareInfo.receiptQr && merchant(device).qrReceiptsEnabled ? 5 : 4`.
 * Firmware truth: `RECEIPT_OPTIONS_5` = `RECEIPT_OPTIONS_4` with every button **3.0 mm lower** + a QR
   block above the list + a 5th row `Scan for receipt` (Cur S10, Ref §5). Values per layout in §2.10.2.
-* `sim.setFlag('receiptQrFeature', v)` = a lab-wide firmware rollout: every non-FLEX_1 device's
+* `sim.setFlag('receiptQrFeature', v)` = a lab-wide firmware rollout: every non-FLUX_1 device's
   `firmwareInfo.receiptQr = v` (version strings switch); devices on `receipt-options` re-render
   (`display.rev++`). **Orca rows do not change** — keeping both maps right is the engineers' job.
 * The fault `orca.screenLocationShift` (INC20) reproduces the historical regression: the `_5` rows of
@@ -2370,9 +2370,9 @@ discount adds `Non-cash adj. (4.00%)`. Order ids: `ORD-<RIG>-<4-digit sequence p
 * Tests pick the map: uia-remote's `ReceiptScreen` counts options via UIA and asks Orca for
   `RECEIPT_OPTIONS_4` or `_5`; Pigeon uses `${RECEIPT_SCREEN}` (runner-detected) or a literal.
 
-### 3.11 Station Duo and the dual-screen ADB problem
+### 3.11 Stand Duet and the dual-screen ADB problem
 
-| Operation | Result on a Duo (`10.42.30.14:5444`) |
+| Operation | Result on a Duet (`10.42.30.14:5444`) |
 |---|---|
 | `adb devices` | one entry `10.42.30.14:5444	device` (one terminal) |
 | `adb -s … shell uiautomator dump` → `pull` | hierarchy of the **MFD only** (`grep -c "TOTAL" window_dump.xml` → `0`; `Review Order` present) |
@@ -2383,8 +2383,8 @@ discount adds `Non-cash adj. (4.00%)`. Order ids: `ORD-<RIG>-<4-digit sequence p
 | Orca `xy_touch` on `CFD_*` for `r2-d2` | `PHYSICAL_TAP` (the gantry sits over the CFD) |
 | Orca Screen Compare (`CFD_TOTAL`) | webcam → crop → Tesseract → boolean (§3.12) |
 
-`cfdDisplayId = 1` [illus.]. `config.properties` for a Duo: `merchantFacingDeviceIp ==
-customerFacingDeviceIp` (both `10.42.30.14`), `runType=tethered`, `deviceType=Station` — the runner
+`cfdDisplayId = 1` [illus.]. `config.properties` for a Duet: `merchantFacingDeviceIp ==
+customerFacingDeviceIp` (both `10.42.30.14`), `runType=tethered`, `deviceType=Stand` — the runner
 opens two handles to the same ip:port; the CFD handle can act only through UIA 2.3 display ids, OCR
 or physical taps. Any other CFD IP ⇒ `[runner] CFD handle 10.42.30.19:5444 → No route to host` (INC30).
 
@@ -2625,7 +2625,7 @@ workstation ADB server already has ≥ 1 connected device, it falls back to `adb
 connect 10.42.30.21:5555 … refused
 falling back to first known device: 10.42.60.4:5555
 ```
-then continues driving that device (the coworker's Flex opens Register and adds Tax Item 5). With no
+then continues driving that device (the coworker's Flux opens Register and adds Tax Item 5). With no
 known devices: `DeviceConnectionException: cannot connect to 10.42.30.21:5555 (Connection refused)`.
 
 ---
@@ -2705,7 +2705,7 @@ def capabilities = [k: v, …]                        // NON_DYNAMIC; v = 'str' 
 def dynamicCaps  = readJSON(file: '<repo path>').capabilities     // DYNAMIC_JSON from the test definition (same repo as testRef, or gort)
 def capabilities = readJSON(file: '<repo path>').capabilities     // DYNAMIC only (go-sdk)
 ```
-`params.NAME` resolves to the build's parameter value **as typed** (so `DEVICE_TYPE=flex_3` reaches
+`params.NAME` resolves to the build's parameter value **as typed** (so `DEVICE_TYPE=flux_3` reaches
 Orca's enum check). A syntax error in the map line ⇒ `org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed: WorkflowScript: <line>: unexpected token` FAILURE (`SCRIPT`).
 
 #### 3.18.3 Stages (physical durations; nominal passing run ≈ 60 s, GP SR15)
@@ -2715,7 +2715,7 @@ Orca's enum check). A syntax error in the map line ⇒ `org.codehaus.groovy.cont
 | 1 | `Checkout SCM` | 4 s | clone `testRef.repo` at `BRANCH` (main head now) | unknown branch: `ERROR: Couldn't find any revision to build. Verify the repository and branch configuration for this job.` → `SCM` |
 | 2 | `Resolve capabilities` | 1 s | §3.18.2; dynamic JSON parsed from the checked-out file | dynamic file invalid JSON: `readJSON: Unexpected token } in JSON at line 4 column 3` → `JSON_PARSE` |
 | 3 | `Checkout robot` | 1 s + queue | §3.4.2 (jobs with no robot skip) | `ENUM_CASE`, `CAPABILITY_CONFLICT`, `UNKNOWN_CAPABILITY`, `NO_MATCH`, `ONLY_UNAVAILABLE`, `ROBOT_NOT_FOUND`, `ROBOT_BLOCKED`, `ORCA_DOWN`, `ORCA_DB_DOWN` |
-| 4 | `Verify robot` | 1 s | preflight `R` against the checked-out robot's document, keys in order `physicalTouch, deviceType, printer, duo, …` (`tethered` is **not** re-checked: a named run takes its RUN_TYPE from the MFD relation and the test guards itself, §3.19.2 — INC45 [sim]) | jobs with `pinEntry` tests: `PIN entry requires physical touch` → `PIN_NEEDS_PHYSICAL`; otherwise `capability mismatch: deviceType COMPACT required` → `CAPABILITY_MISMATCH` (Cur M09, INC52) |
+| 4 | `Verify robot` | 1 s | preflight `R` against the checked-out robot's document, keys in order `physicalTouch, deviceType, printer, duet, …` (`tethered` is **not** re-checked: a named run takes its RUN_TYPE from the MFD relation and the test guards itself, §3.19.2 — INC45 [sim]) | jobs with `pinEntry` tests: `PIN entry requires physical touch` → `PIN_NEEDS_PHYSICAL`; otherwise `capability mismatch: deviceType COMPASS required` → `CAPABILITY_MISMATCH` (Cur M09, INC52) |
 | 5 | `Merchant` | 0 / ~53 s | §3.17.1 | `LAZ_FAILED`, `UBI_ROUTE`, `MERCHANT_MISMATCH` |
 | 6 | `Inject environment` | 1 s | §3.18.4 | — |
 | 7 | `Run tests` | runner | §3.19–§3.21 (`> Task :app:connectedDebugAndroidTest` banner for uia-remote, 10 s Gradle start-up) | runner codes (§3.18.6) |
@@ -2730,12 +2730,12 @@ Runner timeouts are honest: a run that waits out the 60 s printer-payload timeou
 
 | Key | Value |
 |---|---|
-| `BUILD_TAG` | `jenkins-Java-uia-remote-regression-flex-4127` |
+| `BUILD_TAG` | `jenkins-Java-uia-remote-regression-flux-4127` |
 | `RUN_TYPE` | `tethered` if the robot's MFD is populated, else `standalone` |
-| `DEVICE_TYPE` | the Robot Device's enum (`FLEX_3`) — never the raw param |
-| `DEVICE_FAMILY` | `Flex` / `Mini` / `Station` / `Compact` (→ uia-remote `deviceType`) |
+| `DEVICE_TYPE` | the Robot Device's enum (`FLUX_3`) — never the raw param |
+| `DEVICE_FAMILY` | `Flux` / `Micro` / `Stand` / `Compass` (→ uia-remote `deviceType`) |
 | `ROBOT_NAME` | robot Name |
-| `MFD_IP`, `CFD_IP` | MFD/CFD device IPs (Duo: both the same); standalone: device IP / empty |
+| `MFD_IP`, `CFD_IP` | MFD/CFD device IPs (Duet: both the same); standalone: device IP / empty |
 | `SERIAL` | primary device serial |
 | `PORT_NUMBER` | `5444` |
 | `THEME` | `avocado` |
@@ -2749,7 +2749,7 @@ Runner timeouts are honest: a run that waits out the 60 s printer-payload timeou
 Console block (Cur M11 one-per-line for the core keys; GP INC51 one line for credentials):
 ```
 [env] RUN_TYPE=standalone
-[env] DEVICE_TYPE=FLEX_3
+[env] DEVICE_TYPE=FLUX_3
 [env] ROBOT_NAME=wall-e
 [env] PORT_NUMBER=5444
 [env] THEME=avocado
@@ -2789,8 +2789,8 @@ Validation, in order, exact messages:
 | key missing | `config.properties missing key 'customerFacingDeviceIp'` (only required when `runType=tethered`) |
 | `theme` ≠ `avocado` | `Unsupported theme "classic" — only "avocado" is supported` |
 | `kernelType` ≠ `CPA` | `Unsupported kernelType "SPA" — use "CPA"` |
-| `deviceType` ∉ `Mini`/`Flex`/`Station`/`Compact` | `java.lang.IllegalArgumentException: unknown deviceType "FLEX_4" (expected Mini, Flex or Station)` |
-| `runType` ∉ `tethered`/`standalone` | `Unsupported runType "duo"` |
+| `deviceType` ∉ `Micro`/`Flux`/`Stand`/`Compass` | `java.lang.IllegalArgumentException: unknown deviceType "FLUX_4" (expected Micro, Flux or Stand)` |
+| `runType` ∉ `tethered`/`standalone` | `Unsupported runType "duet"` |
 | `portNumber` not an integer | `Invalid portNumber "five"` |
 
 `portNumber=5555` is **valid** (that is the danger, §3.15.3). The 11-key validator target is Cur M14's.
@@ -2798,7 +2798,7 @@ Validation, in order, exact messages:
 #### 3.19.2 Run header and handles
 
 ```
-[runner] uia-remote 4.2.0 · UI Automator 2.3 · runType=tethered · deviceType=Station
+[runner] uia-remote 4.2.0 · UI Automator 2.3 · runType=tethered · deviceType=Stand
 [runner] MFD handle 10.42.30.21:5444 connected
 [runner] CFD handle 10.42.30.22:5444 connected
 [setup] wake + unlock (passcode ****) … OK
@@ -2821,7 +2821,7 @@ A page-object action targets a screen + element. If the rig has a gantry and its
 display ⇒ the runner calls Orca `xy_touch(robot, <OrcaScreen>, <button>)` (console
 `[orca] xy_touch wall-e REGISTER_HOME/Review Order → PHYSICAL_TAP (56.0, 124.0)` — with ` (offsets +0.0/+1.5)` appended whenever the robot's offsets are non-zero (INC14) — or the error, e.g.
 `[orca] xy_touch wall-e REGISTER_HOME/Register → 409 Conflict: LOCK_RELEASED (park required)`); then
-waits for the expected next screen. Otherwise (tethered, ADB bots, Duo MFD) ⇒ UI Automator click =
+waits for the expected next screen. Otherwise (tethered, ADB bots, Duet MFD) ⇒ UI Automator click =
 find element in the hierarchy → inject a tap at its centre (rect hit test). Secure Touch PIN pads
 can only be pressed through `xy_touch` on a physical rig; elsewhere: `PIN entry requires physical touch`.
 
@@ -2848,12 +2848,12 @@ option count) → 8 wait Thank you → teardown `KEYCODE_HOME`. Log `SaleTest PA
 Assertion failure format: `AssertionError: [CFD_O1] tax expected $0.83 but was $0.82`.
 Pay-display link down ⇒ `[CFD_O1] waitForScreen timed out (CustomerOrderScreen)` (`WAIT_TIMEOUT`, INC47).
 
-`TaxTestDuo` (R2-D2, both IPs `10.42.30.14`): as TaxTest; CFD steps use UIA 2.3 display-1 locators
+`TaxTestDuet` (R2-D2, both IPs `10.42.30.14`): as TaxTest; CFD steps use UIA 2.3 display-1 locators
 (after Cur M16) — with `flags.uiaVersion == '2.2'` they fail `UiObjectNotFoundException`.
-`DuoCfdSuite` (PL7): MFD steps via UIA; after Review Order `orca.screenCompare("CFD_TOTAL")` must be
+`DuetCfdSuite` (PL7): MFD steps via UIA; after Review Order `orca.screenCompare("CFD_TOTAL")` must be
 true (`[ocr] …` line, else `AssertionError: screenCompare CFD_TOTAL returned false` → `OCR_MISMATCH`);
 customer steps by `xy_touch` on `CFD_TIP`/`No Tip`, `CFD_RECEIPT_OPTIONS_5`/`No Receipt`,
-`CFD_RECEIPT_DONE`/`Done`. `DuoCheckoutTest`: same, final check `orca.screenCompare("CFD_THANK_YOU")` —
+`CFD_RECEIPT_DONE`/`Done`. `DuetCheckoutTest`: same, final check `orca.screenCompare("CFD_THANK_YOU")` —
 or, once migrated (INC38), `cfdThankYou.waitForScreen(); assertTrue(cfdThankYou.isScreenPresent());`.
 `PrinterlessSmokeTest`: SaleTest with `No Receipt`. `ContactCanadaPinSaleTest` (PL5, SETI): sale →
 Orca `/api/card/dip INTERAC_CA_DIP` → PIN pad via `xy_touch PIN_ENTRY` `1`,`2`,`3`,`4`,`Enter` (4 visible
@@ -2887,7 +2887,7 @@ Evaluated on the commit the run uses (CI: `main`/`BRANCH` head; local: the worki
 | CF02 | `waitForScreen()` body is `Thread.sleep(n)` | race at n ms |
 | CF03 | `waitForScreen()` empty / missing, or not called before the first `click()` (in the action method or the test) | race at 700 ms |
 | CF04 | `isScreenPresent()` declared with a `return` | required by the setup assertion classes (HomeScreen) and by NPC review |
-| CF05 | `HomeScreen.open()`: the branch whose condition mentions `FLEX` calls `scrollVerticallyTo`, the other `scrollHorizontallyTo` | `correct`; swapped ⇒ wrong direction on every device; single direction ⇒ wrong on one family |
+| CF05 | `HomeScreen.open()`: the branch whose condition mentions `FLUX` calls `scrollVerticallyTo`, the other `scrollHorizontallyTo` | `correct`; swapped ⇒ wrong direction on every device; single direction ⇒ wrong on one family |
 | CF06 | test class has `@After` calling `goHome` on every handle it used | teardown present (INC35) |
 | CF07 | `orca.screenCompare("NAME")` occurrences | which compare rows a test uses (`usedBy`) |
 | CF08 | locator uses `displayId(` | CFD element via UIA 2.3 |
@@ -2897,7 +2897,7 @@ Evaluated on the commit the run uses (CI: `main`/`BRANCH` head; local: the worki
 | CF12 | Java syntax sanity: balanced braces, `;` at statement ends | else `> Task :app:compileDebugAndroidTestJavaWithJavac FAILED` + `error: ';' expected` |
 
 `open(appName)` with the wrong direction (INC33): the runner scrolls 5 times, logging
-`[HomeScreen] open("Register"): scrolling horizontally (Mini/Station)…` each time; the app is found only
+`[HomeScreen] open("Register"): scrolling horizontally (Micro/Stand)…` each time; the app is found only
 if it is on the current launcher page, else `AssertionError: App 'Register' not found on HomeScreen`.
 
 #### 3.19.7 Runtime screen → page-object names (for messages)
@@ -2905,7 +2905,7 @@ if it is on the current launcher page, else `AssertionError: App 'Register' not 
 `home` HomeScreen · `lock` LockScreen · `register` RegisterHomeScreen (RegisterOrderScreen when the
 order has lines or is a paid tethered order) · `review-order` ReviewOrderScreen · `tender-select`
 PaymentScreen · `payment-prompt` PaymentPromptScreen · `customer-cart` CustomerOrderScreen (CfdTotalsScreen
-for the Duo) · `tip` TipScreen · `receipt-options` ReceiptScreen · `thank-you` ThankYouScreen ·
+for the Duet) · `tip` TipScreen · `receipt-options` ReceiptScreen · `thank-you` ThankYouScreen ·
 `waiting-for-merchant` WaitingForMerchantScreen.
 
 ### 3.20 Pigeon LSTR runner (legacy)
@@ -3023,7 +3023,7 @@ The NPC acts **20 s physical** after the PR opens (SR16, Cur M09) and again 20 s
 
 | Reviewer | Approves and merges when | Otherwise (comment + Request changes) |
 |---|---|---|
-| Jared (gort) | every changed `config/screen-locations/<TYPE>/<SCREEN>.json` parses and each button is within **±0.5 mm** of firmware truth (§2.10) for that type/screen; other paths: always | first offender: `Print on MINI_3 is still 3.0 mm high` (format `<button> on <TYPE> is still <d> mm high\|low\|left\|right`) / `RECEIPT_OPTIONS_5.json doesn't parse: <LSTR-style message>` |
+| Jared (gort) | every changed `config/screen-locations/<TYPE>/<SCREEN>.json` parses and each button is within **±0.5 mm** of firmware truth (§2.10) for that type/screen; other paths: always | first offender: `Print on MICRO_3 is still 3.0 mm high` (format `<button> on <TYPE> is still <d> mm high\|low\|left\|right`) / `RECEIPT_OPTIONS_5.json doesn't parse: <LSTR-style message>` |
 | Morgan (uia-remote, pigeon) | CF09/CF10/CF11/CF12 clean, page objects have CF01 + CF04; pigeon JSON parses | `QA never modifies main` · `Missing mandatory isScreenPresent()` · `portNumber must be 5444` · `Page objects belong in pageobjects` · parse error text |
 | Tate (orchestrator) | never merges in-game | `Thanks — I'll take it from here.` |
 
@@ -3036,7 +3036,7 @@ someone else's change is merged by its owner NPC.
 
 10 s physical after a merge to `gort/main` that touches `config/screen-locations/<TYPE>/<SCREEN>.json`,
 Orca upserts Screen `(TYPE, SCREEN)` and replaces its locations with the file's buttons
-(`orca.screenLocationsSynced`, audit `SYNC gort@<sha> config/screen-locations/FLEX_3/RECEIPT_OPTIONS_5.json`).
+(`orca.screenLocationsSynced`, audit `SYNC gort@<sha> config/screen-locations/FLUX_3/RECEIPT_OPTIONS_5.json`).
 Direct Orca edits are **not** written back to Gort (drift is possible and visible in a diff view).
 Card files under `cards/` reach Windows boxes only through `GortCardSync` (§3.14.6).
 
@@ -3053,13 +3053,13 @@ the "detail" is the exact text given in this doc):
 | `GET /api/robots/{id}` · `PUT /api/robots/{id}` · `POST /api/robots` · `DELETE /api/robots/{id}` | entity | entity |
 | `PUT /api/robots/{id}/status` | `{"status":"RESERVED"}` | entity |
 | `GET /api/robots/{name}/capabilities` | — | capability document |
-| `POST /api/robots/checkout` · `POST /api/robots/{name}/release` | §3.4 | `{"robot":"wall-e","deviceType":"FLEX_3","runType":"standalone","env":{…}}` |
+| `POST /api/robots/checkout` · `POST /api/robots/{name}/release` | §3.4 | `{"robot":"wall-e","deviceType":"FLUX_3","runType":"standalone","env":{…}}` |
 | `POST /api/match-preview` | `{"capabilities":{…},"environment":"DEV1"}` | `[{"robot":"vision","matches":true,"status":"AVAILABLE"},…]` |
 | `POST /api/xy_touch` | `{"robot","screen","button"[,"target"]}` | `{"result":"OK","mode":"PHYSICAL_TAP","x_mm":22.0,"y_mm":58.5}` |
 | `POST /api/card/{swipe\|dip\|tap}` | `{"robot","profile"}` | `{"result":"OK","entry":"DIP","probe":"collis-wall-e","callus":"10.42.20.1:9000"}` |
 | `POST /api/screen-compare/{name}/test` | — | `{"text":"TOTAL $10.83","expected":"TOTAL $10.83","match":true}` |
 | `POST /api/health-check/run` | — | `202` (tutorial; `403 Force health check is disabled in this environment` when not allowed) |
-| `GET/POST/PUT/DELETE /api/{devices,robot-capabilities,merchant-configs,screens,screen-locations,card-profiles,screen-compare-images}` | JHipster CRUD; `?deviceType.equals=FLEX_3`, `?screenId.equals=…` | |
+| `GET/POST/PUT/DELETE /api/{devices,robot-capabilities,merchant-configs,screens,screen-locations,card-profiles,screen-compare-images}` | JHipster CRUD; `?deviceType.equals=FLUX_3`, `?screenId.equals=…` | |
 
 **Robot Pi** `http://<pi>:8000` [illus.]: `GET /health` (§3.3.3) · `GET /status`
 (`{"robot":"wall-e","banner":"green","homed":true,"lock":true,"steppers":true,"x_mm":0.0,"y_mm":0.0}`) ·
@@ -3071,12 +3071,12 @@ camera `http://<cam-host>:8081/stream.mjpg` and `/snapshot.jpg`.
 
 **Ollama** §3.21.2. **Jenkins** `GET /job/Java/job/<name>/lastBuild/api/json` →
 `{"number":4127,"result":"SUCCESS","building":false,"duration":60213}`;
-`POST /job/Java/job/<name>/buildWithParameters?DEVICE_TYPE=FLEX_3` → `201` [illus.].
+`POST /job/Java/job/<name>/buildWithParameters?DEVICE_TYPE=FLUX_3` → `201` [illus.].
 
 ### 3.24 Small systems
 
 * **3D printers** (`printer3d.start('prusa'|'bambu', file)`): 90 s physical, then the part
-  (`cradle_flex_gen3`, …) appears on the tray. `rig.replaceCradle(rigId)` requires the part, the
+  (`cradle_flux_gen3`, …) appears on the tray. `rig.replaceCradle(rigId)` requires the part, the
   device lifted, 4 × 2.5 mm bolts (screwdriver): `cradle = 'NEW'`, `cradleTiltDeg = 0`, `homed = false`.
 * **Rig repairs**: `rig.reseat('solenoidConnector')` (door open), `rig.alignDipArm(rigId)` (only with
   steppers disabled or MOTOR off — otherwise `The arm is held by its stepper`), `host.setEthernet`,
@@ -3108,7 +3108,7 @@ around). Rules every fault implementation MUST follow:
 2. **Clear on a condition, not a flag.** Every fault has a pure predicate *Clears when* over `LabState`
    ("the broken condition no longer holds"). The faults system (tick step 15) auto-clears the fault when
    the predicate has been true for `holdMs` physical ms (default 0). Faults marked **API only** describe a
-   fact the incident does not ask the player to change (a dead Duo 2 awaiting RMA, a full NUC disk); their
+   fact the incident does not ask the player to change (a dead Duet 2 awaiting RMA, a full NUC disk); their
    predicate is constant `false` and missions clear them through `faults.clear` when the incident ends.
 3. **Compose.** Injecting several faults equals applying their mutations in order; predicates are
    evaluated independently. Two faults may touch the same component (compound incidents, GP §2.3.3); each
@@ -3294,11 +3294,11 @@ simply behind (`git pull` brings the fault in).
 | Id — title | Params | Mutation | Symptoms (§) | Clears when | Tags | Used by |
 |---|---|---|---|---|---|---|
 | `device.unpowered` — device brick unplugged | `device` R; `battery` (0) | its PSU load `supply ≔ none` (the brick lies on the rig shelf); `power ≔ 'off'`; handhelds `battery.pct ≔ battery` | device dark; Orca stays Available (`/health` does not cover the device, §3.3.3); builds `adb: failed to connect to '10.42.30.12:5444': No route to host` (§3.15.1) | `power == 'on'` | `power.18v` `power.rails` `hw.devices` | INC17 (with `power.plug` desk fan, Appendix A), P1-2 (spare device) |
-| `device.dead` — hardware failure | `device` R | `dead ≔ true`, `power ≔ 'off'` (never finishes boot, never joins the network) | `adb … No route to host`; the rig stays Available (its Pi is fine) | **API only**, or when no rig's `deviceIds` contains it (swapped out / RMA'd) | `hw.devices` | INC44 (`dev-k-9-duo2`) |
+| `device.dead` — hardware failure | `device` R | `dead ≔ true`, `power ≔ 'off'` (never finishes boot, never joins the network) | `adb … No route to host`; the rig stays Available (its Pi is fine) | **API only**, or when no rig's `deviceIds` contains it (swapped out / RMA'd) | `hw.devices` | INC44 (`dev-k-9-duet2`) |
 | `device.adbTcpReset` — ADB-over-TCP not re-enabled | `device` R | `adbTcpPort ≔ null` | `adb connect 10.42.30.31:5444` / runner → `failed to connect to '10.42.30.31:5444': Connection refused` (§3.15.1) — refused, not timeout; Orca Available; USB ADB from the Pi still lists the serial | `adbTcpPort == 5444` | `adb.port` `adb.usage` `laz.oobe` `hw.pi` | INC28 |
 | `device.printerNoPaper` — printer out of paper | `device` R (type with a printer) | `printer.paper ≔ false` | `Print` → toast `Printer out of paper`, no payload → `select print` timeout (§3.9.3) | `printer.paper` (`device.loadPaper`) | `hw.devices` | FP |
-| `laz.skipAdbRestore` — Laz forgets to restore ADB-over-TCP | `device` R (`dev-data-mini3`) | while ACTIVE, the next Laz run on the device gets `skipAdbRestore ≔ true` and skips `restore-adb` silently (no console line, §3.17.2) | after that run `adbTcpPort = null`: as `device.adbTcpReset`; the previous build's console still ends `laz: merchant active` | `adbTcpPort == 5444` and a Laz run on the device has finished since injection | `laz.oobe` `adb.port` `adb.usage` | INC28 (real-run variant) |
-| `receipt.qrRollout` — "Scan for receipt" firmware reaches devices | `devices` (list of runtime ids) **or** `deviceTypes` (list); `on` (true) | `firmwareInfo.receiptQr ≔ on`, `firmwareInfo.version`/`firmware ≔ '2.26.10.1'` (`'2.26.08.3'` when off) on every matching non-FLEX_1 device; devices on `receipt-options` re-render (`display.rev++`). Orca rows unchanged (§3.10). No-op on devices already in that state. | receipt screens show 5 options (merchant with QR receipts) with every button 3.0 mm lower (§3.10); a missing / stale `_5` map then 404s or misses | **API only** (firmware does not roll back) | `receipt.qr` `receipt.maps` | M09 (EVE only, after `flag.set receiptQrFeature=false`), P2-3, GP "Firmware rollout" event |
+| `laz.skipAdbRestore` — Laz forgets to restore ADB-over-TCP | `device` R (`dev-data-micro3`) | while ACTIVE, the next Laz run on the device gets `skipAdbRestore ≔ true` and skips `restore-adb` silently (no console line, §3.17.2) | after that run `adbTcpPort = null`: as `device.adbTcpReset`; the previous build's console still ends `laz: merchant active` | `adbTcpPort == 5444` and a Laz run on the device has finished since injection | `laz.oobe` `adb.port` `adb.usage` | INC28 (real-run variant) |
+| `receipt.qrRollout` — "Scan for receipt" firmware reaches devices | `devices` (list of runtime ids) **or** `deviceTypes` (list); `on` (true) | `firmwareInfo.receiptQr ≔ on`, `firmwareInfo.version`/`firmware ≔ '2.26.10.1'` (`'2.26.08.3'` when off) on every matching non-FLUX_1 device; devices on `receipt-options` re-render (`display.rev++`). Orca rows unchanged (§3.10). No-op on devices already in that state. | receipt screens show 5 options (merchant with QR receipts) with every button 3.0 mm lower (§3.10); a missing / stale `_5` map then 404s or misses | **API only** (firmware does not roll back) | `receipt.qr` `receipt.maps` | M09 (EVE only, after `flag.set receiptQrFeature=false`), P2-3, GP "Firmware rollout" event |
 | `tether.linkDown` — pay-display link cable unseated | `robot` R (tethered rig, default `optimus`); `cable` (`auto`; `auto`, `usb`, `ethernet`) | `usb`: MFD device `hubUsbToPeer ≔ false`; `ethernet`: CFD device `hubEthernet ≔ false`; `auto` = `usb` for `USB_PAY_DISPLAY` rigs, `ethernet` for `SECURE_NETWORK_PAY_DISPLAY` rigs | `payDisplayLink = 'DOWN'` (§3.8.6): CFD `Waiting for merchant device…`; MFD Charge `Connecting to customer display…` then back to review-order after 30 s; TaxTest `[CFD_O1] waitForScreen timed out (CustomerOrderScreen)` → `WAIT_TIMEOUT` | `payDisplayLink == 'UP'` | `semi.paydisplay` `orca.tethered` `uia.taxtest` | INC47 (A `megatron`/usb, B `optimus`/ethernet) |
 
 #### 4.3.5 Collis / SmartStripe probes and Callus files (core)
@@ -3324,18 +3324,18 @@ simply behind (`git pull` brings the fault in).
 
 | Id — title | Params | Mutation | Symptoms (§) | Clears when | Tags | Used by |
 |---|---|---|---|---|---|---|
-| `orca.offsets` — legacy offsets left on a robot | `robot` R (`bumblebee`); `xMm` (0.0); `yMm` (1.5); `by` (`bulk-import`) | robot edit: `offsetXMm/offsetYMm ≔` (CONFIG notes `offsets.x`/`offsets.y`) | every PHYSICAL_TAP lands at location + offsets (§3.5.2 #5): with Y 1.5 MINI_3 icons still hit, `PAYMENT/Charge` (core 1.2) misses; console `[orca] xy_touch bumblebee PAYMENT/Charge → PHYSICAL_TAP (31.0, 90.5) (offsets +0.0/+1.5)` (the runner appends the offsets whenever they are non-zero, §3.19.3) | `offsetXMm == 0 && offsetYMm == 0` | `orca.offsets` `orca.screens` `hw.motion` | INC14, M07 |
+| `orca.offsets` — legacy offsets left on a robot | `robot` R (`bumblebee`); `xMm` (0.0); `yMm` (1.5); `by` (`bulk-import`) | robot edit: `offsetXMm/offsetYMm ≔` (CONFIG notes `offsets.x`/`offsets.y`) | every PHYSICAL_TAP lands at location + offsets (§3.5.2 #5): with Y 1.5 MICRO_3 icons still hit, `PAYMENT/Charge` (core 1.2) misses; console `[orca] xy_touch bumblebee PAYMENT/Charge → PHYSICAL_TAP (31.0, 90.5) (offsets +0.0/+1.5)` (the runner appends the offsets whenever they are non-zero, §3.19.3) | `offsetXMm == 0 && offsetYMm == 0` | `orca.offsets` `orca.screens` `hw.motion` | INC14, M07 |
 | `orca.hrnTypo` — Human Readable Name typo | `robot` R (`johnny-5`); `hrn` (`JONNY-5`); `by` (`alex`) | robot edit: `humanReadableName ≔ hrn` | tablet header `JONNY-5` (≤ 2 s after save when reachable, §3.7.5) | `humanReadableName` equals the factory HRN | `orca.names` `hw.tablet` | INC63, M07, P2-2 |
 | `orca.urlWrong` — URL mapping wrong / blank | `robot` R; `field` (`tap`; `adb`, `camera`, `dip`, `tap`, `swipe`); `value` (`''`); `by` (`alex`) | robot edit: the URL field `≔ value` (CONFIG note `urls.<field> changed (<by>)`) | `tap ''`: `[orca] 400 Bad Request: robot johnny-5 has no Tap URL` (§3.6 #3); `camera` = another rig's URL: OCR reads that rig's screen (§3.12.2 last row), Camera app shows the wrong rig; `adb` wrong host: health check pings the wrong Pi (§3.3.2) | field equals factory value | `orca.urls` `cards.diptap` `vision.camera` | INC65 (`johnny-5` tap ''), INC09 (`r2-d2` camera `http://10.42.10.11:8081/stream.mjpg`), M07 |
 | `orca.tetherCleared` — MFD/CFD relations cleared | `robot` R (`optimus`); `by` (`alex`) | robot edit: `mfdDeviceId ≔ null`, `cfdDeviceId ≔ null` | `[env] RUN_TYPE=standalone`, `[runner] MFD relation empty → standalone`, `AssertionError: TaxTest requires a tethered rig (MFD/CFD)` → `TETHER_REQUIRED` (§3.19.2); capability `tethered:false` so PL2 can no longer match it | both equal factory | `orca.tethered` `uia.multidevice` | INC45, M07 |
 | `orca.tetherCloned` — relations copied from another rig | `robot` R (`tars`); `from` (`optimus`); `by` (`alex`) | robot edit: `mfdDeviceId/cfdDeviceId ≔ from`'s | `[runner] Tethered rig detected (MFD populated) → MFD 10.42.30.23:5444, CFD 10.42.30.24:5444` (§3.19.2); the other rig's devices move during the job (cross-talk) | both equal factory (null for standalone rigs) | `orca.tethered` | INC46 |
-| `orca.screenLocationShift` — stale coordinates for a screen | `deviceTypes` R (list, default `FLEX_3,MINI_3,STATION_2018`); `screen` (`RECEIPT_OPTIONS_5`); `dxMm` (0.0); `dyMm` (−3.0); `by` (`bulk-import`) | every ScreenLocation of `(type, screen)` += `(dx, dy)` (audit `UPDATE screenLocation (bulk-import)`) | PHYSICAL_TAPs miss every row (error 3.0 > core 1.0, §3.5.4); Pigeon `LSTR step 7/9 "select print" … waiting for printer payload … TIMEOUT after 60 s` → `FAILED at "select print"` (§3.20.3); camera: plunger ~3 mm above Print | every location of those rows within ±0.5 mm of firmware truth (§2.10.2) | `receipt.qr` `receipt.maps` `orca.screens` `jenkins.logs` | INC20, P3-2 (`'@random'` type) |
-| `orca.screenLocationTypo` — one wrong coordinate | `deviceType` (`FLEX_1`); `screen` (`RECEIPT_OPTIONS_4`); `button` (`Print`); `xMm` (unchanged); `yMm` (62.5); `by` (`bulk-import`) | that location's `xMm/yMm ≔` (audit row shows `bulk-import`, `atMs` default yesterday 16:10 = −28_200_000) | probe lands in the gap above Print → `select print` timeout (§3.20.3), printer fine | within ±0.5 mm of truth | `jenkins.logs` `pigeon.lstr` `orca.screens` | INC22 |
-| `orca.missingReceiptMap` — receipt map missing | `deviceType` R (`STATION_2018`); `screen` (`RECEIPT_OPTIONS_5`); `by` (`bulk-import`) | delete the `OrcaScreen (type, screen)` row and its locations (audit `DELETE`) | `[orca] 404 Not Found: no Screen Location for (STATION_2018, RECEIPT_OPTIONS_5, "Email")` (§3.5.2 #4) → `FAILED at "select email"`; Orca Screens lists only `_4` for the type | a row `(type, screen)` exists and every firmware button of that screen has a location within ±0.5 mm | `receipt.maps` `orca.screens` `orca.devicetype` | INC21, M09 (`FLEX_4`), P2-3 |
+| `orca.screenLocationShift` — stale coordinates for a screen | `deviceTypes` R (list, default `FLUX_3,MICRO_3,STAND_2018`); `screen` (`RECEIPT_OPTIONS_5`); `dxMm` (0.0); `dyMm` (−3.0); `by` (`bulk-import`) | every ScreenLocation of `(type, screen)` += `(dx, dy)` (audit `UPDATE screenLocation (bulk-import)`) | PHYSICAL_TAPs miss every row (error 3.0 > core 1.0, §3.5.4); Pigeon `LSTR step 7/9 "select print" … waiting for printer payload … TIMEOUT after 60 s` → `FAILED at "select print"` (§3.20.3); camera: plunger ~3 mm above Print | every location of those rows within ±0.5 mm of firmware truth (§2.10.2) | `receipt.qr` `receipt.maps` `orca.screens` `jenkins.logs` | INC20, P3-2 (`'@random'` type) |
+| `orca.screenLocationTypo` — one wrong coordinate | `deviceType` (`FLUX_1`); `screen` (`RECEIPT_OPTIONS_4`); `button` (`Print`); `xMm` (unchanged); `yMm` (62.5); `by` (`bulk-import`) | that location's `xMm/yMm ≔` (audit row shows `bulk-import`, `atMs` default yesterday 16:10 = −28_200_000) | probe lands in the gap above Print → `select print` timeout (§3.20.3), printer fine | within ±0.5 mm of truth | `jenkins.logs` `pigeon.lstr` `orca.screens` | INC22 |
+| `orca.missingReceiptMap` — receipt map missing | `deviceType` R (`STAND_2018`); `screen` (`RECEIPT_OPTIONS_5`); `by` (`bulk-import`) | delete the `OrcaScreen (type, screen)` row and its locations (audit `DELETE`) | `[orca] 404 Not Found: no Screen Location for (STAND_2018, RECEIPT_OPTIONS_5, "Email")` (§3.5.2 #4) → `FAILED at "select email"`; Orca Screens lists only `_4` for the type | a row `(type, screen)` exists and every firmware button of that screen has a location within ±0.5 mm | `receipt.maps` `orca.screens` `orca.devicetype` | INC21, M09 (`FLUX_4`), P2-3 |
 | `orca.statusOverride` — someone changed a status | `robot` R; `status` R; `by` (`alex`) | `setRobotStatus(robot, status, by)` (STATUS note `STATUS <From> → <To> (alex)`) | depends on the rig: a PayCore rig set Available is taken by general pipelines (§3.4.2) and swapped by Laz (§3.17.1); a rig under rebuild set Available goes Connection Failed at the next check | status equals the `before` recorded in `undo` | `orca.status` `orca.status.unavailable` `orca.status.offline` | INC07 (`baymax` AVAILABLE after a setup OFFLINE), INC40 (`rosie` AVAILABLE) |
-| `orca.staleReservation` — forgotten reservation | `robot` R (`eve`); `by` (`riley`); `atMs` (−22_680_000 = 2026-10-04 17:42) | status ≔ RESERVED via the status code path at `atMs` (`reservedBy`, `reservedAtMs`, STATUS note) | `[orca] candidate eve: Reserved — skipped` · `[orca] no Available FLEX_4 robot — build waiting in queue` (§3.4.2 #6); health log `eve  RESERVED — not overridden` | `status != 'RESERVED'` | `orca.status.reserved` `jenkins.checkout` | INC48 |
-| `ocr.labelShift` — CFD label moved by an app update | `device` R (`dev-r2-d2-duo`); `px` (10) | `labelShiftPx ≔ px` | `[ocr] capture webcam → crop 236x44@412,288 → tesseract → "TOTAI $10.B3" → match=false` (§3.12.2); Orca Test panel shows the crop clipping the glyph bottoms | every Screen Compare row of the device's robot reads `match=true` on the canonical cart frame (Tax Item 5 → `CFD_CART`, `TOTAL $10.83`; pure evaluation of §3.12 on that hypothetical frame) | `orca.screencompare` `vision.tesseract` `pigeon.gimp` | INC36, P3-3 |
-| `ocr.capitalisation` — CFD copy changed case | `device` R (`dev-r2-d2-duo`) | `cfdLayout ≔ 'v2'` | `… tesseract → "Total $10.83" → match=false` | same as `ocr.labelShift` | `orca.screencompare` `vision.tesseract` | INC37-A |
+| `orca.staleReservation` — forgotten reservation | `robot` R (`eve`); `by` (`riley`); `atMs` (−22_680_000 = 2026-10-04 17:42) | status ≔ RESERVED via the status code path at `atMs` (`reservedBy`, `reservedAtMs`, STATUS note) | `[orca] candidate eve: Reserved — skipped` · `[orca] no Available FLUX_4 robot — build waiting in queue` (§3.4.2 #6); health log `eve  RESERVED — not overridden` | `status != 'RESERVED'` | `orca.status.reserved` `jenkins.checkout` | INC48 |
+| `ocr.labelShift` — CFD label moved by an app update | `device` R (`dev-r2-d2-duet`); `px` (10) | `labelShiftPx ≔ px` | `[ocr] capture webcam → crop 236x44@412,288 → tesseract → "TOTAI $10.B3" → match=false` (§3.12.2); Orca Test panel shows the crop clipping the glyph bottoms | every Screen Compare row of the device's robot reads `match=true` on the canonical cart frame (Tax Item 5 → `CFD_CART`, `TOTAL $10.83`; pure evaluation of §3.12 on that hypothetical frame) | `orca.screencompare` `vision.tesseract` `pigeon.gimp` | INC36, P3-3 |
+| `ocr.capitalisation` — CFD copy changed case | `device` R (`dev-r2-d2-duet`) | `cfdLayout ≔ 'v2'` | `… tesseract → "Total $10.83" → match=false` | same as `ocr.labelShift` | `orca.screencompare` `vision.tesseract` | INC37-A |
 | `ocr.typo` — expected text typo | `compare` R (`CFD_TOTAL`); `expected` (`TOTAL $10.38`); `by` (`alex`) | Screen Compare edit: `expectedText ≔ expected` (row history shows the edit) | `… tesseract → "TOTAL $10.83" → match=false` | same as `ocr.labelShift` | `orca.screencompare` `vision.tesseract` | INC37-B |
 
 #### 4.3.8 Repositories (devops; commit-style)
@@ -3346,12 +3346,12 @@ pushed / merged (a local edit alone does not clear the fault).
 
 | Id — title | Params | Mutation | Symptoms (§) | Clears when | Tags | Used by |
 |---|---|---|---|---|---|---|
-| `gort.capabilityDropped` — test definition lost a capability | `path` (`go-sdk/tests/sale_receipt.json`); `key` (`printer`); `by` (`alex`); `message` (`go-sdk: tidy sale_receipt capabilities`) | commit removing `"<key>": true` from the file's `"capabilities"` object (JSON stays valid) | the dynamic lookup `{"goSdk": true}` matches `vision`, `tars`, `data`; LRU picks never-used VISION (§3.4.2 #6) → `[orca] checkout → vision (FLEX_POCKET) OK` … `[go-sdk] PrintReceipt → PRINTER_NOT_AVAILABLE` → `Finished: FAILURE` (§3.21.1); Match preview lists `vision` (§3.4.3); GitHub diff shows the removed line | the file on `main` parses and `capabilities[key] === true` | `orca.capabilities` `hw.devices` `go.sdk` | INC23, M08 |
+| `gort.capabilityDropped` — test definition lost a capability | `path` (`go-sdk/tests/sale_receipt.json`); `key` (`printer`); `by` (`alex`); `message` (`go-sdk: tidy sale_receipt capabilities`) | commit removing `"<key>": true` from the file's `"capabilities"` object (JSON stays valid) | the dynamic lookup `{"goSdk": true}` matches `vision`, `tars`, `data`; LRU picks never-used VISION (§3.4.2 #6) → `[orca] checkout → vision (FLUX_POCKET) OK` … `[go-sdk] PrintReceipt → PRINTER_NOT_AVAILABLE` → `Finished: FAILURE` (§3.21.1); Match preview lists `vision` (§3.4.3); GitHub diff shows the removed line | the file on `main` parses and `capabilities[key] === true` | `orca.capabilities` `hw.devices` `go.sdk` | INC23, M08 |
 | `pigeon.missingComma` — missing comma in a Pigeon test | `path` R (`tests/sale/tip_sale_print.json`); `line` (8); `by` (`alex`); `message` (`Add tip step`) | commit deleting the last `,` on line `line` (precondition: that line ends with `,`) | `LSTR ParseError: Unexpected token { in JSON at line 9 column 5` → `Finished: FAILURE` `JSON_PARSE` (§3.20.1); the IDE shows no inspection for the Pigeon project; `git log -1 --stat` names the commit | the file on `main` parses (strict JSON) and its `actions[].action` list equals the list before the fault | `pigeon.json` `pigeon.nolint` `tools.github` `pigeon.abstraction` `arch.repos` | INC25, M15 (`line` 22 of fixture `m15-expanded` → `Unexpected string in JSON at line 23 column 7`) |
 | `pigeon.missingBracket` — missing closing brace | `path` R; `line` R; `by` (`alex`); `message` (`Tidy actions`) | commit deleting the last `}` on line `line` | the §3.20.1 message for the token after the gap (fixture-specific; e.g. `swipe_sale_print.json` line 9 → `Unexpected token { in JSON at line 10 column 5`) | as `pigeon.missingComma` | `pigeon.json` `pigeon.nolint` | P3-2, FP |
-| `pigeon.screenCompareEmpty` — screen-compare region undefined | `path` (`tests/sale/payment_success_compare.json`); `by` (`morgan`); `message` (`Scaffold payment success compare`) | commit setting the `screenCompare` action's `x`, `y`, `w`, `h` to `0` | `LSTR screenCompare: empty region (0x0)` → FAILURE (§3.20.3) | each of `x`, `y`, `w`, `h` within ±3 px of the APPROVED label on the target device's screencap (FLEX_GEN3: 208, 512, 304, 40, §2.10.2) | `pigeon.gimp` `pigeon.json` `adb.usage` | INC24 |
+| `pigeon.screenCompareEmpty` — screen-compare region undefined | `path` (`tests/sale/payment_success_compare.json`); `by` (`morgan`); `message` (`Scaffold payment success compare`) | commit setting the `screenCompare` action's `x`, `y`, `w`, `h` to `0` | `LSTR screenCompare: empty region (0x0)` → FAILURE (§3.20.3) | each of `x`, `y`, `w`, `h` within ±3 px of the APPROVED label on the target device's screencap (FLUX_GEN3: 208, 512, 304, 40, §2.10.2) | `pigeon.gimp` `pigeon.json` `adb.usage` | INC24 |
 | `uia.waitForScreenStub` — empty `waitForScreen()` | `class` (`RegisterHomeScreen`); `by` (`alex`); `message` (`RegisterHomeScreen cleanup`) | commit replacing the class with GP INC32's file (body `// TODO`; `reviewOrder()` clicks without waiting) | render race at +700 ms (§3.19.5, CF03): ≈ 55 % of runs fail `androidx.test.uiautomator.UiObjectNotFoundException: UiSelector[TEXT=Review Order]` at `com.labsim.uia.pageobjects.RegisterHomeScreen.reviewOrder(RegisterHomeScreen.java:21)` | CF01 holds for the class and CF03 does not (§3.19.6) | `uia.sync` `uia.pom` `tools.intellij` | INC32 |
-| `uia.scrollSwapped` — `open()` scrolls the wrong way | `mode` (`swapped`; `swapped`, `horizontal-only`); `by` (`alex`); `message` (`HomeScreen: simplify open()`) | commit editing `HomeScreen.open()`: `swapped` exchanges the two branch bodies; `horizontal-only` calls `scrollHorizontallyTo` in both | on Flex/Compact rigs `[HomeScreen] open("Register"): scrolling horizontally (Mini/Station)…` ×5 → `AssertionError: App 'Register' not found on HomeScreen` (§3.19.6); `swapped` also fails Mini/Station (vertical) | CF05 = correct | `uia.scroll` `uia.pom` | M13, P3-4 |
+| `uia.scrollSwapped` — `open()` scrolls the wrong way | `mode` (`swapped`; `swapped`, `horizontal-only`); `by` (`alex`); `message` (`HomeScreen: simplify open()`) | commit editing `HomeScreen.open()`: `swapped` exchanges the two branch bodies; `horizontal-only` calls `scrollHorizontallyTo` in both | on Flux/Compass rigs `[HomeScreen] open("Register"): scrolling horizontally (Micro/Stand)…` ×5 → `AssertionError: App 'Register' not found on HomeScreen` (§3.19.6); `swapped` also fails Micro/Stand (vertical) | CF05 = correct | `uia.scroll` `uia.pom` | M13, P3-4 |
 | `uia.missingScreenMethods` — page object without mandatory methods | `class` (`ReceiptScreen`); `methods` (`both`; `both`, `waitForScreen`, `isScreenPresent`); `by` (`alex`) | commit removing the method(s) and their calls (the class still compiles) | CF03 race on that screen (flaky `UiObjectNotFoundException`); Morgan's review comment `Missing mandatory isScreenPresent()` on any PR touching it | CF01 and CF04 hold for the class | `uia.sync` `uia.pom` | M13 step 9, P3-4 |
 | `uia.teardownMissing` — test without teardown | `test` (`TaxTest`); `by` (`alex`); `message` (`TaxTest: remove unused hook`) | commit deleting the `@After` method (the header comment still promises one) | after a TaxTest the MFD stays on `register` with the paid order; the next test on that rig fails `AssertionError: HomeScreen.isScreenPresent() == false — current screen: RegisterOrderScreen` (§3.19.2) | CF06 holds for the test | `uia.taxtest` `uia.sync` `adb.usage` | INC35 |
 
@@ -3363,19 +3363,19 @@ another local file (INC29's Code With Me session, `~/CodeWithMe/alex/uia-remote/
 
 | Id — title | Params | Mutation | Symptoms (§) | Clears when | Tags | Used by |
 |---|---|---|---|---|---|---|
-| `config.port5555` — ADB default port in config | `path` (local clone) | `portNumber=5555`; workstation ADB server running and `adbConnections` gains `10.42.60.4:5555` (`coworker: true`) if absent | local run: `connect 10.42.30.13:5555 … refused` · `falling back to first known device: 10.42.60.4:5555` · `[runner] open Register` and Riley's desk Flex opens Register and adds Tax Item 5 (§3.15.3); `adb devices` → `10.42.60.4:5555	device`; `adb.coworkerDriven` events | `portNumber == '5444'` and no `workstation.adbConnections` entry ends with `:5555` | `adb.port` `uia.config` `adb.usage` | INC27 (with `runner.startLocal`), P3-1 |
-| `config.value` — one wrong config value | `key` R; `value` R; `path` (local clone) | `<key>=<value>` | per §3.19.1–§3.19.2: e.g. `customerFacingDeviceIp=10.42.30.19` on R2-D2 → `[runner] CFD handle 10.42.30.19:5444 → No route to host`; `deviceType=Mini` on TARS → horizontal scroll, `App 'Register' not found` | the key equals the validator target for the file's `robotName` (§4.4.4 `target`) | `uia.config` `orca.tethered` `uia.scroll` | INC30 (`customerFacingDeviceIp` `10.42.30.19`), INC33 (`deviceType` `Mini`) |
+| `config.port5555` — ADB default port in config | `path` (local clone) | `portNumber=5555`; workstation ADB server running and `adbConnections` gains `10.42.60.4:5555` (`coworker: true`) if absent | local run: `connect 10.42.30.13:5555 … refused` · `falling back to first known device: 10.42.60.4:5555` · `[runner] open Register` and Riley's desk Flux opens Register and adds Tax Item 5 (§3.15.3); `adb devices` → `10.42.60.4:5555	device`; `adb.coworkerDriven` events | `portNumber == '5444'` and no `workstation.adbConnections` entry ends with `:5555` | `adb.port` `uia.config` `adb.usage` | INC27 (with `runner.startLocal`), P3-1 |
+| `config.value` — one wrong config value | `key` R; `value` R; `path` (local clone) | `<key>=<value>` | per §3.19.1–§3.19.2: e.g. `customerFacingDeviceIp=10.42.30.19` on R2-D2 → `[runner] CFD handle 10.42.30.19:5444 → No route to host`; `deviceType=Micro` on TARS → horizontal scroll, `App 'Register' not found` | the key equals the validator target for the file's `robotName` (§4.4.4 `target`) | `uia.config` `orca.tethered` `uia.scroll` | INC30 (`customerFacingDeviceIp` `10.42.30.19`), INC33 (`deviceType` `Micro`) |
 | `config.themeKernel` — stale wiki values | `path` (`~/CodeWithMe/alex/uia-remote/config.properties`) | `theme=classic`, `kernelType=SPA` | `java.lang.IllegalStateException: Unsupported theme "classic" — only "avocado" is supported`, then after fixing it `Unsupported kernelType "SPA" — use "CPA"` (§3.19.1) | `theme == 'avocado' && kernelType == 'CPA'` | `uia.config` | INC29 |
 
 #### 4.3.10 Jenkins (devops; job-config style)
 
 | Id — title | Params | Mutation | Symptoms (§) | Clears when | Tags | Used by |
 |---|---|---|---|---|---|---|
-| `jenkins.envCase` — enum value not ALL CAPS | `job` (`Java/uia-remote-regression-flex`); `param` (`DEVICE_TYPE`); `value` (`flex_3`); `by` (`riley`) | `savedParams[param] ≔ value` | `[orca] checkout request deviceType=flex_3` · `java.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.flex_3` · `Finished: FAILURE` (`ENUM_CASE`, §3.4.2 #3); Orca shows WALL-E/EVE Available | `savedParams[param]` is exactly one of the 14 `DeviceType` constants | `jenkins.envvars` `orca.devicetype` | INC39 (`flex_3`; variants `Flex_3`, `flex_4`, `FLEX3`; PL4 `mini_3`), M11, M18 step 10 (`Java/uia-remote-regression-mini`, `mini_3`) |
+| `jenkins.envCase` — enum value not ALL CAPS | `job` (`Java/uia-remote-regression-flux`); `param` (`DEVICE_TYPE`); `value` (`flux_3`); `by` (`riley`) | `savedParams[param] ≔ value` | `[orca] checkout request deviceType=flux_3` · `java.lang.IllegalArgumentException: No enum constant com.labsim.orca.domain.enumeration.DeviceType.flux_3` · `Finished: FAILURE` (`ENUM_CASE`, §3.4.2 #3); Orca shows WALL-E/EVE Available | `savedParams[param]` is exactly one of the 14 `DeviceType` constants | `jenkins.envvars` `orca.devicetype` | INC39 (`flux_3`; variants `Flux_3`, `flux_4`, `FLUX3`; PL4 `micro_3`), M11, M18 step 10 (`Java/uia-remote-regression-micro`, `micro_3`) |
 | `jenkins.jobMoved` — job filed in the wrong folder | `job` (`Java/pigeon-windows-tender`); `toFolder` (`iOS`); `by` (`alex`) | `jenkins.moveJob(job, toFolder)` (history and numbers kept, id changes) | `Java` view lacks it; the nightly trigger skips it (§3.18.1); search finds `iOS/pigeon-windows-tender` | `jobs['Java/<name>'].exists` and no existing `iOS/<name>` | `jenkins.folders` `pigeon.lstr` `go.sdk` | INC26 |
-| `jenkins.capsConflict` — pipeline capability contradicts the test | `job` (`Java/contact-canada-pin-sale`); `key` (`deviceType`); `value` (`MINI_3`); `by` (`alex`) | edit the script's `def capabilities = [...]` entry `key` to `'<value>'` | `[orca] 409 Conflict: capability conflict (pipeline deviceType=MINI_3, test deviceType=COMPACT)` → `CAPABILITY_CONFLICT` (§3.4.2 #4) | the script map merged with the job's dynamic file has no conflicting key | `orca.capabilities` `hw.devices` `jenkins.envvars` | INC49 |
-| `jenkins.namedRobot` — job pinned to the wrong robot | `job` (`Java/contact-canada-pin-sale`); `robot` (`tars`); `by` (`alex`) | `savedParams.ROBOT_NAME ≔ robot` | `Checked out robot tars (named)` · `PIN entry requires physical touch` → `PIN_NEEDS_PHYSICAL` (§3.18.3 #4); a touch rig of another type → `capability mismatch: deviceType COMPACT required` | saved `ROBOT_NAME` is `''` or names a robot whose capability document satisfies the job's merged requirements (no `Verify robot` failure) | `bots.pin` `bots.types` `orca.capabilities` | INC52, P2-4 |
-| `rig.testRunning` — a test holds the rig | `rig` R (`wall-e`); `job` (`Java/uia-remote-regression-flex`); `number` (job's next); `durationMs` (`null` = until cleared); `by` (`jenkins`) | queue a real named build (`ROBOT_NAME=<rig>`, `nextBuildNumber[job] ≔ number` if given) whose Run-tests stage loops the job's test plan until `durationMs` (physical) has elapsed or the fault is cleared; then Release robot → `Finished: SUCCESS`. Custom revert: request stop (the loop ends after its current step). | tablet overlay `TEST IN PROGRESS — CONTROLS LOCKED` (§3.7.6); Orca `Available · in use by Jenkins #4127`; camera shows normal taps | the build is finished | `hw.lockout` `hw.tablet` | M01 (`number` 4120), INC12 (`number` 4127, `durationMs` ≥ 30 000), DR16 |
+| `jenkins.capsConflict` — pipeline capability contradicts the test | `job` (`Java/contact-canada-pin-sale`); `key` (`deviceType`); `value` (`MICRO_3`); `by` (`alex`) | edit the script's `def capabilities = [...]` entry `key` to `'<value>'` | `[orca] 409 Conflict: capability conflict (pipeline deviceType=MICRO_3, test deviceType=COMPASS)` → `CAPABILITY_CONFLICT` (§3.4.2 #4) | the script map merged with the job's dynamic file has no conflicting key | `orca.capabilities` `hw.devices` `jenkins.envvars` | INC49 |
+| `jenkins.namedRobot` — job pinned to the wrong robot | `job` (`Java/contact-canada-pin-sale`); `robot` (`tars`); `by` (`alex`) | `savedParams.ROBOT_NAME ≔ robot` | `Checked out robot tars (named)` · `PIN entry requires physical touch` → `PIN_NEEDS_PHYSICAL` (§3.18.3 #4); a touch rig of another type → `capability mismatch: deviceType COMPASS required` | saved `ROBOT_NAME` is `''` or names a robot whose capability document satisfies the job's merged requirements (no `Verify robot` failure) | `bots.pin` `bots.types` `orca.capabilities` | INC52, P2-4 |
+| `rig.testRunning` — a test holds the rig | `rig` R (`wall-e`); `job` (`Java/uia-remote-regression-flux`); `number` (job's next); `durationMs` (`null` = until cleared); `by` (`jenkins`) | queue a real named build (`ROBOT_NAME=<rig>`, `nextBuildNumber[job] ≔ number` if given) whose Run-tests stage loops the job's test plan until `durationMs` (physical) has elapsed or the fault is cleared; then Release robot → `Finished: SUCCESS`. Custom revert: request stop (the loop ends after its current step). | tablet overlay `TEST IN PROGRESS — CONTROLS LOCKED` (§3.7.6); Orca `Available · in use by Jenkins #4127`; camera shows normal taps | the build is finished | `hw.lockout` `hw.tablet` | M01 (`number` 4120), INC12 (`number` 4127, `durationMs` ≥ 30 000), DR16 |
 
 #### 4.3.11 Exact service log lines written by faults
 
@@ -3415,7 +3415,7 @@ presetOnly }`).
 | `orca.linkDevice` | `robot` R, `field` (`deviceId`; `deviceId`, `mfdDeviceId`, `cfdDeviceId`), `device` R (row name or `''`), `by` | `orca.saveRobot` with that relation (CONFIG note) | core |
 | `orca.deleteEntity` | `entity` R, `name` R (`CFD_TOTAL`; screens as `TYPE/SCREEN`), `by` | `orca.deleteEntity` (audit DELETE) | core |
 | `orca.syncFromGort` | — | upsert every `config/screen-locations/**` file on gort `main` into Orca now (§3.22.3 without the 10 s delay) | core |
-| `device.stage` | `device` R, `stage` R (`home`, `register-order`, `review-order`, `payment-prompt`, `approved`, `receipt-options`, `receipt-done`, `thank-you`), `items` (`Tax Item 5`) | drives the device through §3.9 with the normal inputs (unlock, Register, items, Review Order, Pay, Charge, …) with render and auto-advance timers completed instantly [sim]; tethered pairs and Duo CFDs follow (§3.9.4–§3.9.5). `receipt-done` exists only on a Duo CFD; `approved` is held (no 2 s auto-advance) until the next input [sim] so a screencap can be taken (INC24). | core |
+| `device.stage` | `device` R, `stage` R (`home`, `register-order`, `review-order`, `payment-prompt`, `approved`, `receipt-options`, `receipt-done`, `thank-you`), `items` (`Tax Item 5`) | drives the device through §3.9 with the normal inputs (unlock, Register, items, Review Order, Pay, Charge, …) with render and auto-advance timers completed instantly [sim]; tethered pairs and Duet CFDs follow (§3.9.4–§3.9.5). `receipt-done` exists only on a Duet CFD; `approved` is held (no 2 s auto-advance) until the next input [sim] so a screencap can be taken (INC24). | core |
 | `device.swap` | `rig` R, `deviceId` R (a stored device), `storeAt` (`storage-shelf`) | `device.swapHardware` path: old device → storage (`rigId ≔ storeAt`, unplugged), new device seated, hub connected, PSU on the rig's strip socket, boots 30 s; Orca untouched | core |
 | `device.provision` | `device` R, `merchant` R, `resetAdb` (false) | the end state of a completed Laz swap (§3.17.2) without running it; `resetAdb` leaves `adbTcpPort = null` | core |
 | `power.plug` | `load` R, `kind` R, `target` R, `socket` | `power.plug` (may plug non-lab loads, e.g. the desk fan) | core |
@@ -3443,24 +3443,24 @@ in order before tick 0; "During the lesson" items are injected by the lesson run
 
 | Module | At reset (in order) | During the lesson | Notes |
 |---|---|---|---|
-| M01 | `rig.testRunning { rig: 'wall-e', job: 'Java/uia-remote-regression-flex', number: 4120 }` | the runner clears it after step 7 | step 6 shows the lockout overlay |
-| M02 | — | — | the device library is props; the sealed Duo 3 / Mini 4 boxes have no `TerminalDevice` |
-| M03 | `fuse.blown { fuse: 'F-RACKB-5V' }`; `power.addLoad { id: 'psu-flex4-new', label: 'New Flex 4 power brick', expects: 'AC-BRICK-18V', drawA: 0.5 }`; `power.addLoad { id: 'psu-collis-spare', label: 'Spare Collis probe PSU', expects: 'AC-BRICK-18V', drawA: 0.3 }` | — | wrong socket in Academy = spark + mentor line only (§3.13.3) |
+| M01 | `rig.testRunning { rig: 'wall-e', job: 'Java/uia-remote-regression-flux', number: 4120 }` | the runner clears it after step 7 | step 6 shows the lockout overlay |
+| M02 | — | — | the device library is props; the sealed Duet 3 / Micro 4 boxes have no `TerminalDevice` |
+| M03 | `fuse.blown { fuse: 'F-RACKB-5V' }`; `power.addLoad { id: 'psu-flux4-new', label: 'New Flux 4 power brick', expects: 'AC-BRICK-18V', drawA: 0.5 }`; `power.addLoad { id: 'psu-collis-spare', label: 'Spare Collis probe PSU', expects: 'AC-BRICK-18V', drawA: 0.3 }` | — | wrong socket in Academy = spark + mentor line only (§3.13.3) |
 | M04 | — | — | WALL-E idle, door closed = factory |
 | M05 | — | — | |
 | M06 | — | step 10: the runner re-plugs EVE's Pi as Jared (`power.plug { load: 'pi-eve', kind: 'dc-rail', target: 'MAIN-eve' }`) | step 7's unplug is the player's own action |
-| M07 | `orca.hrnTypo { robot: 'johnny-5' }`; `device.swap { rig: 'johnny-5', deviceId: 'dev-spare-flex2' }`; `orca.urlWrong { robot: 'johnny-5', field: 'tap', value: '' }`; `orca.tetherCleared { robot: 'optimus' }`; `orca.offsets { robot: 'bumblebee', yMm: 1.5 }` | — | until relinked, JOHNNY-5's builds drive a Flex 2 with FLEX_1 rows (misses, §3.5.4) |
+| M07 | `orca.hrnTypo { robot: 'johnny-5' }`; `device.swap { rig: 'johnny-5', deviceId: 'dev-spare-flux2' }`; `orca.urlWrong { robot: 'johnny-5', field: 'tap', value: '' }`; `orca.tetherCleared { robot: 'optimus' }`; `orca.offsets { robot: 'bumblebee', yMm: 1.5 }` | — | until relinked, JOHNNY-5's builds drive a Flux 2 with FLUX_1 rows (misses, §3.5.4) |
 | M08 | `merchant.credentialBlank { merchant: 'GO-SDK-US-01', field: 'apiKey' }`; `gort.capabilityDropped { path: 'go-sdk/tests/sale_receipt.json', key: 'printer' }` | — | Cur's "rosie" in step 5 is VISION in this roster (Appendix A) |
-| M09 | `flag.set { flag: 'receiptQrFeature', value: false }`; `receipt.qrRollout { devices: ['dev-eve-flex4'] }`; `orca.missingReceiptMap { deviceType: 'FLEX_4' }`; `repo.deleteFile { repo: 'gort', path: 'config/screen-locations/FLEX_4/RECEIPT_OPTIONS_5.json', by: 'jared', message: 'Remove unverified FLEX_4 5-option map' }` | step 9: `jenkins.startBuild { job: 'Java/pigeon-android-tip-sale', params: { ROBOT_NAME: 'eve' } }` (literal `RECEIPT_OPTIONS_4` → Print at 71.0 on a screen whose Print is at 74.0 → miss, recorded for the camera clip) | step 12's PR adds the file back; the merge syncs Orca |
+| M09 | `flag.set { flag: 'receiptQrFeature', value: false }`; `receipt.qrRollout { devices: ['dev-eve-flux4'] }`; `orca.missingReceiptMap { deviceType: 'FLUX_4' }`; `repo.deleteFile { repo: 'gort', path: 'config/screen-locations/FLUX_4/RECEIPT_OPTIONS_5.json', by: 'jared', message: 'Remove unverified FLUX_4 5-option map' }` | step 9: `jenkins.startBuild { job: 'Java/pigeon-android-tip-sale', params: { ROBOT_NAME: 'eve' } }` (literal `RECEIPT_OPTIONS_4` → Print at 71.0 on a screen whose Print is at 74.0 → miss, recorded for the camera clip) | step 12's PR adds the file back; the merge syncs Orca |
 | M10 | — | — | lesson runs before 10:00, so `schtasks` shows `10/05/2026 10:00:00  Ready` |
-| M11 | `jenkins.envCase { job: 'Java/uia-remote-regression-flex', value: 'flex_3' }` | — | |
+| M11 | `jenkins.envCase { job: 'Java/uia-remote-regression-flux', value: 'flux_3' }` | — | |
 | M12 | — | — | TARS on `home` = factory |
 | M13 | `uia.scrollSwapped { mode: 'swapped' }`; `uia.missingScreenMethods { class: 'ReceiptScreen' }` | — | the player clones in step 3 and gets both bugs |
 | M14 | `repo.clone { repo: 'uia-remote' }`; `config.write { fixture: 'm14-broken' }`; `ws.adbKnows { target: '10.42.60.4:5555' }` | — | MEGATRON Available = factory |
-| M15 | `github.unmergePr { repo: 'gort', number: 418 }`; `repo.commitFixture { repo: 'pigeon', path: 'tests/sale/swipe_sale_print.json', fixture: 'm15-expanded', by: 'alex', message: 'Expand swipe sale actions' }`; `pigeon.missingComma { path: 'tests/sale/swipe_sale_print.json', line: 22 }`; `jenkins.setParam { job: 'Java/pigeon-android-sale-swipe', param: 'ROBOT_NAME', value: 'bumblebee' }` | — | step 5 `LSTR ParseError: Unexpected string in JSON at line 23 column 7`; step 8 `step 7/9 "select print" … TIMEOUT after 60 s` (MINI_3 `_5` rows 3.0 mm high from the un-merged #418); step 11 merge → sync → PASS |
-| M16 | `github.unmergePr { repo: 'uia-remote', number: 398 }`; `orca.deleteEntity { entity: 'screenCompareImage', name: 'CFD_TOTAL' }`; `device.stage { device: 'dev-r2-d2-duo', stage: 'review-order' }`; `repo.clone { repo: 'uia-remote' }`; `config.write { fixture: 'target', robot: 'megatron' }`; `repo.commitFixture { repo: 'pigeon', path: 'tests/sale/swipe_sale_print.json', fixture: 'm16-with-compare', by: 'morgan', message: 'Add CFD total screen compare' }` | step 8: the player's toggle = `flag.set cfdLayoutV2Toggle true` | R2-D2 MFD on Review Order, CFD on `customer-cart` (`TOTAL $10.83`) |
+| M15 | `github.unmergePr { repo: 'gort', number: 418 }`; `repo.commitFixture { repo: 'pigeon', path: 'tests/sale/swipe_sale_print.json', fixture: 'm15-expanded', by: 'alex', message: 'Expand swipe sale actions' }`; `pigeon.missingComma { path: 'tests/sale/swipe_sale_print.json', line: 22 }`; `jenkins.setParam { job: 'Java/pigeon-android-sale-swipe', param: 'ROBOT_NAME', value: 'bumblebee' }` | — | step 5 `LSTR ParseError: Unexpected string in JSON at line 23 column 7`; step 8 `step 7/9 "select print" … TIMEOUT after 60 s` (MICRO_3 `_5` rows 3.0 mm high from the un-merged #418); step 11 merge → sync → PASS |
+| M16 | `github.unmergePr { repo: 'uia-remote', number: 398 }`; `orca.deleteEntity { entity: 'screenCompareImage', name: 'CFD_TOTAL' }`; `device.stage { device: 'dev-r2-d2-duet', stage: 'review-order' }`; `repo.clone { repo: 'uia-remote' }`; `config.write { fixture: 'target', robot: 'megatron' }`; `repo.commitFixture { repo: 'pigeon', path: 'tests/sale/swipe_sale_print.json', fixture: 'm16-with-compare', by: 'morgan', message: 'Add CFD total screen compare' }` | step 8: the player's toggle = `flag.set cfdLayoutV2Toggle true` | R2-D2 MFD on Review Order, CFD on `customer-cart` (`TOTAL $10.83`) |
 | M17 | `github.reopenPr { repo: 'uia-remote', number: 212 }` | — | `img:receipt:wall-e:0912` is factory |
-| M18 | — | step 8: `callus.down { host: 'minix-01', mode: 'box-off' }`; step 9: `rig.lockReleased { rig: 'seti' }`; step 10: `jenkins.envCase { job: 'Java/uia-remote-regression-mini', value: 'mini_3' }` then `jenkins.startBuild` of that job | capstone 1: all four Rack A rigs fail with `502 … callus upstream 10.42.20.1:9000 unreachable`; the lesson points at BUMBLEBEE |
+| M18 | — | step 8: `callus.down { host: 'minix-01', mode: 'box-off' }`; step 9: `rig.lockReleased { rig: 'seti' }`; step 10: `jenkins.envCase { job: 'Java/uia-remote-regression-micro', value: 'micro_3' }` then `jenkins.startBuild` of that job | capstone 1: all four Rack A rigs fail with `502 … callus upstream 10.42.20.1:9000 unreachable`; the lesson points at BUMBLEBEE |
 
 #### 4.4.3 Certification practicals (Cur §5.3) and drills (GP §2.4)
 
@@ -3473,12 +3473,12 @@ scenario is injected (so several items agree on the same choice).
 | P1-2 | `fuse.blown { fuse: '@random' }` (over `F-RACKA-5V`, `F-RACKB-5V`, `F-BENCH-5V`); the two M03 `power.addLoad` items | — |
 | P1-3 | — | |
 | P2-1 | `pi.off { host: '$PI' }` | the 12 physical rig Pis |
-| P2-2 | `device.swap { rig: '$R', deviceId: <spare> }`; `orca.hrnTypo { robot: '$R', hrn: <one-letter typo> }` | `johnny-5` + `dev-spare-flex2` (Flex 1 → Flex 2, relink `deviceId`), `megatron` + `dev-spare-mini3` (CFD Mini 2 → Mini 3, relink `cfdDeviceId`) |
-| P2-3 | `flag.set { receiptQrFeature: false }`; `receipt.qrRollout { deviceTypes: ['$T'] }`; `orca.missingReceiptMap { deviceType: '$T' }`; `repo.deleteFile { repo: 'gort', path: 'config/screen-locations/$T/RECEIPT_OPTIONS_5.json', … }` | `FLEX_3`, `FLEX_4`, `MINI_3`, `STATION_2018` |
+| P2-2 | `device.swap { rig: '$R', deviceId: <spare> }`; `orca.hrnTypo { robot: '$R', hrn: <one-letter typo> }` | `johnny-5` + `dev-spare-flux2` (Flux 1 → Flux 2, relink `deviceId`), `megatron` + `dev-spare-micro3` (CFD Micro 2 → Micro 3, relink `cfdDeviceId`) |
+| P2-3 | `flag.set { receiptQrFeature: false }`; `receipt.qrRollout { deviceTypes: ['$T'] }`; `orca.missingReceiptMap { deviceType: '$T' }`; `repo.deleteFile { repo: 'gort', path: 'config/screen-locations/$T/RECEIPT_OPTIONS_5.json', … }` | `FLUX_3`, `FLUX_4`, `MICRO_3`, `STAND_2018` |
 | P2-4 | `jenkins.namedRobot { robot: '$R' }` | `tars`, `data` |
 | P3-1 | `repo.clone`; `config.write { fixture: 'broken', robot: '$R' }`; `ws.adbKnows { target: '10.42.60.4:5555' }` | `megatron`, `optimus` |
-| P3-2 | `pigeon.missingBracket { path: 'tests/sale/swipe_sale_print.json', line: 9 }`; `orca.screenLocationShift { deviceTypes: ['$T'] }`; `github.seedPr { repo: 'gort', number: 419, fixture: 'receipt5-fix:$T', author: 'jared', title: 'Fix 5-option receipt coordinates for $T' }`; `jenkins.setParam { job: 'Java/pigeon-android-sale-swipe', param: 'ROBOT_NAME', value: <a rig of $T> }` | `FLEX_3` (wall-e), `MINI_3` (bumblebee), `STATION_2018` (baymax) |
-| P3-3 | `github.unmergePr { repo: 'uia-remote', number: 398 }`; `ocr.labelShift { device: 'dev-r2-d2-duo', px: 10 }`; `repo.clone`; `config.write { fixture: 'target', robot: 'megatron' }` | — |
+| P3-2 | `pigeon.missingBracket { path: 'tests/sale/swipe_sale_print.json', line: 9 }`; `orca.screenLocationShift { deviceTypes: ['$T'] }`; `github.seedPr { repo: 'gort', number: 419, fixture: 'receipt5-fix:$T', author: 'jared', title: 'Fix 5-option receipt coordinates for $T' }`; `jenkins.setParam { job: 'Java/pigeon-android-sale-swipe', param: 'ROBOT_NAME', value: <a rig of $T> }` | `FLUX_3` (wall-e), `MICRO_3` (bumblebee), `STAND_2018` (baymax) |
+| P3-3 | `github.unmergePr { repo: 'uia-remote', number: 398 }`; `ocr.labelShift { device: 'dev-r2-d2-duet', px: 10 }`; `repo.clone`; `config.write { fixture: 'target', robot: 'megatron' }` | — |
 | P3-4 | `uia.missingScreenMethods { class: 'ReceiptScreen' }`; `uia.scrollSwapped { mode: 'swapped' }` | — |
 | P4 / P5 | incident scenarios from Appendix A drawn per Cur §5.3 (`cert` preset, §6.5) | |
 | DR16 | per item: `rig.lockReleased { rig }`; one in three also `rig.testRunning { rig, durationMs: 20000 }` (the right action is to wait, then Park All) | the 8 touch/standalone rigs |
@@ -3491,15 +3491,15 @@ Fixture texts live in `src/sim/seed/fixtures/` (devops). Exact content:
 **`m14-broken`** — Cur M14's "as found" file verbatim (`runType=standalone` … `robotName=megatron`).
 
 **`target` (generator, robot `r`)** — the Cur M14 validator target computed for `r`, keys in Cur M14
-order: `runType` = `tethered` if `r`'s MFD is populated or its type is a Duo, else `standalone`;
-`merchantFacingDeviceIp` = MFD (or Robot Device) IP; `customerFacingDeviceIp` = CFD IP (Duo: the same
+order: `runType` = `tethered` if `r`'s MFD is populated or its type is a Duet, else `standalone`;
+`merchantFacingDeviceIp` = MFD (or Robot Device) IP; `customerFacingDeviceIp` = CFD IP (Duet: the same
 IP; standalone: empty); `serial` = MFD (or Robot Device) serial; `deviceType` = family of the MFD/Robot
 Device type; `theme=avocado`; `kernelType=CPA`; `portNumber=5444`; `unlockPasscode=0000`;
 `backendEnv` = robot environment; `robotName` = Name. MEGATRON's output is identical to Cur M14's
-target; R2-D2's has both IPs `10.42.30.14`, `deviceType=Station`, `runType=tethered`.
+target; R2-D2's has both IPs `10.42.30.14`, `deviceType=Stand`, `runType=tethered`.
 
 **`broken` (generator, robot `r`)** — `target(r)` with `runType=standalone`, `customerFacingDeviceIp=`,
-`deviceType` replaced by the next family in `Station → Mini → Flex → Compact → Station` order,
+`deviceType` replaced by the next family in `Stand → Micro → Flux → Compass → Stand` order,
 `theme=classic`, `kernelType=SPA`, `portNumber=5555`.
 
 **`m15-expanded`** (`pigeon/tests/sale/swipe_sale_print.json`; line numbers matter — the
@@ -3542,7 +3542,7 @@ target; R2-D2's has both IPs `10.42.30.14`, `deviceType=Station`, `runType=tethe
 `]`: `{ "action": "screenCompare", "params": { "x": 0, "y": 0, "w": 0, "h": 0, "expected": "TOTAL $10.83", "source": "webcam" } }`
 (the comma after `assert home` included).
 
-**`gort-418`** — `config/screen-locations/MINI_3/RECEIPT_OPTIONS_5.json` with the MINI_GEN3 firmware
+**`gort-418`** — `config/screen-locations/MICRO_3/RECEIPT_OPTIONS_5.json` with the MICRO_GEN3 firmware
 values of §2.10.2 (`Print` 86.0/43.0, `Email` 86.0/55.0, `Text` 86.0/67.0, `No Receipt` 86.0/79.0,
 `Scan for receipt` 86.0/91.0), GP INC20 format.
 
@@ -3947,53 +3947,53 @@ and what the sim shows instead (content should use the sim's string).
 | INC14 | `orca.offsets { robot: 'bumblebee', yMm: 1.5 }` | pipeline (PL4) | §3.5.2 #5 · §3.5.4 (Charge core 1.2) |
 | INC15 | `rig.solenoidLoose { rig: 'eve' }` | pipeline (PL1) | §3.5.4 no contact · §3.19.3 |
 | INC16 | `rig.dipArmMisaligned { rig: 'seti' }` | pipeline (PL5) | §3.6 #10 · §3.7.1 Dip |
-| INC17 | `device.unpowered { device: 'dev-eve-flex4' }`; `power.plug { load: 'desk-fan', kind: 'ac-strip', target: 'STRIP-A', socket: 6 }` | pipeline (PL1 FLEX_4) | §3.8.1 · §3.13.3 · §3.15.1 |
+| INC17 | `device.unpowered { device: 'dev-eve-flux4' }`; `power.plug { load: 'desk-fan', kind: 'ac-strip', target: 'STRIP-A', socket: 6 }` | pipeline (PL1 FLUX_4) | §3.8.1 · §3.13.3 · §3.15.1 |
 | INC18 | A `collis.unpowered { probe: 'collis-wall-e' }`; B `collis.ribbonUnseated { probe: 'collis-wall-e' }` | pipeline (PL3) | §3.16 · §3.6 #5 · §3.14.2 `/status` |
 | INC19 | `rig.motionOnNuc { rig: 'bumblebee', host: 'nuc-03' }` (NUC-03 full at factory) | healthCheck | §3.3.3 #5 · §3.14.3 · §2.5.3 `controller.yaml` · §3.24 `rig.moveMotorUsb` |
-| INC20 | `orca.screenLocationShift { deviceTypes: ['FLEX_3','MINI_3','STATION_2018'] }` | pipeline (PL3) | §3.10 · §3.5.4 · §3.20.3 · §3.22.2–§3.22.3 |
-| INC21 | `orca.missingReceiptMap { deviceType: 'STATION_2018' }` | pipeline (PL3 on baymax) | §3.5.2 #4 · §3.10. *Deviation:* PL3's test reaches `select print` first, so the sim prints `no Screen Location for (STATION_2018, RECEIPT_OPTIONS_5, "Print")` and `FAILED at "select print"`; GP's `"Email"` / `select email` appear only for an email-receipt test |
-| INC22 | `orca.screenLocationTypo { deviceType: 'FLEX_1', button: 'Print', yMm: 62.5 }` | pipeline (PL3 on johnny-5) | §3.5.4 · §3.20.3 |
+| INC20 | `orca.screenLocationShift { deviceTypes: ['FLUX_3','MICRO_3','STAND_2018'] }` | pipeline (PL3) | §3.10 · §3.5.4 · §3.20.3 · §3.22.2–§3.22.3 |
+| INC21 | `orca.missingReceiptMap { deviceType: 'STAND_2018' }` | pipeline (PL3 on baymax) | §3.5.2 #4 · §3.10. *Deviation:* PL3's test reaches `select print` first, so the sim prints `no Screen Location for (STAND_2018, RECEIPT_OPTIONS_5, "Print")` and `FAILED at "select print"`; GP's `"Email"` / `select email` appear only for an email-receipt test |
+| INC22 | `orca.screenLocationTypo { deviceType: 'FLUX_1', button: 'Print', yMm: 62.5 }` | pipeline (PL3 on johnny-5) | §3.5.4 · §3.20.3 |
 | INC23 | `gort.capabilityDropped { key: 'printer' }` | pipeline (PL6) | §3.4.2 #6 (LRU → VISION) · §3.4.3 · §3.21.1 |
-| INC24 | `pigeon.screenCompareEmpty`; `device.stage { device: 'dev-eve-flex4', stage: 'approved' }` | immediate | §3.20.3 screenCompare · §2.10.2 APPROVED rect · §3.15.1 screencap. *Deviation:* GP's `388, 512` example is superseded by the factory truth `208, 512, 304, 40` |
+| INC24 | `pigeon.screenCompareEmpty`; `device.stage { device: 'dev-eve-flux4', stage: 'approved' }` | immediate | §3.20.3 screenCompare · §2.10.2 APPROVED rect · §3.15.1 screencap. *Deviation:* GP's `388, 512` example is superseded by the factory truth `208, 512, 304, 40` |
 | INC25 | `pigeon.missingComma { path: 'tests/sale/tip_sale_print.json', line: 8 }` | pipeline (`Java/pigeon-android-tip-sale`) | §3.20.1 · §3.22.1 history |
 | INC26 | `jenkins.jobMoved { job: 'Java/pigeon-windows-tender', toFolder: 'iOS' }` | immediate | §3.18.1 views/nightly |
 | INC27 | `repo.clone { repo: 'uia-remote' }`; `config.write { fixture: 'target', robot: 'bumblebee' }`; `config.port5555`; `runner.startLocal { test: 'SaleTest' }` | immediate | §3.15.3 · §3.19.1–§3.19.2 · §3.15.1 coworker events |
-| INC28 | `device.provision { device: 'dev-data-mini3', merchant: 'AUTO-US-NOPIN-02' }`; `device.adbTcpReset { device: 'dev-data-mini3' }`; `jenkins.seedBuild { job: 'Java/laz-oobe-merchant-swap', params: { ROBOT_NAME: 'data', MERCHANT: 'AUTO-US-NOPIN-02' }, result: 'SUCCESS', robot: 'data', atMs: <now − 120 000>, by: 'riley' }` (real-run variant: `laz.skipAdbRestore` + `jenkins.startBuild` of that swap) | pipeline (PL6) | §3.8.3 · §3.15.1 · §3.17.2 |
+| INC28 | `device.provision { device: 'dev-data-micro3', merchant: 'AUTO-US-NOPIN-02' }`; `device.adbTcpReset { device: 'dev-data-micro3' }`; `jenkins.seedBuild { job: 'Java/laz-oobe-merchant-swap', params: { ROBOT_NAME: 'data', MERCHANT: 'AUTO-US-NOPIN-02' }, result: 'SUCCESS', robot: 'data', atMs: <now − 120 000>, by: 'riley' }` (real-run variant: `laz.skipAdbRestore` + `jenkins.startBuild` of that swap) | pipeline (PL6) | §3.8.3 · §3.15.1 · §3.17.2 |
 | INC29 | `config.write { path: '~/CodeWithMe/alex/uia-remote/config.properties', fixture: 'target', robot: 'data' }`; `config.themeKernel` | immediate | §3.19.1 |
 | INC30 | `orca.setStatus { robot: 'r2-d2', status: 'RESERVED', by: 'player' }`; `repo.clone`; `config.write { fixture: 'target', robot: 'r2-d2' }`; `config.value { key: 'customerFacingDeviceIp', value: '10.42.30.19' }` | immediate | §3.11 · §3.19.2 |
 | INC31 | `repo.clone`; `config.write { fixture: 'target', robot: 'megatron' }` (PL2 active) | immediate | §3.4.4 collision · §3.19.4 TaxTest · §3.2.1 Reserved |
 | INC32 | `uia.waitForScreenStub { class: 'RegisterHomeScreen' }` | pipeline (PL2) | §3.19.5 · §3.19.6 CF01/CF03 · §6.1 `devices` stream |
-| INC33 | `orca.setStatus { robot: 'tars', status: 'RESERVED', by: 'alex' }`; `repo.clone`; `config.write { fixture: 'target', robot: 'tars' }`; `config.value { key: 'deviceType', value: 'Mini' }` | immediate | §3.19.6 CF05 · §3.8.2 launcher |
+| INC33 | `orca.setStatus { robot: 'tars', status: 'RESERVED', by: 'alex' }`; `repo.clone`; `config.write { fixture: 'target', robot: 'tars' }`; `config.value { key: 'deviceType', value: 'Micro' }` | immediate | §3.19.6 CF05 · §3.8.2 launcher |
 | INC34 | `github.seedPr { repo: 'uia-remote', number: 431, fixture: 'uia-431-lockscreen', author: 'alex', title: 'Add LockScreen page object' }` | immediate | §3.22.2 reviews/reasons |
 | INC35 | `uia.teardownMissing { test: 'TaxTest' }`; `device.stage { device: 'dev-megatron-mfd', stage: 'register-order' }` | pipeline (PL2: `TaxTest`, `RefundTest`) | §3.19.2 setup safe state · §3.19.7 |
-| INC36 | `ocr.labelShift { device: 'dev-r2-d2-duo', px: 10 }` | pipeline (PL7) | §3.12.2 worked results |
-| INC37 | A `ocr.capitalisation { device: 'dev-r2-d2-duo' }`; B `ocr.typo { compare: 'CFD_TOTAL' }` | pipeline (PL7) | §3.12.1 #6 exact match |
-| INC38 | — (factory: `DuoCheckoutTest` still uses `CFD_THANK_YOU`) | immediate (planned work) | §3.19.4 · §3.19.6 CF07/CF08 · §3.22.2 · §2.11.2 `usedBy` |
-| INC39 | `jenkins.envCase { job: 'Java/uia-remote-regression-flex', value: 'flex_3' }` (variants `Flex_3`, `flex_4`, `FLEX3`; PL4 `mini_3`) | pipeline (PL1) | §3.4.2 #3 · §3.18.2 `params.NAME` as typed |
-| INC40 | `orca.statusOverride { robot: 'rosie', status: 'AVAILABLE', by: 'alex' }`; `merchant.overwritten { robot: 'rosie' }`; `jenkins.seedBuild { job: 'Java/uia-remote-regression-flex', params: { DEVICE_TYPE: 'FLEX_POCKET' }, result: 'SUCCESS', robot: 'rosie', by: 'riley', atMs: <now − 300 000> }` (real-run variant: status override + Riley's real build) | pipeline (PL8) | §3.17.1 merchant policy · §3.4.5 · §3.2.2 |
+| INC36 | `ocr.labelShift { device: 'dev-r2-d2-duet', px: 10 }` | pipeline (PL7) | §3.12.2 worked results |
+| INC37 | A `ocr.capitalisation { device: 'dev-r2-d2-duet' }`; B `ocr.typo { compare: 'CFD_TOTAL' }` | pipeline (PL7) | §3.12.1 #6 exact match |
+| INC38 | — (factory: `DuetCheckoutTest` still uses `CFD_THANK_YOU`) | immediate (planned work) | §3.19.4 · §3.19.6 CF07/CF08 · §3.22.2 · §2.11.2 `usedBy` |
+| INC39 | `jenkins.envCase { job: 'Java/uia-remote-regression-flux', value: 'flux_3' }` (variants `Flux_3`, `flux_4`, `FLUX3`; PL4 `micro_3`) | pipeline (PL1) | §3.4.2 #3 · §3.18.2 `params.NAME` as typed |
+| INC40 | `orca.statusOverride { robot: 'rosie', status: 'AVAILABLE', by: 'alex' }`; `merchant.overwritten { robot: 'rosie' }`; `jenkins.seedBuild { job: 'Java/uia-remote-regression-flux', params: { DEVICE_TYPE: 'FLUX_POCKET' }, result: 'SUCCESS', robot: 'rosie', by: 'riley', atMs: <now − 300 000> }` (real-run variant: status override + Riley's real build) | pipeline (PL8) | §3.17.1 merchant policy · §3.4.5 · §3.2.2 |
 | INC41 | `jenkins.startBuild { job: 'Java/paycore-standalone-matrix', params: { ROBOT_NAME: '' }, by: 'sam' }` (B `ROBOT_NAME: 'ROSIE'`) | pipeline | §3.4.2 #5–#6 (`ONLY_UNAVAILABLE` / `ROBOT_NOT_FOUND`) · §3.4.5 auto-reset |
-| INC42 | — (factory spare `dev-spare-flex2` in Husky drawer 2) | immediate (planned work) | §3.24 swap · §1.15 serial binding · §1.3.3 |
-| INC43 | INC42's end state: `device.swap { rig: 'johnny-5', deviceId: 'dev-spare-flex2' }`; `orca.createDevice { name: 'johnny-5-flex2', deviceType: 'FLEX_2', serial: 'SIM-F2-000015', ip: '10.42.30.15' }`; `orca.linkDevice { robot: 'johnny-5', device: 'johnny-5-flex2' }` | immediate | as INC42 |
-| INC44 | `device.dead { device: 'dev-k-9-duo2' }` | pipeline (`Java/uia-remote-printerless-smoke`) | §3.8.1 · §2.2 hot-swap · §3.4.2 #3 |
+| INC42 | — (factory spare `dev-spare-flux2` in Husky drawer 2) | immediate (planned work) | §3.24 swap · §1.15 serial binding · §1.3.3 |
+| INC43 | INC42's end state: `device.swap { rig: 'johnny-5', deviceId: 'dev-spare-flux2' }`; `orca.createDevice { name: 'johnny-5-flux2', deviceType: 'FLUX_2', serial: 'SIM-F2-000015', ip: '10.42.30.15' }`; `orca.linkDevice { robot: 'johnny-5', device: 'johnny-5-flux2' }` | immediate | as INC42 |
+| INC44 | `device.dead { device: 'dev-k-9-duet2' }` | pipeline (`Java/uia-remote-printerless-smoke`) | §3.8.1 · §2.2 hot-swap · §3.4.2 #3 |
 | INC45 | `orca.tetherCleared { robot: 'optimus' }`; `jenkins.startBuild { job: 'Java/uia-remote-tethered-tax', params: { ROBOT_NAME: 'optimus', BACKEND_ENV: 'STG' } }` | pipeline | §3.19.2 guard · §3.18.3 #4 (`tethered` not re-checked) · unnamed STG runs show `NO_MATCH` meanwhile |
 | INC46 | `orca.tetherCloned { robot: 'tars', from: 'optimus' }` | pipeline (PL6) | §3.19.2 handle lines (shared runner harness, prefix `[runner]`) · §3.21.1 |
 | INC47 | A `tether.linkDown { robot: 'megatron', cable: 'usb' }`; B `tether.linkDown { robot: 'optimus', cable: 'ethernet' }` | pipeline (PL2) | §3.8.6 · §3.19.4. *Deviation:* GP's default rig OPTIMUS runs Secure Network Pay Display in this roster, so variant A (USB) binds MEGATRON |
-| INC48 | `orca.staleReservation { robot: 'eve', by: 'riley' }` | pipeline (PL1 FLEX_4) | §3.4.2 #6 waiting · §3.2.1 |
-| INC49 | `jenkins.capsConflict { job: 'Java/contact-canada-pin-sale', value: 'MINI_3' }` | pipeline (PL5) | §3.4.2 #4 · §3.18.2 |
+| INC48 | `orca.staleReservation { robot: 'eve', by: 'riley' }` | pipeline (PL1 FLUX_4) | §3.4.2 #6 waiting · §3.2.1 |
+| INC49 | `jenkins.capsConflict { job: 'Java/contact-canada-pin-sale', value: 'MICRO_3' }` | pipeline (PL5) | §3.4.2 #4 · §3.18.2 |
 | INC50 | `merchant.ubiRouteWrong { merchant: 'WESTERS-CA-02', route: 'us-east' }`; `jenkins.startBuild { job: 'Java/laz-oobe-merchant-swap', params: { ROBOT_NAME: 'seti', MERCHANT: 'WESTERS-CA-02' } }` | pipeline | §3.17.2–§3.17.3 |
 | INC51 | `merchant.credentialBlank { merchant: 'GO-SDK-US-01', field: 'apiKey' }` | pipeline (PL6) | §3.18.4 masking · §3.21.1 |
 | INC52 | `jenkins.namedRobot { job: 'Java/contact-canada-pin-sale', robot: 'tars' }` | pipeline (PL5) | §3.18.3 #4 · §3.8.4 Secure Touch |
-| INC53 | `card.gortPathWrong { profile: 'VISA_STD_DIP' }`; `jenkins.startBuild { job: 'Java/uia-remote-regression-flex', params: { ROBOT_NAME: 'wall-e', CARD_PROFILE: 'VISA_STD_DIP' } }` | pipeline | §3.6 #6 · §3.14.6 |
+| INC53 | `card.gortPathWrong { profile: 'VISA_STD_DIP' }`; `jenkins.startBuild { job: 'Java/uia-remote-regression-flux', params: { ROBOT_NAME: 'wall-e', CARD_PROFILE: 'VISA_STD_DIP' } }` | pipeline | §3.6 #6 · §3.14.6 |
 | INC54 | `callus.syncStale { host: 'minix-02' }`; `jenkins.startBuild { job: 'Java/contact-canada-pin-sale', params: { CARD_PROFILE: 'INTERAC_CA_TAP' } }` | pipeline | §3.6 #6 · §3.14.6 schtasks · §2.9 |
 | INC55 | `card.trackDataCorrupt { profile: 'VISA_STD_SWIPE' }` | pipeline (PL3) | §3.6 track validation |
-| INC56 | `pi.wineBroken { host: 'pi-johnny-5' }`; `jenkins.startBuild { job: 'Java/uia-remote-regression-flex', params: { ROBOT_NAME: 'johnny-5', DEVICE_TYPE: 'FLEX_1', CARD_PROFILE: 'VISA_STD_DIP' } }` | pipeline | §3.6 #6 cardprog · §3.14.1 |
+| INC56 | `pi.wineBroken { host: 'pi-johnny-5' }`; `jenkins.startBuild { job: 'Java/uia-remote-regression-flux', params: { ROBOT_NAME: 'johnny-5', DEVICE_TYPE: 'FLUX_1', CARD_PROFILE: 'VISA_STD_DIP' } }` | pipeline | §3.6 #6 cardprog · §3.14.1 |
 | INC57 | A `ollama.seedReceipt { imageRef: 'img:receipt:wall-e:0912', subtotalCents: 4200, tipPct: 18, printedTipCents: 756, misreadField: 'tip', misreadAs: '$7.65' }`; B the same with `printedTipCents: 765` and no misread; `jenkins.seedBuild { job: 'Java/vision-poc-receipt-check', result: 'UNSTABLE', … }` | immediate | §3.21.2 · §3.9.2 maths |
 | INC58, INC61, INC62 | — (judgement; no sim state) | immediate | — |
-| INC59 | `rig.cradleCracked { rig: 'eve' }` | pipeline (PL1 FLEX_4) | §3.5.4 tilt · §3.24 printers/cradle |
+| INC59 | `rig.cradleCracked { rig: 'eve' }` | pipeline (PL1 FLUX_4) | §3.5.4 tilt · §3.24 printers/cradle |
 | INC60 | `orca.mysqlDown` | pipeline (any) | §3.14.5 · §3.4.2 #1 |
 | INC63 | `orca.hrnTypo { robot: 'johnny-5' }` | immediate | §3.7.5 `hrnShown` |
-| INC64 | `device.stage { device: 'dev-r2-d2-duo', stage: 'receipt-done' }` | immediate | §3.11 · §3.5.3 · §3.9.5 |
-| INC65 | `orca.urlWrong { robot: 'johnny-5', field: 'tap', value: '' }`; `jenkins.startBuild { job: 'Java/uia-remote-regression-flex', params: { ROBOT_NAME: 'johnny-5', DEVICE_TYPE: 'FLEX_1', CARD_PROFILE: 'VISA_STD_TAP' } }` | pipeline | §3.6 #3 |
+| INC64 | `device.stage { device: 'dev-r2-d2-duet', stage: 'receipt-done' }` | immediate | §3.11 · §3.5.3 · §3.9.5 |
+| INC65 | `orca.urlWrong { robot: 'johnny-5', field: 'tap', value: '' }`; `jenkins.startBuild { job: 'Java/uia-remote-regression-flux', params: { ROBOT_NAME: 'johnny-5', DEVICE_TYPE: 'FLUX_1', CARD_PROFILE: 'VISA_STD_TAP' } }` | pipeline | §3.6 #3 |
 
 ### A.2 Curriculum modules → sim affordances
 
@@ -4006,15 +4006,15 @@ and what the sim shows instead (content should use the sim's string).
 | M05 | — | `terminal.exec` (`ssh`, `uname -a`, `systemctl status robot-controller`, `df -h /`, `ps aux \| grep -i wine`, `curl -i …/health`) | §2.5 · §3.14.1 · §3.3.3 |
 | M06 | — | `orca.setRobotStatus`, `orca.forceHealthCheck`, `power.unplug('pi-eve')`, `orca.checkout({ kind: 'manual' })` toast, `jenkins.build` (Reserved wait; named ROSIE + auto-reset), health log | §3.2–§3.4 · §3.3.4 |
 | M07 | HRN, swap, Tap URL, tether, offsets | `orca.saveRobot`, `orca.saveDevice` (serial binding), `orca.xyTouch` (**Test tap**), tablet header | §1.3 · §3.5 · §3.7.5 |
-| M08 | API Key blank, printer capability dropped | capability document + `orca.matchPreview`, `git.writeFile/commit/push` (gort JSON), `orca.saveMerchant` (Edit), `jenkins.build` (go-sdk, Laz) and the DATA wizard pages. *Deviation:* Cur step 5's "no longer lists `rosie`" is `vision` here (the GO_SDK Flex Pocket; ROSIE is a PayCore rig without `goSdk`) | §2.7 · §3.4.3 · §3.17 · §3.18.4 |
-| M09 | QR rollout on EVE, no FLEX_4 `_5` map | `orca.rest('POST /api/xy_touch')` via curl (PHYSICAL_TAP vs ADB_TOUCH), `device.layout` (ruler reading = firmware centre), Orca Screens CRUD, `github` PR + Jared merge + sync, `jenkins.build` contact-canada (`PIN entry requires physical touch` / `capability mismatch: deviceType COMPACT required`) | §2.10 · §3.5 · §3.10 · §3.22 |
+| M08 | API Key blank, printer capability dropped | capability document + `orca.matchPreview`, `git.writeFile/commit/push` (gort JSON), `orca.saveMerchant` (Edit), `jenkins.build` (go-sdk, Laz) and the DATA wizard pages. *Deviation:* Cur step 5's "no longer lists `rosie`" is `vision` here (the GO_SDK Flux Pocket; ROSIE is a PayCore rig without `goSdk`) | §2.7 · §3.4.3 · §3.17 · §3.18.4 |
+| M09 | QR rollout on EVE, no FLUX_4 `_5` map | `orca.rest('POST /api/xy_touch')` via curl (PHYSICAL_TAP vs ADB_TOUCH), `device.layout` (ruler reading = firmware centre), Orca Screens CRUD, `github` PR + Jared merge + sync, `jenkins.build` contact-canada (`PIN entry requires physical touch` / `capability mismatch: deviceType COMPASS required`) | §2.10 · §3.5 · §3.10 · §3.22 |
 | M10 | — | Card Profiles read, gort file browse, `terminal.exec` (`schtasks /query`, `dir`), `orca.rest('POST /api/card/dip')`, Callus log | §2.9 · §3.6 · §3.14.6 |
 | M11 | `jenkins.envCase` | `jenkins.build` / Build with Parameters, env block, `Available · in use by Jenkins #4127` | §3.18 · §3.4 |
 | M12 | — | `terminal.exec` (`adb connect/devices/-s … shell uiautomator dump/pull/input tap`, `grep -o`) | §3.15 |
 | M13 | scroll swapped, ReceiptScreen methods missing | `git.clone`, `git.writeFile`, `runner.runLocal` (`HomeScreenTest`, `ReceiptScreenTest` ×3), code facts | §3.19.5–§3.19.6 |
 | M14 | clone + broken config + coworker known | `git.writeFile` (config.properties), `runner.runLocal('TaxTest')`, `adb.coworkerDriven`, `orca.setRobotStatus` (Reserved/Available) | §3.15.3 · §3.19 |
 | M15 | #418 un-merged, expanded Pigeon file, comma | `jenkins.build`, git edit/push, camera playback of the build, `git.approvePullRequest` → NPC merge → sync | §3.20 · §3.22 |
-| M16 | #398 un-merged, CFD_TOTAL deleted, R2-D2 staged | `terminal.exec` adb on the Duo, `camera.snapshot`, `ocr.frame` (GIMP), Screen Compare CRUD + **Test**, `setFlag('cfdLayoutV2Toggle')`, `runner.runLocal('TaxTestDuo')` | §3.11 · §3.12 · §2.11 |
+| M16 | #398 un-merged, CFD_TOTAL deleted, R2-D2 staged | `terminal.exec` adb on the Duet, `camera.snapshot`, `ocr.frame` (GIMP), Screen Compare CRUD + **Test**, `setFlag('cfdLayoutV2Toggle')`, `runner.runLocal('TaxTestDuet')` | §3.11 · §3.12 · §2.11 |
 | M17 | PR #212 re-opened | `ollama.ask` (llava, receipt image), `git.requestChanges` with reason `missing-isScreenPresent` | §3.21.2 · §3.22.2 |
 | M18 | capstone faults at steps 8–10 | Notes, escalation (missions), `rig.command(park.all)`, `jenkins.build` | as INC02 / INC11 / INC39 |
 | CERT | §4.4.3 | as the incidents/modules they mirror | — |
@@ -4082,7 +4082,7 @@ ids and behaviour are owned here** (this doc's header); the world binds its prop
 | Topic | `30-world.md` | This doc (authoritative for state) | Resolution |
 |---|---|---|---|
 | Power ids | `power.psu.mw-1` (also `meanwell-1` in an example), `power.reg.5v-a/-b/-c`, `power.reg.12v`, fuses `F-5V-A/B/C`, `F-12V`, per-bay `F-<RIG>-5V`, taps `power.tap.24v/12v/5v`, outlets `W1…W14`, strips `power.strip.a/b/c1/c2/t/d/w` | `MW-1`, `REG-5V-A`, `REG-5V-B`, `REG-5V-BENCH`, `REG-12V`, `F-RACKA-5V`, `F-RACKB-5V`, `F-BENCH-5V`, `F-NUC-12V`, terminals `T-24V-SPARE`, `T-24V-CALLUS`, `T-12V-SPARE`, `T-5V-SPARE`, `MAIN-<rig>`, outlets `WALL-1…6`, strips `STRIP-A/B/C/T/W` | world props carry a `simId`; per-bay fuses are decorative (not in the power graph) until the sim adds them; `power.tap.*` map to `T-24V-SPARE` / `T-12V-SPARE` / `T-5V-SPARE` |
-| Screen geometry | layout classes P (68.0 × 136.0), P-s, L8, L14 with derived centres | §2.2 per-type sizes (FLEX_3 76.0 × 135.0 …) and §2.10.2 per-layout button tables | the sim's `src/sim/seed/layouts` is the only truth for hit tests and Orca seeds; render2d draws from it (ARCHITECTURE rule 6). The world's §4 tables are art guidance only. |
+| Screen geometry | layout classes P (68.0 × 136.0), P-s, L8, L14 with derived centres | §2.2 per-type sizes (FLUX_3 76.0 × 135.0 …) and §2.10.2 per-layout button tables | the sim's `src/sim/seed/layouts` is the only truth for hit tests and Orca seeds; render2d draws from it (ARCHITECTURE rule 6). The world's §4 tables are art guidance only. |
 | Orca screen buttons | e.g. `REGISTER_HOME` `Coffee`, `Bagel`, `No-Tax Item`, `Gift Card`; `PIN_ENTRY` `OK` | §2.10.1–§2.10.2 (`Tax Item 5`, `Non-Tax Item 1`, `Coffee`, `Catering Deposit`; PIN `Enter`) | sim wins (exact strings used by xy_touch, runners and GP evidence) |
 | Tablet texts | `OK`, `NOT HOMED — PARK REQUIRED`, `Controller unreachable`, `FAULT — <reason>` | `Status: OK`, `Status: LOCK RELEASED — PARK REQUIRED` (all yellow causes, Cur S13), `Status: CONTROLLER UNREACHABLE`, `Status: MOTION FAULT — <fault>` | sim wins (Cur/GP exact strings); the lockout overlay's second line `<job> #<n>` is fine (render from `robot.checkout`) |
 | API names | `rig.setDipAlignment(id, teeth)`, `rig.moveMotionCable(id, 'pi')`, `rig.reseat(id, 'solenoid' \| 'smartstripe')`, `rig.aimWebcam`, `device.reseatHub`, `host.powerCycle('blade')` | `rig.alignDipArm(id, deltaTeeth)`, `rig.moveMotorUsb(id, 'PI' \| hostId)`, `rig.reseat(id, part)` (accepts `'solenoid'` = `'solenoidConnector'`, `'smartstripe'`), `rig.aimWebcam(id, dYawDeg, dPitchDeg)`, `device.reseatHub(id, port)`, host id `gpu-blade` | `api.ts` names are authoritative |

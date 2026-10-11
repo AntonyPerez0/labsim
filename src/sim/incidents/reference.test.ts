@@ -1,7 +1,7 @@
 /**
  * Scenario tests for the actionable behaviours of docs/reference/REMOVED-internal-reference.md that no
  * incident suite already pins down: the GPU blade hosting the VMs, every config.properties validation
- * rule (Ref §4), Pigeon's platform list (Ref §5), HomeScreen.open() on Mini/Station (Ref §4 Zone 2),
+ * rule (Ref §4), Pigeon's platform list (Ref §5), HomeScreen.open() on Micro/Stand (Ref §4 Zone 2),
  * Morgan's review of a QA edit under `main` (Ref §4), the 12 V NUC line (Ref §6) and the ADB-bot
  * merchant rule (Ref §6). Everything goes through the public SimApi.
  */
@@ -26,7 +26,7 @@ const setCfg = (key: string, value: string | null): void => {
 describe('Ref §1/§6 GPU blade hosts the VMs (Orca, Jenkins, Ollama)', () => {
   it('a blade power cycle takes every VM down (running builds die JENKINS_RESTART); blade 90 s + VMs 45 s brings them back', () => {
     start();
-    const r = sim.jenkins.build('Java/uia-remote-regression-flex', { ROBOT_NAME: 'wall-e' }, 'player');
+    const r = sim.jenkins.build('Java/uia-remote-regression-flux', { ROBOT_NAME: 'wall-e' }, 'player');
     if (!r.ok) throw new Error(r.error);
     run(8_000);
     expect(sim.host.powerCycle('gpu-blade', 'player').ok).toBe(true);
@@ -41,7 +41,7 @@ describe('Ref §1/§6 GPU blade hosts the VMs (Orca, Jenkins, Ollama)', () => {
     run(20_000);
     expect(sh('curl -s -o /dev/null -w "%{http_code}" http://orca.lab.local:8080/management/health')).toEqual(['200']);
     expect(sh('curl -s http://10.42.1.12:11434/api/tags').join('\n')).toContain('llava:latest');
-    expect(build('Java/uia-remote-regression-flex', { ROBOT_NAME: 'wall-e' }).result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-regression-flux', { ROBOT_NAME: 'wall-e' }).result).toBe('SUCCESS');
   });
 });
 
@@ -52,7 +52,7 @@ describe('Ref §4 config.properties (local runs; Jenkins injects the same keys i
     expect(cfg()).toMatch(/^runType=tethered$/m);
     expect(cfg()).toMatch(/^merchantFacingDeviceIp=10\.42\.30\.21$/m);
     expect(cfg()).toMatch(/^customerFacingDeviceIp=10\.42\.30\.22$/m);
-    expect(cfg()).toMatch(/^deviceType=Station$/m);
+    expect(cfg()).toMatch(/^deviceType=Stand$/m);
     expect(cfg()).toMatch(/^theme=avocado$/m);
     expect(cfg()).toMatch(/^kernelType=CPA$/m);
     expect(cfg()).toMatch(/^portNumber=5444$/m);
@@ -62,8 +62,8 @@ describe('Ref §4 config.properties (local runs; Jenkins injects the same keys i
       ['customerFacingDeviceIp', null, "java.lang.IllegalStateException: config.properties missing key 'customerFacingDeviceIp'"],
       ['theme', 'classic', 'java.lang.IllegalStateException: Unsupported theme "classic" — only "avocado" is supported'],
       ['kernelType', 'SPA', 'java.lang.IllegalStateException: Unsupported kernelType "SPA" — use "CPA"'],
-      ['deviceType', 'FLEX_4', 'java.lang.IllegalArgumentException: unknown deviceType "FLEX_4" (expected Mini, Flex or Station)'],
-      ['runType', 'duo', 'java.lang.IllegalStateException: Unsupported runType "duo"'],
+      ['deviceType', 'FLUX_4', 'java.lang.IllegalArgumentException: unknown deviceType "FLUX_4" (expected Micro, Flux or Stand)'],
+      ['runType', 'duet', 'java.lang.IllegalStateException: Unsupported runType "duet"'],
       ['portNumber', 'five', 'java.lang.IllegalStateException: Invalid portNumber "five"'],
     ];
     for (const [k, v, msg] of cases) {
@@ -80,29 +80,29 @@ describe('Ref §4 config.properties (local runs; Jenkins injects the same keys i
     expect(local('TaxTest').lines).toContain('java.lang.IllegalStateException: config.properties not found — copy config.properties.example');
   });
 
-  it('Station Duo: MFD and CFD IPs are the same; tethered runType drives both displays of R2-D2', () => {
+  it('Stand Duet: MFD and CFD IPs are the same; tethered runType drives both displays of R2-D2', () => {
     start();
     scenario({ op: 'orca.setStatus', params: { robot: 'r2-d2', status: 'RESERVED', by: 'player' } }, { op: 'repo.clone', params: { repo: 'uia-remote' } }, { op: 'config.write', params: { fixture: 'target', robot: 'r2-d2' } });
     expect(cfg()).toMatch(/^merchantFacingDeviceIp=10\.42\.30\.14$/m);
     expect(cfg()).toMatch(/^customerFacingDeviceIp=10\.42\.30\.14$/m);
     expect(cfg()).toMatch(/^runType=tethered$/m);
-    const r = local('TaxTestDuo');
+    const r = local('TaxTestDuet');
     expect(r.passed).toBe(true);
     expect(r.lines).toContain('[runner] MFD handle 10.42.30.14:5444 connected');
     expect(r.lines).toContain('[runner] CFD handle 10.42.30.14:5444 connected');
   });
 });
 
-describe('Ref §4 Zone 2 abstraction: open(appName) is vertical on Flex, horizontal on Mini/Station', () => {
-  it('HomeScreenTest passes on a Mini (horizontal) and a Station; swapping the branches breaks both families', () => {
+describe('Ref §4 Zone 2 abstraction: open(appName) is vertical on Flux, horizontal on Micro/Stand', () => {
+  it('HomeScreenTest passes on a Micro (horizontal) and a Stand; swapping the branches breaks both families', () => {
     start();
-    expect(build('Java/uia-remote-regression-mini', { ROBOT_NAME: 'bumblebee' }).result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-regression-micro', { ROBOT_NAME: 'bumblebee' }).result).toBe('SUCCESS');
     const ids = scenario({ faultId: 'uia.scrollSwapped', params: { mode: 'swapped' } });
-    const mini = build('Java/uia-remote-regression-mini', { ROBOT_NAME: 'bumblebee' });
+    const mini = build('Java/uia-remote-regression-micro', { ROBOT_NAME: 'bumblebee' });
     expect(mini.result).toBe('FAILURE');
-    expect(mini.console).toContain('[HomeScreen] open("Register"): scrolling vertically (Flex)…');
-    const flex = build('Java/uia-remote-regression-flex', { ROBOT_NAME: 'wall-e' });
-    expect(flex.console).toContain('[HomeScreen] open("Register"): scrolling horizontally (Mini/Station)…');
+    expect(mini.console).toContain('[HomeScreen] open("Register"): scrolling vertically (Flux)…');
+    const flex = build('Java/uia-remote-regression-flux', { ROBOT_NAME: 'wall-e' });
+    expect(flex.console).toContain('[HomeScreen] open("Register"): scrolling horizontally (Micro/Stand)…');
     expect(flex.console).toContain("AssertionError: App 'Register' not found on HomeScreen");
     expect(resolved(ids)).toBe(false);
   });
@@ -206,10 +206,10 @@ public class CfdThankYouScreen extends BaseTest {
 }
 `;
     sim.git.writeFile('uia-remote', wrongPath, po);
-    const testPath = UIA_PATHS.test('DuoCheckoutTest');
+    const testPath = UIA_PATHS.test('DuetCheckoutTest');
     const src = lab().repos['uia-remote'].local!.files[testPath]!.replace('import com.labsim.uia.pageobjects.HomeScreen;', 'import com.labsim.uia.pageobjects.CfdThankYouScreen;\nimport com.labsim.uia.pageobjects.HomeScreen;');
     sim.git.writeFile('uia-remote', testPath, src);
-    const r = local('DuoCheckoutTest');
+    const r = local('DuetCheckoutTest');
     expect(r.passed).toBe(false);
     expect(r.lines.join('\n')).toContain('error: cannot find symbol');
     sim.git.stage('uia-remote', [wrongPath, testPath]);

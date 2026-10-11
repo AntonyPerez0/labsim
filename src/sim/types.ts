@@ -46,53 +46,53 @@ export const RNG_STREAMS = ['core', 'faults', 'jenkins', 'devices', 'ollama', 'n
 
 /** Orca DeviceType enum. ALL CAPS — which is why Jenkins env vars carrying it must be all caps. */
 export type DeviceTypeCode =
-  | 'STATION_2018'
-  | 'STATION_2'
-  | 'STATION_DUO'
-  | 'STATION_DUO_2'
-  | 'STATION_DUO_3'
-  | 'MINI_2'
-  | 'MINI_3'
-  | 'MINI_4'
-  | 'FLEX_1'
-  | 'FLEX_2'
-  | 'FLEX_3'
-  | 'FLEX_4'
-  | 'FLEX_POCKET'
-  | 'COMPACT';
+  | 'STAND_2018'
+  | 'STAND_2'
+  | 'STAND_DUET'
+  | 'STAND_DUET_2'
+  | 'STAND_DUET_3'
+  | 'MICRO_2'
+  | 'MICRO_3'
+  | 'MICRO_4'
+  | 'FLUX_1'
+  | 'FLUX_2'
+  | 'FLUX_3'
+  | 'FLUX_4'
+  | 'FLUX_POCKET'
+  | 'COMPASS';
 
 /** Every DeviceType constant in Orca's enum order (exact, case-sensitive — `DeviceType.valueOf`). */
 export const DEVICE_TYPE_CODES: readonly DeviceTypeCode[] = [
-  'STATION_2018',
-  'STATION_2',
-  'STATION_DUO',
-  'STATION_DUO_2',
-  'STATION_DUO_3',
-  'MINI_2',
-  'MINI_3',
-  'MINI_4',
-  'FLEX_1',
-  'FLEX_2',
-  'FLEX_3',
-  'FLEX_4',
-  'FLEX_POCKET',
-  'COMPACT',
+  'STAND_2018',
+  'STAND_2',
+  'STAND_DUET',
+  'STAND_DUET_2',
+  'STAND_DUET_3',
+  'MICRO_2',
+  'MICRO_3',
+  'MICRO_4',
+  'FLUX_1',
+  'FLUX_2',
+  'FLUX_3',
+  'FLUX_4',
+  'FLUX_POCKET',
+  'COMPASS',
 ];
 
 /** Family value used by `deviceType` in uia-remote config.properties (governs scroll/layout logic). */
-export type DeviceFamily = 'Station' | 'Mini' | 'Flex' | 'Compact';
+export type DeviceFamily = 'Stand' | 'Micro' | 'Flux' | 'Compass';
 
-/** Shared testing profiles (Flex 3/4/Pocket share FLEX_GEN3). Also the firmware layout id (Sim §2.10.2). */
+/** Shared testing profiles (Flux 3/4/Pocket share FLUX_GEN3). Also the firmware layout id (Sim §2.10.2). */
 export type TestingProfile =
-  | 'STATION_2018'
-  | 'STATION_2'
-  | 'STATION_DUO'
-  | 'MINI_GEN2'
-  | 'MINI_GEN3'
-  | 'FLEX_GEN1'
-  | 'FLEX_GEN2'
-  | 'FLEX_GEN3'
-  | 'COMPACT';
+  | 'STAND_2018'
+  | 'STAND_2'
+  | 'STAND_DUET'
+  | 'MICRO_GEN2'
+  | 'MICRO_GEN3'
+  | 'FLUX_GEN1'
+  | 'FLUX_GEN2'
+  | 'FLUX_GEN3'
+  | 'COMPASS';
 
 /**
  * Static metrics of one Device Type (Orca's enum carries "device dimensions, layout metrics and
@@ -101,34 +101,34 @@ export type TestingProfile =
  */
 export interface DeviceTypeInfo {
   code: DeviceTypeCode;
-  displayName: string; // "Flex 3"
+  displayName: string; // "Flux 3"
   family: DeviceFamily;
   testingProfile: TestingProfile;
   /** Physical body size in mm (w × h × d) — for 3D modelling. */
   bodyMm: { w: number; h: number; d: number };
   /** Primary (merchant-facing) display. */
   screen: { wMm: number; hMm: number; wPx: number; hPx: number; diagonalIn: number };
-  /** Secondary customer-facing display driven by the same terminal (Station Duo family). */
+  /** Secondary customer-facing display driven by the same terminal (Stand Duet family). */
   secondaryScreen?: { wMm: number; hMm: number; wPx: number; hPx: number; diagonalIn: number };
   hasPrinter: boolean;
   hasCardReader: boolean;
-  /** Launcher scroll direction used by HomeScreen.open(appName). Flex = vertical; Mini/Station = horizontal. */
+  /** Launcher scroll direction used by HomeScreen.open(appName). Flux = vertical; Micro/Stand = horizontal. */
   launcherScroll: 'vertical' | 'horizontal';
   /** True when only the MFD is exposed to ADB and the CFD is ADB-blind (legacy UIA < 2.3). */
   dualScreenSingleAdb: boolean;
-  /** Upcoming hardware not yet in the lab (Duo 3, Mini 4). */
+  /** Upcoming hardware not yet in the lab (Duet 3, Micro 4). */
   upcoming: boolean;
   market: 'US' | 'CA' | 'US/CA';
   notes: string;
   /** NEW — device px per screen mm (x / y) of the primary display (Sim §2.2); screencap px = round(mm × pxPerMm). */
   pxPerMm?: { x: number; y: number };
-  /** NEW — px per mm of the secondary (CFD) display, Duo family only. */
+  /** NEW — px per mm of the secondary (CFD) display, Duet family only. */
   secondaryPxPerMm?: { x: number; y: number };
-  /** NEW — firmware layout id used for hit tests and Orca seeds (= testingProfile; Duo CFD uses MINI_GEN3). */
+  /** NEW — firmware layout id used for hit tests and Orca seeds (= testingProfile; Duet CFD uses MICRO_GEN3). */
   layout?: TestingProfile;
-  /** NEW — device types this one hot-swaps for (MINI_3 → ['STATION_DUO_2'], Ref §1). Informational. */
+  /** NEW — device types this one hot-swaps for (MICRO_3 → ['STAND_DUET_2'], Ref §1). Informational. */
   hotSwapFor?: DeviceTypeCode[];
-  /** NEW — `adb shell getprop ro.product.model` value (Sim §3.8.5), e.g. "Flex 3". */
+  /** NEW — `adb shell getprop ro.product.model` value (Sim §3.8.5), e.g. "Flux 3". */
   modelString?: string;
   /** NEW — serial model code used in `SIM-<code>-0000nn` (Sim §2.4), e.g. "F3", "S2", "CP". */
   serialPrefix?: string;
@@ -353,13 +353,13 @@ export interface OrcaRobot {
 
 export interface OrcaDevice {
   id: number;
-  /** NEW — unique row name "<robot>-<model>", e.g. "johnny-5-flex1" (GP DSL compares names). */
+  /** NEW — unique row name "<robot>-<model>", e.g. "johnny-5-flux1" (GP DSL compares names). */
   name: string;
   deviceType: DeviceTypeCode;
   serial: string;
   /** Network IP of the terminal (ADB over TCP on port 5444). */
   ip: string;
-  /** Free-text label, e.g. "Flex 1 (JOHNNY-5) — keep for rollback". */
+  /** Free-text label, e.g. "Flux 1 (JOHNNY-5) — keep for rollback". */
   label: string;
   /** Runtime device id in `LabState.devices`, bound by exact serial on save (Sim §1.15). */
   simDeviceId: string | null;
@@ -445,7 +445,7 @@ export interface OrcaScreen {
   optionCount: number | null;
   /** NEW — rows are per Device Type (uniqueness `(deviceType, name)`). Authoritative key. */
   deviceType: DeviceTypeCode;
-  /** NEW — 'secondary' only for STATION_DUO* "CFD_*" screens. */
+  /** NEW — 'secondary' only for STAND_DUET* "CFD_*" screens. */
   display: 'primary' | 'secondary';
 }
 
@@ -496,7 +496,7 @@ export interface ScreenCompareImage {
   expectedText: string;
   /** Deprecated in favour of UI Automator 2.3 dual-screen support. */
   deprecated: boolean;
-  /** NEW — test ids that reference it, e.g. ["uia-remote:DuoCfdSuite"]. */
+  /** NEW — test ids that reference it, e.g. ["uia-remote:DuetCfdSuite"]. */
   usedBy: string[];
 }
 
@@ -913,7 +913,7 @@ export interface ReceiptDoc {
 }
 
 export interface TerminalDevice {
-  /** Runtime id, e.g. "dev-wall-e-flex3", spares "dev-spare-flex2". */
+  /** Runtime id, e.g. "dev-wall-e-flux3", spares "dev-spare-flux2". */
   id: string;
   type: DeviceTypeCode;
   serial: string;
@@ -928,7 +928,7 @@ export interface TerminalDevice {
   supply: PowerHookup;
   /** Rig this device sits on (RigState.id) or a desk/storage id ("desk-riley", "husky-drawer-2"). */
   rigId: string | null;
-  role: 'standalone' | 'mfd' | 'cfd' | 'duo';
+  role: 'standalone' | 'mfd' | 'cfd' | 'duet';
   /** For tethered setups: the paired device id and the link app. */
   tetheredTo: string | null;
   link: 'usb' | 'network' | null;
@@ -943,7 +943,7 @@ export interface TerminalDevice {
   passcode: string;
   /** Primary (MFD) display. */
   display: DisplayState;
-  /** Secondary CFD display for Station Duo family. */
+  /** Secondary CFD display for Stand Duet family. */
   secondaryDisplay: DisplayState | null;
   order: OrderState | null;
   /** Installed apps shown on the launcher. */
@@ -954,7 +954,7 @@ export interface TerminalDevice {
   cardPresent: CardEntry | null;
   /** Last printed receipt as 32-column text — mirrors `lastReceiptDoc` (authoritative). */
   lastReceipt: string | null;
-  /** NEW — Orca Device row name bound by serial ("wall-e-flex3"); '' for an unregistered spare. */
+  /** NEW — Orca Device row name bound by serial ("wall-e-flux3"); '' for an unregistered spare. */
   orcaDeviceName: string;
   /** NEW — derived view of power/dead (Sim §0.4), recomputed each tick. */
   state: 'OK' | 'BOOTING' | 'DEAD' | 'FRIED';
@@ -976,7 +976,7 @@ export interface TerminalDevice {
   firmwareInfo: { version: string; receiptQr: boolean };
   /** NEW — current launcher page and app order. */
   launcher: { page: number; apps: string[] };
-  /** NEW — Duo CFD copy/layout version (INC37A, M16 toggle). */
+  /** NEW — Duet CFD copy/layout version (INC37A, M16 toggle). */
   cfdLayout: 'v1' | 'v2';
   /** NEW — extra vertical shift of CFD labels in webcam px (INC36). */
   labelShiftPx: number;
@@ -988,7 +988,7 @@ export interface TerminalDevice {
   secureTouch: boolean;
   /** NEW — last 200 lines for `adb logcat -d`. */
   logcat: string[];
-  /** NEW — handhelds only (FLEX_*, FLEX_POCKET); null otherwise. */
+  /** NEW — handhelds only (FLUX_*, FLUX_POCKET); null otherwise. */
   battery: { pct: number; charging: boolean } | null;
   /** NEW (sim-core, optional) — phys ms of the last input (touch/key/text/stroke); drives the 10-minute idle lock (Sim §3.8.1). */
   lastInputPhysMs?: number;
@@ -1481,7 +1481,7 @@ export interface RunnerState {
 }
 
 export interface JenkinsJob {
-  /** Full path id, e.g. "Java/uia-remote-regression-flex". */
+  /** Full path id, e.g. "Java/uia-remote-regression-flux". */
   id: string;
   /** Legacy platform split: "Java" | "iOS" (every job lives in exactly one). */
   folder: string;
@@ -1562,7 +1562,7 @@ export interface JenkinsBuild {
 export interface JenkinsState {
   up: boolean;
   url: string;
-  /** Key = full path "Java/uia-remote-regression-flex". */
+  /** Key = full path "Java/uia-remote-regression-flux". */
   jobs: Record<string, JenkinsJob>;
   /** Key = "<jobPath>#<n>"; cap 20 per job. */
   builds: Record<string, JenkinsBuild>;
@@ -1690,7 +1690,7 @@ export interface OllamaState {
 /** NEW — Prusa / Bambu Lab printers (INC59). */
 export interface Printer3dState {
   printers: Record<'prusa' | 'bambu', { busy: boolean; job: string | null; endsPhysMs: number | null }>;
-  /** Printed parts waiting on the tray, e.g. "cradle_flex_gen3". */
+  /** Printed parts waiting on the tray, e.g. "cradle_flux_gen3". */
   output: string[];
 }
 

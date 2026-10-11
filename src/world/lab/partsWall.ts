@@ -2,8 +2,8 @@
  * Parts wall above Jared's bench and the storage beside it (World §1.4, §6.3, §9.2; IMG-R
  * background): dark-grey louvred panel with 4 × 5 red/blue stack bins (instanced), two 64-drawer
  * organisers (128 instanced clear drawers that slide open, labelled drawers per §6.3), the Husky
- * rolling tool chest (5 drawers, spare Flex 2 / Mini 3 in drawers 2 / 3) and the grey storage
- * cabinet (locked lower doors with keypad, open upper shelves, legacy Flex 1 shelf).
+ * rolling tool chest (5 drawers, spare Flux 2 / Micro 3 in drawers 2 / 3) and the grey storage
+ * cabinet (locked lower doors with keypad, open upper shelves, legacy Flux 1 shelf).
  */
 import {
   BufferGeometry,
@@ -269,15 +269,15 @@ export function buildPartsWall(ctx: LabCtx): void {
         fitText(gg, 'H', w, hh2, { color: '#c9ccd0', font: FONT.UI_SANS, weight: 900, marginX: 0.3, marginY: 0.3 });
       }, xf(0, -0.03, 0.0125));
     }
-    if (i === 1) addTape(ctx, db, 'SPARE FLEX 2', 6, xf(-hw / 2 + 0.09, -h / 2 + 0.018, 0.0125));
-    if (i === 2) addTape(ctx, db, 'SPARE MINI 3', 6, xf(-hw / 2 + 0.09, -h / 2 + 0.02, 0.0125));
+    if (i === 1) addTape(ctx, db, 'SPARE FLUX 2', 6, xf(-hw / 2 + 0.09, -h / 2 + 0.018, 0.0125));
+    if (i === 2) addTape(ctx, db, 'SPARE MICRO 3', 6, xf(-hw / 2 + 0.09, -h / 2 + 0.02, 0.0125));
     ctx.statics.flushInto(db, g); // drawers sit inside the chest body: no own shadow (draw-call budget)
     let itemGroup: Group | null = null;
     if (i === 1 || i === 2) {
       itemGroup = new Group();
       const ib = new StaticBatch(`husky-item-${i}`);
       if (i === 1) {
-        // Flex 2 lying face-up in foam
+        // Flux 2 lying face-up in foam
         ib.box(hw - 0.08, 0.02, hd - 0.1, ctx.engine.materials.get('lab.foam', () => new MeshStandardMaterial({ color: '#2b2c2e', roughness: 1 })), 0, -h / 2 + 0.02, -hd / 2 + 0.01, 0, 'none');
         ib.add(rboxGeo(0.082, 0.024, 0.218, 0.006, 2), mats.labwhite, xf(0, -h / 2 + 0.042, -hd / 2 + 0.03, 0, Math.PI / 2, 0));
         ib.box(0.136, 0.001, 0.068, mats.screenGlass, 0.01, -h / 2 + 0.0545, -hd / 2 + 0.03, 0, 'none');
@@ -289,7 +289,7 @@ export function buildPartsWall(ctx: LabCtx): void {
       g.add(itemGroup);
     }
     ctx.root.add(g);
-    huskyDrawers.push({ group: g, open: 0, target: 0, item: i === 1 ? 'flex2-spare' : i === 2 ? 'mini3-spare' : null, itemGroup, y: y + h / 2, h });
+    huskyDrawers.push({ group: g, open: 0, target: 0, item: i === 1 ? 'flux2-spare' : i === 2 ? 'micro3-spare' : null, itemGroup, y: y + h / 2, h });
   });
 
   /* ── storage cabinet ── */
@@ -320,19 +320,19 @@ export function buildPartsWall(ctx: LabCtx): void {
       b.box(w + 0.001, 0.02, d + 0.001, mats.greenPaint, x, yy + h * 0.65, 0, 0, 'none');
       addTape(ctx, b, label, 5, xf(x, yy + h * 0.35, d / 2 + 0.0008));
     };
-    box(-0.32, 1.45, 0.26, 0.18, 0.3, 'FLEX 3 · BOXED');
-    box(-0.03, 1.45, 0.22, 0.16, 0.28, 'MINI 3 · BOXED');
-    box(0.27, 1.45, 0.34, 0.24, 0.32, 'STATION DUO');
+    box(-0.32, 1.45, 0.26, 0.18, 0.3, 'FLUX 3 · BOXED');
+    box(-0.03, 1.45, 0.22, 0.16, 0.28, 'MICRO 3 · BOXED');
+    box(0.27, 1.45, 0.34, 0.24, 0.32, 'STAND DUET');
     b.add(boxGeo(0.3, 0.2, 0.3), mats.cardboard, xf(0.3, 1.05 + 0.1, 0));
     addTape(ctx, b, 'CRADLES — OLD', 5, xf(0.3, 1.18, 0.1505));
   });
-  // legacy Flex 1 (shown once it has been placed)
+  // legacy Flux 1 (shown once it has been placed)
   legacy.position.set(sc.pos[0] - 0.25, 1.05, sc.pos[2] + 0.02);
   {
-    const lb = new StaticBatch('legacy-flex1');
+    const lb = new StaticBatch('legacy-flux1');
     lb.add(rboxGeo(0.084, 0.026, 0.205, 0.006, 2), mats.labwhite, xf(0, 0.013, 0));
     lb.box(0.062, 0.001, 0.11, mats.screenGlass, 0, 0.0265, 0.02, 0, 'none');
-    addTape(ctx, lb, 'LEGACY · FLEX 1', 5, xf(0, 0.027, -0.07, -Math.PI / 2, 0, 0));
+    addTape(ctx, lb, 'LEGACY · FLUX 1', 5, xf(0, 0.027, -0.07, -Math.PI / 2, 0, 0));
     ctx.statics.flushInto(lb, legacy);
   }
   legacy.visible = false;
@@ -397,7 +397,7 @@ export function buildPartsWall(ctx: LabCtx): void {
     const n = i + 1;
     // front face + the whole tray: an open drawer stays targetable when looking down into it
     const proxy = ctx.ia.proxy(d.group, hw - 0.02, d.h - 0.004, hd - 0.03, xf(0, 0, 0.03 - (hd - 0.03) / 2), `husky-d${n}`);
-    const itemLabel = d.item === 'flex2-spare' ? 'SPARE FLEX 2' : d.item === 'mini3-spare' ? 'SPARE MINI 3' : null;
+    const itemLabel = d.item === 'flux2-spare' ? 'SPARE FLUX 2' : d.item === 'micro3-spare' ? 'SPARE MICRO 3' : null;
     ctx.ia.register(`chest.husky.d${n}`, proxy, () =>
       pickVerbs([
         {
@@ -414,9 +414,9 @@ export function buildPartsWall(ctx: LabCtx): void {
           show: () => !!itemLabel && d.target > 0.5 && !!d.itemGroup?.visible,
           run: () => {
             const lab = store.getState().lab;
-            const want = d.item === 'flex2-spare' ? 'FLEX_2' : 'MINI_3';
+            const want = d.item === 'flux2-spare' ? 'FLUX_2' : 'MICRO_3';
             const dev = lab?.devices ? Object.values(lab.devices).find((x) => x.rigId === `husky-drawer-${n}` || (x.rigId?.startsWith('husky') && x.type === want)) : undefined;
-            if (carry(d.item!, itemLabel === 'SPARE FLEX 2' ? 'Spare Flex 2' : 'Spare Mini 3', dev?.id ?? (d.item === 'flex2-spare' ? 'dev-spare-flex2' : 'dev-spare-mini3'), `chest.husky.d${n}`)) {
+            if (carry(d.item!, itemLabel === 'SPARE FLUX 2' ? 'Spare Flux 2' : 'Spare Micro 3', dev?.id ?? (d.item === 'flux2-spare' ? 'dev-spare-flux2' : 'dev-spare-micro3'), `chest.husky.d${n}`)) {
               toast('success', `Took the ${itemLabel?.toLowerCase()}`, 'Carry it to the rig and E on the cradle to install.');
             }
           },
@@ -446,7 +446,7 @@ export function buildPartsWall(ctx: LabCtx): void {
   ctx.ia.register('cabinet.storage.legacy-shelf', legacyProxy, () => {
     const carried = store.getState().session.items.carried;
     return pickVerbs([
-      carried?.id === 'flex1-legacy' || (carried?.id === 'device' && /flex.?1/i.test(carried.label))
+      carried?.id === 'flux1-legacy' || (carried?.id === 'device' && /flux.?1/i.test(carried.label))
         ? {
             key: 'E',
             label: `Place ${carried.label}`,
@@ -459,10 +459,10 @@ export function buildPartsWall(ctx: LabCtx): void {
           }
         : {
             key: 'E',
-            label: legacy.visible ? 'Take legacy Flex 1' : 'Place / Take',
-            blocked: () => (legacy.visible ? null : 'Shelf is empty — bring the legacy Flex 1 here'),
+            label: legacy.visible ? 'Take legacy Flux 1' : 'Place / Take',
+            blocked: () => (legacy.visible ? null : 'Shelf is empty — bring the legacy Flux 1 here'),
             run: () => {
-              if (carry('flex1-legacy', 'Legacy Flex 1', 'dev-legacy-flex1', 'cabinet.storage.legacy-shelf')) legacy.visible = false;
+              if (carry('flux1-legacy', 'Legacy Flux 1', 'dev-legacy-flux1', 'cabinet.storage.legacy-shelf')) legacy.visible = false;
             },
           },
     ]);
@@ -508,7 +508,7 @@ export function buildPartsWall(ctx: LabCtx): void {
       }
       if (d.itemGroup) {
         const carried = store.getState().session.items.carried?.id === d.item;
-        const want = d.item === 'flex2-spare' ? 'FLEX_2' : 'MINI_3';
+        const want = d.item === 'flux2-spare' ? 'FLUX_2' : 'MICRO_3';
         const devs = lab?.devices ? Object.values(lab.devices) : [];
         const simKnows = devs.some((x) => x.rigId?.startsWith('husky'));
         const inDrawer = simKnows ? devs.some((x) => x.rigId?.startsWith('husky') && x.type === want) : true;

@@ -1,6 +1,6 @@
 /**
  * Read helpers over `LabState` (pure). Entity tables are keyed by numeric ids or runtime ids; content
- * refers to things by their names (`wall-e`, `johnny-5-flex2`, `GO-SDK-US-01`, `pi-10.42.10.11`). The
+ * refers to things by their names (`wall-e`, `johnny-5-flux2`, `GO-SDK-US-01`, `pi-10.42.10.11`). The
  * name indexes are memoised per table object (immer gives a new object whenever a table changes).
  */
 import type {
@@ -50,7 +50,7 @@ export function robotNameOf(lab: LabState, id: number | null | undefined): strin
   return robotById(lab, id)?.name ?? null;
 }
 
-/** Orca Device Type of a robot's device row (e.g. `FLEX_4`), or null. */
+/** Orca Device Type of a robot's device row (e.g. `FLUX_4`), or null. */
 export function robotDeviceType(lab: LabState, robotName: string | null | undefined): string | null {
   const r = robotByName(lab, robotName);
   return (r && r.deviceId != null ? deviceRowById(lab, r.deviceId)?.deviceType : null) ?? null;
@@ -87,7 +87,7 @@ export function screenByTypeAndName(lab: LabState, deviceType: string, name: str
   return indexBy(screenIdx, lab.orca?.screens, (s) => `${s.deviceType}/${s.name}`).get(`${deviceType}/${name}`) ?? null;
 }
 
-/** Runtime device by runtime id (`dev-wall-e-flex3`), Orca row name (`wall-e-flex3`) or `dev-<name>`. */
+/** Runtime device by runtime id (`dev-wall-e-flux3`), Orca row name (`wall-e-flux3`) or `dev-<name>`. */
 export function runtimeDevice(lab: LabState, idOrName: string | null | undefined): TerminalDevice | null {
   if (!idOrName || !lab.devices) return null;
   const direct = lab.devices[idOrName] ?? lab.devices[`dev-${idOrName}`];

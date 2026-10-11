@@ -22,7 +22,7 @@ export const BARKS: BarkDef[] = resolvePeople<BarkDef[]>([
   { id: 'BARK_TATE_03', speaker: 'tate', trigger: 'GW05', text: "ROSIE is PayCore's. Unavailable means only jobs that name it get it." },
   { id: 'BARK_TATE_04', speaker: 'tate', trigger: 'GW20', text: "That reservation wasn't yours. Ask first." },
   { id: 'BARK_TATE_05', speaker: 'tate', trigger: 'GW22', text: 'Name is the system identifier. Pipelines use it. Leave it.', fromCurriculum: true },
-  { id: 'BARK_DAVID_01', speaker: 'david', trigger: 'INC39 spawn', text: 'Enums are ALL CAPS. FLEX_3, not flex_3.' },
+  { id: 'BARK_DAVID_01', speaker: 'david', trigger: 'INC39 spawn', text: 'Enums are ALL CAPS. FLUX_3, not flux_3.' },
   { id: 'BARK_DAVID_02', speaker: 'david', trigger: 'INC49 resolved', text: 'Dynamic JSON in the test, hardcoded in the pipeline. Canada uses both — keep them agreeing.' },
   { id: 'BARK_DAVID_03', speaker: 'david', trigger: 'INC51 resolved', text: 'Go SDK needs all three: App ID, App Secret, API Key.' },
   { id: 'BARK_MORGAN_01', speaker: 'morgan', trigger: 'First local run in Arcade', text: "Reserve the rig before you hit Run. Jenkins doesn't know you're there otherwise." },

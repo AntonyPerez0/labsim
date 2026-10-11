@@ -16,17 +16,17 @@ const inside = (a: PxRect, b: PxRect) => a.x >= b.x && a.y >= b.y && a.x + a.w <
 
 describe('render2d contract', () => {
   it('maps device types to layout classes (World §4.2)', () => {
-    expect(layoutClassFor('FLEX_3')).toBe('P');
-    expect(layoutClassFor('FLEX_POCKET')).toBe('P');
-    expect(layoutClassFor('FLEX_1')).toBe('P-s');
-    expect(layoutClassFor('COMPACT')).toBe('P-s');
-    expect(layoutClassFor('MINI_3')).toBe('L8');
-    expect(layoutClassFor('STATION_2')).toBe('L8');
-    expect(layoutClassFor('STATION_2018')).toBe('L14');
-    expect(layoutClassFor('STATION_DUO')).toBe('L14');
-    expect(layoutClassFor('STATION_DUO', 'secondary')).toBe('L8');
-    expect(layoutClassFor('FLEX_3', 'secondary')).toBeNull();
-    expect(layoutClassFor('STATION_DUO_3')).toBeNull();
+    expect(layoutClassFor('FLUX_3')).toBe('P');
+    expect(layoutClassFor('FLUX_POCKET')).toBe('P');
+    expect(layoutClassFor('FLUX_1')).toBe('P-s');
+    expect(layoutClassFor('COMPASS')).toBe('P-s');
+    expect(layoutClassFor('MICRO_3')).toBe('L8');
+    expect(layoutClassFor('STAND_2')).toBe('L8');
+    expect(layoutClassFor('STAND_2018')).toBe('L14');
+    expect(layoutClassFor('STAND_DUET')).toBe('L14');
+    expect(layoutClassFor('STAND_DUET', 'secondary')).toBe('L8');
+    expect(layoutClassFor('FLUX_3', 'secondary')).toBeNull();
+    expect(layoutClassFor('STAND_DUET_3')).toBeNull();
     expect(LAYOUT_CLASS_SIZE_MM.L14.w).toBeCloseTo(172.3 * 1.79861, 1);
   });
 

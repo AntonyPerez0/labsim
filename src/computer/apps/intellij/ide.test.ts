@@ -134,12 +134,12 @@ describe('config validator', () => {
       8: { id: 8, name: 'r2-d2', environment: 'DEV2', deviceId: 3, mfdDeviceId: 3, cfdDeviceId: 3 },
     },
     devices: {
-      1: { id: 1, name: 'megatron-mfd', deviceType: 'STATION_2', serial: 'SIM-S2-000021', ip: '10.42.30.21' },
-      2: { id: 2, name: 'megatron-cfd', deviceType: 'MINI_2', serial: 'SIM-M2-000022', ip: '10.42.30.22' },
-      3: { id: 3, name: 'r2-d2-duo', deviceType: 'STATION_DUO_2', serial: 'SIM-D2-000014', ip: '10.42.30.14' },
+      1: { id: 1, name: 'megatron-mfd', deviceType: 'STAND_2', serial: 'SIM-S2-000021', ip: '10.42.30.21' },
+      2: { id: 2, name: 'megatron-cfd', deviceType: 'MICRO_2', serial: 'SIM-M2-000022', ip: '10.42.30.22' },
+      3: { id: 3, name: 'r2-d2-duet', deviceType: 'STAND_DUET_2', serial: 'SIM-D2-000014', ip: '10.42.30.14' },
     },
   } as never;
-  const good = 'runType=tethered\nmerchantFacingDeviceIp=10.42.30.21\ncustomerFacingDeviceIp=10.42.30.22\nserial=SIM-S2-000021\ndeviceType=Station\ntheme=avocado\nkernelType=CPA\nportNumber=5444\nunlockPasscode=0000\nbackendEnv=DEV1\nrobotName=megatron\n';
+  const good = 'runType=tethered\nmerchantFacingDeviceIp=10.42.30.21\ncustomerFacingDeviceIp=10.42.30.22\nserial=SIM-S2-000021\ndeviceType=Stand\ntheme=avocado\nkernelType=CPA\nportNumber=5444\nunlockPasscode=0000\nbackendEnv=DEV1\nrobotName=megatron\n';
   it('passes 11/11 on the M14 target', () => {
     const v = validateConfigProperties(good, orca);
     expect(v.passed).toBe(11);
@@ -151,10 +151,10 @@ describe('config validator', () => {
     expect(v.passed).toBe(9);
     expect(v.failures).toContain('portNumber = 5555 — must be 5444: lab devices listen on 5444; 5555 is the ADB default');
   });
-  it('checks Station Duo same-IP rule', () => {
+  it('checks Stand Duet same-IP rule', () => {
     const duo = good.replace('robotName=megatron', 'robotName=r2-d2').replace('backendEnv=DEV1', 'backendEnv=DEV2').replace('10.42.30.21', '10.42.30.14').replace('10.42.30.22', '10.42.30.22').replace('SIM-S2-000021', 'SIM-D2-000014');
     const v = validateConfigProperties(duo, orca);
-    expect(v.rules.find((r) => r.key === 'customerFacingDeviceIp')?.message).toBe('On a Station Duo both IPs are the same address (10.42.30.14)');
+    expect(v.rules.find((r) => r.key === 'customerFacingDeviceIp')?.message).toBe('On a Stand Duet both IPs are the same address (10.42.30.14)');
   });
 });
 
@@ -190,7 +190,7 @@ describe('project model', () => {
     expect(isIgnored('config.properties', 'config.properties\ntarget/\n')).toBe(true);
     expect(isIgnored('target/x.class', 'config.properties\ntarget/\n')).toBe(true);
     expect(isIgnored('pom.xml', 'config.properties\n')).toBe(false);
-    expect(isValidBranchName('fix/flex4-receipt-qr')).toBe(true);
+    expect(isValidBranchName('fix/flux4-receipt-qr')).toBe(true);
     expect(isValidBranchName('bad name')).toBe(false);
     expect(isValidBranchName('a..b')).toBe(false);
   });

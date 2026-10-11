@@ -1,6 +1,6 @@
 /**
  * Jenkinsfile reading (Sim §3.18.2): only the capability lines are interpreted; everything else is
- * display text. `params.NAME` resolves to the build parameter **as typed** (so `flex_3` reaches Orca).
+ * display text. `params.NAME` resolves to the build parameter **as typed** (so `flux_3` reaches Orca).
  */
 
 export interface ScriptCaps {

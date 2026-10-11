@@ -39,9 +39,9 @@ describe('end to end: factory → every runner → health check → five faults 
 
     // 1. One job per runner type, all green at factory.
     const jobs: [string, Record<string, string>, string][] = [
-      ['Java/uia-remote-regression-flex', { ROBOT_NAME: 'wall-e' }, 'uia-remote (standalone, physical taps)'],
+      ['Java/uia-remote-regression-flux', { ROBOT_NAME: 'wall-e' }, 'uia-remote (standalone, physical taps)'],
       ['Java/uia-remote-tethered-tax', { ROBOT_NAME: 'megatron' }, 'uia-remote (tethered MFD/CFD)'],
-      ['Java/uia-remote-duo-cfd', {}, 'uia-remote (Duo, OCR + UIA 2.3)'],
+      ['Java/uia-remote-duet-cfd', {}, 'uia-remote (Duet, OCR + UIA 2.3)'],
       ['Java/pigeon-android-sale-swipe', { ROBOT_NAME: 'bumblebee' }, 'pigeon (Android LSTR)'],
       ['Java/pigeon-windows-tender', {}, 'pigeon (Windows LSTR)'],
       ['Java/go-sdk-sale-smoke', {}, 'go-sdk'],
@@ -68,17 +68,17 @@ describe('end to end: factory → every runner → health check → five faults 
       { faultId: 'fuse.blown', params: { fuse: 'F-RACKB-5V' } },
       { faultId: 'rig.lockReleased', params: { rig: 'bumblebee' } },
       { faultId: 'card.trackDataCorrupt', params: { profile: 'VISA_STD_SWIPE' } },
-      { faultId: 'jenkins.envCase', params: { job: 'Java/uia-remote-regression-flex', value: 'flex_3' } },
+      { faultId: 'jenkins.envCase', params: { job: 'Java/uia-remote-regression-flux', value: 'flux_3' } },
     );
     expect(ids).toHaveLength(5);
     run(1_000);
     nextHealthCheck();
     for (const r of ['eve', 'johnny-5', 'baymax', 'seti', 'rosie']) expect(robot(r).status, r).toBe('CONNECTION_FAILED');
     expect(lab().rigs['bumblebee']!.banner).toBe('yellow');
-    expect(build('Java/uia-remote-regression-flex').failureCode).toBe('ENUM_CASE');
+    expect(build('Java/uia-remote-regression-flux').failureCode).toBe('ENUM_CASE');
     const swipe = build('Java/pigeon-android-sale-swipe', { ROBOT_NAME: 'wall-e' });
     expect(swipe.console).toContain('LSTR step 4/9 "card swipe" … [device] SWIPE_ERROR: invalid track data');
-    expect(build('Java/uia-remote-regression-mini', { ROBOT_NAME: 'bumblebee' }).console).toContain('[orca] xy_touch bumblebee HOME/Register → 409 Conflict: LOCK_RELEASED (park required)');
+    expect(build('Java/uia-remote-regression-micro', { ROBOT_NAME: 'bumblebee' }).console).toContain('[orca] xy_touch bumblebee HOME/Register → 409 Conflict: LOCK_RELEASED (park required)');
     expect(ids.map((id) => sim.faults.isResolved(id))).toEqual([false, false, false, false, false]);
 
     // 4. Fix each through the SimApi, as a player would.
@@ -92,8 +92,8 @@ describe('end to end: factory → every runner → health check → five faults 
     sim.rig.command('bumblebee', 'park.all', 'player');
     const swipeProfile = Object.values(lab().orca.cardProfiles).find((c) => c.name === 'VISA_STD_SWIPE')!;
     sim.orca.saveCardProfile({ id: swipeProfile.id, trackData: '%B4111111111111111^SIM/VISA^30121010000000000000?;4111111111111111=3012101000000000?' }, 'player');
-    const job = sim.jenkins.job('Java/uia-remote-regression-flex')!;
-    sim.jenkins.saveJob(job.id, { savedParams: { ...job.savedParams, DEVICE_TYPE: 'FLEX_3' } }, 'player');
+    const job = sim.jenkins.job('Java/uia-remote-regression-flux')!;
+    sim.jenkins.saveJob(job.id, { savedParams: { ...job.savedParams, DEVICE_TYPE: 'FLUX_3' } }, 'player');
     expect(runUntil(() => ['pi-eve', 'pi-johnny-5', 'pi-baymax', 'pi-seti', 'pi-rosie', 'pi-cam-rackb'].every((h) => lab().hosts[h]!.os === 'RUNNING'), 90_000)).toBeGreaterThan(0);
     run(21_000); // the fuse predicate holds 20 s
     for (const id of ids) expect(resolved([id]), id).toBe(true);
@@ -103,12 +103,12 @@ describe('end to end: factory → every runner → health check → five faults 
     // 5. Recovery happens at the next scheduled check (never by hand); then everything is green again.
     nextHealthCheck();
     expect(robot('rosie').status).toBe('UNAVAILABLE'); // restored to its pre-failure status
-    for (const d of ['dev-wall-e-flex3', 'dev-bumblebee-mini3', 'dev-eve-flex4']) sim.device.pressKey(d, 'HOME', 'player');
+    for (const d of ['dev-wall-e-flux3', 'dev-bumblebee-micro3', 'dev-eve-flux4']) sim.device.pressKey(d, 'HOME', 'player');
     run(2_000);
     expect(signature(lab())).toEqual(green);
-    expect(build('Java/uia-remote-regression-flex').result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-regression-flux').result).toBe('SUCCESS');
     expect(build('Java/pigeon-android-sale-swipe', { ROBOT_NAME: 'wall-e' }).result).toBe('SUCCESS');
-    expect(build('Java/uia-remote-regression-mini', { ROBOT_NAME: 'bumblebee' }).result).toBe('SUCCESS');
+    expect(build('Java/uia-remote-regression-micro', { ROBOT_NAME: 'bumblebee' }).result).toBe('SUCCESS');
     expect(signature(lab())).toEqual(green);
   });
 });
@@ -120,22 +120,22 @@ describe('API results never leak immer drafts', () => {
     const results: unknown[] = [
       sim.orca.checkout({ buildId: 'manual-1', jobId: 'manual', robotName: 'tars', environment: 'DEV1', kind: 'manual' }),
       sim.orca.release(robot('tars').id, 'manual-1'),
-      sim.orca.matchPreview('{"deviceType":"FLEX_3"}'),
+      sim.orca.matchPreview('{"deviceType":"FLUX_3"}'),
       sim.orca.capabilityDocument(robot('wall-e').id),
       sim.orca.xyTouch('tars', 'HOME', 'Register', 'player'),
       sim.orca.card('wall-e', 'DIP', 'VISA_STD_DIP', 'player'),
       sim.orca.rest('GET', '/api/robots', null, 'player'),
       sim.rig.dragCarriage('wall-e', 25, 0, 'player'),
-      sim.device.layout('dev-wall-e-flex3', 'primary'),
-      sim.device.swapHardware('johnny-5', 'FLEX_2', 'player', { deviceId: 'dev-spare-flex2' }),
+      sim.device.layout('dev-wall-e-flux3', 'primary'),
+      sim.device.swapHardware('johnny-5', 'FLUX_2', 'player', { deviceId: 'dev-spare-flux2' }),
       sim.power.measure('MW-1.out'),
       sim.camera.probe('http://10.42.10.11:8081/stream.mjpg'),
       sim.ocr.compare(1),
       sim.faults.catalogue(),
       sim.faults.setupCatalogue(),
       sim.faults.inject({ faultId: 'pi.hung', params: { host: 'pi-wall-e' } }),
-      sim.jenkins.build('Java/uia-remote-regression-flex', {}, 'player'),
-      sim.jenkins.recentBuilds('Java/uia-remote-regression-flex', 5),
+      sim.jenkins.build('Java/uia-remote-regression-flux', {}, 'player'),
+      sim.jenkins.recentBuilds('Java/uia-remote-regression-flux', 5),
       sim.terminal.exec('adb devices'),
       sim.git.clone('uia-remote', 'player'),
       sim.ollama.ask('llava', 'hi', null, 'player'),

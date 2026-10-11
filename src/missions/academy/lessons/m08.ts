@@ -2,8 +2,8 @@
  * M08 — Capabilities, Merchant Config, Laz & Ubi (Cur §2 M08). Mentor {{david}}, cameo {{tate}}.
  * Setup (`academy:M08`, Sim §4.4.2): Merchant Config `GO-SDK-US-01` has a blank API Key; Gort test
  * definition `go-sdk/tests/sale_receipt.json` lacks its `printer` capability; DATA is on
- * `AUTO-US-NOPIN-01`. Sim deviation (Appendix A.2): the printerless Flex Pocket the Match preview drops
- * in step 5 is VISION (the GO_SDK Flex Pocket), not ROSIE — the lesson text names the device type only.
+ * `AUTO-US-NOPIN-01`. Sim deviation (Appendix A.2): the printerless Flux Pocket the Match preview drops
+ * in step 5 is VISION (the GO_SDK Flux Pocket), not ROSIE — the lesson text names the device type only.
  */
 import { c, on, p } from '../../types';
 import type { LessonDef } from '../../types';
@@ -44,7 +44,7 @@ export const M08: LessonDef = {
       ),
       objectives: [
         { id: 'M08.03.walle', text: 'WALL-E: printer true, physicalTouch true', done: c.appAction('orca', 'orca.capabilities.viewed', (d) => d.robotName === 'wall-e') },
-        { id: 'M08.03.rosie', text: 'ROSIE: FLEX_POCKET, printer false', done: c.appAction('orca', 'orca.capabilities.viewed', (d) => d.robotName === 'rosie') },
+        { id: 'M08.03.rosie', text: 'ROSIE: FLUX_POCKET, printer false', done: c.appAction('orca', 'orca.capabilities.viewed', (d) => d.robotName === 'rosie') },
       ],
       showMe: [{ app: 'orca', target: 'orca.capabilities.robotSelect', action: 'select', text: 'rosie' }],
       factIds: ['F131', 'F011'],
@@ -68,7 +68,7 @@ export const M08: LessonDef = {
         { id: 'M08.05.valid', text: 'The JSON still parses', done: c.eq(p.gitFile('gort', RECEIPT_TEST, 'local').parsesJson, true) },
         {
           id: 'M08.05.preview',
-          text: 'Optional: run Match preview in Orca and see the printerless Flex Pocket drop out',
+          text: 'Optional: run Match preview in Orca and see the printerless Flux Pocket drop out',
           optional: true,
           done: c.appAction('orca', 'orca.matchPreview.ran', (d) => typeof d.capabilities === 'string' && d.capabilities.includes('"printer"')),
         },
@@ -81,7 +81,7 @@ export const M08: LessonDef = {
       showMe: [{ app: 'intellij', route: `/project/gort/file/${RECEIPT_TEST}`, target: `intellij.treeNode:${RECEIPT_TEST}`, action: 'click' }],
       factIds: ['F132', 'F011', 'F060'],
       // Jenkins builds from gort's protected main, so the local edit alone never reaches the M08.09 build
-      // (it would keep failing PRINTER_NOT_AVAILABLE on the printerless Flex Pocket). Pull requests are
+      // (it would keep failing PRINTER_NOT_AVAILABLE on the printerless Flux Pocket). Pull requests are
       // taught in M09/M13; here {{david}} lands the reviewed change (the dropped-capability commit is undone).
       onComplete: [
         clearFaults('gort.capabilityDropped'),
@@ -93,9 +93,9 @@ export const M08: LessonDef = {
       kind: 'computer-task',
       hud: 'Find the hardcoded capabilities in the UI Automator pipeline',
       app: 'jenkins',
-      route: jobRoute(JOB.regressionFlex, 'configure'),
+      route: jobRoute(JOB.regressionFlux, 'configure'),
       success: c.appAction('jenkins', 'jenkins.script.lineClicked', (d) => typeof d.text === 'string' && d.text.includes('def capabilities = [deviceType: params.DEVICE_TYPE, physicalTouch: true]')),
-      showMe: [{ app: 'jenkins', route: jobRoute(JOB.regressionFlex, 'configure'), target: 'jenkins.scriptEditor', action: 'click' }],
+      showMe: [{ app: 'jenkins', route: jobRoute(JOB.regressionFlux, 'configure'), target: 'jenkins.scriptEditor', action: 'click' }],
       factIds: ['F134'],
     },
     {

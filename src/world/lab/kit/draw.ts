@@ -3,6 +3,7 @@
  * text, sticky notes (World §0.1 fonts, §6.2/§6.3). Vector ops only (they are replayed into atlas
  * padding with a transform, so never use putImageData here).
  */
+import { drawMark } from '@/render2d/shared/labLogo';
 import { seeded } from './procTex';
 
 export const FONT = {
@@ -182,19 +183,12 @@ export function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w
   ctx.closePath();
 }
 
-/** LabSim four-leaf glyph (4 circles in a 2 × 2 with a small stem notch). */
+/** LabSim three-bar mark (same glyph as the device screens and UI, see `@/render2d/shared/labLogo`). */
 export function drawLabMark(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number, color: string): void {
-  const r = size * 0.24;
-  const o = size * 0.25;
-  ctx.fillStyle = color;
-  for (const [dx, dy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]] as const) {
-    ctx.beginPath();
-    ctx.arc(cx + dx * o, cy + dy * o, r, 0, Math.PI * 2);
-    ctx.fill();
-  }
+  drawMark(ctx, cx, cy, size * 0.9, color);
 }
 
-/** LabSim wordmark: leaf + lowercase `lab`. */
+/** LabSim wordmark: three-bar mark + lowercase `labsim`. */
 export function drawLabWordmark(ctx: CanvasRenderingContext2D, x: number, cy: number, h: number, color: string): void {
   drawLabMark(ctx, x + h * 0.5, cy, h, color);
   ctx.fillStyle = color;

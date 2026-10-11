@@ -75,7 +75,7 @@ const LESSON: LessonDef = {
       kind: 'computer-task',
       hud: 'Reserve WALL-E, then build …',
       app: ['orca', 'jenkins'],
-      success: c.sequence(on('orca.checkoutRejected', { jobId: 'Java/uia-remote-regression-flex' }), on('robot.checkedOut', { name: 'wall-e' })),
+      success: c.sequence(on('orca.checkoutRejected', { jobId: 'Java/uia-remote-regression-flux' }), on('robot.checkedOut', { name: 'wall-e' })),
       offerFastForward: true,
     },
     { id: 'M01.10', kind: 'branch', if: c.eq(p.v('choice'), 'a'), goto: 'M01.14' },
@@ -118,7 +118,7 @@ describe('missions contract builders', () => {
   it('supports probe references, tolerances, quantifiers and deferred builds', () => {
     const duoSameIp = c.same(p.prop('config', 'merchantFacingDeviceIp'), p.prop('config', 'customerFacingDeviceIp'));
     expect(duoSameIp).toMatchObject({ cmp: 'eq', value: { probe: { p: 'prop', key: 'customerFacingDeviceIp' } } });
-    const qr: Condition = c.forAll(['FLEX_3', 'MINI_3'] as const, (t) =>
+    const qr: Condition = c.forAll(['FLUX_3', 'MICRO_3'] as const, (t) =>
       c.approx(p.screenLocation(t, 'RECEIPT_OPTIONS_5', 'Print').y, c.ref(p.truth(`${t}.Print.y`)), 0.5),
     );
     expect(qr).toMatchObject({ op: 'all', of: [{ cmp: 'approx', tolerance: 0.5 }, { cmp: 'approx' }] });

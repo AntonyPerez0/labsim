@@ -1,7 +1,7 @@
 /**
  * M03 — Power Distribution: Don't Fry the terminals (Cur §2 M03). Mentor {{jared}}.
  * Setup (`academy:M03`): Rack B's 5V inline fuse `F-RACKB-5V` is blown (JOHNNY-5 / BAYMAX / SETI /
- * ROSIE Pis dark); a new Flex 4 power brick (`psu-flex4-new`) and a spare Collis probe PSU
+ * ROSIE Pis dark); a new Flux 4 power brick (`psu-flux4-new`) and a spare Collis probe PSU
  * (`psu-collis-spare`) lie unplugged on the power-wall bench. Wrong socket in Academy = spark +
  * mentor line, no damage (Sim §3.13.3).
  */
@@ -12,7 +12,7 @@ import { loadsOnAcStrip, minigameDone, say, worldAction } from './helpers';
 const RACK_B_PIS = ['pi-johnny-5', 'pi-baymax', 'pi-seti', 'pi-rosie'] as const;
 const FUSE = 'F-RACKB-5V';
 const REG = 'REG-5V-B';
-const NEW_LOADS = ['psu-flex4-new', 'psu-collis-spare'] as const;
+const NEW_LOADS = ['psu-flux4-new', 'psu-collis-spare'] as const;
 
 const isFusePoint = (id: string) => id === FUSE || id === `fuse:${FUSE}:ohms` || id.startsWith('fuse:F-5V-B');
 
@@ -155,19 +155,19 @@ export const M03: LessonDef = {
     {
       id: 'M03.11',
       kind: 'interact',
-      hud: 'Plug in the new Flex 4 and the spare Collis probe',
-      target: 'prop.flex4-psu-brick',
+      hud: 'Plug in the new Flux 4 and the spare Collis probe',
+      target: 'prop.flux4-psu-brick',
       success: loadsOnAcStrip(NEW_LOADS),
       objectives: [
-        { id: 'M03.11.flex4', text: 'New Flex 4 power brick → AC power strip', done: loadsOnAcStrip(['psu-flex4-new']) },
+        { id: 'M03.11.flux4', text: 'New Flux 4 power brick → AC power strip', done: loadsOnAcStrip(['psu-flux4-new']) },
         { id: 'M03.11.collis', text: 'Spare Collis probe → AC power strip', done: loadsOnAcStrip(['psu-collis-spare']) },
       ],
       wrongActions: [
         // Academy damage model: a wrong socket sparks and the lead pops out (`power.spark`, no `power.plugged`).
-        { id: 'dc-flex4', on: on('power.spark', {}, (pl) => /Flex 4 power brick/i.test(pl.cause)), say: "That's how we fry a terminal. Commercial AC strip. Always.", gw: 'GW01' },
+        { id: 'dc-flux4', on: on('power.spark', {}, (pl) => /Flux 4 power brick/i.test(pl.cause)), say: "That's how we fry a terminal. Commercial AC strip. Always.", gw: 'GW01' },
         { id: 'dc-collis', on: on('power.spark', {}, (pl) => /Collis/i.test(pl.cause)), say: "That's how we fry a probe that costs more than my car. Commercial AC strip. Always.", gw: 'GW02' },
         // Damage model "real" (Free Play replays): the plug goes in, then the load fries.
-        { id: 'dc-flex4-plugged', on: on('power.plugged', { loadId: 'psu-flex4-new' }, (pl) => pl.hookup.kind !== 'ac-strip'), say: "That's how we fry a terminal. Commercial AC strip. Always.", gw: 'GW01' },
+        { id: 'dc-flux4-plugged', on: on('power.plugged', { loadId: 'psu-flux4-new' }, (pl) => pl.hookup.kind !== 'ac-strip'), say: "That's how we fry a terminal. Commercial AC strip. Always.", gw: 'GW01' },
         { id: 'dc-collis-plugged', on: on('power.plugged', { loadId: 'psu-collis-spare' }, (pl) => pl.hookup.kind !== 'ac-strip'), say: "That's how we fry a probe that costs more than my car. Commercial AC strip. Always.", gw: 'GW02' },
       ],
       factIds: ['F228', 'F229'],
