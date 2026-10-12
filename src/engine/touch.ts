@@ -15,6 +15,19 @@ export interface TouchLook {
 }
 
 /** Look rate for touch drags — ~2.5× the mouse rate: short swipes on a small screen. */
+/**
+ * True when the primary input is a finger (phones, tablets). Pointer lock is a mouse feature: on these
+ * devices it must never be requested (Android Chrome may grant it, and the next touch drops it again).
+ */
+export function primaryTouch(): boolean {
+  if (touch.enabled) return true;
+  try {
+    return typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches && !matchMedia('(pointer: fine)').matches;
+  } catch {
+    return false;
+  }
+}
+
 export const TOUCH_LOOK_RADIANS_PER_PIXEL = 0.0055;
 
 /** Joystick tuning, as fractions of the travel radius (dead zone / outer "run" ring). */

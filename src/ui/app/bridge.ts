@@ -15,6 +15,7 @@ import { ACHIEVEMENTS_BY_ID, RANKS_BY_ID, articleById } from '@/content';
 import { engine } from '@/engine';
 import { hasMission } from '@/ui/services/missions';
 import { currentOverlay, openOverlay, openPause } from '@/ui/services/nav';
+import { primaryTouch } from '@/engine/touch';
 import { installKitSounds, uiSound, unlockAudio } from '@/ui/services/sound';
 import { pushToast } from '@/ui/services/toasts';
 import { boardById, propForBoard, type MinigameId } from '@/ui/minigames/boards';
@@ -39,6 +40,8 @@ function applyUiScale(scale: number): void {
   // Large UI: some layouts (HUD toasts vs hotbar) rearrange when the effective viewport gets small.
   root.dataset.uiLarge = String(scale >= 1.25);
   root.style.setProperty('--ui-scale', String(scale));
+  // Phones multiply this by a compaction factor on the UI layers (src/ui/styles/mobile.css).
+  root.style.setProperty('--ui-scale-user', String(scale));
 }
 
 // While a pointer is held (dragging the "Text and interface size" slider) the new scale waits for the
@@ -220,6 +223,7 @@ export function installBridge(): () => void {
         } catch {
           /* engine not ready */
         }
+        if (primaryTouch()) return; // touch play never holds the lock: losing it is not a reason to pause
         if (now.ui.overlay.kind === 'none' && now.session.mode !== 'menu' && !now.ui.pointerLocked && !focused && !now.session.dialogue) openPause();
       }, 160);
     }),

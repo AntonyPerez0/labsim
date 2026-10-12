@@ -40,6 +40,7 @@ import {
   touchConsumeLook,
   touchNextPress,
   TOUCH_LOOK_RADIANS_PER_PIXEL,
+  primaryTouch,
 } from './touch';
 import { InteractionSystem } from './interaction';
 import { CameraFocus } from './focus';
@@ -790,6 +791,8 @@ export class LabEngine implements Engine {
 
   requestPointerLock(): void {
     this.audio.unlock();
+    // Touch devices look by dragging; pointer lock there only causes lock/unlock → pause loops.
+    if (primaryTouch()) return;
     this.input?.requestLock();
   }
 

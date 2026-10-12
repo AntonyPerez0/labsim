@@ -191,7 +191,7 @@
 
 /* ── HUD layout: keep the bottom-centre column clear of the joystick and button clusters ── */
 :root[data-touch='on'] .hud-bc {
-  width: min(620px, calc(100vw - 320px));
+  width: min(620px, calc(calc(100vw / var(--ui-scale)) - 320px));
   min-width: 0;
 }
 :root[data-touch='on'] .hud-bl {

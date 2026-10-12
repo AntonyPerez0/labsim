@@ -132,24 +132,99 @@ body,
   .art__layout { grid-template-columns: minmax(0, 1fr); gap: 16px; }
 }
 
+/* ───────────── Phones: every 2D layer a notch smaller ───────────── */
+/* Desktop-sized panels read huge on a phone. On small touch screens the UI layers' zoom (a11y.css)
+   is the player's "Text and interface size" × 0.8; `--ui-scale-user` is that setting (src/ui/app/bridge.ts).
+   Layouts that divide viewport units by `--ui-scale` keep working because the variable is overridden
+   on the same elements the zoom is applied to. Workstation and tablet overlays scale themselves. */
+@media (pointer: coarse) and (orientation: portrait) and (max-width: 600px),
+  (pointer: coarse) and (orientation: landscape) and (max-height: 520px) {
+  .ui-root > :not(.ov-layer--computer, .ov-layer--tablet, .coach-layer) {
+    --ui-scale: calc(var(--ui-scale-user, 1) * 0.8);
+  }
+  /* Thumb targets stay close to full size. */
+  .tc-joy,
+  .tc-cluster {
+    zoom: 1.15;
+  }
+  :root[data-touch='on'] .hud {
+    --hud-gutter: 10px;
+  }
+  /* Compact one-row clock: time · mode (the date row is dropped). */
+  :root[data-touch='on'] .hud-clock {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    padding: 6px 11px;
+  }
+  :root[data-touch='on'] .hud-clock__time { font-size: 19px; }
+  :root[data-touch='on'] .hud-clock__meta { display: none; }
+  :root[data-touch='on'] .hud-clock__mode { margin: 0; padding: 0; border: 0; white-space: nowrap; }
+  :root[data-touch='on'] .hud-tl { top: calc(var(--hud-gutter) + env(safe-area-inset-top, 0px)); left: calc(var(--hud-gutter) + env(safe-area-inset-left, 0px)); }
+  :root[data-touch='on'] .hud-dialogue { gap: 10px; padding: 11px 13px 11px 11px; }
+  :root[data-touch='on'] .hud-dialogue__portrait { zoom: 0.62; }
+  :root[data-touch='on'] .hud-slot { width: 46px; height: 46px; }
+  :root[data-touch='on'] .hud-hotbar__slots { gap: 4px; padding: 4px; }
+}
+
 /* ───────────── In-lab HUD with touch controls (touch.css has the controls themselves) ───────────── */
-/* Phones in portrait: the joystick and the action cluster fill the bottom ~230 px — lift the
-   hotbar / dialogue column above them and narrow it to the screen. */
+/* Coordinates below are in the zoomed layer's pixels: viewport units are divided by --ui-scale. */
+
+/* Phones in portrait: compact clock top-left, objectives full width under it; the joystick and the
+   action cluster fill the bottom ~250 px, so the hotbar / dialogue column sits above them. */
 @media (orientation: portrait) and (max-width: 600px) {
+  :root[data-touch='on'] .hud-tr {
+    top: calc(var(--hud-gutter) + 52px + env(safe-area-inset-top, 0px));
+    left: calc(var(--hud-gutter) + env(safe-area-inset-left, 0px));
+    right: calc(var(--hud-gutter) + env(safe-area-inset-right, 0px));
+    width: auto;
+    gap: 6px;
+    max-height: calc(calc(100vh / var(--ui-scale)) * 0.42);
+  }
   :root[data-touch='on'] .hud-bc {
-    bottom: calc(240px + env(safe-area-inset-bottom, 0px));
-    width: calc(100vw - 20px);
+    bottom: calc(272px + env(safe-area-inset-bottom, 0px));
+    width: calc(calc(100vw / var(--ui-scale)) - 2 * var(--hud-gutter));
     min-width: 0;
   }
-  :root[data-touch='on'] .hud-hotbar__slots { gap: 4px; padding: 4px; }
-  :root[data-touch='on'] .hud-tr { width: min(340px, calc(100vw - 24px)); }
-  :root[data-touch='on'] .hud-toasts { width: min(340px, calc(100vw - 24px)); bottom: calc(330px + env(safe-area-inset-bottom, 0px)); }
+  /* Toasts drop in from the top (briefly over the objectives) instead of covering the dialogue. */
+  :root[data-touch='on'] .hud-toasts {
+    width: min(360px, calc(calc(100vw / var(--ui-scale)) - 2 * var(--hud-gutter)));
+    top: calc(var(--hud-gutter) + 52px + env(safe-area-inset-top, 0px));
+    right: calc(var(--hud-gutter) + env(safe-area-inset-right, 0px));
+    bottom: auto;
+    flex-direction: column-reverse;
+  }
   .tc-rotate { top: calc(200px + env(safe-area-inset-top, 0px)); }
 }
-/* Phones in landscape: compact the top-left clock column so it doesn't eat the view. */
+
+/* Phones in landscape: the right edge belongs to the action buttons (pause / torch, crouch / jump,
+   Interact), so the objectives move next to the clock along the top; the hotbar / dialogue column
+   takes the bottom centre between the joystick and the buttons. */
 @media (orientation: landscape) and (max-height: 520px) {
-  :root[data-touch='on'] .hud-tl { max-width: 260px; }
-  :root[data-touch='on'] .hud-bc { width: min(560px, calc(100vw - 340px)); min-width: 0; }
+  :root[data-touch='on'] .hud-tl { max-width: 240px; }
+  :root[data-touch='on'] .hud-tr {
+    top: calc(var(--hud-gutter) + env(safe-area-inset-top, 0px));
+    left: calc(var(--hud-gutter) + 210px + env(safe-area-inset-left, 0px));
+    right: auto;
+    width: min(360px, calc(calc(100vw / var(--ui-scale)) - 420px));
+    gap: 6px;
+    align-items: flex-start;
+    max-height: calc(calc(100vh / var(--ui-scale)) - 150px);
+  }
+  :root[data-touch='on'] .hud-bc {
+    bottom: calc(var(--hud-gutter) + env(safe-area-inset-bottom, 0px));
+    width: min(560px, calc(calc(100vw / var(--ui-scale)) - 380px));
+    min-width: 0;
+  }
+  /* Talking: the dialogue needs the height more than the (locked) hotbar does. */
+  :root[data-touch='on'] .hud.has-dialogue .hud-hotbar { display: none; }
+  :root[data-touch='on'] .hud-toasts {
+    width: min(320px, calc(calc(100vw / var(--ui-scale)) * 0.4));
+    top: calc(var(--hud-gutter) + env(safe-area-inset-top, 0px));
+    bottom: auto;
+    flex-direction: column-reverse;
+  }
   :root[data-touch='on'] .hud-prompt { top: calc(50% + 14px); padding: 6px 11px 7px; }
 }
 /* The interaction prompt (what the Interact button will do) stays readable above the hotbar. */

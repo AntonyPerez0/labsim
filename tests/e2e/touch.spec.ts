@@ -125,6 +125,33 @@ test('crouch button toggles crouch; torch button toggles the head torch', async 
   expect(await state<string>('(s) => s.ui.overlay.kind')).toBe('none');
 });
 
+test('closing a menu never re-captures the pointer on touch, and losing the lock does not pause', async () => {
+  // Regression: after Settings → Graphics on a phone, every tap re-opened the pause menu (the resume
+  // re-requested pointer lock; the next touch dropped it, which paused again).
+  await page.evaluate(() => {
+    const L = (window as unknown as LabsimWindow).__labsim as any;
+    L.store.setState((s: any) => {
+      s.ui.overlay = { kind: 'none' };
+    });
+    L.engine.requestPointerLock();
+  });
+  expect(await page.evaluate(() => !!document.pointerLockElement)).toBe(false);
+  await page.evaluate(() => {
+    const L = (window as unknown as LabsimWindow).__labsim;
+    L.store.setState((s) => {
+      s.ui.pointerLocked = true;
+    });
+    L.store.setState((s) => {
+      s.ui.pointerLocked = false;
+    });
+  });
+  for (let i = 0; i < 3; i++) {
+    await page.touchscreen.tap(420, 170);
+    await page.waitForTimeout(250);
+  }
+  expect(await state<string>('(s) => s.ui.overlay.kind')).toBe('none');
+});
+
 test('the Interact button opens the workstation (≈ E on the chair)', async () => {
   const mark = errors.length;
   await page.evaluate(() => (window as unknown as LabsimWindow).__labsim.engine.teleportPlayer([1.1, 0, 3.3], Math.PI, -1.0));
