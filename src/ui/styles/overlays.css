@@ -42,7 +42,16 @@
 .monitor__chin { display: flex; align-items: center; justify-content: center; gap: 10px; height: 22px; }
 .monitor__brand { font: 600 9.5px/1 var(--font-mono); letter-spacing: 0.14em; color: #4a4f52; text-transform: uppercase; }
 .monitor__led { width: 5px; height: 5px; border-radius: 50%; background: var(--lab); box-shadow: 0 0 6px var(--lab); }
-.monitor__hint { position: absolute; right: 18px; bottom: 6px; display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--tx-3); pointer-events: none; }
+.monitor__hint { position: absolute; right: 18px; bottom: 6px; display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--tx-3); padding: 3px 6px; border: 0; border-radius: var(--r-md); background: none; font-family: inherit; cursor: pointer; }
+.monitor__hint:hover { color: var(--tx-1); background: rgba(255, 255, 255, 0.06); }
+/* Touch screens: a real thumb-sized Back button (no Esc key there). */
+@media (pointer: coarse) {
+  .monitor__hint { right: calc(12px + env(safe-area-inset-right, 0px)); bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 5; min-height: 44px; padding: 8px 16px; border-radius: 999px; background: var(--glass-strong); border: 1px solid var(--line-2); box-shadow: var(--shadow-1); color: var(--tx-0); font-size: 15px; font-weight: 650; }
+  .monitor__hint .k-kbd { display: none; }
+  .monitor__hint::before { content: '\2190'; font-size: 17px; }
+  /* The desktop's taskbar has its own Stand up button. */
+  .monitor__hint--desk { display: none; }
+}
 .tabletov { position: absolute; inset: 0; display: grid; place-items: center; background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.8)); animation: fade-in 220ms; }
 /* Width is capped by the viewport height too, so the 16:10 screen always fits (no cropping on wide windows). */
 .tabletov__device { position: relative; width: min(1400px, 90vw, calc((84vh - 52px) * 1.6 + 60px)); padding: 26px 30px; border-radius: 34px; background: linear-gradient(160deg, #1c1e20, #0b0c0d); box-shadow: 0 0 0 2px #2a2d30, 0 30px 80px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08); animation: pop-in 260ms var(--ease-out); }

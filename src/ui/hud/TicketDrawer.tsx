@@ -9,7 +9,7 @@ import { mutate, useGame } from '@/core/store';
 import type { TicketPanel, TicketState } from '@/core/state';
 import type { TicketView } from '@/missions';
 import { personName } from '@/content';
-import { Button, Chip, EmptyState, Icon, Kbd, Select, TextField } from '@/ui/kit';
+import { Button, Chip, EmptyState, Icon, IconButton, Kbd, Select, TextField } from '@/ui/kit';
 import { hasMission, ma, mq } from '@/ui/services/missions';
 import { closeOverlay, replaceOverlay } from '@/ui/services/nav';
 import { mmss } from '@/ui/services/format';
@@ -61,6 +61,7 @@ export function TicketDrawer({ ticketId, panel }: { ticketId?: string; panel?: T
           <span>Ticket board</span>
           <span className="spacer" />
           <span className="tix__count tnum">{open.length} open</span>
+          <IconButton icon="x" size="sm" label="Close the ticket board" onClick={() => closeOverlay({ lock: true })} />
         </header>
         {shiftLeft !== null ? (
           <div className="tix__shift tnum">

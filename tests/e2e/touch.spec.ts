@@ -152,6 +152,18 @@ test('closing a menu never re-captures the pointer on touch, and losing the lock
   expect(await state<string>('(s) => s.ui.overlay.kind')).toBe('none');
 });
 
+test('the rig tablet has a tappable way back (no Esc key on a phone)', async () => {
+  await page.evaluate(() => {
+    (window as unknown as LabsimWindow).__labsim.store.setState((s) => {
+      s.ui.overlay = { kind: 'tablet', robotId: 'wall-e' };
+    });
+  });
+  const back = page.locator('.tabletov .monitor__hint');
+  await expect(back).toBeVisible({ timeout: 30_000 });
+  await back.tap();
+  await expect.poll(() => state<string>('(s) => s.ui.overlay.kind'), { timeout: 10_000 }).toBe('none');
+});
+
 test('the Interact button opens the workstation (≈ E on the chair)', async () => {
   const mark = errors.length;
   await page.evaluate(() => (window as unknown as LabsimWindow).__labsim.engine.teleportPlayer([1.1, 0, 3.3], Math.PI, -1.0));
@@ -159,5 +171,7 @@ test('the Interact button opens the workstation (≈ E on the chair)', async () 
   await page.locator('.tc-btn--lg').tap();
   await expect.poll(() => state<string>('(s) => s.ui.overlay.kind'), { timeout: 30_000 }).toBe('computer');
   await expect(page.locator('.ws-root')).toBeVisible({ timeout: 30_000 });
+  await page.getByText('Stand up · Esc').tap();
+  await expect.poll(() => state<string>('(s) => s.ui.overlay.kind'), { timeout: 10_000 }).toBe('none');
   expect(freshErrors(mark)).toEqual([]);
 });

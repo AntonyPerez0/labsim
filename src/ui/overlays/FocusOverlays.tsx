@@ -2,6 +2,7 @@
  * Camera-focus overlays: the workstation desktop (`computer`) inside a subtle monitor bezel and the
  * rig status tablet (`tablet`) inside a tablet frame. The desktop/tablet own the keyboard (their own
  * Esc stands up / closes); leaving sets the overlay to none and releases the engine camera focus.
+ * The Esc hint is also a button (touch screens have no Esc key), and a tap beside the tablet steps back.
  */
 import { Desktop, TabletDashboard } from '@/computer';
 import { Kbd } from '@/ui/kit';
@@ -34,16 +35,22 @@ export function ComputerOverlay() {
           <span className="monitor__led" />
         </div>
       </div>
-      <div className="monitor__hint">
+      <button type="button" className="monitor__hint monitor__hint--desk" onClick={exitFocusOverlay}>
         <Kbd k="Esc" size="sm" /> stand up
-      </div>
+      </button>
     </div>
   );
 }
 
 export function TabletOverlay({ robotId }: { robotId: string }) {
   return (
-    <div className="tabletov" data-ui-interactive>
+    <div
+      className="tabletov"
+      data-ui-interactive
+      onClick={(e) => {
+        if (e.target === e.currentTarget) exitFocusOverlay();
+      }}
+    >
       <div className="tabletov__device">
         <span className="tabletov__cam" />
         <div className="tabletov__screen">
@@ -52,9 +59,9 @@ export function TabletOverlay({ robotId }: { robotId: string }) {
           </ErrorBoundary>
         </div>
       </div>
-      <div className="monitor__hint">
+      <button type="button" className="monitor__hint" onClick={exitFocusOverlay}>
         <Kbd k="Esc" size="sm" /> step back
-      </div>
+      </button>
     </div>
   );
 }
